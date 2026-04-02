@@ -1,0 +1,75 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "miralife",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev", "--", "-p", "3000"],
+      "port": 3000,
+      "cwd": "miralife"
+    },
+    {
+      "name": "studypal",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev", "--", "-p", "3001"],
+      "port": 3001,
+      "cwd": "claude/studypal"
+    },
+    {
+      "name": "moriwork",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev", "--", "-p", "3002"],
+      "port": 3002,
+      "cwd": "claude/moriwork"
+    },
+    {
+      "name": "ai-crew",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev", "--", "-p", "3003"],
+      "port": 3003,
+      "cwd": "claude/ai-crew"
+    },
+    {
+      "name": "carbonsil",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev", "--", "-p", "3004"],
+      "port": 3004,
+      "cwd": "claude/carbonsil"
+    },
+    {
+      "name": "signalframe-lab",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev", "--", "-p", "3005"],
+      "port": 3005,
+      "cwd": "claude/signalframe-lab"
+    },
+    {
+      "name": "ai-edu-platform",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev", "--", "-p", "3006"],
+      "port": 3006,
+      "cwd": "claude/ai-edu-platform"
+    },
+    {
+      "name": "ai-beta-lab",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev", "--", "-p", "3007"],
+      "port": 3007,
+      "cwd": "claude/ai-beta-lab"
+    },
+    {
+      "name": "long-image-agent",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev"],
+      "port": 3008,
+      "cwd": "long-image-agent-mvp"
+    },
+    {
+      "name": "market-predictor",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev", "--", "-p", "3009"],
+      "port": 3009,
+      "cwd": "market-predictor"
+    }
+  ]
+}
