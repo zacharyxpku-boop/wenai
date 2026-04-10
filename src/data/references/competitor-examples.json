@@ -1,0 +1,50 @@
+{
+  "module": "competitor",
+  "description": "竞品分析框架 — 基于Shopping MMLU和EcomEval基准模式",
+  "sources": ["Shopping MMLU benchmark schema", "EcomEval patterns", "Manual curation"],
+  "analysis_framework": {
+    "dimensions": [
+      "产品定位（价格带/目标人群/核心卖点差异）",
+      "视觉策略（主图风格/详情页结构/A+页面）",
+      "流量结构（自然搜索/付费推广/社媒引流/达人合作）",
+      "评价分析（好评集中点/差评机会点/问答区高频问题）",
+      "定价策略（原价/活动价/捆绑/会员价阶梯）",
+      "供应链信号（发货速度/库存深度/复购率推断）"
+    ]
+  },
+  "examples": [
+    {
+      "input": "分析Anker Soundcore蓝牙耳机在Amazon上的竞争策略",
+      "output": {
+        "positioning": {
+          "price_band": "$25-80，主力款$35-55",
+          "target": "注重性价比的技术消费者，25-45岁",
+          "core_usp": "音质+降噪的最佳性价比组合",
+          "brand_narrative": "从充电宝品牌延伸，技术可信度背书"
+        },
+        "visual_strategy": {
+          "main_image": "纯白/纯黑背景+产品45度角+关键参数标注",
+          "listing_structure": "产品图→场景图→技术参数图→对比图→包装内容",
+          "a_plus": "品牌故事+技术拆解+用户场景矩阵"
+        },
+        "traffic_structure": {
+          "organic": "约45%，核心词'wireless earbuds'长期占首页",
+          "ppc": "约30%，主投品类词+竞品词",
+          "social": "约15%，YouTube科技评测+TikTok开箱",
+          "other": "约10%，Deal站+返利网"
+        },
+        "review_insights": {
+          "positive_clusters": ["音质超预期", "舒适佩戴", "续航持久", "性价比高"],
+          "negative_clusters": ["降噪不如AirPods", "APP体验一般", "通话质量偶尔不稳"],
+          "opportunity": "通话质量和APP体验是Anker的短板，可作为差异化切入点"
+        },
+        "actionable_takeaways": [
+          "学习：产品线矩阵策略（入门→中端→旗舰），每个价位段都有对应产品",
+          "学习：A+页面的技术拆解方式，降低用户决策门槛",
+          "差异化：通话质量+APP体验做到极致，正好打Anker的短板",
+          "避免：不要在$25-35价位段正面竞争，Anker在这个段位护城河很深"
+        ]
+      }
+    }
+  ]
+}

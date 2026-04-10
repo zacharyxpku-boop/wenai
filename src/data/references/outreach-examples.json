@@ -1,0 +1,53 @@
+{
+  "module": "outreach",
+  "description": "达人外联邮件/DM模板 — 不同合作模式的高回复率案例",
+  "sources": ["Instagram influencer dataset patterns", "Industry best practices"],
+  "examples": [
+    {
+      "type": "寄样合作",
+      "context": "美妆品牌联系TikTok美妆博主",
+      "email": {
+        "subject": "Hi Sarah — loved your 'drugstore dupes' series (collab idea inside)",
+        "body": "Hi Sarah,\n\nI've been following your 'drugstore dupes' series since last month — the Rare Beauty blush dupe video was *chef's kiss* (2.3M views, well deserved!).\n\nI'm [Name] from [Brand], and we make clean beauty products at accessible price points — basically what your audience is already looking for.\n\nWe'd love to send you our new Velvet Lip Stain collection (6 shades, retails $18 each) for an honest review. No script, no approval needed — your genuine opinion is what matters.\n\nWhat we're offering:\n- Full collection shipped free\n- Exclusive 20% discount code for your followers\n- Commission on sales through your link\n\nWould you be open to trying them out? Happy to ship this week if you're interested.\n\nBest,\n[Name]"
+      },
+      "why_it_works": [
+        "开头提到具体内容证明真的看过",
+        "不要求念稿/审核，降低合作门槛",
+        "给达人粉丝折扣=帮达人提供价值",
+        "佣金模式=达人有动力推"
+      ]
+    },
+    {
+      "type": "付费推广",
+      "context": "3C品牌联系YouTube科技评测博主",
+      "email": {
+        "subject": "Sponsored review opportunity — [Brand] wireless earbuds ($XXX budget)",
+        "body": "Hi [Creator],\n\nYour [specific video title] review was the most thorough breakdown I've seen — especially the latency test at [timestamp]. That's the kind of detail our engineering team appreciates.\n\nWe're launching our next-gen wireless earbuds [Model] on [Date] and looking for 3-5 tech reviewers for honest, sponsored reviews.\n\nThe product:\n- ANC with 45dB reduction\n- 40h total battery\n- Multipoint connection\n- Retails at $79\n\nThe deal:\n- $[XXX] flat fee for a dedicated review\n- Product to keep\n- Early access (2 weeks before launch)\n- No editorial control — we only ask for disclosure per FTC guidelines\n\nInterested? I can send specs and a sample this week.\n\n[Name]\n[Brand] Partnerships"
+      },
+      "why_it_works": [
+        "预算透明，不浪费双方时间",
+        "Early access是达人看重的独家感",
+        "明确说no editorial control建立信任",
+        "提到FTC合规显示专业度"
+      ]
+    },
+    {
+      "type": "小红书种草合作",
+      "context": "家居品牌联系小红书家居博主",
+      "dm": "Hi [博主名]～\n\n关注你好久了，你之前发的那个「出租屋改造」系列太有共鸣了，尤其是厨房收纳那篇（收藏了！）\n\n我们是[品牌]，做极简风家居收纳的。最近出了一款磁吸刀架，看到你厨房改造那期里用的是传统刀座，觉得可能会喜欢这个～\n\n想寄一个给你体验，不需要发笔记（当然如果你觉得好用愿意分享就更好了）。纯粹觉得你会用得上。\n\n要不要给你寄一个？",
+      "why_it_works": [
+        "小红书DM比邮件更自然",
+        "不说'合作'，说'寄给你体验'，降低戒备",
+        "'不需要发笔记'反而让博主更愿意发",
+        "关联到博主具体内容场景"
+      ]
+    }
+  ],
+  "outreach_principles": [
+    "第一句话必须证明你看过对方内容，泛泛夸赞=批量模板=直接被忽略",
+    "说清楚'你要什么+给什么'，不要绕弯子",
+    "给达人的价值 > 你期望的回报（初次合作）",
+    "不同平台用不同语气：YouTube/Email偏正式，小红书/TikTok偏口语",
+    "跟进不超过2次，间隔3-5天，第三次不回=放弃"
+  ]
+}

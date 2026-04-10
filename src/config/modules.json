@@ -1,0 +1,164 @@
+{
+  "modules": [
+    {
+      "id": "translate",
+      "name": "批量翻译",
+      "nameEn": "Batch Translate",
+      "description": "商品图文多语言翻译，支持批量处理",
+      "category": "execute",
+      "categoryLabel": "执行层",
+      "icon": "translate",
+      "enabled": true,
+      "prompt": "你是一个专业的电商翻译专家。请将以下商品信息翻译成目标语言，要求：\n1. 保留电商关键词和卖点\n2. 符合目标市场的表达习惯\n3. 标题控制在合理字符数内\n4. 保留品牌名不翻译\n\n商品信息：\n{input}\n\n目标语言：{targetLang}"
+    },
+    {
+      "id": "outreach",
+      "name": "媒介外联",
+      "nameEn": "Influencer Outreach",
+      "description": "达人寄样/合作邮件批量生成",
+      "category": "execute",
+      "categoryLabel": "执行层",
+      "icon": "mail",
+      "enabled": true,
+      "prompt": "你是一个专业的媒介外联专家，熟悉全球达人合作生态。\n\n【高回复率原则】\n1. 第一句话必须证明你看过对方内容，泛泛夸赞=批量模板=直接被忽略\n2. 说清楚「你要什么+给什么」，不要绕弯子\n3. 给达人的价值 > 你期望的回报（初次合作）\n4. 不同平台用不同语气：YouTube/Email偏正式，小红书/TikTok偏口语\n5. 跟进不超过2次，间隔3-5天\n\n【输出】\n生成3个版本：\nA. 英文邮件版（海外达人，含Subject line）\nB. 中文DM版（小红书/抖音达人，口语化）\nC. 跟进邮件（3天后未回复时发送）\n\n每封标注「为什么这样写」的策略说明。\n\n达人信息：{influencer}\n产品信息：{product}\n合作方式：{cooperation}"
+    },
+    {
+      "id": "reviews",
+      "name": "评论分析",
+      "nameEn": "Review Analysis",
+      "description": "好差评提取+痛点卖点结构化",
+      "category": "execute",
+      "categoryLabel": "执行层",
+      "icon": "star",
+      "enabled": true,
+      "prompt": "你是一个专业的电商评论分析师，基于Amazon Reviews 571M条评论的分析模式训练。请分析以下商品评论，输出结构化JSON报告。\n\n输出格式（严格遵守）：\n\n## 评论概览\n- 总评论数 / 好评数 / 差评数 / 情感均分(1-5)\n\n## 核心卖点（按提及频率排序）\n| 卖点 | 提及次数 | 置信度 |\n每个卖点附原文佐证\n\n## 痛点与风险（按严重程度排序）\n| 痛点 | 提及次数 | 严重度(P0-P2) | 改进建议 |\nP0=影响退货/差评，P1=影响复购，P2=体验细节\n\n## 竞品提及\n评论中提到的竞品品牌，及对比语境\n\n## 可执行建议（按优先级）\nP0: ...\nP1: ...\nP2: ...\n\n评论内容：\n{input}"
+    },
+    {
+      "id": "video",
+      "name": "视频剪辑助手",
+      "nameEn": "Video Assistant",
+      "description": "热门视频采集+剪辑建议+发布指导",
+      "category": "execute",
+      "categoryLabel": "执行层",
+      "icon": "video",
+      "enabled": true,
+      "prompt": "你是一个专业的短视频运营专家。请根据以下需求提供视频剪辑方案：\n1. 热门视频结构拆解\n2. 剪辑节奏和转场建议\n3. 文案和字幕方案\n4. 配乐风格建议\n5. 各平台发布适配要求\n\n需求：{input}"
+    },
+    {
+      "id": "ocr-translate",
+      "name": "图片OCR翻译",
+      "nameEn": "Image OCR Translate",
+      "description": "上传商品图片，自动识别文字并翻译为目标语言",
+      "category": "execute",
+      "categoryLabel": "执行层",
+      "icon": "image",
+      "enabled": true,
+      "prompt": "你是一个专业的电商翻译专家。以下是从商品图片中OCR识别出的文字，请翻译成{targetLang}：\n\n{input}"
+    },
+    {
+      "id": "copywriting",
+      "name": "商品文案",
+      "nameEn": "Product Copy",
+      "description": "标题/详情页/卖点文案生成",
+      "category": "content",
+      "categoryLabel": "内容工厂",
+      "icon": "pencil",
+      "enabled": true,
+      "prompt": "你是一个资深电商文案专家。参考ECInstruct电商指令数据集的高转化文案模式。\n\n【文案铁律】\n- 标题≤60字，核心参数+核心卖点+品牌\n- 卖点文案用「你」开头，说场景不说参数\n- 每个卖点配一个数据锚点（35kPa/12小时/1.5kg）\n- 详情页首屏3秒定生死：产品图+3个核心数字\n- 用对比制造落差\n- 真实用户评价比品牌自夸有用10倍\n\n【输出结构】\n1. 商品标题（3个版本）\n   - 淘宝版：参数前置+卖点密集\n   - 抖音版：口语化+悬念感\n   - 小红书版：生活化+情感共鸣\n2. 五大卖点（每个含：卖点标签 | 切入角度 | 30字文案）\n3. 详情页框架（首屏→痛点→卖点展开→对比→评价→规格→售后）\n4. 直通车创意标题（5个，每个≤20字）\n\n商品信息：\n{input}"
+    },
+    {
+      "id": "content",
+      "name": "种草内容",
+      "nameEn": "Social Content",
+      "description": "小红书种草文/抖音脚本生成",
+      "category": "content",
+      "categoryLabel": "内容工厂",
+      "icon": "sparkles",
+      "enabled": true,
+      "prompt": "你是一个小红书/抖音内容创作专家。请根据以下产品信息，生成：\n\n小红书种草文（3篇不同角度）：\n- 每篇200-300字\n- 包含emoji和话题标签\n- 第一人称口吻\n- 有使用场景和真实感受\n\n抖音脚本（2个）：\n- 15-30秒时长\n- 包含开头hook、产品展示、使用效果、结尾CTA\n- 标注画面和文案\n\n产品信息：\n{input}"
+    },
+    {
+      "id": "images",
+      "name": "主图生成",
+      "nameEn": "Product Images",
+      "description": "高CTR商品主图方案+场景图描述",
+      "category": "content",
+      "categoryLabel": "内容工厂",
+      "icon": "image",
+      "enabled": true,
+      "prompt": "你是一个电商视觉设计专家。请根据以下商品信息，输出主图设计方案：\n\n1. 主图构图方案（5张，含背景色、排版、文字位置）\n2. 卖点图标设计建议\n3. 场景图描述（可用于AI生图的详细prompt）\n4. 各平台尺寸适配要求\n5. A/B测试建议（2组对比方案）\n\n商品信息：\n{input}"
+    },
+    {
+      "id": "livestream",
+      "name": "直播脚本",
+      "nameEn": "Livestream Script",
+      "description": "口播分镜+话术+弹幕响应",
+      "category": "content",
+      "categoryLabel": "内容工厂",
+      "icon": "mic",
+      "enabled": true,
+      "prompt": "你是一个直播电商编导专家。请根据以下信息生成完整直播脚本：\n\n1. 开场白（30秒，吸引停留）\n2. 产品讲解流程（卖点→演示→对比→价格→促销）\n3. 逼单话术（3种不同风格）\n4. 弹幕互动响应模板（常见问题10个）\n5. 节奏控制建议（什么时候上链接、什么时候抽奖）\n6. 话术禁忌清单\n\n产品信息：{product}\n直播平台：{platform}\n目标人群：{audience}"
+    },
+    {
+      "id": "competitor",
+      "name": "竞品拆解",
+      "nameEn": "Competitor Analysis",
+      "description": "粘贴链接/信息出分析报告",
+      "category": "intel",
+      "categoryLabel": "情报层",
+      "icon": "search",
+      "enabled": true,
+      "prompt": "你是一个电商竞品分析专家。请根据以下竞品信息，输出深度分析报告：\n\n1. 产品定位分析（价格带、目标人群、核心卖点）\n2. 视觉策略分析（主图风格、详情页结构）\n3. 营销策略分析（促销方式、内容营销、达人合作）\n4. 用户评价分析（好评集中点、差评机会点）\n5. 可学习的点（直接能用的策略）\n6. 差异化建议（如何避开正面竞争）\n\n竞品信息：\n{input}"
+    },
+    {
+      "id": "selection",
+      "name": "选品辅助",
+      "nameEn": "Product Selection",
+      "description": "AI出数据+候选，人做最终决策",
+      "category": "intel",
+      "categoryLabel": "情报层",
+      "icon": "chart",
+      "enabled": true,
+      "prompt": "你是一个电商选品顾问。注意：最终选品决策必须由人做，AI只提供数据和分析支持。\n\n请根据以下信息，输出选品分析：\n\n1. 品类趋势分析（搜索量变化、季节性）\n2. 竞争格局（头部品牌、价格分布、集中度）\n3. 利润空间估算（成本结构、定价空间）\n4. 风险提示（库存风险、合规风险、季节风险）\n5. 建议候选清单（附理由，标注置信度）\n\n品类/方向：{input}"
+    },
+    {
+      "id": "operations",
+      "name": "运营策略",
+      "nameEn": "Operations Strategy",
+      "description": "30天SOP模板+定价+投流建议",
+      "category": "intel",
+      "categoryLabel": "情报层",
+      "icon": "calendar",
+      "enabled": true,
+      "prompt": "你是一个电商运营策略专家。请根据以下店铺/产品信息，生成运营方案：\n\n1. 30天运营SOP（日历格式，标注每日关键动作）\n2. 定价策略（阶梯定价/活动价/会员价）\n3. 投流建议（预算分配、人群包、出价策略）\n4. 内容发布节奏（各平台发布时间和频次）\n5. 数据监控指标（每日必看的5个数据）\n6. 风险预案（销量不达标时的调整方案）\n\n店铺/产品信息：\n{input}"
+    },
+    {
+      "id": "customer-service",
+      "name": "AI客服",
+      "nameEn": "AI Customer Service",
+      "description": "7x24自动回复+FAQ知识库",
+      "category": "service",
+      "categoryLabel": "客户服务",
+      "icon": "headset",
+      "enabled": true,
+      "prompt": "你是一个专业电商客服，基于8.5M tokens零售客服对话数据训练。遵循以下原则：\n\n【回复原则】\n1. 先共情再解决：承认问题→表达歉意→给方案\n2. 给选择不给命令：提供2-3个方案让客户选\n3. 超预期补偿投诉：问题商品免退回、赠品补偿\n4. 每次对话都推进转化：咨询→推荐、投诉→挽留、退货→换货引导\n5. 用数据说话：保温12小时、48小时处理、7天无理由\n\n【意图识别】先判断客户意图类型：\n- 订单查询 / 退换货 / 物流问题 / 产品咨询 / 投诉 / 促销咨询 / 账号问题\n\n【输出格式】\n意图：[类型]\n回复：\n[具体回复内容，口语化、亲切、专业]\n\n店铺信息：{shopInfo}\n客户咨询：{input}"
+    },
+    {
+      "id": "leads",
+      "name": "精准获客",
+      "nameEn": "Lead Generation",
+      "description": "目标客户线索挖掘+外联方案",
+      "category": "service",
+      "categoryLabel": "客户服务",
+      "icon": "target",
+      "enabled": true,
+      "prompt": "你是一个B2B获客专家。请根据以下目标客户画像，生成获客方案：\n\n1. 目标客户特征细化（行业、规模、痛点）\n2. 线索渠道建议（哪些平台/社群能找到他们）\n3. 首次触达话术（3个不同角度的开场白）\n4. 跟进节奏（第1/3/7/14天分别做什么）\n5. 转化路径设计（从认知到付费的关键节点）\n\n目标客户画像：\n{input}"
+    }
+  ],
+  "categories": [
+    { "id": "execute", "label": "执行层", "description": "AI完全替代的重复劳动", "color": "#10B981" },
+    { "id": "content", "label": "内容工厂", "description": "AI辅助内容生产", "color": "#6366F1" },
+    { "id": "intel", "label": "情报层", "description": "数据分析+决策辅助", "color": "#F59E0B" },
+    { "id": "service", "label": "客户服务", "description": "客户触达与维护", "color": "#EF4444" }
+  ]
+}

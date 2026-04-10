@@ -1,0 +1,7 @@
+node_modules
+.next
+.git
+.knowledge
+.claude
+*.md
+.env.local

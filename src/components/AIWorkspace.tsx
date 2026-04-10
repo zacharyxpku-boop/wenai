@@ -1,0 +1,428 @@
+'use client';
+
+import { useState, useEffect, useRef } from 'react';
+import ResultFeedback from './ResultFeedback';
+import ExpertReview from './ExpertReview';
+
+interface HistoryItem {
+  id: string;
+  input: string;
+  result: string;
+  params: Record<string, string>;
+  timestamp: number;
+}
+
+interface AIWorkspaceProps {
+  moduleId: string;
+  moduleName: string;
+  modulePrompt: string;
+  placeholder?: string;
+  fields?: { key: string; label: string; placeholder: string }[];
+  supportCSV?: boolean;
+}
+
+export default function AIWorkspace({
+  moduleId,
+  moduleName,
+  modulePrompt,
+  placeholder = '请输入内容...',
+  fields,
+  supportCSV = false,
+}: AIWorkspaceProps) {
+  const [input, setInput] = useState('');
+  const [params, setParams] = useState<Record<string, string>>({});
+  const [result, setResult] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [history, setHistory] = useState<HistoryItem[]>([]);
+  const [showHistory, setShowHistory] = useState(false);
+  const [csvData, setCsvData] = useState<string[][]>([]);
+  const [csvResults, setCsvResults] = useState<{ input: string; output: string }[]>([]);
+  const [csv开始处理ing, setCsv开始处理ing] = useState(false);
+  const [csvProgress, setCsvProgress] = useState({ current: 0, total: 0 });
+  const [copied, setCopied] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    const stored = localStorage.getItem(`wenai_history_${moduleId}`);
+    if (stored) {
+      try { setHistory(JSON.parse(stored)); } catch { /* ignore */ }
+    }
+  }, [moduleId]);
+
+  const saveToHistory = (inp: string, res: string, p: Record<string, string>) => {
+    const item: HistoryItem = {
+      id: Date.now().toString(),
+      input: inp.substring(0, 200),
+      result: res,
+      params: p,
+      timestamp: Date.now(),
+    };
+    const updated = [item, ...history].slice(0, 50);
+    setHistory(updated);
+    localStorage.setItem(`wenai_history_${moduleId}`, JSON.stringify(updated));
+  };
+
+  const handleSubmit = async () => {
+    if (!input.trim()) return;
+    setLoading(true);
+    setError('');
+    setResult('');
+
+    try {
+      let prompt = modulePrompt;
+      const allParams = { ...params, input };
+      for (const [key, value] of Object.entries(allParams)) {
+        prompt = prompt.replaceAll(`{${key}}`, value);
+      }
+
+      const response = await fetch('/api/ai', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ moduleId, prompt, input }),
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || '请求失败');
+      }
+
+      const data = await response.json();
+      setResult(data.content);
+      saveToHistory(input, data.content, params);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : '未知错误');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleCSVUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const text = event.target?.result as string;
+      const rows = text.split('\n').filter(r => r.trim()).map(r => r.split(',').map(c => c.trim()));
+      setCsvData(rows);
+      setCsvResults([]);
+    };
+    reader.readAsText(file, 'utf-8');
+  };
+
+  const processCSVBatch = async () => {
+    if (csvData.length <= 1) return;
+    setCsv开始处理ing(true);
+    setCsvResults([]);
+    const dataRows = csvData.slice(1);
+    setCsvProgress({ current: 0, total: dataRows.length });
+    const results: { input: string; output: string }[] = [];
+
+    for (let i = 0; i < dataRows.length; i++) {
+      const rowText = csvData[0].map((h, j) => `${h}: ${dataRows[i][j] || ''}`).join('\n');
+      try {
+        let prompt = modulePrompt;
+        const allParams = { ...params, input: rowText };
+        for (const [key, value] of Object.entries(allParams)) {
+          prompt = prompt.replaceAll(`{${key}}`, value);
+        }
+        const response = await fetch('/api/ai', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ moduleId, prompt, input: rowText }),
+        });
+        const data = await response.json();
+        results.push({ input: rowText, output: data.content || data.error || '' });
+      } catch {
+        results.push({ input: rowText, output: '[处理失败]' });
+      }
+      setCsvProgress({ current: i + 1, total: dataRows.length });
+      setCsvResults([...results]);
+    }
+    setCsv开始处理ing(false);
+  };
+
+  const exportCSV = (data: { input: string; output: string }[]) => {
+    const header = '输入,AI结果\n';
+    const rows = data.map(r =>
+      `"${r.input.replace(/"/g, '""').replace(/\n/g, ' ')}","${r.output.replace(/"/g, '""').replace(/\n/g, ' ')}"`
+    ).join('\n');
+    downloadFile(header + rows, `wenai_${moduleId}_${Date.now()}.csv`, 'text/csv;charset=utf-8');
+  };
+
+  const exportSingleResult = () => {
+    if (!result) return;
+    downloadFile(result, `wenai_${moduleId}_${Date.now()}.txt`, 'text/plain;charset=utf-8');
+  };
+
+  const downloadFile = (content: string, filename: string, type: string) => {
+    const BOM = '\uFEFF';
+    const blob = new Blob([BOM + content], { type });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(result);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1500);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
+      e.preventDefault();
+      handleSubmit();
+    }
+  };
+
+  return (
+    <div className="flex flex-col h-full animate-fade-up">
+      {/* Toolbar */}
+      <div className="flex items-center justify-between mb-5">
+        <div>
+          <h2 className="text-base font-semibold text-text-primary font-[family-name:var(--font-outfit)]">
+            {moduleName}
+          </h2>
+        </div>
+        <div className="flex items-center gap-2">
+          {supportCSV && (
+            <>
+              <input ref={fileInputRef} type="file" accept=".csv" onChange={handleCSVUpload} className="hidden" />
+              <button
+                onClick={() => fileInputRef.current?.click()}
+                className="text-[11px] font-mono text-text-tertiary hover:text-text-primary px-3 py-1.5 border border-border-subtle rounded-md hover:border-border-default transition-colors"
+              >
+                CSV批量
+              </button>
+            </>
+          )}
+          <button
+            onClick={() => setShowHistory(!showHistory)}
+            className={`text-[11px] font-mono px-3 py-1.5 border rounded-md transition-colors ${
+              showHistory
+                ? 'text-accent border-accent/30 bg-accent-dim'
+                : 'text-text-tertiary border-border-subtle hover:text-text-primary hover:border-border-default'
+            }`}
+          >
+            历史 ({history.length})
+          </button>
+        </div>
+      </div>
+
+      {/* History panel */}
+      {showHistory && (
+        <div className="mb-4 bg-bg-surface border border-border-subtle rounded-md p-3 max-h-52 overflow-y-auto animate-fade-up">
+          {history.length === 0 ? (
+            <p className="text-text-tertiary text-[12px] font-mono">暂无历史</p>
+          ) : (
+            <div className="space-y-1">
+              {history.map(item => (
+                <button
+                  key={item.id}
+                  onClick={() => { setInput(item.input); setResult(item.result); setShowHistory(false); }}
+                  className="w-full text-left px-3 py-2 rounded-md hover:bg-bg-hover transition-colors group"
+                >
+                  <div className="flex items-center justify-between gap-3">
+                    <span className="text-[12px] text-text-secondary truncate flex-1 group-hover:text-text-primary">
+                      {item.input}
+                    </span>
+                    <span className="text-[10px] font-mono text-text-tertiary flex-shrink-0">
+                      {new Date(item.timestamp).toLocaleString('zh-CN', { month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
+                    </span>
+                  </div>
+                </button>
+              ))}
+              <button
+                onClick={() => { setHistory([]); localStorage.removeItem(`wenai_history_${moduleId}`); }}
+                className="text-[10px] font-mono text-error hover:text-error/80 mt-2 px-3"
+              >
+                清空
+              </button>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* CSV batch area */}
+      {csvData.length > 0 && (
+        <div className="mb-4 bg-bg-surface border border-border-subtle rounded-md p-4 animate-fade-up">
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-2">
+              <div className="w-1.5 h-1.5 rounded-full bg-accent" />
+              <span className="text-[12px] font-mono text-text-primary">{csvData.length - 1} 条数据已加载</span>
+            </div>
+            <div className="flex gap-2">
+              <button
+                onClick={() => { setCsvData([]); setCsvResults([]); }}
+                className="text-[10px] font-mono text-text-tertiary hover:text-text-primary px-2.5 py-1 border border-border-subtle rounded-md"
+              >
+                清除
+              </button>
+              {csvResults.length > 0 && (
+                <button
+                  onClick={() => exportCSV(csvResults)}
+                  className="text-[10px] font-mono text-success px-2.5 py-1 border border-success/30 rounded-md hover:bg-success/10"
+                >
+                  导出CSV
+                </button>
+              )}
+              <button
+                onClick={processCSVBatch}
+                disabled={csv开始处理ing}
+                className="text-[10px] font-mono text-bg-root px-3 py-1 bg-accent rounded-md disabled:opacity-50 hover:bg-accent-hover transition-colors"
+              >
+                {csv开始处理ing ? `${csvProgress.current}/${csvProgress.total}` : '开始处理'}
+              </button>
+            </div>
+          </div>
+          {/* Progress bar */}
+          {csv开始处理ing && (
+            <div className="w-full h-0.5 bg-border-subtle rounded-full mb-2 overflow-hidden">
+              <div
+                className="h-full bg-accent transition-all duration-300"
+                style={{ width: `${(csvProgress.current / csvProgress.total) * 100}%` }}
+              />
+            </div>
+          )}
+          <p className="text-[10px] font-mono text-text-tertiary">
+            表头：{csvData[0]?.join(' | ')}
+          </p>
+          {csvResults.length > 0 && (
+            <div className="mt-3 max-h-32 overflow-y-auto space-y-1">
+              {csvResults.map((r, i) => (
+                <div key={i} className="text-[11px] font-mono p-2 bg-bg-raised rounded-md flex gap-2">
+                  <span className="text-text-tertiary w-5 flex-shrink-0">#{i + 1}</span>
+                  <span className="text-text-secondary truncate">{r.output.substring(0, 120)}</span>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Main workspace: input + output */}
+      <div className="flex flex-col lg:flex-row gap-4 flex-1 min-h-0">
+        {/* 输入 */}
+        <div className="flex-1 flex flex-col min-h-0">
+          <div className="flex items-center gap-2 mb-2">
+            <span className="text-[10px] font-mono text-text-tertiary uppercase tracking-widest">输入</span>
+            <div className="flex-1 h-px bg-border-subtle" />
+          </div>
+
+          {fields && fields.length > 0 && (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-3">
+              {fields.map(field => (
+                <div key={field.key}>
+                  <label className="text-[11px] font-mono text-text-tertiary mb-1 block">{field.label}</label>
+                  <input
+                    type="text"
+                    placeholder={field.placeholder}
+                    value={params[field.key] || ''}
+                    onChange={e => setParams(prev => ({ ...prev, [field.key]: e.target.value }))}
+                    className="w-full bg-bg-surface border border-border-subtle rounded-md px-3 py-2 text-[13px] text-text-primary placeholder-text-tertiary transition-colors"
+                  />
+                </div>
+              ))}
+            </div>
+          )}
+
+          <textarea
+            value={input}
+            onChange={e => setInput(e.target.value)}
+            onKeyDown={handleKeyDown}
+            placeholder={placeholder}
+            className="flex-1 min-h-[180px] bg-bg-surface border border-border-subtle rounded-md p-4 text-[13px] text-text-primary placeholder-text-tertiary resize-none transition-colors leading-relaxed"
+          />
+
+          <div className="flex items-center justify-between mt-3">
+            <span className="text-[10px] font-mono text-text-tertiary">
+              {input.length > 0 ? `${input.length} 字` : 'Ctrl+Enter 提交'}
+            </span>
+            <button
+              onClick={handleSubmit}
+              disabled={loading || !input.trim()}
+              className="px-5 py-2 bg-accent text-bg-root rounded-md font-medium text-[13px] hover:bg-accent-hover disabled:opacity-40 disabled:cursor-not-allowed transition-colors font-[family-name:var(--font-outfit)]"
+            >
+              {loading ? (
+                <span className="flex items-center gap-2">
+                  <svg className="w-3.5 h-3.5 animate-spin-smooth" viewBox="0 0 16 16" fill="none">
+                    <circle cx="8" cy="8" r="6" stroke="currentColor" strokeWidth="2" opacity="0.3"/>
+                    <path d="M14 8a6 6 0 00-6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                  </svg>
+                  开始处理ing
+                </span>
+              ) : '开始执行'}
+            </button>
+          </div>
+        </div>
+
+        {/* Divider */}
+        <div className="hidden lg:flex flex-col items-center py-6">
+          <div className="w-px flex-1 bg-border-subtle" />
+          <span className="text-[10px] font-mono text-text-tertiary my-2">&rarr;</span>
+          <div className="w-px flex-1 bg-border-subtle" />
+        </div>
+
+        {/* 输出 */}
+        <div className="flex-1 flex flex-col min-h-0">
+          <div className="flex items-center gap-2 mb-2">
+            <span className="text-[10px] font-mono text-text-tertiary uppercase tracking-widest">输出</span>
+            <div className="flex-1 h-px bg-border-subtle" />
+            {result && (
+              <div className="flex gap-1.5">
+                <button
+                  onClick={handleCopy}
+                  className="text-[10px] font-mono text-text-tertiary hover:text-text-primary px-2 py-1 border border-border-subtle rounded-md hover:border-border-default transition-colors"
+                >
+                  {copied ? '已复制' : '复制'}
+                </button>
+                <button
+                  onClick={exportSingleResult}
+                  className="text-[10px] font-mono text-text-tertiary hover:text-text-primary px-2 py-1 border border-border-subtle rounded-md hover:border-border-default transition-colors"
+                >
+                  导出
+                </button>
+              </div>
+            )}
+          </div>
+
+          <div className="flex-1 min-h-[180px] bg-bg-surface border border-border-subtle rounded-md p-4 overflow-y-auto">
+            {error && (
+              <div className="text-[12px] font-mono text-error p-3 bg-error/8 border border-error/20 rounded-md mb-3">
+                {error}
+              </div>
+            )}
+            {loading && (
+              <div className="flex items-center gap-3 text-text-tertiary py-8 justify-center">
+                <svg className="w-4 h-4 animate-spin-smooth text-accent" viewBox="0 0 16 16" fill="none">
+                  <circle cx="8" cy="8" r="6" stroke="currentColor" strokeWidth="2" opacity="0.3"/>
+                  <path d="M14 8a6 6 0 00-6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                </svg>
+                <span className="text-[12px] font-mono">AI处理中...</span>
+              </div>
+            )}
+            {result && (
+              <div className="text-[13px] text-text-secondary whitespace-pre-wrap leading-[1.7]">{result}</div>
+            )}
+            {!result && !loading && !error && (
+              <div className="flex items-center justify-center h-full">
+                <p className="text-text-tertiary text-[12px] font-mono">处理结果将在此显示</p>
+              </div>
+            )}
+          </div>
+
+          {result && (
+            <>
+              <ExpertReview moduleId={moduleId} resultText={result} />
+              <ResultFeedback moduleId={moduleId} resultText={result} />
+            </>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
