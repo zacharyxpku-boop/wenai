@@ -1,0 +1,40 @@
+{
+  "module": "reviews",
+  "description": "评论分析结构化输出案例 — 基于Amazon Reviews数据集模式",
+  "sources": ["Amazon Reviews 2023 schema", "Manual curation"],
+  "examples": [
+    {
+      "input": "买了这个蓝牙耳机用了三天，音质确实不错，低音有力。但是降噪效果一般般，地铁上还是能听到比较大的噪音。续航倒是很给力，充一次用两天没问题。耳机佩戴舒适，不夹耳朵。就是充电盒有点大，放口袋不太方便。总的来说性价比很高，推荐购买。\n---\n用了一周就坏了一边，售后说不给换。音质本来还行，但是现在只剩一边了。差评。\n---\n颜值很高，白色很好看。音质中规中矩吧，比不上AirPods。通话对方说听得很清楚，这点不错。价格便宜，学生党可以入。\n---\n第二次买了，之前买的那个用了大半年都没问题。送朋友的，朋友说很喜欢。物流也很快，第二天就到了。五星好评！",
+      "output": {
+        "summary": {
+          "total_reviews": 4,
+          "positive": 3,
+          "negative": 1,
+          "avg_sentiment": 3.8
+        },
+        "selling_points": [
+          {"point": "音质表现好，低音有力", "mention_count": 3, "confidence": "high"},
+          {"point": "续航持久，充一次用两天", "mention_count": 1, "confidence": "medium"},
+          {"point": "佩戴舒适不夹耳", "mention_count": 1, "confidence": "medium"},
+          {"point": "性价比高，价格便宜", "mention_count": 2, "confidence": "high"},
+          {"point": "通话清晰度好", "mention_count": 1, "confidence": "medium"},
+          {"point": "颜值高，外观好看", "mention_count": 1, "confidence": "medium"}
+        ],
+        "pain_points": [
+          {"point": "降噪效果不够好", "mention_count": 1, "severity": "medium", "suggestion": "考虑升级降噪芯片或调整算法"},
+          {"point": "充电盒体积偏大", "mention_count": 1, "severity": "low", "suggestion": "优化充电盒设计或作为卖点差异化"},
+          {"point": "质量稳定性问题（用一周坏）", "mention_count": 1, "severity": "critical", "suggestion": "检查品控流程，加强出厂检测"},
+          {"point": "售后服务差", "mention_count": 1, "severity": "critical", "suggestion": "优化售后政策，降低退换门槛"}
+        ],
+        "competitor_mentions": [
+          {"brand": "AirPods", "context": "音质对标，被认为略逊于AirPods", "implication": "定位中端性价比市场"}
+        ],
+        "actionable_insights": [
+          "P0: 品控问题是差评核心原因，优先解决质量一致性",
+          "P1: 降噪是用户期望但未被满足的功能，考虑在营销中降低降噪预期或升级硬件",
+          "P2: 充电盒大小是体验细节，可在下一代产品迭代"
+        ]
+      }
+    }
+  ]
+}

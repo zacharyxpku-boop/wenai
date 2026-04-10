@@ -1,0 +1,96 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-bg-root: #0e0e11;
+  --color-bg-surface: #16161a;
+  --color-bg-raised: #1e1e23;
+  --color-bg-hover: #242429;
+  --color-border-subtle: #2a2a30;
+  --color-border-default: #35353d;
+  --color-text-primary: #ececf0;
+  --color-text-secondary: #8b8b95;
+  --color-text-tertiary: #5c5c66;
+  --color-accent: #c8975a;
+  --color-accent-hover: #d9a86b;
+  --color-accent-dim: rgba(200, 151, 90, 0.10);
+  --color-success: #4ade80;
+  --color-error: #ef4444;
+  --color-cat-execute: #c8975a;
+  --color-cat-content: #6ea8d7;
+  --color-cat-intel: #9b8ec4;
+  --color-cat-service: #5bb89a;
+  --font-display: var(--font-outfit);
+  --font-mono: var(--font-ibm-plex-mono);
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--color-border-subtle); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--color-border-default); }
+
+/* Selection */
+::selection {
+  background: rgba(200, 151, 90, 0.25);
+  color: var(--color-text-primary);
+}
+
+body {
+  background: var(--color-bg-root);
+  color: var(--color-text-secondary);
+  font-family: var(--font-display), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Subtle noise texture overlay */
+.noise-overlay::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  opacity: 0.03;
+  pointer-events: none;
+  z-index: 9999;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Fade-in animation */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-up {
+  animation: fadeUp 0.4s ease-out both;
+}
+
+/* Stagger delays */
+.stagger-1 { animation-delay: 0.05s; }
+.stagger-2 { animation-delay: 0.1s; }
+.stagger-3 { animation-delay: 0.15s; }
+.stagger-4 { animation-delay: 0.2s; }
+.stagger-5 { animation-delay: 0.25s; }
+.stagger-6 { animation-delay: 0.3s; }
+
+/* Pulse dot */
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+.animate-pulse-dot {
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+
+/* Spinner */
+@keyframes spin-smooth {
+  to { transform: rotate(360deg); }
+}
+.animate-spin-smooth {
+  animation: spin-smooth 0.8s linear infinite;
+}
+
+/* Focus ring */
+input:focus, textarea:focus, select:focus {
+  outline: none;
+  border-color: var(--color-accent) !important;
+  box-shadow: 0 0 0 1px rgba(200, 151, 90, 0.2);
+}

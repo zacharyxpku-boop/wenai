@@ -1,0 +1,49 @@
+{
+  "module": "translate",
+  "description": "电商翻译高质量案例库 — 用于few-shot prompt增强",
+  "sources": ["OPUS parallel corpus", "UN corpus", "Manual curation"],
+  "examples": [
+    {
+      "zh": "【爆款推荐】无线蓝牙耳机 真无线5.3 降噪通话 超长续航30小时 IPX7防水 运动跑步",
+      "en": "Wireless Bluetooth 5.3 Earbuds | Active Noise Cancelling | 30H Playtime | IPX7 Waterproof | Sport Running Headphones",
+      "ja": "ワイヤレス Bluetooth 5.3 イヤホン｜ノイズキャンセリング｜30時間再生｜IPX7防水｜スポーツランニング",
+      "ko": "무선 블루투스 5.3 이어폰 | 노이즈 캔슬링 | 30시간 재생 | IPX7 방수 | 스포츠 러닝",
+      "notes": "标题保留技术参数不翻译(5.3/IPX7)，用竖线分隔卖点，符合各平台标题规范"
+    },
+    {
+      "zh": "2024新款女士真皮手提包 大容量通勤包 头层牛皮 简约时尚 可斜挎 多隔层",
+      "en": "2024 Women's Genuine Leather Tote Bag | Large Capacity Work Bag | Full Grain Cowhide | Minimalist Design | Crossbody Convertible | Multi-Compartment",
+      "ja": "2024年新作 レディース 本革トートバッグ｜大容量 通勤バッグ｜牛革一枚革｜シンプルデザイン｜ショルダー2WAY｜仕切り多数",
+      "ko": "2024 여성 천연가죽 토트백 | 대용량 출근가방 | 소가죽 원단 | 미니멀 디자인 | 크로스바디 겸용 | 다수 수납칸",
+      "notes": "头层牛皮→Full Grain Cowhide(EN), 牛革一枚革(JA)；通勤→Work(EN), 通勤(JA), 출근(KO)"
+    },
+    {
+      "zh": "智能手表 心率血氧监测 NFC支付 GPS定位 100+运动模式 IP68防水 超清AMOLED大屏",
+      "en": "Smart Watch | Heart Rate & SpO2 Monitor | NFC Payment | Built-in GPS | 100+ Workout Modes | IP68 Waterproof | HD AMOLED Display",
+      "ja": "スマートウォッチ｜心拍・血中酸素モニター｜NFC決済｜GPS内蔵｜100+ワークアウト｜IP68防水｜高精細AMOLEDディスプレイ",
+      "ko": "스마트워치 | 심박수·혈중산소 모니터 | NFC 결제 | GPS 내장 | 100+ 운동모드 | IP68 방수 | AMOLED 디스플레이",
+      "notes": "血氧→SpO2(EN/通用), 血中酸素(JA), 혈중산소(KO)；保留技术术语原文"
+    },
+    {
+      "zh": "便携式充电宝 20000mAh 22.5W超级快充 LED数显 超薄小巧 双向快充 Type-C",
+      "en": "Portable Power Bank 20000mAh | 22.5W Super Fast Charging | LED Digital Display | Ultra Slim Compact | Bi-directional Fast Charge | USB-C",
+      "ja": "モバイルバッテリー 20000mAh｜22.5W超急速充電｜LEDデジタル残量表示｜超薄型コンパクト｜双方向急速充電｜Type-C",
+      "ko": "보조배터리 20000mAh | 22.5W 초고속 충전 | LED 잔량 표시 | 초슬림 컴팩트 | 양방향 급속충전 | USB-C",
+      "notes": "充电宝→Power Bank(EN), モバイルバッテリー(JA), 보조배터리(KO)；Type-C在英文市场更常用USB-C"
+    },
+    {
+      "zh": "儿童早教机 AI智能对话 中英双语启蒙 故事机 防摔设计 家长远程控制",
+      "en": "Kids Educational Robot | AI Interactive Conversation | Bilingual Chinese-English Learning | Story Player | Drop-Proof Design | Parental Remote Control",
+      "ja": "キッズ知育ロボット｜AI対話機能｜中国語・英語バイリンガル学習｜ストーリープレーヤー｜耐衝撃設計｜保護者リモコン操作",
+      "ko": "아동 교육 로봇 | AI 대화형 학습 | 중영 이중언어 교육 | 동화 플레이어 | 낙하 방지 설계 | 부모 원격 제어",
+      "notes": "早教机→Educational Robot(更国际化)；防摔→Drop-Proof(EN), 耐衝撃(JA), 낙하 방지(KO)"
+    },
+    {
+      "zh": "产品描述：这款耳机采用最新蓝牙5.3芯片，支持主动降噪功能。30小时超长续航，充电15分钟可听2小时。配备13mm大动圈单元，音质澎湃有力。IPX7级防水，运动无惧汗水。触控操作，一触即达。",
+      "en": "Equipped with the latest Bluetooth 5.3 chip with active noise cancellation technology. Enjoy up to 30 hours of uninterrupted listening — a quick 15-minute charge gives you 2 hours of playback. The oversized 13mm dynamic drivers deliver powerful, immersive sound. IPX7-rated waterproofing keeps up with your most intense workouts. Intuitive touch controls put everything at your fingertips.",
+      "ja": "最新Bluetooth 5.3チップ搭載、アクティブノイズキャンセリング対応。最大30時間の連続再生、わずか15分の充電で約2時間の再生が可能。13mm大口径ドライバーユニットにより、迫力あるサウンドをお届けします。IPX7防水等級で、ランニング中の汗も気になりません。タッチ操作で、ワンタッチで簡単コントロール。",
+      "ko": "최신 블루투스 5.3 칩 탑재, 액티브 노이즈 캔슬링 지원. 최대 30시간 연속 재생, 15분 충전으로 약 2시간 사용 가능. 13mm 대형 다이나믹 드라이버로 풍부하고 강렬한 사운드 구현. IPX7 방수 등급으로 운동 중 땀도 걱정 없음. 터치 컨트롤로 원터치 간편 조작.",
+      "notes": "描述体翻译：中文的感性表达(澎湃有力)→英文转化为具体描述(powerful, immersive)；保留数据参数原文"
+    }
+  ]
+}
