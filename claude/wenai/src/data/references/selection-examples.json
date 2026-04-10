@@ -1,0 +1,38 @@
+{
+  "module": "selection",
+  "description": "选品分析参考案例 — 数据驱动+风险提示",
+  "examples": [
+    {
+      "category": "宠物智能喂食器",
+      "analysis": {
+        "market_size": "2025年全球宠物科技市场$8.1B，中国宠物智能设备年增速35%+",
+        "search_trend": "淘宝「智能喂食器」月搜索120万+，抖音相关话题播放量18亿",
+        "competition": {
+          "top_brands": ["小佩PETKIT", "CATLINK", "霍曼"],
+          "price_distribution": "入门款¥150-300，中端¥300-600，高端¥600-1200",
+          "concentration": "CR5约45%，仍有空间"
+        },
+        "profit_estimate": {
+          "cost": "¥80-150（ODM贴牌）",
+          "selling_price": "¥299-499",
+          "gross_margin": "55-65%",
+          "note": "需考虑售后成本，电子产品退换率约8%"
+        },
+        "risks": [
+          {"level": "P0", "risk": "食品安全认证（需CCC+食品接触材料检测），周期2-3个月"},
+          {"level": "P1", "risk": "季节性弱但双11/618集中爆发，需提前2个月备货"},
+          {"level": "P2", "risk": "同质化严重，纯低价竞争无壁垒"}
+        ],
+        "recommendation": "建议切入¥300-500中端带摄像头款，差异化点：双碗+视频互动+定时喂食三合一。避开低端价格战。",
+        "confidence": "中高（市场增长确定，竞争格局有空间，但电子品类售后成本需验证）"
+      }
+    }
+  ],
+  "output_rules": [
+    "必须标注数据来源或注明为估算",
+    "风险分P0/P1/P2三级，P0=可能导致亏损或合规问题",
+    "recommendation必须给具体切入角度，不能泛泛说'有机会'",
+    "标注confidence级别：高/中高/中/低",
+    "提醒用户：AI选品仅做参考，最终决策需结合实际经验和供应链能力"
+  ]
+}

@@ -4,6 +4,11 @@ import customerServiceExamples from '@/data/references/customer-service-examples
 import copywritingExamples from '@/data/references/copywriting-examples.json';
 import outreachExamples from '@/data/references/outreach-examples.json';
 import competitorExamples from '@/data/references/competitor-examples.json';
+import contentExamples from '@/data/references/content-examples.json';
+import livestreamExamples from '@/data/references/livestream-examples.json';
+import selectionExamples from '@/data/references/selection-examples.json';
+import operationsExamples from '@/data/references/operations-examples.json';
+import leadsExamples from '@/data/references/leads-examples.json';
 
 const referenceMap: Record<string, unknown> = {
   translate: translateExamples,
@@ -12,6 +17,11 @@ const referenceMap: Record<string, unknown> = {
   copywriting: copywritingExamples,
   outreach: outreachExamples,
   competitor: competitorExamples,
+  content: contentExamples,
+  livestream: livestreamExamples,
+  selection: selectionExamples,
+  operations: operationsExamples,
+  leads: leadsExamples,
 };
 
 export function getReferenceContext(moduleId: string): string {
@@ -24,5 +34,7 @@ export function getReferenceContext(moduleId: string): string {
 
   // Take first 2 examples as few-shot context
   const samples = data.examples.slice(0, 2);
-  return `\n\n【参考案例（仅供风格参考，不要照抄）】\n${JSON.stringify(samples, null, 0).substring(0, 2000)}`;
+  const rules = (data.rules || data.principles || data.output_rules || []) as string[];
+  const rulesStr = rules.length > 0 ? `\n\n【输出规则】\n${rules.map((r, i) => `${i + 1}. ${r}`).join('\n')}` : '';
+  return `\n\n【参考案例（仅供风格参考，不要照抄）】\n${JSON.stringify(samples, null, 0).substring(0, 1800)}${rulesStr}`;
 }

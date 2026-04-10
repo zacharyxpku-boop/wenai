@@ -38,7 +38,7 @@ export default function AIWorkspace({
   const [showHistory, setShowHistory] = useState(false);
   const [csvData, setCsvData] = useState<string[][]>([]);
   const [csvResults, setCsvResults] = useState<{ input: string; output: string }[]>([]);
-  const [csv开始处理ing, setCsv开始处理ing] = useState(false);
+  const [csvProcessing, setCsvProcessing] = useState(false);
   const [csvProgress, setCsvProgress] = useState({ current: 0, total: 0 });
   const [copied, setCopied] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -112,7 +112,7 @@ export default function AIWorkspace({
 
   const processCSVBatch = async () => {
     if (csvData.length <= 1) return;
-    setCsv开始处理ing(true);
+    setCsvProcessing(true);
     setCsvResults([]);
     const dataRows = csvData.slice(1);
     setCsvProgress({ current: 0, total: dataRows.length });
@@ -139,7 +139,7 @@ export default function AIWorkspace({
       setCsvProgress({ current: i + 1, total: dataRows.length });
       setCsvResults([...results]);
     }
-    setCsv开始处理ing(false);
+    setCsvProcessing(false);
   };
 
   const exportCSV = (data: { input: string; output: string }[]) => {
@@ -272,15 +272,15 @@ export default function AIWorkspace({
               )}
               <button
                 onClick={processCSVBatch}
-                disabled={csv开始处理ing}
+                disabled={csvProcessing}
                 className="text-[10px] font-mono text-bg-root px-3 py-1 bg-accent rounded-md disabled:opacity-50 hover:bg-accent-hover transition-colors"
               >
-                {csv开始处理ing ? `${csvProgress.current}/${csvProgress.total}` : '开始处理'}
+                {csvProcessing ? `${csvProgress.current}/${csvProgress.total}` : '开始处理'}
               </button>
             </div>
           </div>
           {/* Progress bar */}
-          {csv开始处理ing && (
+          {csvProcessing && (
             <div className="w-full h-0.5 bg-border-subtle rounded-full mb-2 overflow-hidden">
               <div
                 className="h-full bg-accent transition-all duration-300"
@@ -353,7 +353,7 @@ export default function AIWorkspace({
                     <circle cx="8" cy="8" r="6" stroke="currentColor" strokeWidth="2" opacity="0.3"/>
                     <path d="M14 8a6 6 0 00-6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
                   </svg>
-                  开始处理ing
+                  处理中
                 </span>
               ) : '开始执行'}
             </button>
