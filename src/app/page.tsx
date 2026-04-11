@@ -39,105 +39,115 @@ export default function Dashboard() {
   const maxTrend = stats ? Math.max(...stats.dailyTrend.map(d => d.count), 1) : 1;
 
   return (
-    <div className="max-w-[1100px]">
+    <div className="max-w-[1200px]">
       {/* Header */}
-      <div className="mb-8 animate-fade-up">
+      <div className="mb-6 animate-fade-up">
         <div className="flex items-end justify-between">
           <div>
-            <h1 className="text-xl font-semibold text-text-primary tracking-tight font-[family-name:var(--font-outfit)]">
+            <h1 className="text-base font-semibold text-text-primary tracking-tight font-[family-name:var(--font-outfit)]">
               工作台
             </h1>
-            <p className="text-[13px] text-text-secondary mt-1">
+            <p className="text-[13px] text-text-secondary mt-0.5">
               {clientConfig.clientName} &middot; {clientConfig.industry}
             </p>
           </div>
-          <div className="flex items-center gap-5">
+          <div className="flex items-center gap-6">
             <div className="text-right">
-              <p className="text-[10px] font-mono text-text-tertiary tracking-widest">在线员工</p>
-              <p className="text-lg font-semibold text-accent font-mono">{enabledCount}</p>
+              <p className="label-mono mb-1">在线员工</p>
+              <p className="text-xl font-semibold text-accent font-mono tabular-nums">{enabledCount}</p>
             </div>
             <div className="text-right">
-              <p className="text-[10px] font-mono text-text-tertiary tracking-widest">演示商品</p>
-              <p className="text-lg font-semibold text-text-primary font-mono">{demoProducts?.length || 0}</p>
+              <p className="label-mono mb-1">商品库</p>
+              <p className="text-xl font-semibold text-text-primary font-mono tabular-nums">{demoProducts?.length || 0}</p>
             </div>
           </div>
         </div>
       </div>
 
       {/* Stats row */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 mb-8 animate-fade-up stagger-1">
-        <div className="bg-bg-surface border border-border-subtle rounded-md p-4">
-          <p className="text-[10px] font-mono text-text-tertiary tracking-widest mb-1">今日处理</p>
-          <p className="text-2xl font-semibold text-accent font-mono">{stats?.todayCount ?? '—'}</p>
-          <p className="text-[10px] font-mono text-text-tertiary mt-1">
-            本周 {stats?.weekCount ?? 0} 次
-          </p>
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6 animate-fade-up stagger-1">
+        <div className="bg-bg-surface border border-border-subtle rounded-md p-3.5 hover:bg-bg-raised transition-colors">
+          <p className="label-mono mb-1.5">今日处理</p>
+          <p className="text-2xl font-semibold text-accent font-mono tabular-nums">{stats?.todayCount ?? '—'}</p>
+          <div className="flex items-center gap-1.5 mt-2">
+            <div className="flex-1 h-px bg-border-subtle" />
+            <span className="text-[9px] font-mono text-text-tertiary">
+              本周 {stats?.weekCount ?? 0}
+            </span>
+          </div>
         </div>
-        <div className="bg-bg-surface border border-border-subtle rounded-md p-4">
-          <p className="text-[10px] font-mono text-text-tertiary tracking-widest mb-1">累计调用</p>
-          <p className="text-2xl font-semibold text-text-primary font-mono">{stats?.totalCount ?? '—'}</p>
-          <p className="text-[10px] font-mono text-text-tertiary mt-1">
-            周消耗 {stats ? (stats.weekTokens / 1000).toFixed(1) : '0'}k tokens
-          </p>
+        <div className="bg-bg-surface border border-border-subtle rounded-md p-3.5 hover:bg-bg-raised transition-colors">
+          <p className="label-mono mb-1.5">累计调用</p>
+          <p className="text-2xl font-semibold text-text-primary font-mono tabular-nums">{stats?.totalCount ?? '—'}</p>
+          <div className="flex items-center gap-1.5 mt-2">
+            <div className="flex-1 h-px bg-border-subtle" />
+            <span className="text-[9px] font-mono text-text-tertiary">
+              {stats ? (stats.weekTokens / 1000).toFixed(1) : '0'}k tok
+            </span>
+          </div>
         </div>
-        <div className="bg-bg-surface border border-border-subtle rounded-md p-4">
-          <p className="text-[10px] font-mono text-text-tertiary tracking-widest mb-1">质量均分</p>
-          <div className="flex items-baseline gap-1">
-            <p className="text-2xl font-semibold text-text-primary font-mono">
+        <div className="bg-bg-surface border border-border-subtle rounded-md p-3.5 hover:bg-bg-raised transition-colors">
+          <p className="label-mono mb-1.5">质量评分</p>
+          <div className="flex items-baseline gap-1.5">
+            <p className="text-2xl font-semibold text-text-primary font-mono tabular-nums">
               {stats?.avgRating ? stats.avgRating.toFixed(1) : '—'}
             </p>
-            {stats?.avgRating ? <span className="text-[11px] text-text-tertiary font-mono">/5</span> : null}
+            {stats?.avgRating && <span className="text-[11px] text-text-tertiary font-mono">/5</span>}
           </div>
-          <p className="text-[10px] font-mono text-text-tertiary mt-1">
-            {stats?.ratingCount ?? 0} 条评价
-          </p>
+          <div className="flex items-center gap-1.5 mt-2">
+            <div className="flex-1 h-px bg-border-subtle" />
+            <span className="text-[9px] font-mono text-text-tertiary">
+              {stats?.ratingCount ?? 0} 条
+            </span>
+          </div>
         </div>
-        <div className="bg-bg-surface border border-border-subtle rounded-md p-4">
-          <p className="text-[10px] font-mono text-text-tertiary tracking-widest mb-2">7日趋势</p>
+        <div className="bg-bg-surface border border-border-subtle rounded-md p-3.5 hover:bg-bg-raised transition-colors">
+          <p className="label-mono mb-2">7日趋势</p>
           {stats?.dailyTrend ? (
-            <div className="flex items-end gap-[3px] h-[32px]">
+            <div className="flex items-end gap-[2px] h-[36px]">
               {stats.dailyTrend.map((d, i) => (
-                <div key={i} className="flex-1 flex flex-col items-center gap-0.5">
+                <div key={i} className="flex-1 flex flex-col items-center gap-1">
                   <div
-                    className="w-full bg-accent/60 rounded-sm min-h-[2px] transition-all"
-                    style={{ height: `${Math.max((d.count / maxTrend) * 28, 2)}px` }}
+                    className="w-full bg-accent/70 rounded-[2px] min-h-[2px] transition-all hover:bg-accent"
+                    style={{ height: `${Math.max((d.count / maxTrend) * 30, 2)}px` }}
+                    title={`${d.date}: ${d.count}`}
                   />
-                  <span className="text-[7px] font-mono text-text-tertiary">{d.date}</span>
+                  <span className="text-[7px] font-mono text-text-tertiary/60">{d.date.slice(-2)}</span>
                 </div>
               ))}
             </div>
           ) : (
-            <p className="text-[11px] text-text-tertiary font-mono">暂无数据</p>
+            <div className="flex items-center justify-center h-[36px]">
+              <p className="text-[10px] text-text-tertiary font-mono">—</p>
+            </div>
           )}
         </div>
       </div>
 
       {/* Module ranking */}
       {stats && stats.ranking.length > 0 && (
-        <div className="mb-8 animate-fade-up stagger-2">
-          <div className="flex items-center gap-2 mb-3">
-            <h2 className="text-[11px] font-mono font-medium text-text-tertiary tracking-widest">
-              模块使用排名（7日）
-            </h2>
+        <div className="mb-6 animate-fade-up stagger-2">
+          <div className="flex items-center gap-2 mb-2.5">
+            <span className="label-mono">模块使用排名（7日）</span>
             <div className="flex-1 h-px bg-border-subtle" />
           </div>
-          <div className="bg-bg-surface border border-border-subtle rounded-md p-4">
+          <div className="bg-bg-surface border border-border-subtle rounded-md p-3.5">
             <div className="space-y-2">
               {stats.ranking.slice(0, 5).map((r, i) => {
                 const maxCount = stats.ranking[0].count;
                 return (
-                  <div key={r.moduleId} className="flex items-center gap-3">
-                    <span className="text-[10px] font-mono text-text-tertiary w-4">{i + 1}</span>
-                    <span className="text-[12px] text-text-primary w-[100px] truncate font-[family-name:var(--font-outfit)]">
+                  <div key={r.moduleId} className="flex items-center gap-3 group">
+                    <span className="text-[10px] font-mono text-text-tertiary w-3.5 text-right">{i + 1}</span>
+                    <span className="text-[12px] text-text-secondary group-hover:text-text-primary w-[110px] truncate font-[family-name:var(--font-outfit)] transition-colors">
                       {moduleNameMap[r.moduleId] || r.moduleId}
                     </span>
-                    <div className="flex-1 h-1.5 bg-bg-raised rounded-full overflow-hidden">
+                    <div className="flex-1 h-1 bg-bg-raised rounded-full overflow-hidden">
                       <div
-                        className="h-full bg-accent/70 rounded-full transition-all"
+                        className="h-full bg-accent/60 group-hover:bg-accent/80 rounded-full transition-all duration-300"
                         style={{ width: `${(r.count / maxCount) * 100}%` }}
                       />
                     </div>
-                    <span className="text-[10px] font-mono text-text-tertiary w-8 text-right">{r.count}</span>
+                    <span className="text-[10px] font-mono text-text-tertiary w-7 text-right tabular-nums">{r.count}</span>
                   </div>
                 );
               })}
@@ -148,25 +158,24 @@ export default function Dashboard() {
 
       {/* Product inventory strip */}
       {demoProducts && demoProducts.length > 0 && (
-        <div className="mb-8 animate-fade-up stagger-3">
-          <div className="flex items-center gap-2 mb-3">
-            <h2 className="text-[11px] font-mono font-medium text-text-tertiary tracking-widest">
-              商品库
-            </h2>
+        <div className="mb-6 animate-fade-up stagger-3">
+          <div className="flex items-center gap-2 mb-2.5">
+            <span className="label-mono">商品库</span>
             <div className="flex-1 h-px bg-border-subtle" />
+            <span className="text-[9px] font-mono text-text-tertiary">{demoProducts.length} SKU</span>
           </div>
-          <div className="flex gap-2 overflow-x-auto pb-1">
+          <div className="flex gap-2.5 overflow-x-auto pb-1.5 -mx-0.5">
             {demoProducts.map((p, i) => (
               <div
                 key={i}
-                className="flex-shrink-0 bg-bg-surface border border-border-subtle rounded-md px-4 py-3 min-w-[200px] hover:bg-bg-raised transition-colors"
+                className="flex-shrink-0 bg-bg-surface border border-border-subtle rounded-md px-3.5 py-2.5 min-w-[190px] hover:bg-bg-raised hover:border-border-default transition-all group"
               >
-                <div className="flex items-baseline justify-between gap-3 mb-1">
-                  <span className="text-[12px] font-medium text-text-primary truncate">{p.name}</span>
-                  <span className="text-[11px] font-mono text-accent flex-shrink-0">{p.price}</span>
+                <div className="flex items-baseline justify-between gap-2 mb-1">
+                  <span className="text-[12px] font-medium text-text-primary truncate group-hover:text-accent transition-colors">{p.name}</span>
+                  <span className="text-[10px] font-mono text-accent flex-shrink-0 tabular-nums">{p.price}</span>
                 </div>
-                <p className="text-[10px] font-mono text-text-tertiary">{p.category}</p>
-                <p className="text-[11px] text-text-secondary mt-1 line-clamp-1">{p.features}</p>
+                <p className="text-[9px] font-mono text-text-tertiary uppercase tracking-wide mb-1">{p.category}</p>
+                <p className="text-[11px] text-text-secondary/80 leading-snug line-clamp-1">{p.features}</p>
               </div>
             ))}
           </div>
@@ -181,23 +190,23 @@ export default function Dashboard() {
         if (catModules.length === 0) return null;
 
         return (
-          <div key={cat.id} className={`mb-8 animate-fade-up stagger-${catIndex + 4}`}>
-            <div className="flex items-center gap-2 mb-3">
+          <div key={cat.id} className={`mb-7 animate-fade-up stagger-${catIndex + 4}`}>
+            <div className="flex items-center gap-2 mb-2.5">
               <div
-                className="w-1.5 h-1.5 rounded-full"
+                className="w-1 h-1 rounded-full flex-shrink-0"
                 style={{ backgroundColor: cat.color }}
               />
-              <h2 className="text-[11px] font-mono font-medium text-text-tertiary uppercase tracking-widest">
+              <span className="label-mono flex-shrink-0">
                 {cat.label}
-              </h2>
-              <span className="text-[10px] font-mono text-text-tertiary">
+              </span>
+              <span className="text-[10px] font-mono text-text-tertiary/60 truncate">
                 {cat.description}
               </span>
               <div className="flex-1 h-px bg-border-subtle" />
-              <span className="text-[10px] font-mono text-text-tertiary">{catModules.length}</span>
+              <span className="text-[9px] font-mono text-text-tertiary flex-shrink-0 tabular-nums">{catModules.length}</span>
             </div>
 
-            <div className="grid grid-cols-2 lg:grid-cols-3 gap-2">
+            <div className="grid grid-cols-2 lg:grid-cols-3 gap-2.5">
               {catModules.map(mod => (
                 <ModuleCard
                   key={mod.id}
