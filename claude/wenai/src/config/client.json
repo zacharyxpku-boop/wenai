@@ -16,34 +16,49 @@
   },
   "demoProducts": [
     {
-      "name": "无线蓝牙耳机 Pro Max",
-      "category": "3C数码",
-      "price": "¥299",
-      "features": "主动降噪ANC，续航40小时，蓝牙5.3，IPX5防水，触控操作，ENC通话降噪，Type-C快充，13mm大动圈"
+      "name": "可叠加密封收纳盒套装（6件装）",
+      "nameEn": "HOMELODY Stackable Storage Bins with Lids, 6-Pack",
+      "category": "家居用品",
+      "price": "$28.99-34.99",
+      "features": "BPA-free食品级PP，四侧卡扣密封，3种规格(0.5L/1.2L/2.5L)，可叠放节省40%空间，洗碗机安全，含20张标签+粉笔笔，FDA+LFGB认证",
+      "sampleReview": "The lids seal tight and nothing has gone stale in 3 months. The labels make it look like a Pinterest board.",
+      "compliance": "US: FDA 21 CFR + Prop 65 | EU: LFGB + EU 10/2011 + REACH"
     },
     {
-      "name": "便携式筋膜枪 Mini",
-      "category": "运动健康",
-      "price": "¥199",
-      "features": "4档力度调节，2000mAh长续航，超静音45dB，6个按摩头，全身可用，Type-C充电，仅350g轻便携带"
+      "name": "军工级磁吸车载手机支架",
+      "nameEn": "VICSEED Car Phone Mount, MagSafe Compatible, 360° Rotation",
+      "category": "汽摩配件",
+      "price": "$18.99-24.99",
+      "features": "N52钕磁铁6磁阵列1500g吸力，三合一安装(吸盘/粘贴/出风口)，单手操作，360°球关节+180°臂旋转，耐温-40°C~80°C，兼容4-7寸手机",
+      "sampleReview": "Survived a full summer in Texas heat — suction never fell off the windshield. The magnetic pull is surprisingly strong even with a thick case.",
+      "compliance": "US: FCC Part 15(含电子元件时) | EU: CE + RoHS | SEA: SNI(印尼)/SIRIM(马来)"
     },
     {
-      "name": "智能保温杯 500ml",
-      "category": "家居日用",
-      "price": "¥159",
-      "features": "LED温度显示，316不锈钢内胆，12小时保温，提醒喝水功能，食品级材质，真空断热，商务简约设计"
+      "name": "户外防水蓝牙音箱 Micro 2",
+      "nameEn": "Portable Bluetooth Speaker IP67, 90dB, 12H Playtime, XBass",
+      "category": "数码电子",
+      "price": "$39.99-49.99",
+      "features": "IP67防水防尘(1m/30min)，2×5W全频喇叭+被动振膜，XBass DSP低频增强9dB，12h续航，蓝牙5.3/33ft，USB-C快充，自行车绑带，TWS双机配对",
+      "sampleReview": "Survived submersion twice accidentally on a kayaking trip. Sound quality at this size is borderline unreasonable — the bass hits.",
+      "compliance": "US: FCC Part 15(强制) + UL 62368-1 | EU: CE RED + RoHS + WEEE | SEA: IMDA(新加坡)/NBTC(泰国)/SIRIM(马来)"
     },
     {
-      "name": "车载手机支架 磁吸式",
-      "category": "汽车用品",
-      "price": "¥69",
-      "features": "N52强磁吸附，360度旋转，单手操作，不挡视线，适配所有手机，出风口/仪表台双用，航空铝合金"
+      "name": "自动量程数字万用表（6000计数）",
+      "nameEn": "Digital Multimeter TRMS 6000 Counts, CAT III 600V, NCV Detection",
+      "category": "工具工艺",
+      "price": "$29.99-38.99",
+      "features": "真有效值TRMS，6000计数背光显示，自动量程V/A/Ω/F/Hz/°C，NCV非接触电压检测(声光报警)，CAT III 600V安全等级(IEC 61010-1)，连续性蜂鸣器<25ms响应，含热电偶探头+收纳包",
+      "sampleReview": "Readings match my Fluke 115 within 0.5%. For a third of the price, this is the obvious choice for home/hobbyist use.",
+      "compliance": "US: UL 61010-1 + FCC Part 15B | EU: CE LVD + EMC + RoHS + WEEE | SEA: SIRIM ST(马来)"
     },
     {
-      "name": "宠物自动饮水机 2.5L",
-      "category": "宠物用品",
-      "price": "¥129",
-      "features": "四重过滤，超静音水泵，2.5L大容量，LED缺水提醒，可拆洗设计，适合猫狗，USB供电"
+      "name": "三层真空不锈钢保温杯（32oz）",
+      "nameEn": "Vacuum Insulated Water Bottle 32oz, Cold 48H / Hot 24H, Leak-Proof",
+      "category": "生活百货",
+      "price": "$22.99-29.99",
+      "features": "三层真空隔热(保冷48h/保温24h)，18/8食品级304不锈钢，2.2寸大口径放冰块，360°防漏盖(15PSI压力测试)，BPA-free，适配标准车载杯架，伞绳提手承重250磅，粉末涂层防汗防刮",
+      "sampleReview": "Left ice water in a hot car in Arizona, came back 5 hours later, still had ice. Performs same as Stanley at half the price.",
+      "compliance": "US: FDA 21 CFR + Prop 65 | EU: EU 1935/2004 + REACH | SEA: SNI(印尼强制)"
     }
   ]
 }
