@@ -41,7 +41,14 @@ export async function POST(request: NextRequest) {
   try {
     const config = await request.json();
     const configPath = join(process.cwd(), 'src/config/tenants', `${tenantId}.json`);
-    await writeFile(configPath, JSON.stringify(config, null, 2), 'utf-8');
+    try {
+      await writeFile(configPath, JSON.stringify(config, null, 2), 'utf-8');
+    } catch {
+      return NextResponse.json(
+        { error: '当前为云端部署模式，配置修改请通过代码提交' },
+        { status: 403 }
+      );
+    }
     return NextResponse.json({ success: true });
   } catch (error) {
     return NextResponse.json(
