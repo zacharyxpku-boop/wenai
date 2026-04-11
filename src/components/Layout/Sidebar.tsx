@@ -54,18 +54,18 @@ export default function Sidebar({ modules, categories, clientName }: SidebarProp
   const pathname = usePathname();
 
   return (
-    <aside className="w-[240px] h-screen bg-bg-surface flex flex-col border-r border-border-subtle fixed left-0 top-0 z-40">
+    <aside className="w-[240px] h-screen bg-bg-surface flex flex-col border-r border-border-default fixed left-0 top-0 z-40 shadow-[2px_0_12px_rgba(0,0,0,0.4)]">
       {/* Brand */}
-      <div className="px-4 py-4 border-b border-border-subtle">
-        <div className="flex items-center gap-2.5">
-          <div className="w-7 h-7 bg-accent/15 border border-accent/30 rounded-md flex items-center justify-center group-hover:bg-accent/20 transition-colors">
-            <span className="text-accent font-mono text-[11px] font-semibold">W</span>
+      <div className="px-4 py-4 border-b border-border-default">
+        <div className="flex items-center gap-2.5 group cursor-pointer">
+          <div className="w-8 h-8 bg-accent/15 border border-accent/40 rounded-md flex items-center justify-center group-hover:bg-accent/25 group-hover:border-accent/60 group-hover:shadow-[0_0_12px_rgba(200,151,90,0.2)] transition-all duration-200">
+            <span className="text-accent font-mono text-[12px] font-bold">W</span>
           </div>
           <div>
-            <h1 className="text-[13px] font-semibold text-text-primary tracking-tight font-[family-name:var(--font-outfit)]">
+            <h1 className="text-[14px] font-bold text-text-primary tracking-tight font-[family-name:var(--font-outfit)] group-hover:text-accent transition-colors">
               Wenai
             </h1>
-            <p className="text-[9px] font-mono text-text-tertiary tracking-wider uppercase">
+            <p className="text-[8px] font-mono text-text-tertiary tracking-[0.14em] uppercase">
               AI员工系统
             </p>
           </div>
@@ -73,74 +73,94 @@ export default function Sidebar({ modules, categories, clientName }: SidebarProp
       </div>
 
       {/* Client badge */}
-      <div className="mx-3.5 mt-3.5 px-2.5 py-2 bg-bg-raised border border-border-subtle rounded-md">
+      <div className="mx-3.5 mt-4 px-3 py-2.5 bg-bg-raised/80 border border-border-subtle rounded-md backdrop-blur-sm">
         <div className="flex items-center gap-2">
-          <div className="w-1 h-1 rounded-full bg-success animate-pulse-dot" />
-          <span className="text-[10px] font-mono text-text-secondary truncate">{clientName}</span>
+          <div className="w-1.5 h-1.5 rounded-full bg-success animate-pulse-dot shadow-[0_0_4px_rgba(74,222,128,0.6)]" />
+          <span className="text-[10px] font-mono text-text-primary font-medium truncate">{clientName}</span>
+        </div>
+        <div className="flex items-center gap-1 mt-1.5">
+          <div className="flex-1 h-px bg-success/20" />
+          <span className="text-[7px] font-mono text-success/80 uppercase tracking-wide">online</span>
         </div>
       </div>
 
       {/* Dashboard link */}
       <Link
         href="/"
-        className={`mx-3.5 mt-3 flex items-center gap-2 px-2.5 py-2 rounded-md text-[12px] transition-all duration-200 ${
+        className={`mx-3.5 mt-4 flex items-center gap-2.5 px-3 py-2.5 rounded-md text-[12px] transition-all duration-200 ${
           pathname === '/'
-            ? 'bg-accent-dim text-accent border border-accent/20 shadow-[0_0_0_1px_rgba(200,151,90,0.05)]'
-            : 'text-text-secondary hover:text-text-primary hover:bg-bg-hover border border-transparent'
+            ? 'bg-accent text-bg-root border border-accent shadow-[0_2px_8px_rgba(200,151,90,0.3)] font-semibold'
+            : 'text-text-secondary hover:text-text-primary hover:bg-bg-hover border border-transparent hover:border-border-subtle'
         }`}
       >
-        <span className="w-4 flex-shrink-0"><IconGrid /></span>
-        <span className="font-[family-name:var(--font-outfit)] font-medium">工作台</span>
+        <span className="w-4 flex-shrink-0 opacity-90"><IconGrid /></span>
+        <span className="font-[family-name:var(--font-outfit)] font-semibold">工作台</span>
       </Link>
 
       {/* Module navigation */}
-      <nav className="flex-1 overflow-y-auto mt-1 px-3.5 pb-4">
+      <nav className="flex-1 overflow-y-auto mt-2 px-3.5 pb-4">
         {categories.map(cat => {
           const catModules = modules.filter(m => m.category === cat.id);
           if (catModules.length === 0) return null;
           return (
-            <div key={cat.id} className="mt-4">
-              <div className="flex items-center gap-1.5 px-2.5 mb-1">
-                <div className={`w-1 h-1 rounded-full ${catColors[cat.id] || 'bg-text-tertiary'}`} />
-                <p className="label-mono text-[9px]">
+            <div key={cat.id} className="mt-5 first:mt-3">
+              {/* Category header */}
+              <div className="flex items-center gap-2 px-2.5 mb-2">
+                <div className={`w-1.5 h-1.5 rounded-full ${catColors[cat.id] || 'bg-text-tertiary'} shadow-[0_0_4px_currentColor]`} style={{ color: `var(--color-cat-${cat.id})` }} />
+                <p className="label-mono text-[9px] font-semibold">
                   {cat.label}
                 </p>
+                <div className="flex-1 h-px bg-border-subtle/50" />
+                <span className="text-[7px] font-mono text-text-tertiary/60 tabular-nums">{catModules.length}</span>
               </div>
-              {catModules.map(mod => {
-                const isActive = pathname === `/modules/${mod.id}`;
-                const IconFn = iconMap[mod.icon];
-                return (
-                  <Link
-                    key={mod.id}
-                    href={`/modules/${mod.id}`}
-                    className={`flex items-center gap-2 px-2.5 py-1.5 rounded-md text-[12px] transition-all duration-200 ${
-                      isActive
-                        ? 'bg-accent-dim text-accent border border-accent/20 shadow-[0_0_0_1px_rgba(200,151,90,0.05)]'
-                        : 'text-text-secondary hover:text-text-primary hover:bg-bg-hover border border-transparent'
-                    }`}
-                  >
-                    <span className="w-4 flex-shrink-0 opacity-80">{IconFn ? IconFn() : null}</span>
-                    <span className="truncate font-[family-name:var(--font-outfit)]">{mod.name}</span>
-                  </Link>
-                );
-              })}
+              {/* Module links */}
+              <div className="space-y-0.5">
+                {catModules.map(mod => {
+                  const isActive = pathname === `/modules/${mod.id}`;
+                  const IconFn = iconMap[mod.icon];
+                  return (
+                    <Link
+                      key={mod.id}
+                      href={`/modules/${mod.id}`}
+                      className={`flex items-center gap-2.5 px-3 py-2 rounded-md text-[12px] transition-all duration-200 group ${
+                        isActive
+                          ? 'bg-accent/20 text-accent border border-accent/40 shadow-[0_2px_8px_rgba(200,151,90,0.15)] font-semibold'
+                          : 'text-text-secondary hover:text-text-primary hover:bg-bg-hover border border-transparent hover:border-border-subtle'
+                      }`}
+                    >
+                      <span className={`w-4 flex-shrink-0 transition-all ${isActive ? 'opacity-100' : 'opacity-70 group-hover:opacity-100'}`}>
+                        {IconFn ? IconFn() : null}
+                      </span>
+                      <span className="truncate font-[family-name:var(--font-outfit)] font-medium">{mod.name}</span>
+                      {isActive && (
+                        <div className="ml-auto w-1 h-1 rounded-full bg-accent animate-pulse-dot" />
+                      )}
+                    </Link>
+                  );
+                })}
+              </div>
             </div>
           );
         })}
       </nav>
 
       {/* Settings */}
-      <div className="px-3.5 py-3 border-t border-border-subtle">
+      <div className="px-3.5 py-3.5 border-t border-border-default bg-bg-surface/50">
         <Link
           href="/settings"
-          className={`flex items-center gap-2 px-2.5 py-2 rounded-md text-[12px] transition-all duration-200 ${
+          className={`flex items-center gap-2.5 px-3 py-2.5 rounded-md text-[12px] transition-all duration-200 group ${
             pathname === '/settings'
-              ? 'bg-accent-dim text-accent border border-accent/20 shadow-[0_0_0_1px_rgba(200,151,90,0.05)]'
-              : 'text-text-secondary hover:text-text-primary hover:bg-bg-hover border border-transparent'
+              ? 'bg-accent/20 text-accent border border-accent/40 shadow-[0_2px_8px_rgba(200,151,90,0.15)] font-semibold'
+              : 'text-text-secondary hover:text-text-primary hover:bg-bg-hover border border-transparent hover:border-border-subtle'
           }`}
         >
-          <span className="w-4 flex-shrink-0 opacity-80"><IconSettings /></span>
-          <span className="font-[family-name:var(--font-outfit)] font-medium">配置</span>
+          <span className={`w-4 flex-shrink-0 transition-all ${pathname === '/settings' ? 'opacity-100' : 'opacity-70 group-hover:opacity-100'}`}>
+            <IconSettings />
+          </span>
+          <span className="font-[family-name:var(--font-outfit)] font-semibold">配置</span>
+          {pathname === '/settings' && (
+            <div className="ml-auto w-1 h-1 rounded-full bg-accent animate-pulse-dot" />
+          )}
         </Link>
       </div>
     </aside>
