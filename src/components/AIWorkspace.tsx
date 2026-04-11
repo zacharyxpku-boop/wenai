@@ -45,6 +45,10 @@ export default function AIWorkspace({
   const [csvProcessing, setCsvProcessing] = useState(false);
   const [csvProgress, setCsvProgress] = useState({ current: 0, total: 0 });
   const [copied, setCopied] = useState(false);
+  const [trademarkQuery, setTrademarkQuery] = useState<{
+    results: Array<{ keyword: string; found: boolean; data?: { owner: string; regNo: string } }>;
+    foundCount: number;
+  } | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -93,6 +97,7 @@ export default function AIWorkspace({
 
       const data = await response.json();
       setResult(data.content);
+      setTrademarkQuery(data.trademarkQuery || null);
       saveToHistory(input, data.content, params);
     } catch (err) {
       setError(err instanceof Error ? err.message : '未知错误');
@@ -438,6 +443,48 @@ export default function AIWorkspace({
 
           {result && (
             <>
+              {/* USPTO商标查询状态指示器（仅ip-compliance模块） */}
+              {moduleId === 'ip-compliance' && trademarkQuery && (
+                <div className="mt-3 bg-bg-surface border border-border-subtle rounded-md p-3 animate-fade-up">
+                  <div className="flex items-center gap-2 mb-2">
+                    <svg className="w-3.5 h-3.5 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <span className="text-[10px] font-mono text-text-primary uppercase tracking-wide">USPTO商标实时查询</span>
+                  </div>
+                  <div className="space-y-1.5">
+                    <div className="flex items-center justify-between text-[11px]">
+                      <span className="text-text-tertiary font-mono">检测品牌词</span>
+                      <span className="text-text-secondary">{trademarkQuery.results.length} 个</span>
+                    </div>
+                    {trademarkQuery.foundCount > 0 && (
+                      <div className="flex items-center justify-between text-[11px]">
+                        <span className="text-text-tertiary font-mono">已注册商标</span>
+                        <span className="text-error font-semibold">{trademarkQuery.foundCount} 个 ⚠️</span>
+                      </div>
+                    )}
+                    {trademarkQuery.foundCount === 0 && (
+                      <div className="text-[10px] text-success font-mono flex items-center gap-1.5">
+                        <span className="w-1.5 h-1.5 rounded-full bg-success"></span>
+                        未发现已注册商标冲突
+                      </div>
+                    )}
+                    {trademarkQuery.foundCount > 0 && (
+                      <div className="mt-2.5 pt-2.5 border-t border-border-subtle space-y-1.5">
+                        {trademarkQuery.results.filter(r => r.found).map((mark, idx) => (
+                          <div key={idx} className="text-[10px] font-mono bg-error/5 border border-error/20 rounded-md px-2.5 py-2">
+                            <div className="flex items-center justify-between mb-1">
+                              <span className="font-semibold text-error">{mark.keyword}</span>
+                              <span className="text-text-tertiary text-[9px]">US Reg. No. {mark.data?.regNo}</span>
+                            </div>
+                            <div className="text-text-tertiary text-[9px]">权利人：{mark.data?.owner}</div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
               <ExpertReview moduleId={moduleId} resultText={result} />
               <ResultFeedback moduleId={moduleId} resultText={result} />
             </>
