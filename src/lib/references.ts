@@ -9,6 +9,7 @@ import livestreamExamples from '@/data/references/livestream-examples.json';
 import selectionExamples from '@/data/references/selection-examples.json';
 import operationsExamples from '@/data/references/operations-examples.json';
 import leadsExamples from '@/data/references/leads-examples.json';
+import ipComplianceExamples from '@/data/references/ip-compliance-examples.json';
 
 const referenceMap: Record<string, unknown> = {
   translate: translateExamples,
@@ -22,6 +23,7 @@ const referenceMap: Record<string, unknown> = {
   selection: selectionExamples,
   operations: operationsExamples,
   leads: leadsExamples,
+  'ip-compliance': ipComplianceExamples,
 };
 
 export function getReferenceContext(moduleId: string): string {

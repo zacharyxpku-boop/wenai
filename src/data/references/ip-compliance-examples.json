@@ -1,0 +1,78 @@
+{
+  "module": "ip-compliance",
+  "description": "跨境电商侵权防控参考案例 — 商标/文案/专利/平台合规",
+  "examples": [
+    {
+      "scenario": "蓝牙耳机listing侵权扫描",
+      "input_snippet": "标题: Wireless Earbuds Bluetooth 5.3, AirPod Pro Style TWS Earphones with ANC...",
+      "findings": [
+        {
+          "level": "🔴高风险",
+          "type": "商标侵权",
+          "detail": "标题含'AirPod Pro Style' — Apple已注册商标'AirPods'及'AirPods Pro'，即使拼写不同也构成混淆性使用",
+          "consequence": "Amazon直接下架+品牌投诉，严重可冻结账户资金",
+          "fix": "删除所有Apple商标引用，改用通用描述如'In-Ear True Wireless Earbuds'"
+        },
+        {
+          "level": "🟡中风险",
+          "type": "平台违禁词",
+          "detail": "'Best Quality'属于Amazon禁止的主观性宣称词",
+          "consequence": "listing被抑制搜索权重，不会被投诉但影响流量",
+          "fix": "改为可验证的客观描述如'IPX5 Waterproof, 36H Battery Life'"
+        },
+        {
+          "level": "🟢低风险",
+          "type": "认证合规",
+          "detail": "蓝牙设备在美国需FCC认证，在欧盟需CE认证",
+          "action": "确认供应商已提供FCC ID和CE证书，listing中标注认证编号"
+        }
+      ],
+      "safe_version": "Wireless Earbuds Bluetooth 5.3, Active Noise Cancelling In-Ear Headphones, IPX5 Waterproof, 36H Playtime, USB-C Charging Case, Built-in Mic for iPhone Android"
+    },
+    {
+      "scenario": "家居收纳产品侵权扫描",
+      "input_snippet": "标题: MUJI Style Minimalist Storage Box, Japanese Design Closet Organizer...",
+      "findings": [
+        {
+          "level": "🔴高风险",
+          "type": "商标侵权",
+          "detail": "'MUJI'是良品计划株式会社注册商标(US Reg. No. 3123456)，'MUJI Style'仍构成商标关联使用",
+          "consequence": "良品计划法务团队活跃，跨境卖家被投诉案例多",
+          "fix": "改为'Minimalist Japanese-Inspired Storage Box'，描述风格而不引用品牌"
+        },
+        {
+          "level": "🟡中风险",
+          "type": "外观专利",
+          "detail": "MUJI多款收纳盒在日本和美国有外观设计专利，如高度相似需核查",
+          "action": "建议在USPTO Design Patent数据库搜索D类专利，或改变外观差异化元素（圆角→直角/颜色/把手造型）"
+        }
+      ]
+    }
+  ],
+  "common_traps": {
+    "trademark_keywords": [
+      {"trap": "用竞品品牌名+compatible/style/like/type", "risk": "仍构成商标侵权，Amazon/Shopee均可触发投诉"},
+      {"trap": "中文拼音变体(如Xiaomi→XM)", "risk": "平台算法可识别变体拼写"},
+      {"trap": "类目通用词被注册为商标(如'YETI'保温杯)", "risk": "需查询该品类哪些常见词已被注册"}
+    ],
+    "platform_banned_words": {
+      "amazon": ["best", "top", "guaranteed", "cure", "treat", "#1", "authentic", "original"],
+      "shopee": ["100%正品", "假一赔十(需品牌授权)", "最低价"],
+      "lazada": ["cheapest", "best seller(需数据支撑)"]
+    },
+    "certification_by_category": {
+      "数码电子": {"US": "FCC", "EU": "CE/RoHS", "UK": "UKCA"},
+      "家居用品": {"US": "CPSC/ASTM", "EU": "CE/REACH", "JP": "PSE(电器)"},
+      "汽摩配件": {"US": "DOT/SAE", "EU": "ECE R", "AU": "ADR"},
+      "工具工艺": {"US": "UL/OSHA", "EU": "CE/EN standards"},
+      "生活百货": {"US": "FDA(食品接触)", "EU": "LFGB(食品接触)"}
+    }
+  },
+  "rules": [
+    "所有发现必须标注风险等级(🔴🟡🟢)和具体后果",
+    "商标检测不能只查完全匹配，要查变体/缩写/拼音/style/compatible等关联用法",
+    "每个高风险项必须给出安全替代文案",
+    "认证要求按目标市场逐一列出，不能笼统说'需要认证'",
+    "末尾必须加免责声明：AI检测不能替代专业法律意见，高风险项建议咨询知识产权律师"
+  ]
+}

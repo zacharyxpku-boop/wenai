@@ -25,6 +25,7 @@ const iconMap: Record<string, () => React.ReactNode> = {
   calendar: () => <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><rect x="1" y="2.5" width="13" height="11" rx="1.5" stroke="currentColor" strokeWidth="1.3"/><path d="M1 6.5h13M4.5 1v3M10.5 1v3" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/></svg>,
   headset: () => <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><path d="M3 8V7a4.5 4.5 0 019 0v1" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/><rect x="1" y="8" width="3" height="5" rx="1" stroke="currentColor" strokeWidth="1.3"/><rect x="11" y="8" width="3" height="5" rx="1" stroke="currentColor" strokeWidth="1.3"/></svg>,
   target: () => <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><circle cx="7.5" cy="7.5" r="6" stroke="currentColor" strokeWidth="1.3"/><circle cx="7.5" cy="7.5" r="3" stroke="currentColor" strokeWidth="1.3"/><circle cx="7.5" cy="7.5" r="0.8" fill="currentColor"/></svg>,
+  shield: () => <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><path d="M7.5 1.5L2 4v4c0 3.5 2.5 5.5 5.5 6.5 3-1 5.5-3 5.5-6.5V4z" stroke="currentColor" strokeWidth="1.3" strokeLinejoin="round"/><path d="M5.5 7.5l1.5 1.5 3-3" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round"/></svg>,
 };
 
 interface NavItem {
