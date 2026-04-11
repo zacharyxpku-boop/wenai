@@ -182,9 +182,9 @@ export default function AIWorkspace({
   return (
     <div className="flex flex-col h-full animate-fade-up">
       {/* Toolbar */}
-      <div className="flex items-center justify-between mb-5">
+      <div className="flex items-center justify-between mb-4 pb-3 border-b border-border-subtle">
         <div>
-          <h2 className="text-base font-semibold text-text-primary font-[family-name:var(--font-outfit)]">
+          <h2 className="text-base font-semibold text-text-primary font-[family-name:var(--font-outfit)] tracking-tight">
             {moduleName}
           </h2>
         </div>
@@ -194,7 +194,7 @@ export default function AIWorkspace({
               <input ref={fileInputRef} type="file" accept=".csv" onChange={handleCSVUpload} className="hidden" />
               <button
                 onClick={() => fileInputRef.current?.click()}
-                className="text-[11px] font-mono text-text-tertiary hover:text-text-primary px-3 py-1.5 border border-border-subtle rounded-md hover:border-border-default transition-colors"
+                className="text-[10px] font-mono text-text-tertiary hover:text-text-primary px-2.5 py-1.5 border border-border-subtle rounded-md hover:border-border-default transition-all"
               >
                 CSV批量
               </button>
@@ -202,7 +202,7 @@ export default function AIWorkspace({
           )}
           <button
             onClick={() => setShowHistory(!showHistory)}
-            className={`text-[11px] font-mono px-3 py-1.5 border rounded-md transition-colors ${
+            className={`text-[10px] font-mono px-2.5 py-1.5 border rounded-md transition-all ${
               showHistory
                 ? 'text-accent border-accent/30 bg-accent-dim'
                 : 'text-text-tertiary border-border-subtle hover:text-text-primary hover:border-border-default'
@@ -215,33 +215,37 @@ export default function AIWorkspace({
 
       {/* History panel */}
       {showHistory && (
-        <div className="mb-4 bg-bg-surface border border-border-subtle rounded-md p-3 max-h-52 overflow-y-auto animate-fade-up">
+        <div className="mb-3.5 bg-bg-surface border border-border-subtle rounded-md p-3 max-h-48 overflow-y-auto animate-fade-up">
           {history.length === 0 ? (
-            <p className="text-text-tertiary text-[12px] font-mono">暂无历史</p>
+            <div className="flex items-center justify-center py-4">
+              <p className="text-text-tertiary text-[11px] font-mono">暂无历史记录</p>
+            </div>
           ) : (
-            <div className="space-y-1">
+            <div className="space-y-0.5">
               {history.map(item => (
                 <button
                   key={item.id}
                   onClick={() => { setInput(item.input); setResult(item.result); setShowHistory(false); }}
-                  className="w-full text-left px-3 py-2 rounded-md hover:bg-bg-hover transition-colors group"
+                  className="w-full text-left px-2.5 py-2 rounded-md hover:bg-bg-hover transition-all group"
                 >
-                  <div className="flex items-center justify-between gap-3">
-                    <span className="text-[12px] text-text-secondary truncate flex-1 group-hover:text-text-primary">
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-[11px] text-text-secondary truncate flex-1 group-hover:text-text-primary transition-colors">
                       {item.input}
                     </span>
-                    <span className="text-[10px] font-mono text-text-tertiary flex-shrink-0">
+                    <span className="text-[9px] font-mono text-text-tertiary flex-shrink-0 opacity-60 group-hover:opacity-100 transition-opacity">
                       {new Date(item.timestamp).toLocaleString('zh-CN', { month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
                     </span>
                   </div>
                 </button>
               ))}
-              <button
-                onClick={() => { setHistory([]); localStorage.removeItem(`wenai_history_${moduleId}`); }}
-                className="text-[10px] font-mono text-error hover:text-error/80 mt-2 px-3"
-              >
-                清空
-              </button>
+              <div className="pt-2 mt-1 border-t border-border-subtle">
+                <button
+                  onClick={() => { setHistory([]); localStorage.removeItem(`wenai_history_${moduleId}`); }}
+                  className="text-[9px] font-mono text-error hover:text-error/80 px-2.5 py-1 transition-colors"
+                >
+                  清空全部
+                </button>
+              </div>
             </div>
           )}
         </div>
@@ -249,54 +253,54 @@ export default function AIWorkspace({
 
       {/* CSV batch area */}
       {csvData.length > 0 && (
-        <div className="mb-4 bg-bg-surface border border-border-subtle rounded-md p-4 animate-fade-up">
-          <div className="flex items-center justify-between mb-3">
+        <div className="mb-3.5 bg-bg-surface border border-accent/20 rounded-md p-3.5 animate-fade-up">
+          <div className="flex items-center justify-between mb-2.5">
             <div className="flex items-center gap-2">
-              <div className="w-1.5 h-1.5 rounded-full bg-accent" />
-              <span className="text-[12px] font-mono text-text-primary">{csvData.length - 1} 条数据已加载</span>
+              <div className="w-1 h-1 rounded-full bg-accent animate-pulse-dot" />
+              <span className="text-[11px] font-mono text-text-primary">{csvData.length - 1} 条数据</span>
             </div>
-            <div className="flex gap-2">
+            <div className="flex gap-1.5">
               <button
                 onClick={() => { setCsvData([]); setCsvResults([]); }}
-                className="text-[10px] font-mono text-text-tertiary hover:text-text-primary px-2.5 py-1 border border-border-subtle rounded-md"
+                className="text-[9px] font-mono text-text-tertiary hover:text-text-primary px-2 py-1 border border-border-subtle rounded-md hover:border-border-default transition-colors"
               >
                 清除
               </button>
               {csvResults.length > 0 && (
                 <button
                   onClick={() => exportCSV(csvResults)}
-                  className="text-[10px] font-mono text-success px-2.5 py-1 border border-success/30 rounded-md hover:bg-success/10"
+                  className="text-[9px] font-mono text-success px-2.5 py-1 border border-success/30 rounded-md hover:bg-success/10 transition-colors"
                 >
-                  导出CSV
+                  导出
                 </button>
               )}
               <button
                 onClick={processCSVBatch}
                 disabled={csvProcessing}
-                className="text-[10px] font-mono text-bg-root px-3 py-1 bg-accent rounded-md disabled:opacity-50 hover:bg-accent-hover transition-colors"
+                className="text-[10px] font-mono text-bg-root px-3 py-1 bg-accent rounded-md disabled:opacity-50 hover:bg-accent-hover transition-all"
               >
-                {csvProcessing ? `${csvProgress.current}/${csvProgress.total}` : '开始处理'}
+                {csvProcessing ? `${csvProgress.current}/${csvProgress.total}` : '开始'}
               </button>
             </div>
           </div>
           {/* Progress bar */}
           {csvProcessing && (
-            <div className="w-full h-0.5 bg-border-subtle rounded-full mb-2 overflow-hidden">
+            <div className="w-full h-1 bg-bg-raised rounded-full mb-2 overflow-hidden">
               <div
-                className="h-full bg-accent transition-all duration-300"
+                className="h-full bg-accent transition-all duration-300 ease-out"
                 style={{ width: `${(csvProgress.current / csvProgress.total) * 100}%` }}
               />
             </div>
           )}
-          <p className="text-[10px] font-mono text-text-tertiary">
-            表头：{csvData[0]?.join(' | ')}
+          <p className="text-[9px] font-mono text-text-tertiary mb-2">
+            表头: {csvData[0]?.join(' · ')}
           </p>
           {csvResults.length > 0 && (
-            <div className="mt-3 max-h-32 overflow-y-auto space-y-1">
+            <div className="mt-2.5 max-h-28 overflow-y-auto space-y-1">
               {csvResults.map((r, i) => (
-                <div key={i} className="text-[11px] font-mono p-2 bg-bg-raised rounded-md flex gap-2">
-                  <span className="text-text-tertiary w-5 flex-shrink-0">#{i + 1}</span>
-                  <span className="text-text-secondary truncate">{r.output.substring(0, 120)}</span>
+                <div key={i} className="text-[10px] font-mono p-2 bg-bg-raised rounded-md flex gap-2 hover:bg-bg-hover transition-colors">
+                  <span className="text-text-tertiary w-4 flex-shrink-0 tabular-nums">#{i + 1}</span>
+                  <span className="text-text-secondary truncate">{r.output.substring(0, 100)}</span>
                 </div>
               ))}
             </div>
@@ -308,22 +312,22 @@ export default function AIWorkspace({
       <div className="flex flex-col lg:flex-row gap-4 flex-1 min-h-0">
         {/* 输入 */}
         <div className="flex-1 flex flex-col min-h-0">
-          <div className="flex items-center gap-2 mb-2">
-            <span className="text-[10px] font-mono text-text-tertiary uppercase tracking-widest">输入</span>
+          <div className="flex items-center gap-2 mb-2.5">
+            <span className="label-mono">输入</span>
             <div className="flex-1 h-px bg-border-subtle" />
           </div>
 
           {fields && fields.length > 0 && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-2.5">
               {fields.map(field => (
                 <div key={field.key}>
-                  <label className="text-[11px] font-mono text-text-tertiary mb-1 block">{field.label}</label>
+                  <label className="text-[10px] font-mono text-text-tertiary mb-1.5 block uppercase tracking-wide">{field.label}</label>
                   <input
                     type="text"
                     placeholder={field.placeholder}
                     value={params[field.key] || ''}
                     onChange={e => setParams(prev => ({ ...prev, [field.key]: e.target.value }))}
-                    className="w-full bg-bg-surface border border-border-subtle rounded-md px-3 py-2 text-[13px] text-text-primary placeholder-text-tertiary transition-colors"
+                    className="w-full bg-bg-surface border border-border-subtle rounded-md px-3 py-2 text-[12px] text-text-primary placeholder-text-tertiary transition-all focus:border-accent focus:shadow-[0_0_0_1px_rgba(200,151,90,0.2)]"
                   />
                 </div>
               ))}
@@ -335,21 +339,21 @@ export default function AIWorkspace({
             onChange={e => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder={placeholder}
-            className="flex-1 min-h-[180px] bg-bg-surface border border-border-subtle rounded-md p-4 text-[13px] text-text-primary placeholder-text-tertiary resize-none transition-colors leading-relaxed"
+            className="flex-1 min-h-[180px] bg-bg-surface border border-border-subtle rounded-md p-3.5 text-[13px] text-text-primary placeholder-text-tertiary resize-none transition-all leading-[1.7] focus:border-accent focus:shadow-[0_0_0_1px_rgba(200,151,90,0.2)]"
           />
 
-          <div className="flex items-center justify-between mt-3">
-            <span className="text-[10px] font-mono text-text-tertiary">
+          <div className="flex items-center justify-between mt-2.5">
+            <span className="text-[9px] font-mono text-text-tertiary tracking-wide">
               {input.length > 0 ? `${input.length} 字` : 'Ctrl+Enter 提交'}
             </span>
             <button
               onClick={handleSubmit}
               disabled={loading || !input.trim()}
-              className="px-5 py-2 bg-accent text-bg-root rounded-md font-medium text-[13px] hover:bg-accent-hover disabled:opacity-40 disabled:cursor-not-allowed transition-colors font-[family-name:var(--font-outfit)]"
+              className="px-4 py-2 bg-accent text-bg-root rounded-md font-medium text-[12px] hover:bg-accent-hover disabled:opacity-40 disabled:cursor-not-allowed transition-all font-[family-name:var(--font-outfit)]"
             >
               {loading ? (
                 <span className="flex items-center gap-2">
-                  <svg className="w-3.5 h-3.5 animate-spin-smooth" viewBox="0 0 16 16" fill="none">
+                  <svg className="w-3 h-3 animate-spin-smooth" viewBox="0 0 16 16" fill="none">
                     <circle cx="8" cy="8" r="6" stroke="currentColor" strokeWidth="2" opacity="0.3"/>
                     <path d="M14 8a6 6 0 00-6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
                   </svg>
@@ -361,28 +365,30 @@ export default function AIWorkspace({
         </div>
 
         {/* Divider */}
-        <div className="hidden lg:flex flex-col items-center py-6">
-          <div className="w-px flex-1 bg-border-subtle" />
-          <span className="text-[10px] font-mono text-text-tertiary my-2">&rarr;</span>
-          <div className="w-px flex-1 bg-border-subtle" />
+        <div className="hidden lg:flex flex-col items-center py-8">
+          <div className="w-px flex-1 bg-border-subtle opacity-40" />
+          <div className="my-2 w-4 h-4 border border-border-subtle rounded-full flex items-center justify-center">
+            <span className="text-[8px] font-mono text-text-tertiary">→</span>
+          </div>
+          <div className="w-px flex-1 bg-border-subtle opacity-40" />
         </div>
 
         {/* 输出 */}
         <div className="flex-1 flex flex-col min-h-0">
-          <div className="flex items-center gap-2 mb-2">
-            <span className="text-[10px] font-mono text-text-tertiary uppercase tracking-widest">输出</span>
+          <div className="flex items-center gap-2 mb-2.5">
+            <span className="label-mono">输出</span>
             <div className="flex-1 h-px bg-border-subtle" />
             {result && (
               <div className="flex gap-1.5">
                 <button
                   onClick={handleCopy}
-                  className="text-[10px] font-mono text-text-tertiary hover:text-text-primary px-2 py-1 border border-border-subtle rounded-md hover:border-border-default transition-colors"
+                  className="text-[9px] font-mono text-text-tertiary hover:text-text-primary px-2 py-1 border border-border-subtle rounded-md hover:border-border-default transition-all"
                 >
-                  {copied ? '已复制' : '复制'}
+                  {copied ? '✓ 已复制' : '复制'}
                 </button>
                 <button
                   onClick={exportSingleResult}
-                  className="text-[10px] font-mono text-text-tertiary hover:text-text-primary px-2 py-1 border border-border-subtle rounded-md hover:border-border-default transition-colors"
+                  className="text-[9px] font-mono text-text-tertiary hover:text-text-primary px-2 py-1 border border-border-subtle rounded-md hover:border-border-default transition-all"
                 >
                   导出
                 </button>
@@ -390,19 +396,19 @@ export default function AIWorkspace({
             )}
           </div>
 
-          <div className="flex-1 min-h-[180px] bg-bg-surface border border-border-subtle rounded-md p-4 overflow-y-auto">
+          <div className="flex-1 min-h-[180px] bg-bg-surface border border-border-subtle rounded-md p-3.5 overflow-y-auto">
             {error && (
-              <div className="text-[12px] font-mono text-error p-3 bg-error/8 border border-error/20 rounded-md mb-3">
+              <div className="text-[11px] font-mono text-error p-3 bg-error/5 border border-error/20 rounded-md mb-3">
                 {error}
               </div>
             )}
             {loading && (
-              <div className="flex items-center gap-3 text-text-tertiary py-8 justify-center">
-                <svg className="w-4 h-4 animate-spin-smooth text-accent" viewBox="0 0 16 16" fill="none">
+              <div className="flex flex-col items-center gap-3 text-text-tertiary py-12 justify-center">
+                <svg className="w-5 h-5 animate-spin-smooth text-accent" viewBox="0 0 16 16" fill="none">
                   <circle cx="8" cy="8" r="6" stroke="currentColor" strokeWidth="2" opacity="0.3"/>
                   <path d="M14 8a6 6 0 00-6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
                 </svg>
-                <span className="text-[12px] font-mono">AI处理中...</span>
+                <span className="text-[11px] font-mono">AI处理中...</span>
               </div>
             )}
             {result && (
@@ -410,7 +416,7 @@ export default function AIWorkspace({
             )}
             {!result && !loading && !error && (
               <div className="flex items-center justify-center h-full">
-                <p className="text-text-tertiary text-[12px] font-mono">处理结果将在此显示</p>
+                <p className="text-text-tertiary text-[11px] font-mono opacity-50">结果将在此显示</p>
               </div>
             )}
           </div>
