@@ -94,3 +94,68 @@ input:focus, textarea:focus, select:focus {
   border-color: var(--color-accent) !important;
   box-shadow: 0 0 0 1px rgba(200, 151, 90, 0.2);
 }
+
+/* Button reset */
+button {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Utility: mono caps label */
+.label-mono {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-text-tertiary);
+  font-weight: 500;
+}
+
+/* Loading shimmer */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+.animate-shimmer {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(200, 151, 90, 0.05) 50%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+}
+
+/* Glassmorphism panel */
+.panel-glass {
+  background: linear-gradient(
+    135deg,
+    rgba(22, 22, 26, 0.7) 0%,
+    rgba(22, 22, 26, 0.5) 100%
+  );
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+/* Divider */
+.divider-h {
+  height: 1px;
+  background: var(--color-border-subtle);
+}
+
+/* Gradient border */
+.border-gradient-accent {
+  position: relative;
+}
+.border-gradient-accent::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(135deg, var(--color-accent) 0%, transparent 100%);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
