@@ -75,58 +75,76 @@ export default function Dashboard() {
 
       {/* Stats row */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6 animate-fade-up stagger-1">
-        <div className="bg-bg-surface border border-border-subtle rounded-md p-3.5 hover:bg-bg-raised transition-colors">
-          <p className="label-mono mb-1.5">今日处理</p>
-          <p className="text-2xl font-semibold text-accent font-mono tabular-nums">{stats?.todayCount ?? '—'}</p>
-          <div className="flex items-center gap-1.5 mt-2">
-            <div className="flex-1 h-px bg-border-subtle" />
+        <div className="bg-bg-surface border border-border-subtle rounded-md p-4 hover:bg-bg-raised hover:border-border-default hover:shadow-[0_4px_16px_rgba(200,151,90,0.08)] transition-all duration-200 group">
+          <p className="label-mono mb-2">今日处理</p>
+          <div className="flex items-baseline gap-2">
+            <p className="text-3xl font-bold text-accent font-mono tabular-nums group-hover:scale-105 transition-transform origin-left">
+              {stats?.todayCount ?? '—'}
+            </p>
+            <div className="flex flex-col">
+              <span className="text-[8px] font-mono text-text-tertiary/60 uppercase">calls</span>
+            </div>
+          </div>
+          <div className="flex items-center gap-1.5 mt-3 pt-2.5 border-t border-border-subtle/40">
+            <div className="flex-1 h-px bg-gradient-to-r from-accent/20 to-transparent" />
             <span className="text-[9px] font-mono text-text-tertiary">
-              本周 {stats?.weekCount ?? 0}
+              本周 <span className="text-accent font-semibold">{stats?.weekCount ?? 0}</span>
             </span>
           </div>
         </div>
-        <div className="bg-bg-surface border border-border-subtle rounded-md p-3.5 hover:bg-bg-raised transition-colors">
-          <p className="label-mono mb-1.5">累计调用</p>
-          <p className="text-2xl font-semibold text-text-primary font-mono tabular-nums">{stats?.totalCount ?? '—'}</p>
-          <div className="flex items-center gap-1.5 mt-2">
-            <div className="flex-1 h-px bg-border-subtle" />
+        <div className="bg-bg-surface border border-border-subtle rounded-md p-4 hover:bg-bg-raised hover:border-border-default hover:shadow-[0_4px_16px_rgba(0,0,0,0.2)] transition-all duration-200 group">
+          <p className="label-mono mb-2">累计调用</p>
+          <div className="flex items-baseline gap-2">
+            <p className="text-3xl font-bold text-text-primary font-mono tabular-nums group-hover:scale-105 transition-transform origin-left">
+              {stats?.totalCount ?? '—'}
+            </p>
+            <div className="flex flex-col">
+              <span className="text-[8px] font-mono text-text-tertiary/60 uppercase">total</span>
+            </div>
+          </div>
+          <div className="flex items-center gap-1.5 mt-3 pt-2.5 border-t border-border-subtle/40">
+            <div className="flex-1 h-px bg-gradient-to-r from-text-tertiary/20 to-transparent" />
             <span className="text-[9px] font-mono text-text-tertiary">
               {stats ? (stats.weekTokens / 1000).toFixed(1) : '0'}k tok
             </span>
           </div>
         </div>
-        <div className="bg-bg-surface border border-border-subtle rounded-md p-3.5 hover:bg-bg-raised transition-colors">
-          <p className="label-mono mb-1.5">质量评分</p>
-          <div className="flex items-baseline gap-1.5">
-            <p className="text-2xl font-semibold text-text-primary font-mono tabular-nums">
+        <div className="bg-bg-surface border border-border-subtle rounded-md p-4 hover:bg-bg-raised hover:border-border-default hover:shadow-[0_4px_16px_rgba(0,0,0,0.2)] transition-all duration-200 group">
+          <p className="label-mono mb-2">质量评分</p>
+          <div className="flex items-baseline gap-2">
+            <p className="text-3xl font-bold text-text-primary font-mono tabular-nums group-hover:scale-105 transition-transform origin-left">
               {stats?.avgRating ? stats.avgRating.toFixed(1) : '—'}
             </p>
-            {stats?.avgRating && <span className="text-[11px] text-text-tertiary font-mono">/5</span>}
+            <span className="text-[13px] text-text-tertiary/70 font-mono">/5.0</span>
           </div>
-          <div className="flex items-center gap-1.5 mt-2">
-            <div className="flex-1 h-px bg-border-subtle" />
+          <div className="flex items-center gap-1.5 mt-3 pt-2.5 border-t border-border-subtle/40">
+            <div className="flex-1 h-px bg-gradient-to-r from-success/20 to-transparent" />
             <span className="text-[9px] font-mono text-text-tertiary">
-              {stats?.ratingCount ?? 0} 条
+              {stats?.ratingCount ?? 0} 次评价
             </span>
           </div>
         </div>
-        <div className="bg-bg-surface border border-border-subtle rounded-md p-3.5 hover:bg-bg-raised transition-colors">
-          <p className="label-mono mb-2">7日趋势</p>
+        <div className="bg-bg-surface border border-border-subtle rounded-md p-4 hover:bg-bg-raised hover:border-border-default hover:shadow-[0_4px_16px_rgba(0,0,0,0.2)] transition-all duration-200">
+          <p className="label-mono mb-3">7日趋势</p>
           {stats?.dailyTrend ? (
-            <div className="flex items-end gap-[2px] h-[36px]">
+            <div className="flex items-end gap-1 h-[52px]">
               {stats.dailyTrend.map((d, i) => (
-                <div key={i} className="flex-1 flex flex-col items-center gap-1">
+                <div key={i} className="flex-1 flex flex-col items-center gap-1.5 group/bar">
                   <div
-                    className="w-full bg-accent/70 rounded-[2px] min-h-[2px] transition-all hover:bg-accent"
-                    style={{ height: `${Math.max((d.count / maxTrend) * 30, 2)}px` }}
-                    title={`${d.date}: ${d.count}`}
-                  />
-                  <span className="text-[7px] font-mono text-text-tertiary/60">{d.date.slice(-2)}</span>
+                    className="w-full bg-accent/60 rounded-t-sm min-h-[3px] transition-all duration-200 hover:bg-accent cursor-pointer relative group-hover/bar:shadow-[0_-2px_8px_rgba(200,151,90,0.4)]"
+                    style={{ height: `${Math.max((d.count / maxTrend) * 44, 3)}px` }}
+                    title={`${d.date}: ${d.count} 次`}
+                  >
+                    <div className="absolute -top-5 left-1/2 -translate-x-1/2 opacity-0 group-hover/bar:opacity-100 transition-opacity bg-bg-raised border border-accent/30 rounded px-1.5 py-0.5 whitespace-nowrap pointer-events-none">
+                      <span className="text-[8px] font-mono text-accent font-semibold">{d.count}</span>
+                    </div>
+                  </div>
+                  <span className="text-[7px] font-mono text-text-tertiary/50 group-hover/bar:text-text-tertiary transition-colors">{d.date.slice(-2)}</span>
                 </div>
               ))}
             </div>
           ) : (
-            <div className="flex items-center justify-center h-[36px]">
+            <div className="flex items-center justify-center h-[52px]">
               <p className="text-[10px] text-text-tertiary font-mono">—</p>
             </div>
           )}
@@ -168,25 +186,45 @@ export default function Dashboard() {
       {/* Product inventory strip */}
       {demoProducts && demoProducts.length > 0 && (
         <div className="mb-6 animate-fade-up stagger-3">
-          <div className="flex items-center gap-2 mb-2.5">
+          <div className="flex items-center gap-2 mb-3">
             <span className="label-mono">商品库</span>
-            <div className="flex-1 h-px bg-border-subtle" />
-            <span className="text-[9px] font-mono text-text-tertiary">{demoProducts.length} SKU</span>
+            <div className="flex-1 h-px bg-gradient-to-r from-border-subtle to-transparent" />
+            <div className="flex items-center gap-1.5 bg-bg-surface border border-border-subtle rounded-md px-2 py-1">
+              <div className="w-1 h-1 rounded-full bg-success animate-pulse-dot" />
+              <span className="text-[9px] font-mono text-text-primary font-semibold tabular-nums">{demoProducts.length}</span>
+              <span className="text-[8px] font-mono text-text-tertiary uppercase">SKU</span>
+            </div>
           </div>
-          <div className="flex gap-2.5 overflow-x-auto pb-1.5 -mx-0.5">
-            {demoProducts.map((p, i) => (
-              <div
-                key={i}
-                className="flex-shrink-0 bg-bg-surface border border-border-subtle rounded-md px-3.5 py-2.5 min-w-[190px] hover:bg-bg-raised hover:border-border-default transition-all group"
-              >
-                <div className="flex items-baseline justify-between gap-2 mb-1">
-                  <span className="text-[12px] font-medium text-text-primary truncate group-hover:text-accent transition-colors">{p.name}</span>
-                  <span className="text-[10px] font-mono text-accent flex-shrink-0 tabular-nums">{p.price}</span>
+          <div className="relative group/scroll">
+            {/* Scroll indicators */}
+            <div className="absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-bg-root to-transparent pointer-events-none z-10 opacity-0 group-hover/scroll:opacity-100 transition-opacity" />
+            <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-bg-root to-transparent pointer-events-none z-10 opacity-0 group-hover/scroll:opacity-100 transition-opacity" />
+
+            <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
+              {demoProducts.map((p, i) => (
+                <div
+                  key={i}
+                  className="flex-shrink-0 bg-bg-surface border border-border-subtle rounded-md px-4 py-3 min-w-[200px] hover:bg-bg-raised hover:border-accent/30 hover:shadow-[0_2px_12px_rgba(200,151,90,0.12)] transition-all duration-200 group cursor-pointer hover:translate-y-[-2px]"
+                >
+                  <div className="flex items-baseline justify-between gap-2 mb-1.5">
+                    <span className="text-[13px] font-semibold text-text-primary truncate group-hover:text-accent transition-colors font-[family-name:var(--font-outfit)]">{p.name}</span>
+                    <div className="flex items-baseline gap-0.5 flex-shrink-0">
+                      <span className="text-[11px] font-mono text-accent font-bold tabular-nums">{p.price}</span>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="text-[8px] font-mono text-text-tertiary/90 uppercase tracking-[0.12em] bg-bg-raised px-1.5 py-0.5 rounded">{p.category}</span>
+                    <div className="flex-1 h-px bg-border-subtle/30" />
+                  </div>
+                  <p className="text-[10px] text-text-secondary/90 leading-[1.6] line-clamp-2">{p.features}</p>
+                  {/* Hover indicator */}
+                  <div className="flex items-center gap-1 mt-2 pt-2 border-t border-border-subtle/30 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <div className="w-2 h-px bg-accent" />
+                    <span className="text-[8px] font-mono text-accent uppercase tracking-wider">view</span>
+                  </div>
                 </div>
-                <p className="text-[9px] font-mono text-text-tertiary uppercase tracking-wide mb-1">{p.category}</p>
-                <p className="text-[11px] text-text-secondary/80 leading-snug line-clamp-1">{p.features}</p>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
       )}
