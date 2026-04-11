@@ -36,12 +36,18 @@ export default function ResultFeedback({ moduleId, resultText }: ResultFeedbackP
       .catch(() => {});
   }, [moduleId]);
 
-  useEffect(() => {
+  // Reset state when result changes (using previous result as key)
+  const [prevResult, setPrevResult] = useState(resultText);
+  if (prevResult !== resultText) {
+    setPrevResult(resultText);
     setRating(0);
     setFeedbackText('');
     setSubmitted(false);
+  }
+
+  useEffect(() => {
     loadStats();
-  }, [resultText, loadStats]);
+  }, [loadStats]);
 
   const handleSubmit = () => {
     if (rating === 0) return;
