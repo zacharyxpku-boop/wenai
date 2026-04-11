@@ -114,12 +114,14 @@
       "id": "selection",
       "name": "选品辅助",
       "nameEn": "Product Selection",
-      "description": "AI出数据+候选，人做最终决策",
+      "description": "数据筛选+风险预警，最终决策由采购团队完成",
       "category": "intel",
       "categoryLabel": "情报层",
       "icon": "chart",
       "enabled": true,
-      "prompt": "你是一个电商选品顾问。注意：最终选品决策必须由人做，AI只提供数据和分析支持。\n\n请根据以下信息，输出选品分析：\n\n1. 品类趋势分析（搜索量变化、季节性）\n2. 竞争格局（头部品牌、价格分布、集中度）\n3. 利润空间估算（成本结构、定价空间）\n4. 风险提示（库存风险、合规风险、季节风险）\n5. 建议候选清单（附理由，标注置信度）\n\n品类/方向：{input}"
+      "assistOnly": true,
+      "assistOnlyReason": "选品涉及供应商谈判、模具定制、质量验收等线下环节，AI只能做数据层面的辅助筛选",
+      "prompt": "你是一个电商选品数据分析师。\n\n⚠️ 重要声明：选品最终决策必须由采购团队完成。AI无法替代供应商实地考察、模具打样评估、产品质量验收等关键环节。本工具仅提供数据层面的筛选辅助。\n\n【你能做的】\n- 市场数据整理（搜索量趋势、竞争度、价格区间）\n- 风险预警（存货周转风险、季节性、合规要求）\n- 利润空间粗估（基于公开数据）\n- 竞品格局概览\n\n【你做不了的（需要人做）】\n- 供应商开发与谈判\n- 产品打样与质量验收\n- 定制模具评估\n- 实际成本核算（工厂报价、物流费用、平台费用）\n- 库存深度决策\n\n请根据以下信息输出选品数据报告：\n\n1. 品类趋势数据（搜索量变化、季节性曲线）\n2. 竞争格局（头部品牌、价格分布、集中度CR5/CR10）\n3. 粗略利润区间（标注数据来源和置信度）\n4. 风险矩阵\n   - 🔴 存货风险：周转天数预估、滞销概率\n   - 🔴 合规风险：目标市场认证要求\n   - 🟡 季节风险：旺季/淡季节点\n   - 🟡 竞争风险：新进入者门槛\n5. 下一步建议（给采购团队的行动清单）\n\n品类/方向：{input}"
     },
     {
       "id": "operations",
@@ -167,9 +169,26 @@
     }
   ],
   "categories": [
-    { "id": "execute", "label": "执行层", "description": "AI完全替代的重复劳动", "color": "#10B981" },
-    { "id": "content", "label": "内容工厂", "description": "AI辅助内容生产", "color": "#6366F1" },
-    { "id": "intel", "label": "情报层", "description": "数据分析+决策辅助", "color": "#F59E0B" },
-    { "id": "service", "label": "客户服务", "description": "客户触达与维护", "color": "#EF4444" }
-  ]
+    { "id": "execute", "label": "执行层", "description": "AI完全替代的重复劳动", "color": "#c8975a" },
+    { "id": "content", "label": "内容工厂", "description": "AI辅助内容生产", "color": "#6ea8d7" },
+    { "id": "intel", "label": "情报层", "description": "数据分析+决策辅助", "color": "#9b8ec4" },
+    { "id": "service", "label": "客户服务", "description": "客户触达与维护", "color": "#5bb89a" }
+  ],
+  "priorityTiers": {
+    "tier1": {
+      "label": "第一梯队 — 立即可用",
+      "reason": "IPO招股书验证的高频刚需，对应营销人员(占比40-50%)的日常重复劳动",
+      "modules": ["translate", "reviews", "copywriting", "ip-compliance"]
+    },
+    "tier2": {
+      "label": "第二梯队 — 需数据支撑",
+      "reason": "需对接外部数据源才能发挥价值",
+      "modules": ["competitor", "selection", "customer-service"]
+    },
+    "tier3": {
+      "label": "第三梯队 — 锦上添花",
+      "reason": "有价值但非核心痛点",
+      "modules": ["outreach", "operations", "content", "livestream", "leads", "video", "images", "ocr-translate"]
+    }
+  }
 }

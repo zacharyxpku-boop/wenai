@@ -20,6 +20,15 @@ export default function Dashboard() {
   const enabledIds = new Set(clientConfig.enabledModules);
   const categories = modulesConfig.categories;
   const enabledCount = enabledIds.size;
+  const priorityTiers = (modulesConfig as Record<string, unknown>).priorityTiers as Record<string, { modules: string[] }> | undefined;
+
+  const getModuleTier = (moduleId: string): number => {
+    if (!priorityTiers) return 0;
+    if (priorityTiers.tier1?.modules.includes(moduleId)) return 1;
+    if (priorityTiers.tier2?.modules.includes(moduleId)) return 2;
+    if (priorityTiers.tier3?.modules.includes(moduleId)) return 3;
+    return 0;
+  };
   const demoProducts = (clientConfig as Record<string, unknown>).demoProducts as { name: string; category: string; price: string; features: string }[] | undefined;
 
   const [stats, setStats] = useState<UsageStats | null>(null);
@@ -218,6 +227,8 @@ export default function Dashboard() {
                   category={mod.category}
                   categoryColor={cat.color}
                   categoryLabel={cat.label}
+                  tier={getModuleTier(mod.id)}
+                  assistOnly={(mod as Record<string, unknown>).assistOnly === true}
                 />
               ))}
             </div>
