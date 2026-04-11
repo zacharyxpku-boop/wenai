@@ -54,55 +54,55 @@ export default function Sidebar({ modules, categories, clientName }: SidebarProp
   const pathname = usePathname();
 
   return (
-    <aside className="w-[248px] h-screen bg-bg-surface flex flex-col border-r border-border-subtle fixed left-0 top-0 z-40">
+    <aside className="w-[240px] h-screen bg-bg-surface flex flex-col border-r border-border-subtle fixed left-0 top-0 z-40">
       {/* Brand */}
-      <div className="px-5 py-5 border-b border-border-subtle">
-        <div className="flex items-center gap-3">
-          <div className="w-8 h-8 bg-accent/15 border border-accent/30 rounded-md flex items-center justify-center">
-            <span className="text-accent font-mono text-xs font-medium">W</span>
+      <div className="px-4 py-4 border-b border-border-subtle">
+        <div className="flex items-center gap-2.5">
+          <div className="w-7 h-7 bg-accent/15 border border-accent/30 rounded-md flex items-center justify-center group-hover:bg-accent/20 transition-colors">
+            <span className="text-accent font-mono text-[11px] font-semibold">W</span>
           </div>
           <div>
-            <h1 className="text-sm font-semibold text-text-primary tracking-tight font-[family-name:var(--font-outfit)]">
+            <h1 className="text-[13px] font-semibold text-text-primary tracking-tight font-[family-name:var(--font-outfit)]">
               Wenai
             </h1>
-            <p className="text-[10px] font-mono text-text-tertiary tracking-wide">
-              AI电商员工系统
+            <p className="text-[9px] font-mono text-text-tertiary tracking-wider uppercase">
+              AI员工系统
             </p>
           </div>
         </div>
       </div>
 
       {/* Client badge */}
-      <div className="mx-4 mt-4 px-3 py-2 bg-bg-raised border border-border-subtle rounded-md">
+      <div className="mx-3.5 mt-3.5 px-2.5 py-2 bg-bg-raised border border-border-subtle rounded-md">
         <div className="flex items-center gap-2">
-          <div className="w-1.5 h-1.5 rounded-full bg-success animate-pulse-dot" />
-          <span className="text-[11px] font-mono text-text-secondary truncate">{clientName}</span>
+          <div className="w-1 h-1 rounded-full bg-success animate-pulse-dot" />
+          <span className="text-[10px] font-mono text-text-secondary truncate">{clientName}</span>
         </div>
       </div>
 
       {/* Dashboard link */}
       <Link
         href="/"
-        className={`mx-4 mt-3 flex items-center gap-2.5 px-3 py-2 rounded-md text-[13px] transition-all duration-150 ${
+        className={`mx-3.5 mt-3 flex items-center gap-2 px-2.5 py-2 rounded-md text-[12px] transition-all duration-200 ${
           pathname === '/'
-            ? 'bg-accent-dim text-accent border border-accent/20'
+            ? 'bg-accent-dim text-accent border border-accent/20 shadow-[0_0_0_1px_rgba(200,151,90,0.05)]'
             : 'text-text-secondary hover:text-text-primary hover:bg-bg-hover border border-transparent'
         }`}
       >
-        <IconGrid />
-        <span>工作台总览</span>
+        <span className="w-4 flex-shrink-0"><IconGrid /></span>
+        <span className="font-[family-name:var(--font-outfit)] font-medium">工作台</span>
       </Link>
 
       {/* Module navigation */}
-      <nav className="flex-1 overflow-y-auto mt-1 px-4 pb-4">
+      <nav className="flex-1 overflow-y-auto mt-1 px-3.5 pb-4">
         {categories.map(cat => {
           const catModules = modules.filter(m => m.category === cat.id);
           if (catModules.length === 0) return null;
           return (
-            <div key={cat.id} className="mt-5">
-              <div className="flex items-center gap-2 px-3 mb-1.5">
+            <div key={cat.id} className="mt-4">
+              <div className="flex items-center gap-1.5 px-2.5 mb-1">
                 <div className={`w-1 h-1 rounded-full ${catColors[cat.id] || 'bg-text-tertiary'}`} />
-                <p className="text-[10px] font-mono font-medium text-text-tertiary uppercase tracking-widest">
+                <p className="label-mono text-[9px]">
                   {cat.label}
                 </p>
               </div>
@@ -113,14 +113,14 @@ export default function Sidebar({ modules, categories, clientName }: SidebarProp
                   <Link
                     key={mod.id}
                     href={`/modules/${mod.id}`}
-                    className={`flex items-center gap-2.5 px-3 py-1.5 rounded-md text-[13px] transition-all duration-150 ${
+                    className={`flex items-center gap-2 px-2.5 py-1.5 rounded-md text-[12px] transition-all duration-200 ${
                       isActive
-                        ? 'bg-accent-dim text-accent border border-accent/20'
+                        ? 'bg-accent-dim text-accent border border-accent/20 shadow-[0_0_0_1px_rgba(200,151,90,0.05)]'
                         : 'text-text-secondary hover:text-text-primary hover:bg-bg-hover border border-transparent'
                     }`}
                   >
-                    <span className="w-4 flex-shrink-0">{IconFn ? IconFn() : null}</span>
-                    <span className="truncate">{mod.name}</span>
+                    <span className="w-4 flex-shrink-0 opacity-80">{IconFn ? IconFn() : null}</span>
+                    <span className="truncate font-[family-name:var(--font-outfit)]">{mod.name}</span>
                   </Link>
                 );
               })}
@@ -130,17 +130,17 @@ export default function Sidebar({ modules, categories, clientName }: SidebarProp
       </nav>
 
       {/* Settings */}
-      <div className="px-4 py-3 border-t border-border-subtle">
+      <div className="px-3.5 py-3 border-t border-border-subtle">
         <Link
           href="/settings"
-          className={`flex items-center gap-2.5 px-3 py-2 rounded-md text-[13px] transition-all duration-150 ${
+          className={`flex items-center gap-2 px-2.5 py-2 rounded-md text-[12px] transition-all duration-200 ${
             pathname === '/settings'
-              ? 'bg-accent-dim text-accent border border-accent/20'
+              ? 'bg-accent-dim text-accent border border-accent/20 shadow-[0_0_0_1px_rgba(200,151,90,0.05)]'
               : 'text-text-secondary hover:text-text-primary hover:bg-bg-hover border border-transparent'
           }`}
         >
-          <IconSettings />
-          <span>客户配置</span>
+          <span className="w-4 flex-shrink-0 opacity-80"><IconSettings /></span>
+          <span className="font-[family-name:var(--font-outfit)] font-medium">配置</span>
         </Link>
       </div>
     </aside>
