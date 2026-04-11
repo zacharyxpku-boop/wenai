@@ -3,9 +3,9 @@
   "industry": "跨境出海电商",
   "languages": ["en", "ja", "ko", "es", "fr", "de", "pt", "ar", "th", "vi"],
   "enabledModules": [
-    "translate", "outreach", "reviews", "video",
-    "ocr-translate",
-    "copywriting", "content", "images", "livestream",
+    "translate", "reviews", "copywriting", "ip-compliance",
+    "outreach", "video", "ocr-translate",
+    "content", "images", "livestream",
     "competitor", "selection", "operations",
     "customer-service", "leads"
   ],

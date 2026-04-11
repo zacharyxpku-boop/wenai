@@ -19,6 +19,8 @@ interface AIWorkspaceProps {
   placeholder?: string;
   fields?: { key: string; label: string; placeholder: string }[];
   supportCSV?: boolean;
+  assistOnly?: boolean;
+  assistOnlyReason?: string;
 }
 
 export default function AIWorkspace({
@@ -28,6 +30,8 @@ export default function AIWorkspace({
   placeholder = '请输入内容...',
   fields,
   supportCSV = false,
+  assistOnly = false,
+  assistOnlyReason,
 }: AIWorkspaceProps) {
   const [input, setInput] = useState('');
   const [params, setParams] = useState<Record<string, string>>({});
@@ -186,6 +190,7 @@ export default function AIWorkspace({
         <div>
           <h2 className="text-base font-semibold text-text-primary font-[family-name:var(--font-outfit)] tracking-tight">
             {moduleName}
+            {assistOnly && <span className="ml-2 text-[9px] font-mono text-text-tertiary bg-bg-raised px-1.5 py-0.5 rounded align-middle">仅辅助</span>}
           </h2>
         </div>
         <div className="flex items-center gap-2">
@@ -212,6 +217,16 @@ export default function AIWorkspace({
           </button>
         </div>
       </div>
+
+      {/* Assist-only warning */}
+      {assistOnly && assistOnlyReason && (
+        <div className="mb-3.5 bg-accent-dim border border-accent/20 rounded-md px-3.5 py-2.5 animate-fade-up">
+          <p className="text-[11px] text-accent/90 leading-relaxed">
+            <span className="font-mono text-[9px] bg-accent/15 px-1 py-0.5 rounded mr-1.5">注意</span>
+            {assistOnlyReason}
+          </p>
+        </div>
+      )}
 
       {/* History panel */}
       {showHistory && (

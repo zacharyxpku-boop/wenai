@@ -81,6 +81,8 @@ export default async function ModulePage({ params }: PageProps) {
         placeholder={modulePlaceholders[mod.id] || '请输入内容...'}
         fields={moduleFields[mod.id]}
         supportCSV={csvEnabledModules.has(mod.id)}
+        assistOnly={(mod as Record<string, unknown>).assistOnly === true}
+        assistOnlyReason={(mod as Record<string, unknown>).assistOnlyReason as string | undefined}
       />
     </div>
   );

@@ -25,9 +25,11 @@ interface ModuleCardProps {
   category: string;
   categoryColor: string;
   categoryLabel: string;
+  tier?: number;
+  assistOnly?: boolean;
 }
 
-export default function ModuleCard({ id, name, nameEn, description, category, categoryLabel }: ModuleCardProps) {
+export default function ModuleCard({ id, name, nameEn, description, category, categoryLabel, tier, assistOnly }: ModuleCardProps) {
   return (
     <Link href={`/modules/${id}`} className="group block">
       <div className={`
@@ -45,7 +47,15 @@ export default function ModuleCard({ id, name, nameEn, description, category, ca
               {nameEn}
             </p>
           </div>
-          <div className={`w-1.5 h-1.5 rounded-full mt-1 flex-shrink-0 ml-2 ${catBgMap[category] || 'bg-text-tertiary'} group-hover:scale-125 transition-transform`} />
+          <div className="flex items-center gap-1.5 flex-shrink-0 ml-2">
+            {tier === 1 && (
+              <span className="text-[7px] font-mono bg-accent/15 text-accent px-1.5 py-0.5 rounded tracking-wider">T1</span>
+            )}
+            {assistOnly && (
+              <span className="text-[7px] font-mono bg-bg-raised text-text-tertiary px-1.5 py-0.5 rounded tracking-wider">辅助</span>
+            )}
+            <div className={`w-1.5 h-1.5 rounded-full ${catBgMap[category] || 'bg-text-tertiary'} group-hover:scale-125 transition-transform`} />
+          </div>
         </div>
 
         {/* Description */}
