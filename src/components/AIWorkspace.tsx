@@ -191,12 +191,19 @@ export default function AIWorkspace({
   return (
     <div className="flex flex-col h-full animate-fade-up">
       {/* Toolbar */}
-      <div className="flex items-center justify-between mb-4 pb-3 border-b border-border-subtle">
-        <div>
-          <h2 className="text-base font-semibold text-text-primary font-[family-name:var(--font-outfit)] tracking-tight">
-            {moduleName}
-            {assistOnly && <span className="ml-2 text-[9px] font-mono text-text-tertiary bg-bg-raised px-1.5 py-0.5 rounded align-middle">仅辅助</span>}
-          </h2>
+      <div className="flex items-center justify-between mb-5 pb-4 border-b border-border-default">
+        <div className="flex items-center gap-3">
+          <div className="w-1 h-6 bg-accent rounded-full" />
+          <div>
+            <h2 className="text-[15px] font-bold text-text-primary font-[family-name:var(--font-outfit)] tracking-tight">
+              {moduleName}
+            </h2>
+            {assistOnly && (
+              <span className="inline-block mt-1 text-[8px] font-mono text-accent/90 bg-accent/10 px-2 py-1 rounded border border-accent/20">
+                ⚠️ 仅辅助模式
+              </span>
+            )}
+          </div>
         </div>
         <div className="flex items-center gap-2">
           {supportCSV && (
@@ -204,21 +211,32 @@ export default function AIWorkspace({
               <input ref={fileInputRef} type="file" accept=".csv" onChange={handleCSVUpload} className="hidden" />
               <button
                 onClick={() => fileInputRef.current?.click()}
-                className="text-[10px] font-mono text-text-tertiary hover:text-text-primary px-2.5 py-1.5 border border-border-subtle rounded-md hover:border-border-default transition-all"
+                className="text-[10px] font-mono text-text-tertiary hover:text-text-primary px-3 py-2 border border-border-subtle rounded-md hover:border-accent/30 hover:bg-accent/5 transition-all"
               >
-                CSV批量
+                <span className="flex items-center gap-1.5">
+                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                    <path d="M2 1h8M2 5h8M2 9h8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+                  </svg>
+                  CSV批量
+                </span>
               </button>
             </>
           )}
           <button
             onClick={() => setShowHistory(!showHistory)}
-            className={`text-[10px] font-mono px-2.5 py-1.5 border rounded-md transition-all ${
+            className={`text-[10px] font-mono px-3 py-2 border rounded-md transition-all duration-200 ${
               showHistory
-                ? 'text-accent border-accent/30 bg-accent-dim'
-                : 'text-text-tertiary border-border-subtle hover:text-text-primary hover:border-border-default'
+                ? 'text-accent border-accent/40 bg-accent/15 shadow-[0_0_8px_rgba(200,151,90,0.2)]'
+                : 'text-text-tertiary border-border-subtle hover:text-text-primary hover:border-border-default hover:bg-bg-hover'
             }`}
           >
-            历史 ({history.length})
+            <span className="flex items-center gap-1.5">
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                <circle cx="6" cy="6" r="4.5" stroke="currentColor" strokeWidth="1.5"/>
+                <path d="M6 3v3l2 2" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+              </svg>
+              历史 <span className="font-semibold">({history.length})</span>
+            </span>
           </button>
         </div>
       </div>
@@ -329,51 +347,61 @@ export default function AIWorkspace({
       )}
 
       {/* Main workspace: input + output */}
-      <div className="flex flex-col lg:flex-row gap-4 flex-1 min-h-0">
+      <div className="flex flex-col lg:flex-row gap-5 flex-1 min-h-0">
         {/* 输入 */}
         <div className="flex-1 flex flex-col min-h-0">
-          <div className="flex items-center gap-2 mb-2.5">
-            <span className="label-mono">输入</span>
-            <div className="flex-1 h-px bg-border-subtle" />
+          <div className="flex items-center gap-2 mb-3">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" className="text-accent">
+              <path d="M2 4h10M2 7h10M2 10h6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/>
+            </svg>
+            <span className="label-mono text-[10px] font-bold">输入</span>
+            <div className="flex-1 h-px bg-gradient-to-r from-border-subtle to-transparent" />
           </div>
 
           {fields && fields.length > 0 && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-2.5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 mb-3">
               {fields.map(field => (
                 <div key={field.key}>
-                  <label className="text-[10px] font-mono text-text-tertiary mb-1.5 block uppercase tracking-wide">{field.label}</label>
+                  <label className="text-[9px] font-mono text-text-tertiary mb-1.5 block uppercase tracking-[0.12em] font-semibold">{field.label}</label>
                   <input
                     type="text"
                     placeholder={field.placeholder}
                     value={params[field.key] || ''}
                     onChange={e => setParams(prev => ({ ...prev, [field.key]: e.target.value }))}
-                    className="w-full bg-bg-surface border border-border-subtle rounded-md px-3 py-2 text-[12px] text-text-primary placeholder-text-tertiary transition-all focus:border-accent focus:shadow-[0_0_0_1px_rgba(200,151,90,0.2)]"
+                    className="w-full bg-bg-surface border border-border-subtle rounded-md px-3.5 py-2.5 text-[13px] text-text-primary placeholder-text-tertiary/60 transition-all focus:border-accent focus:bg-bg-raised focus:shadow-[0_0_0_2px_rgba(200,151,90,0.15)]"
                   />
                 </div>
               ))}
             </div>
           )}
 
-          <textarea
-            value={input}
-            onChange={e => setInput(e.target.value)}
-            onKeyDown={handleKeyDown}
-            placeholder={placeholder}
-            className="flex-1 min-h-[180px] bg-bg-surface border border-border-subtle rounded-md p-3.5 text-[13px] text-text-primary placeholder-text-tertiary resize-none transition-all leading-[1.7] focus:border-accent focus:shadow-[0_0_0_1px_rgba(200,151,90,0.2)]"
-          />
+          <div className="relative flex-1 min-h-[180px]">
+            <textarea
+              value={input}
+              onChange={e => setInput(e.target.value)}
+              onKeyDown={handleKeyDown}
+              placeholder={placeholder}
+              className="w-full h-full bg-bg-surface border border-border-subtle rounded-md p-4 text-[13px] text-text-primary placeholder-text-tertiary/60 resize-none transition-all leading-[1.75] focus:border-accent focus:bg-bg-raised focus:shadow-[0_0_0_2px_rgba(200,151,90,0.15)]"
+            />
+            {input.length > 0 && (
+              <div className="absolute bottom-3 right-3 text-[8px] font-mono text-text-tertiary/60 bg-bg-root/80 px-2 py-1 rounded border border-border-subtle">
+                {input.length} 字
+              </div>
+            )}
+          </div>
 
-          <div className="flex items-center justify-between mt-2.5">
-            <span className="text-[9px] font-mono text-text-tertiary tracking-wide">
-              {input.length > 0 ? `${input.length} 字` : 'Ctrl+Enter 提交'}
+          <div className="flex items-center justify-between mt-3">
+            <span className="text-[9px] font-mono text-text-tertiary tracking-wide bg-bg-surface px-2.5 py-1 rounded border border-border-subtle/50">
+              {input.length === 0 ? '⌨️ Ctrl+Enter 提交' : '准备就绪'}
             </span>
             <button
               onClick={handleSubmit}
               disabled={loading || !input.trim()}
-              className="px-4 py-2 bg-accent text-bg-root rounded-md font-medium text-[12px] hover:bg-accent-hover disabled:opacity-40 disabled:cursor-not-allowed transition-all font-[family-name:var(--font-outfit)]"
+              className="px-5 py-2.5 bg-accent text-bg-root rounded-md font-semibold text-[12px] hover:bg-accent-hover hover:shadow-[0_4px_12px_rgba(200,151,90,0.3)] disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-200 font-[family-name:var(--font-outfit)] active:scale-95"
             >
               {loading ? (
                 <span className="flex items-center gap-2">
-                  <svg className="w-3 h-3 animate-spin-smooth" viewBox="0 0 16 16" fill="none">
+                  <svg className="w-3.5 h-3.5 animate-spin-smooth" viewBox="0 0 16 16" fill="none">
                     <circle cx="8" cy="8" r="6" stroke="currentColor" strokeWidth="2" opacity="0.3"/>
                     <path d="M14 8a6 6 0 00-6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
                   </svg>
@@ -386,29 +414,33 @@ export default function AIWorkspace({
 
         {/* Divider */}
         <div className="hidden lg:flex flex-col items-center py-8">
-          <div className="w-px flex-1 bg-border-subtle opacity-40" />
-          <div className="my-2 w-4 h-4 border border-border-subtle rounded-full flex items-center justify-center">
-            <span className="text-[8px] font-mono text-text-tertiary">→</span>
+          <div className="w-px flex-1 bg-gradient-to-b from-transparent via-border-subtle to-transparent opacity-60" />
+          <div className="my-3 w-6 h-6 border-2 border-accent/30 rounded-full flex items-center justify-center bg-bg-surface shadow-[0_0_12px_rgba(200,151,90,0.15)]">
+            <span className="text-[10px] font-mono text-accent font-bold">→</span>
           </div>
-          <div className="w-px flex-1 bg-border-subtle opacity-40" />
+          <div className="w-px flex-1 bg-gradient-to-b from-border-subtle via-border-subtle to-transparent opacity-60" />
         </div>
 
         {/* 输出 */}
         <div className="flex-1 flex flex-col min-h-0">
-          <div className="flex items-center gap-2 mb-2.5">
-            <span className="label-mono">输出</span>
-            <div className="flex-1 h-px bg-border-subtle" />
+          <div className="flex items-center gap-2 mb-3">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" className="text-success">
+              <path d="M7 2v10M12 7H2" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/>
+              <circle cx="7" cy="7" r="5.5" stroke="currentColor" strokeWidth="1.5"/>
+            </svg>
+            <span className="label-mono text-[10px] font-bold">输出</span>
+            <div className="flex-1 h-px bg-gradient-to-r from-border-subtle to-transparent" />
             {result && (
               <div className="flex gap-1.5">
                 <button
                   onClick={handleCopy}
-                  className="text-[9px] font-mono text-text-tertiary hover:text-text-primary px-2 py-1 border border-border-subtle rounded-md hover:border-border-default transition-all"
+                  className="text-[9px] font-mono text-text-tertiary hover:text-accent px-2.5 py-1.5 border border-border-subtle rounded-md hover:border-accent/30 hover:bg-accent/5 transition-all"
                 >
                   {copied ? '✓ 已复制' : '复制'}
                 </button>
                 <button
                   onClick={exportSingleResult}
-                  className="text-[9px] font-mono text-text-tertiary hover:text-text-primary px-2 py-1 border border-border-subtle rounded-md hover:border-border-default transition-all"
+                  className="text-[9px] font-mono text-text-tertiary hover:text-accent px-2.5 py-1.5 border border-border-subtle rounded-md hover:border-accent/30 hover:bg-accent/5 transition-all"
                 >
                   导出
                 </button>
@@ -416,26 +448,49 @@ export default function AIWorkspace({
             )}
           </div>
 
-          <div className="flex-1 min-h-[180px] bg-bg-surface border border-border-subtle rounded-md p-3.5 overflow-y-auto">
+          <div className="flex-1 min-h-[180px] bg-bg-surface border border-border-subtle rounded-md p-4 overflow-y-auto relative">
             {error && (
-              <div className="text-[11px] font-mono text-error p-3 bg-error/5 border border-error/20 rounded-md mb-3">
+              <div className="text-[11px] font-mono text-error p-3.5 bg-error/5 border border-error/25 rounded-md mb-3 animate-fade-up">
+                <div className="flex items-center gap-2 mb-1">
+                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                    <circle cx="6" cy="6" r="5" stroke="currentColor" strokeWidth="1.5"/>
+                    <path d="M6 3v3M6 8v.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+                  </svg>
+                  <span className="font-semibold">错误</span>
+                </div>
                 {error}
               </div>
             )}
             {loading && (
-              <div className="flex flex-col items-center gap-3 text-text-tertiary py-12 justify-center">
-                <svg className="w-5 h-5 animate-spin-smooth text-accent" viewBox="0 0 16 16" fill="none">
-                  <circle cx="8" cy="8" r="6" stroke="currentColor" strokeWidth="2" opacity="0.3"/>
-                  <path d="M14 8a6 6 0 00-6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-                </svg>
-                <span className="text-[11px] font-mono">AI处理中...</span>
+              <div className="flex flex-col items-center gap-4 text-text-tertiary py-16 justify-center animate-fade-up">
+                <div className="relative">
+                  <svg className="w-8 h-8 animate-spin-smooth text-accent" viewBox="0 0 16 16" fill="none">
+                    <circle cx="8" cy="8" r="6" stroke="currentColor" strokeWidth="2" opacity="0.2"/>
+                    <path d="M14 8a6 6 0 00-6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                  </svg>
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="w-2 h-2 bg-accent rounded-full animate-pulse-dot" />
+                  </div>
+                </div>
+                <div className="text-center">
+                  <p className="text-[12px] font-mono text-text-primary font-semibold mb-1">AI 处理中</p>
+                  <p className="text-[9px] font-mono text-text-tertiary">正在生成专业结果...</p>
+                </div>
               </div>
             )}
             {result && (
-              <div className="text-[13px] text-text-secondary whitespace-pre-wrap leading-[1.7]">{result}</div>
+              <div className="prose prose-invert prose-sm max-w-none">
+                <div className="text-[13px] text-text-secondary whitespace-pre-wrap leading-[1.8]">{result}</div>
+              </div>
             )}
             {!result && !loading && !error && (
-              <div className="flex items-center justify-center h-full">
+              <div className="flex flex-col items-center justify-center h-full gap-3">
+                <div className="w-12 h-12 border border-border-subtle rounded-md flex items-center justify-center opacity-40">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" className="text-text-tertiary">
+                    <rect x="6" y="6" width="12" height="12" rx="2" stroke="currentColor" strokeWidth="1.5"/>
+                    <path d="M9 10h6M9 14h4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+                  </svg>
+                </div>
                 <p className="text-text-tertiary text-[11px] font-mono opacity-50">结果将在此显示</p>
               </div>
             )}
