@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 // USPTO常见商标数据库（高频侵权品牌）
-const KNOWN_TRADEMARKS = new Map([
+const KNOWN_TRADEMARKS = new Map<string, { owner: string; regNo: string; status: 'Live' | 'Dead' | 'Pending'; classes: string[] }>([
   ['APPLE', { owner: 'Apple Inc.', regNo: '1078312', status: 'Live', classes: ['9', '35', '38'] }],
   ['AIRPODS', { owner: 'Apple Inc.', regNo: '5467585', status: 'Live', classes: ['9'] }],
   ['IPHONE', { owner: 'Apple Inc.', regNo: '3457218', status: 'Live', classes: ['9'] }],
@@ -56,7 +56,7 @@ async function throttle() {
 }
 
 // 查询单个商标（先查本地库，再查USPTO）
-async function queryTrademark(keyword: string): Promise<TrademarkResult> {
+export async function queryTrademark(keyword: string): Promise<TrademarkResult> {
   const normalizedKeyword = keyword.toUpperCase();
 
   // 先查本地库

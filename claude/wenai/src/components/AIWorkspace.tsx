@@ -540,6 +540,14 @@ export default function AIWorkspace({
                   </div>
                 </div>
               )}
+              {/* 免责声明 */}
+              <div className="mt-3 px-3 py-2 border border-border-subtle rounded-md bg-bg-surface/50">
+                <p className="text-[9px] font-mono text-text-tertiary leading-relaxed">
+                  {moduleId === 'ip-compliance'
+                    ? '⚠️ 本工具使用有限数据库进行初步筛查，不构成法律意见，不能替代专业商标检索服务。高风险项请咨询注册商标律师。'
+                    : '⚠️ AI生成内容仅供参考，请结合实际业务判断。因使用AI建议产生的决策后果由使用者自行承担。'}
+                </p>
+              </div>
               <ExpertReview moduleId={moduleId} resultText={result} />
               <ResultFeedback moduleId={moduleId} resultText={result} />
             </>
