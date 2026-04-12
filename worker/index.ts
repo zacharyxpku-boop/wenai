@@ -1,12 +1,7 @@
 import { Worker, Job } from 'bullmq'
 import { connection } from './lib/redis.js'
 import './stalled-poller.js'  // starts interval-based stalled job detection
-
-// Placeholder handlers — Plans 03-05 replace these with real implementations
-async function runAnalysis(job: Job) {
-  console.log(`[analysis] job ${job.id}:`, JSON.stringify(job.data))
-  return { status: 'placeholder' }
-}
+import { runAnalysis } from './workers/analysis.worker.js'
 async function runFrameGeneration(job: Job) {
   console.log(`[frame-gen] job ${job.id}:`, JSON.stringify(job.data))
   return { status: 'placeholder' }
