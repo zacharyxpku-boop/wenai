@@ -1,18 +1,12 @@
 import { Worker, Job } from 'bullmq'
 import { connection } from './lib/redis.js'
 import './stalled-poller.js'  // starts interval-based stalled job detection
+import { runFrameGeneration } from './workers/frame-generation.worker.js'
+import { runVideoSynthesis } from './workers/video-synthesis.worker.js'
 
-// Placeholder handlers — Plans 03-05 replace these with real implementations
+// Placeholder handlers — Plans 03 and 05 replace these with real implementations
 async function runAnalysis(job: Job) {
   console.log(`[analysis] job ${job.id}:`, JSON.stringify(job.data))
-  return { status: 'placeholder' }
-}
-async function runFrameGeneration(job: Job) {
-  console.log(`[frame-gen] job ${job.id}:`, JSON.stringify(job.data))
-  return { status: 'placeholder' }
-}
-async function runVideoSynthesis(job: Job) {
-  console.log(`[video-syn] job ${job.id}:`, JSON.stringify(job.data))
   return { status: 'placeholder' }
 }
 async function runPostProcessing(job: Job) {
