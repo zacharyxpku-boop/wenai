@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { readFile } from 'fs/promises';
 import { join } from 'path';
-import { createToken, getCookieName, hashPassword } from '@/lib/auth';
+import { createToken, getCookieName, verifyPassword } from '@/lib/auth';
 
 interface AuthUserRecord {
   username: string;
@@ -30,11 +30,11 @@ export async function POST(request: NextRequest) {
     const authData = await readFile(authPath, 'utf-8');
     const authConfig: AuthConfig = JSON.parse(authData);
 
-    // Find user
-    const hashedInput = await hashPassword(password);
-    const user = authConfig.users.find(
-      u => u.username === username && u.password === hashedInput
-    );
+    // Find user by username first, then verify password
+    const matchedUser = authConfig.users.find(u => u.username === username);
+    const user = matchedUser && await verifyPassword(password, matchedUser.password)
+      ? matchedUser
+      : null;
 
     if (!user) {
       return NextResponse.json(

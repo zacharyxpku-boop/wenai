@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getReferenceContext } from '@/lib/references';
 import { logUsageEntry } from '@/lib/usage';
-import { extractBrandKeywords } from '@/app/api/trademark/route';
+import { checkRateLimit } from '@/lib/ratelimit';
+import { extractBrandKeywords, queryTrademark } from '@/app/api/trademark/route';
 
 interface TrademarkQueryResult {
   results: Array<{
@@ -18,7 +19,7 @@ interface TrademarkQueryResult {
   foundCount: number;
 }
 
-// 商标查询并生成上下文
+// 商标查询并生成上下文（直接函数调用，不走HTTP）
 async function getTrademarkContext(input: string): Promise<{ context: string; queryResult?: TrademarkQueryResult }> {
   try {
     const keywords = extractBrandKeywords(input);
@@ -26,18 +27,12 @@ async function getTrademarkContext(input: string): Promise<{ context: string; qu
       return { context: '' };
     }
 
-    const response = await fetch(`http://localhost:${process.env.PORT || 3000}/api/trademark`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ keywords }),
-    });
-
-    if (!response.ok) {
-      return { context: '' };
-    }
-
-    const data: TrademarkQueryResult = await response.json();
-    const registeredMarks = data.results.filter(r => r.found);
+    const results = await Promise.all(keywords.slice(0, 20).map(k => queryTrademark(k)));
+    const data: TrademarkQueryResult = {
+      results,
+      foundCount: results.filter(r => r.found).length,
+    };
+    const registeredMarks = results.filter(r => r.found);
 
     if (registeredMarks.length === 0) {
       return { context: '', queryResult: data };
@@ -62,6 +57,8 @@ ${registeredMarks.map(mark => `
 - 禁止使用"XX Style"、"XX Compatible"、"XX Type"等关联用法
 - 即使拼写变体（如AirPod→AirPods、XM→Xiaomi）也构成侵权
 - 建议改用通用产品描述（如"wireless earbuds"而非"AirPods-like"）
+
+⚠️ 免责声明：以上结果基于有限本地数据库，不构成法律意见。高风险项请咨询专业商标律师。
 `;
 
     return { context, queryResult: data };
@@ -84,6 +81,18 @@ export async function POST(request: NextRequest) {
       usage: { promptTokens: 0, completionTokens: 0 },
       demo: true,
     });
+  }
+
+  // 速率限制检查
+  const tenantId = request.headers.get('x-tenant-id') || 'default';
+  if (moduleId) {
+    const limit = checkRateLimit(moduleId, tenantId);
+    if (!limit.allowed) {
+      return NextResponse.json(
+        { error: `今日调用次数已达上限，将于 ${new Date(limit.resetAt).toLocaleString('zh-CN')} 重置` },
+        { status: 429 }
+      );
+    }
   }
 
   try {

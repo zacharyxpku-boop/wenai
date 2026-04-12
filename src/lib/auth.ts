@@ -1,8 +1,13 @@
 import { SignJWT, jwtVerify } from 'jose';
 
-const JWT_SECRET = new TextEncoder().encode(
-  process.env.JWT_SECRET || 'wenai-default-secret-change-in-production'
-);
+const DEFAULT_SECRET = 'wenai-default-secret-change-in-production';
+const secretValue = process.env.JWT_SECRET || DEFAULT_SECRET;
+
+if (process.env.NODE_ENV === 'production' && secretValue === DEFAULT_SECRET) {
+  console.warn('[AUTH] ⚠️ 使用默认JWT密钥，请在环境变量中设置 JWT_SECRET');
+}
+
+const JWT_SECRET = new TextEncoder().encode(secretValue);
 
 const COOKIE_NAME = 'wenai-session';
 const TOKEN_EXPIRY = '7d';
@@ -43,11 +48,24 @@ export function getCookieName(): string {
   return COOKIE_NAME;
 }
 
+const PASSWORD_SALT = process.env.PASSWORD_SALT || 'wenai-salt-2026';
+
 /**
- * Simple hash for password comparison.
+ * Salted hash for password comparison.
  * Uses Web Crypto API (available in Edge Runtime and Node 18+).
  */
 export async function hashPassword(password: string): Promise<string> {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(PASSWORD_SALT + password);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+/**
+ * Legacy hash (no salt) for backward compatibility during migration.
+ */
+export async function hashPasswordLegacy(password: string): Promise<string> {
   const encoder = new TextEncoder();
   const data = encoder.encode(password);
   const hashBuffer = await crypto.subtle.digest('SHA-256', data);
@@ -59,6 +77,9 @@ export async function verifyPassword(
   password: string,
   hashedPassword: string
 ): Promise<boolean> {
-  const hashed = await hashPassword(password);
-  return hashed === hashedPassword;
+  // Try salted hash first, fall back to legacy
+  const salted = await hashPassword(password);
+  if (salted === hashedPassword) return true;
+  const legacy = await hashPasswordLegacy(password);
+  return legacy === hashedPassword;
 }
