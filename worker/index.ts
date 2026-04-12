@@ -1,46 +1,59 @@
-import { Worker } from 'bullmq'
+import { Worker, Job } from 'bullmq'
 import { connection } from './lib/redis.js'
+import './stalled-poller.js'  // starts interval-based stalled job detection
 
-console.log('[worker] starting clico worker process...')
+// Placeholder handlers — Plans 03-05 replace these with real implementations
+async function runAnalysis(job: Job) {
+  console.log(`[analysis] job ${job.id}:`, JSON.stringify(job.data))
+  return { status: 'placeholder' }
+}
+async function runFrameGeneration(job: Job) {
+  console.log(`[frame-gen] job ${job.id}:`, JSON.stringify(job.data))
+  return { status: 'placeholder' }
+}
+async function runVideoSynthesis(job: Job) {
+  console.log(`[video-syn] job ${job.id}:`, JSON.stringify(job.data))
+  return { status: 'placeholder' }
+}
+async function runPostProcessing(job: Job) {
+  console.log(`[post-proc] job ${job.id}:`, JSON.stringify(job.data))
+  return { status: 'placeholder' }
+}
 
-// Phase 1: scaffold worker that logs received jobs
-// Phase 2 replaces this handler with actual AI pipeline logic
-const worker = new Worker(
-  'video-analysis',
-  async (job) => {
-    console.log(`[worker] received job ${job.id}:`, JSON.stringify(job.data))
-    // Phase 2: Gemini analysis, Flux generation, Kling synthesis, FFmpeg post
-    return { status: 'processed', jobId: job.id }
-  },
-  {
-    connection,
-    concurrency: 2,
-    // Lock must exceed maximum expected job duration (15 min for video gen)
-    lockDuration: 20 * 60 * 1000, // 20 minutes
-  }
-)
+console.log('[worker] starting clico pipeline workers...')
 
-worker.on('completed', (job) => {
-  console.log(`[worker] job ${job?.id} completed`)
+// QUEUE-01: Four named workers for each pipeline stage
+// QUEUE-06: lockDuration exceeds max expected job duration per stage
+const analysisWorker = new Worker('video-analysis', runAnalysis, {
+  connection, concurrency: 3, lockDuration: 20 * 60 * 1000,  // 20 min (Gemini + file upload)
+})
+const frameWorker = new Worker('frame-generation', runFrameGeneration, {
+  connection, concurrency: 5, lockDuration: 10 * 60 * 1000,  // 10 min (Flux polling)
+})
+const synthesisWorker = new Worker('video-synthesis', runVideoSynthesis, {
+  connection, concurrency: 2, lockDuration: 5 * 60 * 1000,   // 5 min (just submits to Kling)
+})
+const postWorker = new Worker('post-processing', runPostProcessing, {
+  connection, concurrency: 1, lockDuration: 20 * 60 * 1000,  // 20 min (FFmpeg, concurrency: 1 per research)
 })
 
-worker.on('failed', (job, err) => {
-  console.error(`[worker] job ${job?.id} failed:`, err.message)
-})
+const ALL_WORKERS = [analysisWorker, frameWorker, synthesisWorker, postWorker]
 
-worker.on('error', (err) => {
-  console.error('[worker] worker error:', err.message)
-})
+for (const w of ALL_WORKERS) {
+  w.on('completed', (job) => console.log(`[worker] ${w.name} job ${job?.id} completed`))
+  w.on('failed', (job, err) => console.error(`[worker] ${w.name} job ${job?.id} failed:`, err.message))
+  w.on('error', (err) => console.error(`[worker] ${w.name} error:`, err.message))
+}
 
-// INFRA-05: Graceful shutdown on SIGTERM (Railway sends this on deploy/restart)
+// INFRA-05: Graceful shutdown on SIGTERM
 const shutdown = async (signal: string) => {
   console.log(`[worker] received ${signal}, shutting down gracefully...`)
-  await worker.close()
-  console.log('[worker] worker closed, exiting')
+  await Promise.all(ALL_WORKERS.map(w => w.close()))
+  console.log('[worker] all workers closed, exiting')
   process.exit(0)
 }
 
 process.on('SIGTERM', () => shutdown('SIGTERM'))
 process.on('SIGINT', () => shutdown('SIGINT'))
 
-console.log('[worker] listening for jobs on video-analysis queue')
+console.log('[worker] listening on queues: video-analysis, frame-generation, video-synthesis, post-processing')
