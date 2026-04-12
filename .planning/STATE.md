@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 02-ai-pipeline-04-PLAN.md
-last_updated: "2026-04-12T17:57:02.789Z"
+stopped_at: Completed 02-ai-pipeline-05-PLAN.md
+last_updated: "2026-04-12T18:02:51.555Z"
 last_activity: 2026-04-12
 progress:
   total_phases: 3
   completed_phases: 1
   total_plans: 8
-  completed_plans: 5
+  completed_plans: 7
   percent: 33
 ---
 
@@ -26,7 +26,7 @@ See: .planning/PROJECT.md (updated 2026-04-12)
 ## Current Position
 
 Phase: 02 (ai-pipeline) — EXECUTING
-Plan: 2 of 5
+Plan: 3 of 5
 Status: Ready to execute
 Last activity: 2026-04-12
 
@@ -54,6 +54,7 @@ Progress: [███░░░░░░░] 33%
 | Phase 01-foundation P01 | 10 | 3 tasks | 10 files |
 | Phase 01-foundation P03 | 6 | 2 tasks | 8 files |
 | Phase 02-ai-pipeline P04 | 15 | 2 tasks | 3 files |
+| Phase 02-ai-pipeline P05 | 18 | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -72,6 +73,8 @@ Progress: [███░░░░░░░] 33%
 - [Phase 01-foundation]: fal.ai proxy via createRouteHandler — zero-config, reads FAL_KEY from process.env automatically
 - [Phase 02-ai-pipeline]: Flux Pro image_size uses 'portrait_16_9' enum (not '9:16' ratio format) — API pitfall difference from Kling aspect_ratio
 - [Phase 02-ai-pipeline]: Video synthesis sets waiting_external status after Kling submissions — webhook handler owns transition to post-processing
+- [Phase 02-ai-pipeline]: SRT colon escaping uses double-backslash before colon for FFmpeg subtitle filter on Windows paths
+- [Phase 02-ai-pipeline]: Post-processing concurrency: 1 (FFmpeg memory constraint per research)
 
 ### Pending Todos
 
@@ -85,6 +88,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-12T17:57:02.783Z
-Stopped at: Completed 02-ai-pipeline-04-PLAN.md
+Last session: 2026-04-12T18:02:51.549Z
+Stopped at: Completed 02-ai-pipeline-05-PLAN.md
 Resume file: None
