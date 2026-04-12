@@ -1,0 +1,6 @@
+Planning: "smoke-test"
+Analyzing codebase...
+
+Plan failed: Planning failed: {"type":"thread.started","thread_id":"019d195f-be16-7e41-b29d-a5acb9747553"}
+{"type":"turn.started"}
+{"type":"item.started","item":{"id":"item_0","type":"command_execution","command":"cmd.exe /c 'Get-

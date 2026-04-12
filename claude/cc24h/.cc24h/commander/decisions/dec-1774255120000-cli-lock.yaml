@@ -1,0 +1,7 @@
+id: dec-1774255120000-cli-lock
+session: codex
+type: runtime_continuity
+input: Parallel raw `cc24h` CLI invocations can load and save the same `.cc24h/state.db`, causing last-writer-wins clobbering even for nominally read-only commands such as `status`.
+decision: Add a project-level CLI mutex in `bin/cc24h.mjs` backed by `src/cli-lock.mjs` so one `cc24h` process at a time operates on a given project state directory.
+reasoning: Command-level serialization is the smallest reliable fix for the current continuity risk because it protects the entire init→mutate→save lifecycle without redesigning the sql.js persistence layer.
+time: '2026-03-23T08:38:00.000Z'

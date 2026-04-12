@@ -1,0 +1,266 @@
+project: cc24h
+plan: marketing-ops-system
+version: "1.0"
+created: "2026-03-26"
+description: "Automated AI Marketing Team — 10 roles, 9 workflows, integrated with Commander + Commercialization Council"
+
+# =============================================================================
+# Wave 1: Foundation (Day 1) — Team structure + core pipelines
+# =============================================================================
+
+tasks:
+  - id: mkt-001
+    title: "Create marketing team agent definitions (10 roles)"
+    status: done
+    role: commander
+    risk_level: L1
+    parallel_safe: true
+    files_touched:
+      - .claude/agents/mkt-campaign-director.md
+      - .claude/agents/mkt-audience-insight.md
+      - .claude/agents/mkt-channel-launch.md
+      - .claude/agents/mkt-content-strategy.md
+      - .claude/agents/mkt-conversion-copy.md
+      - .claude/agents/mkt-creative-asset.md
+      - .claude/agents/mkt-referral-campaign.md
+      - .claude/agents/mkt-growth-ops.md
+      - .claude/agents/mkt-analyst.md
+      - .claude/agents/mkt-red-team.md
+    done_definition: "All 10 agent .md files exist with role, inputs, outputs, boundary, challenge rights"
+
+  - id: mkt-002
+    title: "Create 9 marketing workflow skills"
+    status: done
+    role: commander
+    risk_level: L1
+    parallel_safe: true
+    depends_on: []
+    files_touched:
+      - .claude/skills/campaign-brief-generator/SKILL.md
+      - .claude/skills/content-angle-generator/SKILL.md
+      - .claude/skills/multi-channel-content-pack/SKILL.md
+      - .claude/skills/asset-brief-pack/SKILL.md
+      - .claude/skills/private-launch-pack/SKILL.md
+      - .claude/skills/referral-campaign-pack/SKILL.md
+      - .claude/skills/seo-content-matrix/SKILL.md
+      - .claude/skills/qa-comment-reply-pack/SKILL.md
+      - .claude/skills/marketing-retro-pack/SKILL.md
+    done_definition: "All 9 SKILL.md files exist with trigger, inputs, execution steps, outputs, risk level"
+
+  - id: mkt-003
+    title: "Create docs/marketing-ops.md — team architecture"
+    status: done
+    role: commander
+    risk_level: L1
+    parallel_safe: true
+    files_touched:
+      - docs/marketing-ops.md
+    done_definition: "Document covers: 10 roles, Council relationship, 5-step decision protocol, product-stage adaptation, automation boundary matrix"
+
+  - id: mkt-004
+    title: "Create docs/marketing-workflows.md — 9 pipeline definitions"
+    status: done
+    role: commander
+    risk_level: L1
+    parallel_safe: true
+    files_touched:
+      - docs/marketing-workflows.md
+    done_definition: "Document covers: 9 workflows with trigger, roles, steps, output, automation level, risk, dependency map"
+
+  - id: mkt-005
+    title: "Update docs/routing-policy.md — marketing team routing"
+    status: done
+    role: commander
+    risk_level: L1
+    parallel_safe: false
+    depends_on: [mkt-001, mkt-002]
+    files_touched:
+      - docs/routing-policy.md
+    done_definition: "Routing table includes marketing team triggers, partial invocation rules, Red Team mandatory rules, Council-to-Marketing handoff"
+
+  - id: mkt-006
+    title: "Update docs/progress.md with Phase 13"
+    status: done
+    role: commander
+    risk_level: L1
+    parallel_safe: false
+    depends_on: [mkt-001, mkt-002, mkt-003, mkt-004, mkt-005]
+    files_touched:
+      - docs/progress.md
+    done_definition: "Phase 13 entry documents all new agents, skills, workflows, docs"
+
+# =============================================================================
+# Wave 2: State Infrastructure (Day 2) — Storage + templates
+# =============================================================================
+
+  - id: mkt-010
+    title: "Create state/marketing/ directory structure"
+    status: todo
+    role: mkt-growth-ops
+    risk_level: L1
+    parallel_safe: true
+    depends_on: [mkt-002]
+    files_touched:
+      - state/marketing/.gitkeep
+      - state/marketing/content-packs/.gitkeep
+      - state/marketing/asset-briefs/.gitkeep
+      - state/marketing/referral-pack/.gitkeep
+    done_definition: "Directory tree exists with .gitkeep files"
+
+  - id: mkt-011
+    title: "Create campaign brief template"
+    status: todo
+    role: mkt-campaign-director
+    risk_level: L1
+    parallel_safe: true
+    depends_on: [mkt-002]
+    files_touched:
+      - state/marketing/templates/campaign-brief-template.md
+    done_definition: "Template file with all required fields, can be filled by campaign-brief-generator"
+
+  - id: mkt-012
+    title: "Create content pack templates per platform"
+    status: todo
+    role: mkt-growth-ops
+    risk_level: L1
+    parallel_safe: true
+    depends_on: [mkt-002]
+    files_touched:
+      - state/marketing/templates/xhs-post-template.md
+      - state/marketing/templates/zhihu-answer-template.md
+      - state/marketing/templates/moments-post-template.md
+      - state/marketing/templates/group-message-template.md
+    done_definition: "4 platform templates with all required fields"
+
+# =============================================================================
+# Wave 3: First Execution — MiraLife P0 Campaign (Day 3-5)
+# =============================================================================
+
+  - id: mkt-020
+    title: "Run campaign-brief-generator for MiraLife"
+    status: todo
+    role: mkt-campaign-director
+    risk_level: L1
+    parallel_safe: true
+    depends_on: [mkt-010, mkt-011]
+    files_touched:
+      - state/marketing/campaign-brief-miralife.md
+    done_definition: "Campaign brief exists with objective, KPI, timeline, channel, content pillars"
+
+  - id: mkt-021
+    title: "Run content-angle-generator for MiraLife"
+    status: todo
+    role: mkt-content-strategy
+    risk_level: L1
+    parallel_safe: false
+    depends_on: [mkt-020]
+    files_touched:
+      - state/marketing/content-angles-miralife.md
+    done_definition: "30+ angles across 6 categories, ranked by composite score"
+
+  - id: mkt-022
+    title: "Generate 3 XHS seeding posts for MiraLife"
+    status: todo
+    role: mkt-conversion-copy
+    risk_level: L2
+    parallel_safe: false
+    depends_on: [mkt-021]
+    files_touched:
+      - state/marketing/content-packs/xhs-miralife/
+    done_definition: "3 complete XHS packs: radar chart, self-portrait, compatibility — each with 5 titles, 3 bodies, covers, comments, hashtags, risk words"
+
+  - id: mkt-023
+    title: "Generate private launch pack for MiraLife"
+    status: todo
+    role: mkt-channel-launch
+    risk_level: L2
+    parallel_safe: true
+    depends_on: [mkt-020]
+    files_touched:
+      - state/marketing/private-launch-pack-miralife.md
+    done_definition: "Complete kit: Moments posts, DM scripts, group welcome, message sequence, feedback form"
+
+  - id: mkt-024
+    title: "Generate referral pack for MiraLife compatibility"
+    status: todo
+    role: mkt-referral-campaign
+    risk_level: L2
+    parallel_safe: true
+    depends_on: [mkt-020]
+    files_touched:
+      - state/marketing/referral-pack-miralife/
+    done_definition: "Share texts, comparison image copy, 3-platform versions, receiver experience spec"
+
+  - id: mkt-025
+    title: "Generate asset briefs for all MiraLife content"
+    status: todo
+    role: mkt-creative-asset
+    risk_level: L1
+    parallel_safe: false
+    depends_on: [mkt-022, mkt-023, mkt-024]
+    files_touched:
+      - state/marketing/asset-briefs/miralife/
+    done_definition: "Asset briefs for all covers, screenshots, charts referenced in content packs"
+
+  - id: mkt-026
+    title: "Red Team review of all MiraLife launch materials"
+    status: todo
+    role: mkt-red-team
+    risk_level: L2
+    parallel_safe: false
+    depends_on: [mkt-022, mkt-023, mkt-024, mkt-025]
+    files_touched:
+      - state/marketing/red-team-review-miralife.md
+    done_definition: "All content reviewed, flagged items documented, BLOCK/WARNING/NOTE per piece"
+
+# =============================================================================
+# Wave 4: SEO + QA (Week 2)
+# =============================================================================
+
+  - id: mkt-030
+    title: "Generate SEO content matrix for MiraLife"
+    status: todo
+    role: mkt-content-strategy
+    risk_level: L1
+    parallel_safe: true
+    depends_on: [mkt-020]
+    files_touched:
+      - state/marketing/seo-matrix-miralife.md
+    done_definition: "20 topics with keywords, outlines, FAQs, CTAs, priority waves"
+
+  - id: mkt-031
+    title: "Generate QA comment reply pack for MiraLife"
+    status: todo
+    role: mkt-conversion-copy
+    risk_level: L1
+    parallel_safe: true
+    depends_on: [mkt-020]
+    files_touched:
+      - state/marketing/qa-pack-miralife.md
+    done_definition: "20 questions with long/short answers, objection handling, traffic scripts"
+
+# =============================================================================
+# Wave 5: Retro + Loop (Week 3+)
+# =============================================================================
+
+  - id: mkt-040
+    title: "First marketing retro for MiraLife"
+    status: todo
+    role: mkt-analyst
+    risk_level: L1
+    parallel_safe: true
+    depends_on: [mkt-022, mkt-023]
+    files_touched:
+      - state/marketing/retro-miralife-w1.md
+    done_definition: "Data table, pattern analysis, CONTINUE/STOP/AMPLIFY/TEST, next hypothesis"
+
+  - id: mkt-041
+    title: "Feed retro into next campaign brief cycle"
+    status: todo
+    role: mkt-campaign-director
+    risk_level: L1
+    parallel_safe: false
+    depends_on: [mkt-040]
+    files_touched:
+      - state/marketing/campaign-brief-miralife-v2.md
+    done_definition: "Updated campaign brief incorporating retro learnings"

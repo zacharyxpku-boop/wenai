@@ -1,0 +1,24 @@
+id: handoff-1774255120000-cli-lock
+goal: Harden the `cc24h` runtime continuity fix by preventing concurrent CLI processes from clobbering `.cc24h/state.db`
+completed:
+  - Added `src/cli-lock.mjs` with project-scoped mutex acquisition, busy timeout, and dead-pid stale lock reclamation
+  - Wired Commander CLI preAction and postAction hooks in `bin/cc24h.mjs` so project-level commands automatically serialize per project
+  - Added `tests/cli-lock.test.mjs` covering lock acquire/release, contention timeout, and stale-lock takeover
+  - Re-verified `status` and `sync` against `C:\Users\86136\Desktop\cc24h` after the mutex landed; runtime continuity state remained stable at `todo=3`, `run=0`, `done=0`
+  - Updated `docs/progress.md` to reflect the new CLI mutex and the narrower remaining persistence risk
+remaining:
+  - Decide whether any non-CLI writers still need to reuse the same mutex contract
+  - Evaluate whether `Database.init()` should avoid unconditional save-on-open now that the higher-level mutex exists
+files_modified:
+  - src/cli-lock.mjs
+  - bin/cc24h.mjs
+  - tests/cli-lock.test.mjs
+  - docs/progress.md
+test_results: `node --test tests/cli-lock.test.mjs` passed 3/3; `node bin/cc24h.mjs status -p C:\Users\86136\Desktop\cc24h` and `node bin/cc24h.mjs sync -p C:\Users\86136\Desktop\cc24h` both succeeded after the mutex was added
+risks: External tools that bypass `bin/cc24h.mjs` and write `.cc24h/state.db` directly are still outside the mutex boundary
+next_steps: Continue the same workstream only if needed by either reusing the CLI mutex in other entrypoints or reducing unnecessary save-on-open behavior inside `src/database.mjs`
+can_parallel: false
+created_at: '2026-03-23T08:38:00.000Z'
+from_session: codex
+to_session: commander
+task_id: runtime-continuity-cli-lock

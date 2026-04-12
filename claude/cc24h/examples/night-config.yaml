@@ -1,0 +1,36 @@
+# cc24h - Night Mode Configuration Example
+
+mode: night
+max_parallel: 1          # Conservative for unattended
+checkpoint_interval: 300  # Every 5 minutes
+watchdog_interval: 60     # Check every minute
+cooldown: 30              # 30s between tasks
+
+# Retry policy
+max_retries: 2
+retry_backoff: exponential  # 30s, 60s, 120s
+
+# Safety guardrails
+guardrails:
+  max_files_per_task: 10      # Don't let one task touch too many files
+  max_turns_per_task: 50      # Lower than interactive mode
+  auto_quarantine_after: 3    # Failures before quarantine
+  require_tests_pass: true    # Don't mark done if tests fail
+  forbidden_paths:             # Never modify these
+    - .env
+    - .env.local
+    - package-lock.json
+    - credentials/
+
+# Git strategy
+git:
+  use_worktree: true
+  auto_commit: true
+  commit_prefix: "night-auto"
+  branch_prefix: "cc24h/night/"
+
+# Notification (future feature)
+notify:
+  on_complete: false
+  on_failure: true
+  channel: file  # file | slack | email (only file implemented)

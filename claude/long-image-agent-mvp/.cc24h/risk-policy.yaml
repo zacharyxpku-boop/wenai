@@ -1,0 +1,44 @@
+version: 1.0.0
+high_risk_zones:
+  - auth
+  - payment
+  - migration
+  - secrets
+  - deploy
+  - database-schema
+  - ci-cd
+auto_approve_levels:
+  - L1
+  - L2
+require_review_levels:
+  - L3
+  - L4
+max_concurrent_trials: 2
+max_fail_rate_before_disable: 0.5
+min_uses_before_promotion: 3
+directory_rules:
+  - pattern: src/auth/**
+    max_risk: L2
+    reason: auth is sensitive
+  - pattern: src/payment/**
+    max_risk: L1
+    reason: 'payment: read-only only'
+  - pattern: migrations/**
+    max_risk: L1
+    reason: 'migrations: read-only only'
+  - pattern: .env*
+    max_risk: L1
+    reason: 'secrets: read-only only'
+  - pattern: tests/**
+    max_risk: L4
+    reason: 'tests: allow all skill levels'
+  - pattern: docs/**
+    max_risk: L3
+    reason: 'docs: allow writes'
+task_rules:
+  - tag: refactor
+    max_risk: L3
+    reason: limit refactor scope
+  - tag: hotfix
+    max_risk: L2
+    reason: hotfixes need human review

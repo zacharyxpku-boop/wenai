@@ -1,0 +1,7 @@
+id: dec-1774264200000-continuous-execution
+session: codex
+type: operating_policy
+input: The user explicitly requested that Commander stop asking for permission to continue after each round and instead keep advancing by default.
+decision: Encode "continuous execution by default" into the Commander prompt source and root repo instructions, while preserving mandatory pauses for high-risk domains, environment blockers, and irreversible forks.
+reasoning: This is the smallest durable way to align runtime behavior with the user's operating preference without weakening existing risk controls.
+time: '2026-03-23T11:10:00.000Z'

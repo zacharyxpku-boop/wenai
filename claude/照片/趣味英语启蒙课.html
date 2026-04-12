@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>趣味英语启蒙课</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Noto Sans SC', sans-serif;
+    background: #f5f5f5;
+    display: flex;
+    justify-content: center;
+  }
+
+  .page {
+    width: 390px;
+    background: #fff;
+    overflow: hidden;
+  }
+
+  /* ===== HERO SECTION ===== */
+  .hero {
+    background: linear-gradient(135deg, #FF6B35 0%, #FF8C42 40%, #FFA726 100%);
+    padding: 28px 20px 24px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -40px; right: -40px;
+    width: 160px; height: 160px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 50%;
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    bottom: -30px; left: -20px;
+    width: 120px; height: 120px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 50%;
+  }
+  .hero-badge {
+    display: inline-block;
+    background: #fff;
+    color: #FF6B35;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 20px;
+    margin-bottom: 14px;
+  }
+  .hero h1 {
+    color: #fff;
+    font-size: 32px;
+    font-weight: 900;
+    line-height: 1.2;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    position: relative;
+    z-index: 1;
+  }
+  .hero h1 em {
+    font-style: normal;
+    color: #FFE082;
+  }
+  .hero-sub {
+    color: rgba(255,255,255,0.92);
+    font-size: 14px;
+    margin-top: 8px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ===== PRICE BANNER ===== */
+  .price-banner {
+    background: linear-gradient(90deg, #FF3D00 0%, #FF6D00 100%);
+    padding: 18px 20px;
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    position: relative;
+  }
+  .price-banner .price {
+    color: #FFE082;
+    font-size: 48px;
+    font-weight: 900;
+    line-height: 1;
+  }
+  .price-banner .price .yen {
+    font-size: 22px;
+    vertical-align: top;
+    margin-right: 2px;
+  }
+  .price-banner .orig-price {
+    color: rgba(255,255,255,0.6);
+    font-size: 14px;
+    text-decoration: line-through;
+  }
+  .price-banner .tag {
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: #FFE082;
+    color: #D32F2F;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 5px 14px;
+    border-radius: 20px;
+  }
+
+  /* ===== SECTION COMMON ===== */
+  .section {
+    padding: 28px 20px;
+  }
+  .section-title {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  .section-title h2 {
+    font-size: 22px;
+    font-weight: 900;
+    color: #333;
+    position: relative;
+    display: inline-block;
+  }
+  .section-title h2::before,
+  .section-title h2::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    width: 24px;
+    height: 3px;
+    background: #FF6B35;
+    border-radius: 2px;
+  }
+  .section-title h2::before { right: calc(100% + 12px); }
+  .section-title h2::after { left: calc(100% + 12px); }
+  .section-title p {
+    font-size: 13px;
+    color: #999;
+    margin-top: 4px;
+  }
+
+  /* ===== PAIN POINTS ===== */
+  .pain-section {
+    background: #FFF8E1;
+  }
+  .pain-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .pain-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  }
+  .pain-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    flex-shrink: 0;
+  }
+  .pain-icon.red { background: #FFEBEE; }
+  .pain-icon.blue { background: #E3F2FD; }
+  .pain-icon.purple { background: #F3E5F5; }
+  .pain-card h3 {
+    font-size: 15px;
+    font-weight: 700;
+    color: #333;
+  }
+  .pain-card p {
+    font-size: 12px;
+    color: #999;
+    margin-top: 2px;
+  }
+
+  /* ===== FEATURES / STEPS ===== */
+  .steps-section {
+    background: linear-gradient(180deg, #E8F5E9 0%, #fff 100%);
+  }
+  .step-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .step-item {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+  }
+  .step-num {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #43A047, #66BB6A);
+    color: #fff;
+    font-size: 16px;
+    font-weight: 900;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .step-content h3 {
+    font-size: 16px;
+    font-weight: 700;
+    color: #2E7D32;
+  }
+  .step-content p {
+    font-size: 13px;
+    color: #666;
+    margin-top: 4px;
+    line-height: 1.5;
+  }
+
+  /* ===== STATS GRID ===== */
+  .stats-section {
+    background: linear-gradient(135deg, #1A237E 0%, #283593 100%);
+    color: #fff;
+  }
+  .stats-section .section-title h2 { color: #fff; }
+  .stats-section .section-title h2::before,
+  .stats-section .section-title h2::after { background: #FFD54F; }
+  .stats-section .section-title p { color: rgba(255,255,255,0.6); }
+  .stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  .stat-card {
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 14px;
+    padding: 18px 14px;
+    text-align: center;
+    backdrop-filter: blur(4px);
+  }
+  .stat-num {
+    font-size: 36px;
+    font-weight: 900;
+    color: #FFD54F;
+    line-height: 1;
+  }
+  .stat-num span {
+    font-size: 16px;
+  }
+  .stat-label {
+    font-size: 13px;
+    color: rgba(255,255,255,0.8);
+    margin-top: 6px;
+  }
+
+  /* ===== AI SECTION ===== */
+  .ai-section {
+    background: linear-gradient(180deg, #E1F5FE 0%, #fff 100%);
+  }
+  .ai-features {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .ai-card {
+    background: #fff;
+    border-radius: 14px;
+    padding: 18px;
+    box-shadow: 0 4px 16px rgba(3, 169, 244, 0.1);
+    border-left: 4px solid #03A9F4;
+  }
+  .ai-card h3 {
+    font-size: 16px;
+    font-weight: 700;
+    color: #0277BD;
+    margin-bottom: 6px;
+  }
+  .ai-card h3 .emoji {
+    margin-right: 6px;
+  }
+  .ai-card p {
+    font-size: 13px;
+    color: #666;
+    line-height: 1.6;
+  }
+  .ai-highlight {
+    display: inline-block;
+    background: #E1F5FE;
+    color: #0277BD;
+    font-weight: 700;
+    padding: 1px 8px;
+    border-radius: 4px;
+    font-size: 13px;
+  }
+
+  /* ===== TEACHER SECTION ===== */
+  .teacher-section {
+    background: #FFF3E0;
+  }
+  .teacher-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .teacher-card {
+    background: #fff;
+    border-radius: 14px;
+    padding: 18px;
+    display: flex;
+    gap: 14px;
+    align-items: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  }
+  .teacher-avatar {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    flex-shrink: 0;
+  }
+  .teacher-avatar.t1 { background: linear-gradient(135deg, #FF8A80, #FF5252); }
+  .teacher-avatar.t2 { background: linear-gradient(135deg, #82B1FF, #448AFF); }
+  .teacher-info h3 {
+    font-size: 15px;
+    font-weight: 700;
+    color: #333;
+  }
+  .teacher-info .tag {
+    display: inline-block;
+    background: #FFF3E0;
+    color: #E65100;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 4px;
+    margin-top: 4px;
+  }
+  .teacher-info p {
+    font-size: 12px;
+    color: #999;
+    margin-top: 4px;
+    line-height: 1.5;
+  }
+
+  /* ===== REVIEWS ===== */
+  .reviews-section {
+    background: #F3E5F5;
+  }
+  .review-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .review-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  }
+  .review-top {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+  .review-ava {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: #CE93D8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 700;
+  }
+  .review-name {
+    font-size: 14px;
+    font-weight: 700;
+    color: #333;
+  }
+  .review-stars {
+    margin-left: auto;
+    color: #FFB300;
+    font-size: 14px;
+  }
+  .review-text {
+    font-size: 13px;
+    color: #555;
+    line-height: 1.6;
+  }
+
+  /* ===== ISBN / BOOK ===== */
+  .book-section {
+    background: #ECEFF1;
+  }
+  .book-info {
+    background: #fff;
+    border-radius: 14px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  }
+  .book-info h3 {
+    font-size: 16px;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 12px;
+    text-align: center;
+  }
+  .isbn-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .isbn-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    color: #555;
+  }
+  .isbn-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #FF6B35;
+    flex-shrink: 0;
+  }
+
+  /* ===== FAQ ===== */
+  .faq-section {
+    background: #fff;
+  }
+  .faq-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .faq-item {
+    border: 1px solid #eee;
+    border-radius: 12px;
+    padding: 16px;
+  }
+  .faq-q {
+    font-size: 14px;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 6px;
+  }
+  .faq-q::before {
+    content: 'Q';
+    display: inline-block;
+    width: 22px;
+    height: 22px;
+    background: #FF6B35;
+    color: #fff;
+    border-radius: 6px;
+    text-align: center;
+    line-height: 22px;
+    font-size: 12px;
+    font-weight: 900;
+    margin-right: 8px;
+    vertical-align: middle;
+  }
+  .faq-a {
+    font-size: 13px;
+    color: #777;
+    line-height: 1.6;
+    padding-left: 30px;
+  }
+
+  /* ===== CTA ===== */
+  .cta-section {
+    background: linear-gradient(135deg, #FF6B35 0%, #FF3D00 100%);
+    padding: 30px 20px;
+    text-align: center;
+  }
+  .cta-section h2 {
+    color: #fff;
+    font-size: 22px;
+    font-weight: 900;
+    margin-bottom: 6px;
+  }
+  .cta-section p {
+    color: rgba(255,255,255,0.8);
+    font-size: 13px;
+    margin-bottom: 20px;
+  }
+  .cta-btn {
+    display: inline-block;
+    background: #FFE082;
+    color: #D32F2F;
+    font-size: 18px;
+    font-weight: 900;
+    padding: 14px 50px;
+    border-radius: 30px;
+    text-decoration: none;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.04); }
+  }
+  .cta-note {
+    color: rgba(255,255,255,0.6);
+    font-size: 11px;
+    margin-top: 12px;
+  }
+
+  /* ===== FOOTER ===== */
+  .footer {
+    background: #263238;
+    padding: 20px;
+    text-align: center;
+    color: rgba(255,255,255,0.4);
+    font-size: 11px;
+    line-height: 1.8;
+  }
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-badge">限时特惠 · 名额有限</div>
+    <h1>趣味<em>自然拼读</em><br>启蒙课</h1>
+    <p class="hero-sub">让孩子"见词能读、听音能写"的第一步</p>
+  </div>
+
+  <!-- PRICE -->
+  <div class="price-banner">
+    <div class="price"><span class="yen">¥</span>39.9</div>
+    <div class="orig-price">原价 ¥299</div>
+    <div class="tag">限时1.3折</div>
+  </div>
+
+  <!-- PAIN POINTS -->
+  <div class="section pain-section">
+    <div class="section-title">
+      <h2>孩子学英语的烦恼</h2>
+      <p>您家孩子是否也有这些问题？</p>
+    </div>
+    <div class="pain-cards">
+      <div class="pain-card">
+        <div class="pain-icon red">😫</div>
+        <div>
+          <h3>死记硬背记不住</h3>
+          <p>单词今天背明天忘，越学越没信心</p>
+        </div>
+      </div>
+      <div class="pain-card">
+        <div class="pain-icon blue">🤐</div>
+        <div>
+          <h3>发音不标准不敢说</h3>
+          <p>怕被同学笑话，英语课不敢开口</p>
+        </div>
+      </div>
+      <div class="pain-card">
+        <div class="pain-icon purple">😵</div>
+        <div>
+          <h3>拼读规则太复杂</h3>
+          <p>规则多又杂，家长辅导也头疼</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4 STEPS -->
+  <div class="section steps-section">
+    <div class="section-title">
+      <h2>四步轻松入门</h2>
+      <p>科学进阶，零基础也能学会</p>
+    </div>
+    <div class="step-list">
+      <div class="step-item">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <h3>认识字母与发音</h3>
+          <p>趣味动画演绎26个字母的核心发音，让孩子在故事中建立语音意识</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <h3>图解音节拆分</h3>
+          <p>用彩色图卡把单词拆成"音块"，像搭积木一样轻松理解拼读逻辑</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <h3>口诀+联想记忆</h3>
+          <p>朗朗上口的拼读口诀配合情景联想，告别死记硬背</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">4</div>
+        <div class="step-content">
+          <h3>AI互动实战练习</h3>
+          <p>智能语音互动练习，即时纠音打分，越练越自信</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STATS -->
+  <div class="section stats-section">
+    <div class="section-title">
+      <h2>课程内容一览</h2>
+      <p>海量资源 · 系统覆盖</p>
+    </div>
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-num">800<span>+</span></div>
+        <div class="stat-label">趣味情景图解</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">1200<span>+</span></div>
+        <div class="stat-label">拼读专项练习</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">520<span>+</span></div>
+        <div class="stat-label">进阶记忆口诀</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">3000<span>+</span></div>
+        <div class="stat-label">AI互动测评次数</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- AI FEATURES -->
+  <div class="section ai-section">
+    <div class="section-title">
+      <h2>AI智能学习系统</h2>
+      <p>让每个孩子都有专属"外教"</p>
+    </div>
+    <div class="ai-features">
+      <div class="ai-card">
+        <h3><span class="emoji">🎙️</span>AI语音纠正</h3>
+        <p>智能识别发音偏差，<span class="ai-highlight">逐词逐句纠正</span>，模拟真人外教一对一正音体验</p>
+      </div>
+      <div class="ai-card">
+        <h3><span class="emoji">📊</span>学习数据追踪</h3>
+        <p>每日生成学习报告，<span class="ai-highlight">精准定位薄弱环节</span>，家长随时掌握孩子进度</p>
+      </div>
+      <div class="ai-card">
+        <h3><span class="emoji">🎮</span>趣味闯关模式</h3>
+        <p>游戏化学习路径，<span class="ai-highlight">边玩边学</span>，让孩子主动要求"再来一关"</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- TEACHER TEAM -->
+  <div class="section teacher-section">
+    <div class="section-title">
+      <h2>名师教研团队</h2>
+      <p>清北名师 + 资深外教联合打造</p>
+    </div>
+    <div class="teacher-cards">
+      <div class="teacher-card">
+        <div class="teacher-avatar t1">👩‍🏫</div>
+        <div class="teacher-info">
+          <h3>李老师</h3>
+          <span class="tag">北大英语硕士</span>
+          <p>10年少儿英语教学经验，曾任知名教育机构首席教研</p>
+        </div>
+      </div>
+      <div class="teacher-card">
+        <div class="teacher-avatar t2">👨‍🏫</div>
+        <div class="teacher-info">
+          <h3>Mr. James</h3>
+          <span class="tag">美国TESOL认证外教</span>
+          <p>母语发音教学，擅长用TPR教学法激发孩子兴趣</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- REVIEWS -->
+  <div class="section reviews-section">
+    <div class="section-title">
+      <h2>家长真实评价</h2>
+      <p>已有50000+家庭选择</p>
+    </div>
+    <div class="review-list">
+      <div class="review-card">
+        <div class="review-top">
+          <div class="review-ava">琳</div>
+          <div class="review-name">琳琳妈妈</div>
+          <div class="review-stars">★★★★★</div>
+        </div>
+        <div class="review-text">女儿学了两周，现在看到英文单词会自己试着拼读了！以前最怕的英语课现在成了她最期待的课，太值了！</div>
+      </div>
+      <div class="review-card">
+        <div class="review-top">
+          <div class="review-ava" style="background:#81C784">浩</div>
+          <div class="review-name">浩浩爸爸</div>
+          <div class="review-stars">★★★★★</div>
+        </div>
+        <div class="review-text">AI纠音功能太好用了，比我自己教靠谱多了。孩子每天自己主动打开学，根本不用催。39块9真的超值。</div>
+      </div>
+      <div class="review-card">
+        <div class="review-top">
+          <div class="review-ava" style="background:#FFB74D">萱</div>
+          <div class="review-name">小萱奶奶</div>
+          <div class="review-stars">★★★★★</div>
+        </div>
+        <div class="review-text">孙女零基础，跟着口诀学了一个月，现在26个字母的发音全掌握了，还会拼简单的三字母单词！</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BOOK / ISBN -->
+  <div class="section book-section">
+    <div class="section-title">
+      <h2>配套实物教材</h2>
+      <p>正规出版 · 品质保障</p>
+    </div>
+    <div class="book-info">
+      <h3>📚 教材出版信息</h3>
+      <div class="isbn-list">
+        <div class="isbn-item">
+          <div class="isbn-dot"></div>
+          <div>《趣味自然拼读·基础篇》ISBN 978-7-5682-8341-6</div>
+        </div>
+        <div class="isbn-item">
+          <div class="isbn-dot"></div>
+          <div>《趣味自然拼读·进阶篇》ISBN 978-7-5682-8342-3</div>
+        </div>
+        <div class="isbn-item">
+          <div class="isbn-dot"></div>
+          <div>《趣味自然拼读·口诀手册》ISBN 978-7-5682-8343-0</div>
+        </div>
+        <div class="isbn-item">
+          <div class="isbn-dot"></div>
+          <div>出版社：北京教育出版社</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FAQ -->
+  <div class="section faq-section">
+    <div class="section-title">
+      <h2>常见问题</h2>
+    </div>
+    <div class="faq-list">
+      <div class="faq-item">
+        <div class="faq-q">适合几岁的孩子？</div>
+        <div class="faq-a">适合3-10岁零基础或有一定基础的孩子，课程难度循序渐进，不同年龄段都能找到适合的学习节奏。</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">购买后有效期多久？</div>
+        <div class="faq-a">课程购买后永久有效，可以反复学习巩固，无需担心过期问题。</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">需要家长全程陪同吗？</div>
+        <div class="faq-a">课程设计为孩子可独立操作，AI系统会实时引导和反馈。家长可通过学习报告了解进度，无需全程陪同。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div class="cta-section">
+    <h2>限时特惠 · 仅剩最后86个名额</h2>
+    <p>活动结束恢复原价 ¥299</p>
+    <a href="#" class="cta-btn">立即抢购 ¥39.9</a>
+    <div class="cta-note">支持7天无理由退款 · 购买即赠配套教材</div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    趣学教育科技（北京）有限公司<br>
+    客服电话：400-888-6789<br>
+    © 2026 版权所有
+  </div>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,18 @@
+{
+  "tasks": [
+    {
+      "id": "example-1",
+      "prompt": "检查项目中所有 TODO 注释，创建一个 TODO.md 文件汇总它们",
+      "projectDir": ".",
+      "status": "pending",
+      "priority": 1
+    },
+    {
+      "id": "example-2",
+      "prompt": "运行 lint 检查并自动修复所有可修复的问题",
+      "projectDir": ".",
+      "status": "pending",
+      "priority": 2
+    }
+  ]
+}

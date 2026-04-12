@@ -1,0 +1,29 @@
+id: runtime-integrity-1774254739065
+created_at: '2026-03-23T08:32:19.065Z'
+project_root: C:\Users\86136\Desktop\cc24h
+repair_applied: true
+findings_count: 3
+reopened_count: 2
+findings:
+  - task_id: test-hello
+    type: missing-file
+    file: hello.txt
+    expected: file to exist in workspace
+    confidence: high
+  - task_id: test-hello
+    type: prompt-create-file-missing
+    file: hello.txt
+    expected: Hello from Commander Core
+    confidence: high
+  - task_id: test-readme
+    type: prompt-append-line-missing
+    file: README.md
+    expected: '## Commander Test'
+    confidence: high
+reopened:
+  - task_id: test-hello
+    previous_status: done
+    reason: 'Integrity audit failed: missing-file:hello.txt, prompt-create-file-missing:hello.txt'
+  - task_id: test-readme
+    previous_status: done
+    reason: 'Integrity audit failed: prompt-append-line-missing:README.md'

@@ -1,0 +1,67 @@
+id: council-reorg
+name: Commercialization Council Reorg
+created: 2026-03-26
+status: completed
+description: >
+  Merge three formerly separate teams (商业分析与市场研究, 成品化, 用户与增长验证)
+  into a unified Commercialization Council with 10 roles, mandatory adversarial
+  debate mechanism, and Commander final verdict protocol.
+
+tasks:
+  - id: design-council-structure
+    name: Design unified council structure with 10 roles
+    status: done
+    priority: P0
+    output: docs/agent-system.md (Commercialization Council section)
+    notes: >
+      10 roles across 4 categories: Business & Market (战略官, 市场研究官, 定价与变现官),
+      Productization (成品化总工, AI应用工程官, 真实用户模拟官),
+      Growth & Validation (增长验证官, 用户洞察官, 案例与信任官),
+      Mechanism (交叉质疑官/Red Team)
+
+  - id: define-work-mechanism
+    name: Define 5-step council work protocol
+    status: done
+    priority: P0
+    output: docs/agent-system.md (Council Work Mechanism section)
+    notes: >
+      Step 1: Commander identifies task type (6 types).
+      Step 2: Commander selects 4-6 roles.
+      Step 3: Independent judgment (no cross-pollination).
+      Step 4: Cross-challenge adversarial debate.
+      Step 5: Commander final verdict (no hedging allowed).
+
+  - id: create-council-workflow
+    name: Create commercialization-council-review workflow (WF15)
+    status: done
+    priority: P0
+    output: docs/workflows.md (WF15)
+    notes: >
+      Supports 6 task types: new-product-judgment, single-product-commercialization,
+      demo-to-product-diagnosis, pre-launch-review, growth-optimization, portfolio-strategy.
+      Includes role selection matrix and cross-challenge pairs.
+
+  - id: update-routing-policy
+    name: Add council routing to Commander routing policy
+    status: done
+    priority: P0
+    output: docs/routing-policy.md (Commercialization Council Routing section)
+    notes: >
+      Full council trigger table, partial council scenarios, mandatory Red Team rules,
+      council vs existing workflow overlap matrix, keyword detection patterns.
+
+  - id: update-progress
+    name: Record Phase 12 in progress.md
+    status: done
+    priority: P1
+    output: docs/progress.md
+
+  - id: validate-with-real-product
+    name: Run council on a real product to validate the mechanism
+    status: todo
+    priority: P0
+    depends_on: [design-council-structure, define-work-mechanism, create-council-workflow, update-routing-policy]
+    notes: >
+      Pick one product from portfolio (studypal, ai-crew, miralife, market-predictor)
+      and run a full commercialization-council-review to validate the 5-step protocol works.
+      This is the real test — docs without execution are worthless.

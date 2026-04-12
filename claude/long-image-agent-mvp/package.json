@@ -1,0 +1,33 @@
+{
+  "name": "long-image-agent-mvp",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Template-aware long-image MVP generator for HTML and PNG exports.",
+  "scripts": {
+    "generate": "node src/generate-jueduitigan.mjs",
+    "start": "node src/server.mjs",
+    "dev": "node src/server.mjs"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.80.0",
+    "dotenv": "^17.3.1",
+    "express": "^4.22.1",
+    "image-size": "^1.1.1",
+    "multer": "^2.1.1",
+    "openai": "^6.32.0",
+    "pdf-parse": "^2.4.5",
+    "pdf2json": "^4.0.2",
+    "pdfjs-dist": "^4.3.136",
+    "playwright-core": "^1.53.2",
+    "puppeteer": "^24.40.0",
+    "sharp": "^0.34.5"
+  },
+  "main": "index.js",
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

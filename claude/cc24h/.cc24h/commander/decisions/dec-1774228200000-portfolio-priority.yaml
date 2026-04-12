@@ -1,0 +1,7 @@
+id: dec-1774228200000-portfolio-priority
+session: codex
+type: portfolio_priority
+input: User supplied a cross-project session report and asked whether to start broader P0-P4 landing now.
+decision: Do not start a broad P0-P4 rollout yet; keep `StudyPal` untouched, reopen `Market Predictor` in a fresh Claude.ai session when ready, and prioritize `cc24h` continuity cleanup first.
+reasoning: The highest-confidence blocker is stale or mismatched runtime state in `cc24h`, while `StudyPal` appears externally active and the other projects do not yet have stable commander session state to build on.
+time: '2026-03-23T07:10:00.000Z'

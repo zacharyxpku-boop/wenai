@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "longimg",
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["app.mjs"],
+      "port": 3460
+    }
+  ]
+}

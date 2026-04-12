@@ -1,0 +1,35 @@
+id: codebase-understand
+name: Codebase Understanding
+purpose: Read and analyze project structure, dependencies, patterns, and conventions
+category: analysis
+risk_level: L1
+scope: []
+owner: system
+version: 1.0.0
+status: approved
+allowed_tools:
+  - Read
+  - Glob
+  - Grep
+  - Bash(git log)
+forbidden_zones:
+  - auth
+  - payment
+  - migration
+  - secrets
+  - deploy
+  - database-schema
+  - ci-cd
+validation_checks:
+  - outputs structured summary
+  - identifies key files
+rollback_strategy: ''
+test_command: ''
+applicable_when: Starting a new task, onboarding to a project, reviewing architecture
+not_applicable_when: Never restricted — always safe
+adoption_score: 0
+use_count: 0
+success_count: 0
+fail_count: 0
+created_at: '2026-03-20T12:02:18.721Z'
+updated_at: '2026-03-20T12:02:18.721Z'

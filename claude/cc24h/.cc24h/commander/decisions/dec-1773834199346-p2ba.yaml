@@ -1,0 +1,7 @@
+id: dec-1773834199346-p2ba
+session: builder-1
+type: result_received
+input: 'Task test-hello: Created hello.txt'
+decision: Status → done. Done.
+reasoning: Clean completion
+time: '2026-03-18T11:43:19.346Z'

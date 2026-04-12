@@ -1,0 +1,40 @@
+id: release-readiness
+name: Release Readiness Check
+purpose: 'Pre-release audit: build, tests, lint, security, deps, git hygiene, docs, config'
+category: security
+risk_level: L1
+scope: []
+owner: system
+version: 1.0.0
+status: approved
+allowed_tools:
+  - Read
+  - Glob
+  - Grep
+  - Bash(npm run build)
+  - Bash(npm test)
+  - Bash(npm run lint)
+  - Bash(npm audit)
+  - Bash(git)
+forbidden_zones:
+  - auth
+  - payment
+  - migration
+  - secrets
+  - deploy
+  - database-schema
+  - ci-cd
+validation_checks:
+  - all 8 checks executed
+  - summary table output
+  - blocking issues listed
+rollback_strategy: ''
+test_command: ''
+applicable_when: Pre-merge, pre-deploy, milestone check, sprint end
+not_applicable_when: Early development, prototype phase
+adoption_score: 0
+use_count: 0
+success_count: 0
+fail_count: 0
+created_at: '2026-03-20T12:02:18.750Z'
+updated_at: '2026-03-20T12:02:18.750Z'

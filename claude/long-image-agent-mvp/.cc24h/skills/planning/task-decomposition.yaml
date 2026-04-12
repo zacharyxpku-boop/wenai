@@ -1,0 +1,36 @@
+id: task-decomposition
+name: Task Decomposition & YAML Generation
+purpose: Break high-level goals into atomic executable tasks with deps and priorities
+category: planning
+risk_level: L2
+scope: []
+owner: system
+version: 1.0.0
+status: approved
+allowed_tools:
+  - Read
+  - Glob
+  - Grep
+  - Write(tasks/*.yaml)
+forbidden_zones:
+  - auth
+  - payment
+  - migration
+  - secrets
+  - deploy
+  - database-schema
+  - ci-cd
+validation_checks:
+  - YAML is valid
+  - each task has id/title/prompt/files_touched
+  - deps form DAG
+rollback_strategy: ''
+test_command: ''
+applicable_when: Receiving a new goal or feature request from commander
+not_applicable_when: Task already has a fine-grained plan
+adoption_score: 0
+use_count: 0
+success_count: 0
+fail_count: 0
+created_at: '2026-03-20T12:02:18.728Z'
+updated_at: '2026-03-20T12:02:18.728Z'

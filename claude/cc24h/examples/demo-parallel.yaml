@@ -1,0 +1,44 @@
+# cc24h - 并行演示任务
+# 3 个任务，2 个可并行，1 个有依赖
+# 用法: node bin/cc24h.mjs enqueue examples/demo-parallel.yaml -p <你的git项目>
+#       node bin/cc24h.mjs daemon -p <你的git项目> --max-parallel 2
+
+tasks:
+  - id: add-health-check
+    title: Add /health endpoint
+    prompt: |
+      Create a GET /health endpoint that returns { status: "ok", timestamp: <ISO> }.
+      Add it to the main router file.
+      Add a simple test.
+    priority: 1
+    agent_role: implementer
+    files_touched:
+      - src/routes/health.ts
+      - tests/health.test.ts
+    tags: [api, parallel-safe]
+
+  - id: add-env-validation
+    title: Validate environment variables on startup
+    prompt: |
+      Create a startup check that validates required env vars (DATABASE_URL, API_KEY) exist.
+      If missing, log error and exit with code 1.
+      Add to the main entry point.
+    priority: 1
+    agent_role: implementer
+    files_touched:
+      - src/config/env.ts
+      - src/index.ts
+    tags: [config, parallel-safe]
+
+  - id: add-startup-log
+    title: Log startup info after env validation
+    prompt: |
+      After env validation passes, log the app version, node version, and env name.
+      Use the existing logger.
+    priority: 2
+    agent_role: implementer
+    depends_on:
+      - add-env-validation
+    files_touched:
+      - src/index.ts
+    tags: [logging]

@@ -1,0 +1,7 @@
+id: dec-1773839887138-k1wg
+session: reviewer-1
+type: task_assigned
+input: Session reviewer-1 (reviewer) requested task
+decision: 'Assigned test-review: Review all test changes'
+reasoning: Priority 3, no lock conflicts, role match
+time: '2026-03-18T13:18:07.138Z'

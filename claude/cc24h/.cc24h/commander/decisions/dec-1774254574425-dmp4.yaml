@@ -1,0 +1,6 @@
+id: dec-1774254574425-dmp4
+session: reviewer-1
+type: stale_recovery
+decision: Session reviewer-1 marked stale, task test-review returned to queue
+reasoning: ''
+at: '2026-03-23T08:29:34.425Z'

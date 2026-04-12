@@ -1,0 +1,32 @@
+id: test-generation
+name: Test Generation & Verification
+purpose: Generate unit/integration tests for changed files and verify they pass
+category: testing
+risk_level: L3
+scope: []
+owner: system
+version: 1.0.0
+status: proposed
+allowed_tools:
+  - Read
+  - Write(tests/)
+  - Bash(npm test)
+  - Bash(node --test)
+forbidden_zones:
+  - auth
+  - payment
+  - migration
+  - secrets
+validation_checks:
+  - tests run without error
+  - coverage of changed functions ≥1
+rollback_strategy: git checkout -- tests/
+test_command: npm test --if-present || node --test tests/ 2>/dev/null || echo "no test runner"
+applicable_when: New code written, bug fix, refactor
+not_applicable_when: Documentation-only changes
+adoption_score: 0
+use_count: 0
+success_count: 0
+fail_count: 0
+created_at: '2026-03-19T02:53:39.921Z'
+updated_at: '2026-03-19T02:53:39.921Z'

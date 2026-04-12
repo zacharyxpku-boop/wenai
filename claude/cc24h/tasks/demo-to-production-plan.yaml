@@ -1,0 +1,200 @@
+title: "Demo to Production Gap Closing"
+description: "System-level upgrade to make cc24h consistently produce production-grade output"
+created: 2026-03-20
+priority: P0
+
+tasks:
+  # Wave 1: Highest ROI
+  - id: dtp-01
+    title: "Design System Bootstrap — first real project test"
+    goal: "Run design-system-bootstrap on a real project to validate the skill works end-to-end"
+    owner_role: 增长官
+    priority: P0
+    status: todo
+    depends_on: []
+    files_touched:
+      - ".claude/skills/design-system-bootstrap/SKILL.md"
+      - "docs/design-system.md"
+    deliverables:
+      - "A complete design-system.md for a target project"
+      - "Verification that tokens are specific, enforceable, non-generic"
+    done_definition: "design-system.md exists in target project with all 8 required sections filled with specific values"
+    risk_level: L2
+    parallel_safe: true
+
+  - id: dtp-02
+    title: "Screenshot Loop — validate gstack browse integration"
+    goal: "Run screenshot-loop on a real page, verify 3-viewport capture and analysis works"
+    owner_role: 快刀官
+    priority: P0
+    status: todo
+    depends_on: []
+    files_touched:
+      - ".claude/skills/screenshot-loop/SKILL.md"
+      - ".claude/skills/gstack/browse/dist/browse.exe"
+    deliverables:
+      - "Successful screenshots at 375px, 768px, 1280px"
+      - "Analysis report with pass/fail per viewport"
+    done_definition: "3 screenshots captured and analyzed with actionable findings"
+    risk_level: L1
+    parallel_safe: true
+
+  - id: dtp-03
+    title: "Production Readiness Audit — dry run on cc24h itself"
+    goal: "Run production-readiness-audit on cc24h's own TUI/CLI to validate the audit workflow"
+    owner_role: 尺子官
+    priority: P0
+    status: todo
+    depends_on: []
+    files_touched:
+      - ".claude/skills/production-readiness-audit/SKILL.md"
+      - "docs/production-readiness.md"
+    deliverables:
+      - "Production readiness report for cc24h"
+      - "List of blockers/warnings"
+    done_definition: "10-point report generated with READY/CONDITIONAL/NOT READY verdict"
+    risk_level: L1
+    parallel_safe: true
+
+  # Wave 2: Quality enforcement
+  - id: dtp-04
+    title: "Reference Extraction — validate on 2 real websites"
+    goal: "Run reference-extraction on 2 production websites, verify pattern extraction and constraint generation"
+    owner_role: 增长官
+    priority: P1
+    status: todo
+    depends_on: [dtp-02]
+    files_touched:
+      - ".claude/skills/reference-extraction/SKILL.md"
+    deliverables:
+      - "reference-analysis.md with extracted patterns from 2 sites"
+      - "Engineering constraints translated from patterns"
+    done_definition: "Spacing, typography, color, component patterns extracted and translated into constraints"
+    risk_level: L1
+    parallel_safe: true
+
+  - id: dtp-05
+    title: "Mobile QA — validate on real page"
+    goal: "Run mobile-qa on a real web page, verify touch target checks, text readability, navigation"
+    owner_role: 用户战场官
+    priority: P1
+    status: todo
+    depends_on: [dtp-02]
+    files_touched:
+      - ".claude/skills/mobile-qa/SKILL.md"
+    deliverables:
+      - "Mobile QA report with pass/fail per checklist item"
+    done_definition: "All checklist items evaluated, issues identified with severity"
+    risk_level: L1
+    parallel_safe: true
+
+  - id: dtp-06
+    title: "Accessibility Audit — validate on real page"
+    goal: "Run accessibility-audit on a real web page, verify contrast checks, keyboard nav, ARIA"
+    owner_role: 尺子官
+    priority: P1
+    status: todo
+    depends_on: [dtp-02]
+    files_touched:
+      - ".claude/skills/accessibility-audit/SKILL.md"
+    deliverables:
+      - "Accessibility audit report with WCAG compliance status"
+    done_definition: "All 13 checklist items evaluated, contrast ratios measured, issues listed"
+    risk_level: L1
+    parallel_safe: true
+
+  - id: dtp-07
+    title: "Performance Audit — validate on real page"
+    goal: "Run performance-audit on a real web page, verify CWV checks, bundle analysis"
+    owner_role: 铁律官
+    priority: P1
+    status: todo
+    depends_on: [dtp-02]
+    files_touched:
+      - ".claude/skills/performance-audit/SKILL.md"
+    deliverables:
+      - "Performance report with CWV scores, bundle sizes, optimization opportunities"
+    done_definition: "All performance checklist items evaluated with measurements"
+    risk_level: L1
+    parallel_safe: true
+
+  # Wave 3: Integration hardening
+  - id: dtp-08
+    title: "Integrate screenshot-loop into build-feature submit gate"
+    goal: "Modify build-feature workflow to require screenshot-loop PASS for UI tasks"
+    owner_role: 铁律官
+    priority: P1
+    status: todo
+    depends_on: [dtp-01, dtp-02]
+    files_touched:
+      - ".claude/skills/build-feature/SKILL.md"
+      - "docs/workflows.md"
+    deliverables:
+      - "Updated build-feature SKILL.md with screenshot-loop gate"
+    done_definition: "build-feature rejects UI task submit without screenshot-loop PASS"
+    risk_level: L2
+    parallel_safe: true
+
+  - id: dtp-09
+    title: "Integrate production-readiness-audit into launch-and-growth"
+    goal: "Modify launch-and-growth workflow to require production-readiness-audit before ship"
+    owner_role: 铁律官
+    priority: P1
+    status: todo
+    depends_on: [dtp-03]
+    files_touched:
+      - ".claude/skills/launch-readiness/SKILL.md"
+      - "docs/workflows.md"
+    deliverables:
+      - "Updated launch-readiness SKILL.md with full production audit"
+    done_definition: "launch-and-growth cannot complete without production-readiness-audit PASS/CONDITIONAL"
+    risk_level: L2
+    parallel_safe: true
+
+  - id: dtp-10
+    title: "Integrate reference-driven-design into idea-to-plan Phase 2"
+    goal: "Add reference extraction step to idea-to-plan design phase"
+    owner_role: 增长官
+    priority: P2
+    status: todo
+    depends_on: [dtp-04]
+    files_touched:
+      - ".claude/skills/idea-to-plan/SKILL.md"
+      - "docs/workflows.md"
+    deliverables:
+      - "Updated idea-to-plan SKILL.md with reference extraction in Phase 2"
+    done_definition: "idea-to-plan Phase 2 includes reference analysis when building UI products"
+    risk_level: L2
+    parallel_safe: true
+
+  - id: dtp-11
+    title: "Add design-system-bootstrap mandatory trigger"
+    goal: "Ensure Commander auto-triggers design-system-bootstrap before any UI project coding"
+    owner_role: Commander
+    priority: P1
+    status: todo
+    depends_on: [dtp-01]
+    files_touched:
+      - ".claude/agents/commander.md"
+      - "docs/routing-policy.md"
+    deliverables:
+      - "Updated commander agent with mandatory design-system check"
+      - "Updated routing-policy with enforcement rule"
+    done_definition: "Commander blocks UI coding if design-system.md doesn't exist in target project"
+    risk_level: L2
+    parallel_safe: true
+
+  - id: dtp-12
+    title: "End-to-end validation — build a real page with all new capabilities"
+    goal: "Use the full upgraded pipeline: design-system → reference → build → screenshot-loop → mobile → a11y → perf → production-readiness"
+    owner_role: Commander
+    priority: P1
+    status: todo
+    depends_on: [dtp-08, dtp-09, dtp-10, dtp-11]
+    files_touched: []
+    deliverables:
+      - "One real page built with all production-grade gates active"
+      - "Evidence that output quality exceeds pre-upgrade baseline"
+    done_definition: "Page passes production-readiness-audit with READY or CONDITIONAL verdict"
+    risk_level: L2
+    parallel_safe: false

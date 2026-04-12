@@ -1,0 +1,70 @@
+# cc24h - Multi-Agent Collaboration Example
+# Shows how coordinator decomposes and delegates
+
+tasks:
+  - id: plan-user-module
+    title: Plan user management module
+    prompt: |
+      Analyze the existing codebase and create a detailed implementation plan
+      for a user management module with:
+      - User CRUD operations
+      - Role-based access control
+      - Password reset flow
+      Output a YAML task list that can be imported into cc24h.
+    priority: 1
+    agent_role: planner
+    tags: [planning]
+
+  - id: impl-user-model
+    title: Implement User data model
+    prompt: |
+      Create src/models/user.ts with:
+      - User interface (id, email, name, role, created_at, updated_at)
+      - Role enum (admin, user, viewer)
+      - Validation functions
+      - Database migration
+    priority: 2
+    agent_role: implementer
+    depends_on: [plan-user-module]
+    tags: [implementation]
+
+  - id: impl-user-api
+    title: Implement User API endpoints
+    prompt: |
+      Create src/api/users.ts with CRUD endpoints:
+      - POST /api/users (create)
+      - GET /api/users/:id (read)
+      - PUT /api/users/:id (update)
+      - DELETE /api/users/:id (delete)
+      Use the User model from src/models/user.ts
+    priority: 2
+    agent_role: implementer
+    depends_on: [impl-user-model]
+    tags: [implementation]
+
+  - id: test-user-module
+    title: Test user management module
+    prompt: |
+      Write comprehensive tests for:
+      - User model validation
+      - User API endpoints (all CRUD operations)
+      - Role-based access control
+      Run all tests and report results.
+    priority: 3
+    agent_role: tester
+    depends_on: [impl-user-api]
+    tags: [testing]
+
+  - id: review-user-module
+    title: Review user management implementation
+    prompt: |
+      Review the complete user management module:
+      - Check code quality and consistency
+      - Verify security (input validation, SQL injection, auth)
+      - Check test coverage
+      - Verify error handling
+      Output: PASS / NEEDS-FIX with details.
+    priority: 3
+    agent_role: reviewer
+    depends_on: [test-user-module]
+    tags: [review]

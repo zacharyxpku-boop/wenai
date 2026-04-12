@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>长图设计生成器</title>
+<style>
+:root {
+  --gold: #D4A843;
+  --gold-light: #F2D77E;
+  --gold-dark: #A07D2E;
+  --bg: #0D0D1A;
+  --bg-card: #1A1A2E;
+  --bg-surface: #22223a;
+  --text: #fff;
+  --text-muted: rgba(255,255,255,0.55);
+  --border: rgba(212,168,67,0.25);
+  --radius: 16px;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: "PingFang SC", "Microsoft YaHei", "Helvetica Neue", sans-serif;
+  min-height: 100vh;
+  line-height: 1.6;
+}
+.app { max-width: 960px; margin: 0 auto; padding: 40px 24px; }
+
+.header { text-align: center; margin-bottom: 48px; }
+.header h1 {
+  font-size: 36px; font-weight: 900; letter-spacing: 4px;
+  background: linear-gradient(180deg, #F2D77E, #D4A843, #C5973E);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  margin-bottom: 8px;
+}
+.header p { color: var(--text-muted); font-size: 15px; letter-spacing: 1px; }
+
+.steps { display: flex; gap: 4px; margin-bottom: 40px; }
+.step { flex: 1; height: 4px; background: rgba(255,255,255,0.08); border-radius: 2px; transition: background 0.3s; }
+.step.active { background: linear-gradient(90deg, var(--gold-dark), var(--gold)); }
+.step.done { background: var(--gold); }
+
+.upload-section { margin-bottom: 32px; }
+.upload-section h2 {
+  font-size: 18px; font-weight: 700; color: var(--gold-light);
+  margin-bottom: 4px; display: flex; align-items: center; gap: 8px;
+}
+.upload-section h2 .badge {
+  font-size: 11px; background: rgba(212,168,67,0.15); color: var(--gold);
+  padding: 2px 8px; border-radius: 10px; font-weight: 600;
+}
+.upload-section .desc { font-size: 13px; color: var(--text-muted); margin-bottom: 12px; }
+
+.dropzone {
+  border: 2px dashed var(--border); border-radius: var(--radius);
+  padding: 40px 24px; text-align: center; cursor: pointer;
+  transition: all 0.2s; background: rgba(26,26,46,0.4); position: relative;
+}
+.dropzone:hover, .dropzone.dragover { border-color: var(--gold); background: rgba(212,168,67,0.05); }
+.dropzone .icon { font-size: 36px; margin-bottom: 8px; opacity: 0.7; }
+.dropzone .label { font-size: 15px; color: var(--text-muted); }
+.dropzone .label strong { color: var(--gold); }
+.dropzone input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+
+.file-list { margin-top: 12px; display: flex; flex-wrap: wrap; gap: 8px; }
+.file-tag {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--bg-surface); border: 1px solid var(--border);
+  border-radius: 8px; padding: 6px 12px; font-size: 13px; color: var(--text-muted);
+}
+.file-tag .remove { cursor: pointer; color: #E53935; font-weight: bold; font-size: 14px; }
+
+.actions { display: flex; gap: 16px; margin-top: 40px; }
+.btn {
+  flex: 1; padding: 16px 24px; border: none; border-radius: 12px;
+  font-size: 18px; font-weight: 700; cursor: pointer; letter-spacing: 2px;
+  transition: all 0.2s; font-family: inherit;
+}
+.btn-primary {
+  background: linear-gradient(135deg, var(--gold-dark), var(--gold), var(--gold-light));
+  color: var(--bg); box-shadow: 0 4px 20px rgba(212,168,67,0.3);
+}
+.btn-primary:hover { box-shadow: 0 6px 28px rgba(212,168,67,0.5); transform: translateY(-1px); }
+.btn-primary:disabled { opacity: 0.4; cursor: not-allowed; transform: none; box-shadow: none; }
+
+.progress-area { display: none; margin-top: 32px; }
+.progress-area.visible { display: block; }
+.progress-bar-container { height: 8px; background: rgba(255,255,255,0.06); border-radius: 4px; overflow: hidden; margin-bottom: 16px; }
+.progress-bar {
+  height: 100%; background: linear-gradient(90deg, var(--gold-dark), var(--gold), var(--gold-light));
+  border-radius: 4px; transition: width 0.5s ease; width: 0%;
+}
+.progress-log {
+  background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px;
+  padding: 16px 20px; font-size: 13px; color: var(--text-muted);
+  max-height: 200px; overflow-y: auto; font-family: "Fira Code", "SF Mono", monospace; line-height: 1.8;
+}
+.progress-log .log-line { display: flex; gap: 8px; }
+.progress-log .log-line .time { color: var(--gold-dark); flex-shrink: 0; }
+
+.result-area { display: none; margin-top: 40px; }
+.result-area.visible { display: block; }
+.result-card {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 24px; text-align: center;
+}
+.result-card h3 { font-size: 22px; color: var(--gold-light); margin-bottom: 16px; }
+.result-preview {
+  max-width: 100%; max-height: 600px; border-radius: 8px;
+  border: 1px solid var(--border); object-fit: contain; margin-bottom: 20px;
+}
+.result-links { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+.result-links a {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 10px 20px; background: var(--bg-surface); border: 1px solid var(--border);
+  border-radius: 10px; color: var(--gold); text-decoration: none; font-size: 14px; transition: all 0.2s;
+}
+.result-links a:hover { background: rgba(212,168,67,0.1); border-color: var(--gold); }
+
+.logs-section { margin-top: 24px; }
+.logs-section h4 { font-size: 14px; color: var(--text-muted); margin-bottom: 8px; }
+.logs-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.log-link {
+  display: block; padding: 8px 12px; background: var(--bg-surface);
+  border: 1px solid rgba(255,255,255,0.06); border-radius: 8px;
+  color: var(--text-muted); text-decoration: none; font-size: 12px;
+  font-family: monospace; transition: all 0.2s;
+}
+.log-link:hover { border-color: var(--border); color: var(--gold); }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="header">
+    <h1>长图设计生成器</h1>
+    <p>上传模板和素材，自动生成 750px 高级长图</p>
+  </div>
+
+  <div class="steps">
+    <div class="step active" id="step1"></div>
+    <div class="step" id="step2"></div>
+    <div class="step" id="step3"></div>
+    <div class="step" id="step4"></div>
+  </div>
+
+  <div class="upload-section">
+    <h2>模板图 <span class="badge">必选</span></h2>
+    <p class="desc">上传长图模板（PNG/JPG），系统将自动分析模块结构</p>
+    <div class="dropzone" id="drop-template">
+      <div class="icon">&#x1f5bc;&#xfe0f;</div>
+      <div class="label">拖拽模板图到这里，或 <strong>点击选择</strong></div>
+      <input type="file" accept="image/*" multiple data-type="template">
+    </div>
+    <div class="file-list" id="files-template"></div>
+  </div>
+
+  <div class="upload-section">
+    <h2>PDF 物料 <span class="badge">推荐</span></h2>
+    <p class="desc">上传产品说明、宣传资料等 PDF，系统将自动抽取内容</p>
+    <div class="dropzone" id="drop-pdf">
+      <div class="icon">&#x1f4d1;</div>
+      <div class="label">拖拽 PDF 文件到这里，或 <strong>点击选择</strong></div>
+      <input type="file" accept=".pdf" multiple data-type="pdf">
+    </div>
+    <div class="file-list" id="files-pdf"></div>
+  </div>
+
+  <div class="upload-section">
+    <h2>补充素材 <span class="badge">可选</span></h2>
+    <p class="desc">Logo、头像、产品图等高清素材，优先使用</p>
+    <div class="dropzone" id="drop-assets">
+      <div class="icon">&#x1f3de;&#xfe0f;</div>
+      <div class="label">拖拽素材到这里，或 <strong>点击选择</strong></div>
+      <input type="file" accept="image/*" multiple data-type="assets">
+    </div>
+    <div class="file-list" id="files-assets"></div>
+  </div>
+
+  <div class="upload-section">
+    <h2>AI 引擎 <span class="badge" style="background:rgba(76,175,80,0.15);color:#66BB6A;">GPT-4o Vision</span></h2>
+    <p class="desc">服务端已配置 API Key，自动启用 AI 智能分析。也可在下方覆盖。</p>
+    <div style="display:flex;gap:12px;align-items:center;">
+      <input type="password" id="api-key" placeholder="留空使用服务端配置，或输入自定义key..." style="
+        flex:1; padding:14px 16px; border-radius:12px; border:1px solid var(--border);
+        background:var(--bg-card); color:var(--text); font-size:14px; font-family:monospace;
+        outline:none; transition:border-color 0.2s;
+      ">
+      <div id="ai-mode-badge" style="
+        padding:8px 16px; border-radius:8px; font-size:13px; font-weight:600;
+        background:rgba(212,168,67,0.15); color:var(--gold); white-space:nowrap;
+      ">🧠 AI 智能模式</div>
+    </div>
+  </div>
+
+  <div class="actions">
+    <button class="btn btn-primary" id="btn-generate" disabled>开始生成长图</button>
+  </div>
+
+  <div class="progress-area" id="progress-area">
+    <div class="progress-bar-container">
+      <div class="progress-bar" id="progress-bar"></div>
+    </div>
+    <div class="progress-log" id="progress-log"></div>
+  </div>
+
+  <div class="result-area" id="result-area">
+    <div class="result-card">
+      <h3>长图生成完成</h3>
+      <img class="result-preview" id="result-preview" alt="长图预览">
+      <div class="result-links" id="result-links"></div>
+      <div class="logs-section">
+        <h4>过程文件</h4>
+        <div class="logs-grid" id="logs-grid"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const fileStore = { template: [], pdf: [], assets: [] };
+
+// API Key mode indicator
+const apiKeyInput = document.getElementById('api-key');
+const aiModeBadge = document.getElementById('ai-mode-badge');
+apiKeyInput.addEventListener('input', () => {
+  const hasKey = apiKeyInput.value.trim().length > 10;
+  aiModeBadge.textContent = hasKey ? '🧠 AI 智能模式' : '像素模式';
+  aiModeBadge.style.background = hasKey ? 'rgba(212,168,67,0.15)' : 'rgba(255,255,255,0.05)';
+  aiModeBadge.style.color = hasKey ? 'var(--gold)' : 'var(--text-muted)';
+});
+// Restore saved key
+const savedKey = localStorage.getItem('openai_api_key');
+if (savedKey) { apiKeyInput.value = savedKey; apiKeyInput.dispatchEvent(new Event('input')); }
+
+document.querySelectorAll('.dropzone').forEach(zone => {
+  const input = zone.querySelector('input[type="file"]');
+  const type = input.dataset.type;
+  zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('dragover'); });
+  zone.addEventListener('dragleave', () => zone.classList.remove('dragover'));
+  zone.addEventListener('drop', e => {
+    e.preventDefault(); zone.classList.remove('dragover');
+    addFiles(type, Array.from(e.dataTransfer.files));
+  });
+  input.addEventListener('change', () => { addFiles(type, Array.from(input.files)); input.value = ''; });
+});
+
+function addFiles(type, files) {
+  files.forEach(f => {
+    if (!fileStore[type].find(x => x.name === f.name && x.size === f.size)) fileStore[type].push(f);
+  });
+  renderFileList(type);
+  updateBtn();
+}
+
+window.removeFile = function(type, i) {
+  fileStore[type].splice(i, 1);
+  renderFileList(type);
+  updateBtn();
+};
+
+function renderFileList(type) {
+  const el = document.getElementById('files-' + type);
+  el.innerHTML = fileStore[type].map((f, i) =>
+    '<div class="file-tag">' + f.name + ' (' + (f.size/1024).toFixed(0) + 'KB) ' +
+    '<span class="remove" onclick="removeFile(\'' + type + '\',' + i + ')">x</span></div>'
+  ).join('');
+}
+
+function updateBtn() {
+  document.getElementById('btn-generate').disabled = fileStore.template.length === 0;
+}
+
+function log(msg) {
+  const el = document.getElementById('progress-log');
+  const t = new Date().toLocaleTimeString('zh-CN', { hour12: false });
+  el.innerHTML += '<div class="log-line"><span class="time">[' + t + ']</span><span>' + msg + '</span></div>';
+  el.scrollTop = el.scrollHeight;
+}
+
+function setProgress(pct) { document.getElementById('progress-bar').style.width = pct + '%'; }
+
+function setStep(n) {
+  for (let i = 1; i <= 4; i++) {
+    const el = document.getElementById('step' + i);
+    el.className = 'step' + (i < n ? ' done' : i === n ? ' active' : '');
+  }
+}
+
+document.getElementById('btn-generate').addEventListener('click', async () => {
+  const btn = document.getElementById('btn-generate');
+  btn.disabled = true; btn.textContent = '生成中...';
+  document.getElementById('progress-area').classList.add('visible');
+  document.getElementById('result-area').classList.remove('visible');
+  document.getElementById('progress-log').innerHTML = '';
+
+  try {
+    setStep(2); log('uploading files...'); setProgress(10);
+    const fd = new FormData();
+    fileStore.template.forEach(f => fd.append('template', f));
+    fileStore.pdf.forEach(f => fd.append('pdf', f));
+    fileStore.assets.forEach(f => fd.append('assets', f));
+
+    const upRes = await fetch('/api/upload', { method: 'POST', body: fd });
+    const upData = await upRes.json();
+    log('upload done - template:' + upData.files.template + ' pdf:' + upData.files.pdf + ' assets:' + upData.files.assets);
+    setProgress(25);
+
+    // Pass optional override API key (server has default from .env)
+    const apiKey = apiKeyInput.value.trim();
+    if (apiKey) localStorage.setItem('openai_api_key', apiKey);
+
+    setStep(3);
+    log('🧠 GPT-4o Vision 分析模板 + 智能生成HTML...');
+    setProgress(35);
+    const genRes = await fetch('/api/generate/' + upData.jobId, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(apiKey ? { apiKey } : {})
+    });
+    const genData = await genRes.json();
+    if (genData.error) throw new Error(genData.error);
+    log('HTML generated - ' + genData.moduleCount + ' modules (' + genData.mode + ' mode)'); setProgress(65);
+
+    setStep(4); log('exporting PNG...'); setProgress(75);
+    const expRes = await fetch('/api/export/' + upData.jobId, { method: 'POST' });
+    const expData = await expRes.json();
+    if (expData.error) throw new Error(expData.error);
+    log('PNG exported - ' + expData.width + 'x' + expData.height + 'px'); setProgress(100);
+
+    log('done!');
+    const resultArea = document.getElementById('result-area');
+    resultArea.classList.add('visible');
+    document.getElementById('result-preview').src = expData.png;
+    document.getElementById('result-links').innerHTML =
+      '<a href="' + expData.png + '" download>download PNG</a>' +
+      '<a href="' + expData.jpg + '" download>download JPG</a>' +
+      '<a href="' + genData.htmlPath + '" target="_blank">view HTML</a>';
+
+    const jobRes = await fetch('/api/job/' + upData.jobId);
+    const jobData = await jobRes.json();
+    if (jobData.logs) {
+      document.getElementById('logs-grid').innerHTML = jobData.logs.map(l =>
+        '<a class="log-link" href="' + l + '" target="_blank">' + l.split('/').pop() + '</a>'
+      ).join('');
+    }
+  } catch (err) {
+    log('ERROR: ' + err.message);
+  }
+  btn.disabled = false; btn.textContent = 'regenerate';
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,53 @@
+# cc24h - Nightly Task Queue Example
+# Import with: node bin/cc24h.mjs enqueue examples/nightly.yaml
+
+tasks:
+  - id: fix-auth-bug
+    title: Fix JWT token expiration handling
+    prompt: |
+      In src/api/auth.ts, the JWT token expiration check is missing.
+      When a token expires, the API returns 500 instead of 401.
+      Fix the error handling in the verifyToken middleware to:
+      1. Catch TokenExpiredError specifically
+      2. Return 401 with message "Token expired"
+      3. Add a unit test for this case
+    priority: 1
+    agent_role: implementer
+    tags: [bugfix, auth]
+
+  - id: add-pagination
+    title: Add pagination to user list API
+    prompt: |
+      The GET /api/users endpoint returns all users without pagination.
+      Add cursor-based pagination:
+      1. Accept ?cursor=<id>&limit=<n> query params
+      2. Default limit=20, max limit=100
+      3. Return { data: [...], next_cursor: <id|null> }
+      4. Add tests
+      Reference existing pagination in GET /api/posts for style.
+    priority: 3
+    agent_role: implementer
+    tags: [feature, api]
+
+  - id: update-deps
+    title: Update outdated dependencies
+    prompt: |
+      Run `npm outdated` and update all patch/minor version bumps.
+      Do NOT update major versions.
+      After updating, run `npm test` to verify nothing breaks.
+      If tests fail, revert the problematic update and note it.
+    priority: 5
+    agent_role: implementer
+    tags: [maintenance]
+
+  - id: add-logging
+    title: Add structured logging to API handlers
+    prompt: |
+      Add structured JSON logging to all API route handlers.
+      Use the existing logger from src/utils/logger.ts.
+      Each handler should log: method, path, status, duration_ms.
+      Don't add logging to health check endpoints.
+    priority: 4
+    agent_role: implementer
+    depends_on: [fix-auth-bug]
+    tags: [feature, observability]

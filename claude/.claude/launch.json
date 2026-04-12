@@ -1,0 +1,84 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "studypal-dev",
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["node_modules/next/dist/bin/next", "dev", "--port", "4000"],
+      "port": 4000,
+      "autoPort": false,
+      "cwd": "studypal"
+    },
+    {
+      "name": "miralife-dev",
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["C:\\Users\\86136\\Desktop\\miralife\\node_modules\\next\\dist\\bin\\next", "dev", "--port", "3200"],
+      "port": 3200,
+      "autoPort": false,
+      "cwd": "C:\\Users\\86136\\Desktop\\miralife"
+    },
+    {
+      "name": "ai-edu-dev",
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["node_modules/http-server/bin/http-server", ".", "-p", "3457", "-c-1"],
+      "port": 3457,
+      "autoPort": false,
+      "cwd": "ai-edu-platform"
+    },
+    {
+      "name": "ai-crew-dev",
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["node_modules/next/dist/bin/next", "dev", "--port", "3100"],
+      "port": 3100,
+      "autoPort": false,
+      "cwd": "ai-crew"
+    },
+    {
+      "name": "long-image-preview",
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["app.mjs"],
+      "port": 3462,
+      "autoPort": false,
+      "cwd": "long-image-agent-mvp"
+    },
+    {
+      "name": "beta-lab",
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["server.js"],
+      "port": 3459,
+      "autoPort": false,
+      "cwd": "ai-beta-lab"
+    },
+    {
+      "name": "shoot-assist-demo",
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["node_modules/serve/build/main.js", "ShootAssist/demo", "-p", "3460", "-s"],
+      "port": 3460,
+      "autoPort": false
+    },
+    {
+      "name": "market-predictor",
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["node_modules/next/dist/bin/next", "dev", "--port", "3001"],
+      "port": 3001,
+      "autoPort": false,
+      "cwd": "market-predictor/frontend"
+    },
+    {
+      "name": "carbonsil",
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["node_modules/next/dist/bin/next", "dev", "--port", "3458"],
+      "port": 3458,
+      "autoPort": false,
+      "cwd": "carbonsil"
+    },
+    {
+      "name": "moriwork",
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["node_modules/next/dist/bin/next", "dev", "--port", "3461"],
+      "port": 3461,
+      "autoPort": false,
+      "cwd": "moriwork"
+    }
+  ]
+}

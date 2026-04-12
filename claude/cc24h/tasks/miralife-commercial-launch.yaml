@@ -1,0 +1,458 @@
+id: miralife-commercial-launch
+name: MiraLife 商业闭环 — 7天上线验证
+created: 2026-03-26
+status: active
+project: C:/Users/86136/Desktop/miralife
+description: >
+  Council verdict: MiraLife 工程完成度高但商业验证为零。
+  目标：7天内完成支付闭环 + 数据持久化 + 部署上线 + 20人真实验证。
+  不加新功能，不优化SEO，不打磨UI。只做让钱能收进来的最小改动。
+
+waves:
+  - name: "Wave 1: 支付闭环 (Day 1-2)"
+    tasks:
+      - id: stripe-checkout-9.9
+        name: "接入 Stripe Checkout — 只做 ¥9.9 单次报告"
+        priority: P0
+        role: 快刀官
+        level: L3
+        files_touched:
+          - src/lib/payment/stripe.ts (NEW)
+          - src/app/api/payment/create-checkout/route.ts (NEW)
+          - src/app/api/payment/webhook/route.ts (NEW)
+          - src/lib/payment/access-control.ts (MODIFY)
+          - src/app/pricing/page.tsx (MODIFY)
+          - src/app/report/sample/page.tsx (MODIFY)
+          - .env.example (MODIFY)
+        prompt: |
+          项目：C:/Users/86136/Desktop/miralife
+          任务：接入 Stripe Checkout，只做 ¥9.9 单次深度报告的支付。
+
+          现状：
+          - src/lib/payment/access-control.ts 已有 AccessTier 类型和 grantAccess() 函数，当前全部存 localStorage
+          - src/app/pricing/page.tsx 的 SINGLE_PRODUCTS 数组中 "单次深度报告" price: "¥9.9" 已定义
+          - src/app/report/sample/page.tsx 已有模糊内容 + lead intent 表单
+          - 无任何 Stripe 代码
+
+          执行步骤：
+
+          1. 安装 stripe 包：
+             npm install stripe @stripe/stripe-js
+
+          2. 创建 src/lib/payment/stripe.ts：
+             - 导出 getStripeServer(): Stripe (server-side, 用 STRIPE_SECRET_KEY)
+             - 导出 getStripePromise(): Promise<Stripe> (client-side, 用 NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY)
+             - 如果 env 变量缺失，return null（保持 graceful degradation 模式）
+
+          3. 创建 src/app/api/payment/create-checkout/route.ts：
+             - POST handler
+             - 接收 { productId: "deep-report-single", engineSnapshot?: object, visitorId?: string }
+             - 创建 Stripe Checkout Session：
+               mode: "payment"
+               line_items: [{ price_data: { currency: "cny", unit_amount: 990, product_data: { name: "MiraLife 深度报告" } }, quantity: 1 }]
+               success_url: `${SITE_URL}/report/success?session_id={CHECKOUT_SESSION_ID}`
+               cancel_url: `${SITE_URL}/pricing`
+               metadata: { productId, visitorId }
+             - 返回 { url: session.url }
+             - 如果 Stripe 未配置，返回 { error: "payment_not_configured", fallback: "lead_intent" }
+
+          4. 创建 src/app/api/payment/webhook/route.ts：
+             - POST handler，验证 Stripe webhook signature (STRIPE_WEBHOOK_SECRET)
+             - 监听 checkout.session.completed 事件
+             - 从 session.metadata 拿 productId 和 visitorId
+             - 写入 Supabase conversion_events 表：eventName="payment_completed", product="deep-report-single", metadata={ amount: 990, stripe_session_id }
+             - 返回 200
+
+          5. 修改 src/app/pricing/page.tsx：
+             - 找到 ¥9.9 "单次深度报告" 的按钮（当前应该是 waitlist 或 lead intent 表单）
+             - 改为：如果 Stripe 已配置 → fetch("/api/payment/create-checkout", { body: { productId: "deep-report-single" } }) → redirect to session.url
+             - 如果 Stripe 未配置 → 降级到原有 lead intent 表单（保持现有行为）
+             - 在按钮旁加 trackConversionEvent({ eventName: "checkout_initiated", product: "deep-report-single" })
+
+          6. 创建 src/app/report/success/page.tsx：
+             - 支付成功页面
+             - 从 URL 读 session_id，展示"支付成功，报告生成中"
+             - 调用 grantAccess("deep-report", "single") 写 localStorage
+             - 如果用户已登录，同步到 Supabase profiles.entitlement
+             - 3秒后自动跳转到 /report/sample（此时 canViewGatedContent 应该返回 true，内容解锁）
+
+          7. 更新 .env.example 加入：
+             NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_xxx
+             STRIPE_SECRET_KEY=sk_test_xxx
+             STRIPE_WEBHOOK_SECRET=whsec_xxx
+
+          关键约束：
+          - 不改任何非支付相关的代码
+          - 保持 graceful degradation：没有 Stripe key 时降级到 lead intent
+          - 不做月费、不做合盘报告支付，只做 ¥9.9 这一个
+          - 用 CNY (人民币) 作为 currency
+          - 遵循现有的代码风格（TypeScript, App Router, Supabase pattern）
+
+      - id: stripe-product-setup
+        name: "Stripe Dashboard 产品配置指引"
+        priority: P0
+        role: 破局官
+        level: L1
+        files_touched:
+          - docs/stripe-setup.md (NEW)
+        prompt: |
+          项目：C:/Users/86136/Desktop/miralife
+          任务：写一份 Stripe 配置指南，让用户能在 5 分钟内完成 Stripe 后台设置。
+
+          创建 docs/stripe-setup.md，内容包括：
+
+          1. 注册 Stripe 账号（stripe.com）
+          2. 获取 Test Mode 的 API keys（Publishable key + Secret key）
+          3. 在 Stripe Dashboard 创建 Webhook endpoint：
+             - URL: https://your-domain.vercel.app/api/payment/webhook
+             - Events: checkout.session.completed
+             - 获取 Webhook signing secret
+          4. 设置 .env.local：
+             NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_xxx
+             STRIPE_SECRET_KEY=sk_test_xxx
+             STRIPE_WEBHOOK_SECRET=whsec_xxx
+          5. 本地测试：stripe listen --forward-to localhost:3000/api/payment/webhook
+          6. Vercel 环境变量配置（Settings → Environment Variables）
+          7. 切换到 Live Mode 的步骤
+
+          注意：Stripe 在中国大陆需要企业资质。如果个人开发者，备选方案：
+          - 方案B：微信支付（需要企业号）
+          - 方案C：先用 lead intent 收集付费意向，手动收款（微信转账），手动解锁
+          - 推荐：先用 Test Mode 验证流程，同时申请 Stripe 或微信支付资质
+
+  - name: "Wave 2: 数据持久化 (Day 2-3)"
+    tasks:
+      - id: supabase-engine-results-persist
+        name: "engine_results 从 localStorage-first 升级为 Supabase-first"
+        priority: P0
+        role: 快刀官
+        level: L3
+        files_touched:
+          - src/lib/stores/engine-results.ts (MODIFY)
+          - src/lib/stores/profile-snapshot.ts (MODIFY if exists)
+          - src/app/engines/mbti/result/page.tsx (MODIFY)
+          - src/app/engines/bazi/result/page.tsx (MODIFY)
+          - src/app/engines/tarot/result/page.tsx (MODIFY)
+          - supabase/migrations/006_anonymous_engine_results.sql (NEW)
+        prompt: |
+          项目：C:/Users/86136/Desktop/miralife
+          任务：让 engine_results 在未登录状态下也能持久化到 Supabase，不再仅依赖 localStorage。
+
+          现状：
+          - src/lib/stores/engine-results.ts 有 saveEngineResult() 和 syncToRemote()
+          - syncToRemote() 只在用户登录后才同步到 Supabase（if (!user) return）
+          - 未登录用户（绝大多数）的数据只在 localStorage，清缓存就没了
+          - Supabase schema 的 engine_results 表要求 user_id（UUID, refs profiles）
+
+          解决方案：用 visitor_id 实现匿名持久化
+
+          1. 创建新 migration supabase/migrations/006_anonymous_engine_results.sql：
+             ```sql
+             -- 允许匿名存储 engine results
+             ALTER TABLE engine_results ALTER COLUMN user_id DROP NOT NULL;
+             ALTER TABLE engine_results ADD COLUMN visitor_id TEXT;
+
+             -- 新的唯一约束：visitor_id + engine_type（匿名用户）
+             CREATE UNIQUE INDEX idx_engine_results_visitor_engine
+               ON engine_results(visitor_id, engine_type)
+               WHERE visitor_id IS NOT NULL AND user_id IS NULL;
+
+             -- RLS：匿名用户可以 insert/select by visitor_id
+             CREATE POLICY "anon_insert_engine_results" ON engine_results
+               FOR INSERT TO anon WITH CHECK (visitor_id IS NOT NULL);
+
+             CREATE POLICY "anon_select_engine_results" ON engine_results
+               FOR SELECT TO anon USING (visitor_id = current_setting('request.headers')::json->>'x-visitor-id');
+             ```
+
+             注意：RLS 对匿名读取可能需要用 service role 或者 custom header。
+             更简单的方案：创建一个 /api/engine-results API route 用 service role 读写。
+
+          2. 创建 src/app/api/engine-results/route.ts：
+             - GET: 接收 ?visitorId=xxx，用 service role 查询 engine_results WHERE visitor_id = visitorId
+             - POST: 接收 { visitorId, engineType, resultData }，用 service role upsert
+             - 这样绕过 RLS 复杂性，前端只需要 fetch API
+
+          3. 修改 src/lib/stores/engine-results.ts：
+
+             saveEngineResult() 改为：
+             ```typescript
+             export async function saveEngineResult(engine: string, result: any): void {
+               // 1. 始终存 localStorage（离线备份）
+               const existing = getLocalResults()
+               existing[engine] = { ...result, savedAt: new Date().toISOString() }
+               localStorage.setItem(RESULTS_KEY, JSON.stringify(existing))
+
+               // 2. 同步到远程（不阻塞）
+               syncToRemote(engine, result).catch(console.warn)
+             }
+             ```
+
+             syncToRemote() 改为：
+             ```typescript
+             async function syncToRemote(engine: string, result: unknown): Promise<void> {
+               // 优先用 user_id（已登录），否则用 visitor_id（匿名）
+               const supabase = getSupabaseBrowserClient()
+               const user = supabase ? (await supabase.auth.getUser()).data.user : null
+               const visitorId = getOrCreateVisitorId()
+
+               if (user) {
+                 // 已登录：直接用 Supabase client（有 RLS）
+                 await supabase.from("engine_results").upsert({
+                   user_id: user.id,
+                   engine_type: engine,
+                   result_data: result,
+                   engine_version: "0.1.0"
+                 }, { onConflict: "user_id,engine_type" })
+               } else if (visitorId) {
+                 // 未登录：走 API route（用 service role）
+                 await fetch("/api/engine-results", {
+                   method: "POST",
+                   headers: { "Content-Type": "application/json" },
+                   body: JSON.stringify({ visitorId, engineType: engine, resultData: result })
+                 })
+               }
+             }
+             ```
+
+          4. 新增 loadEngineResults() 恢复函数：
+             ```typescript
+             export async function loadEngineResults(): Promise<Record<string, any>> {
+               // 1. 先读 localStorage
+               const local = getLocalResults()
+
+               // 2. 尝试从远程恢复
+               const visitorId = getOrCreateVisitorId()
+               if (!visitorId) return local
+
+               try {
+                 const res = await fetch(`/api/engine-results?visitorId=${visitorId}`)
+                 if (!res.ok) return local
+                 const remote = await res.json()
+
+                 // 3. 合并：remote 优先（因为可能在另一台设备上做的）
+                 const merged = { ...local }
+                 for (const row of remote) {
+                   if (!merged[row.engine_type] ||
+                       new Date(row.updated_at) > new Date(merged[row.engine_type].savedAt || 0)) {
+                     merged[row.engine_type] = row.result_data
+                   }
+                 }
+
+                 // 4. 回写 localStorage
+                 localStorage.setItem(RESULTS_KEY, JSON.stringify(merged))
+                 return merged
+               } catch {
+                 return local
+               }
+             }
+             ```
+
+          5. 在 Profile 页面（src/app/profile/page.tsx）加载时调用 loadEngineResults()
+             确保用户换设备或清缓存后，数据能从 Supabase 恢复。
+
+          关键约束：
+          - localStorage 仍然是第一写入层（保证离线可用）
+          - Supabase 同步是 fire-and-forget（不阻塞 UI）
+          - visitor_id 已经存在于 src/lib/analytics/visitor-id.ts，直接复用
+          - 不改 engine 计算逻辑，只改存储层
+          - 如果 Supabase 未配置，行为和现在完全一样（只存 localStorage）
+
+      - id: login-merge-visitor
+        name: "用户登录后合并 visitor_id 数据"
+        priority: P1
+        role: 快刀官
+        level: L2
+        depends_on: [supabase-engine-results-persist]
+        files_touched:
+          - src/lib/auth/auth-context.tsx (MODIFY)
+          - src/app/api/engine-results/merge/route.ts (NEW)
+        prompt: |
+          项目：C:/Users/86136/Desktop/miralife
+          任务：用户登录后，把 visitor_id 下的 engine_results 合并到 user_id 下。
+
+          场景：用户先匿名做了3个引擎 → 后来注册登录 → 之前的数据要自动归属到她的账号。
+
+          1. 创建 src/app/api/engine-results/merge/route.ts：
+             - POST { visitorId: string }
+             - 用 service role 查询 engine_results WHERE visitor_id = visitorId AND user_id IS NULL
+             - 对每条记录：UPDATE SET user_id = 当前用户ID, visitor_id = NULL
+             - 冲突处理：如果 user_id + engine_type 已存在，保留较新的那条
+
+          2. 在 src/lib/auth/auth-context.tsx 的 onAuthStateChange 回调中：
+             - 当 event === "SIGNED_IN" 时
+             - 读取 localStorage 的 visitor_id
+             - 调用 POST /api/engine-results/merge { visitorId }
+             - 这样用户登录后，之前匿名做的测试自动归到她名下
+
+          约束：
+          - 合并是一次性操作，不需要反复执行
+          - 失败不影响用户体验（数据仍在 localStorage）
+          - 不改登录流程本身
+
+  - name: "Wave 3: 部署上线 (Day 3-4)"
+    tasks:
+      - id: env-vars-verify
+        name: "验证环境变量并部署到 Vercel"
+        priority: P0
+        role: 铁律官
+        level: L2
+        depends_on: [stripe-checkout-9.9, supabase-engine-results-persist]
+        files_touched:
+          - .env.example (VERIFY)
+          - docs/vercel-deploy.md (MODIFY)
+        prompt: |
+          项目：C:/Users/86136/Desktop/miralife
+          任务：确认所有环境变量就绪，执行 Vercel 部署。
+
+          检查清单：
+
+          1. 确认 .env.local 存在且包含：
+             - NEXT_PUBLIC_SITE_URL（Vercel 域名）
+             - NEXT_PUBLIC_SUPABASE_URL + NEXT_PUBLIC_SUPABASE_ANON_KEY
+             - SUPABASE_SERVICE_ROLE_KEY（给 /api/engine-results 用）
+             - DEEPSEEK_API_KEY
+             - NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY（可以先用 test key）
+             - STRIPE_SECRET_KEY（可以先用 test key）
+             - STRIPE_WEBHOOK_SECRET
+
+          2. 执行本地构建验证：
+             cd C:/Users/86136/Desktop/miralife && npm run build
+             确认无报错，记录 static pages 数量。
+
+          3. 运行 Supabase migration：
+             确认 006_anonymous_engine_results.sql 已在 Supabase Dashboard 执行
+             或通过 supabase db push
+
+          4. 配置 Vercel 环境变量：
+             在 Vercel Dashboard → Settings → Environment Variables 添加所有 key
+             注意：NEXT_PUBLIC_ 前缀的变量需要在 Preview 和 Production 都配置
+
+          5. 推送部署：
+             git add -A && git commit -m "feat: stripe checkout + supabase persistence"
+             git push origin main
+             等待 Vercel 自动构建
+
+          6. 部署后验证：
+             - 访问首页，确认加载正常
+             - 完成一个引擎，确认结果存入 Supabase（检查 engine_results 表）
+             - 访问 /pricing，点击 ¥9.9 按钮，确认跳转到 Stripe Checkout（test mode）
+             - 用 Stripe test card (4242 4242 4242 4242) 完成支付
+             - 确认跳回 /report/success，内容解锁
+
+          7. 配置 Stripe Webhook（生产环境）：
+             Stripe Dashboard → Webhooks → Add endpoint
+             URL: https://miralife.vercel.app/api/payment/webhook
+             Events: checkout.session.completed
+
+      - id: hepan-free-unlock
+        name: "合盘功能免费开放（去掉 waitlist 门槛）"
+        priority: P1
+        role: 快刀官
+        level: L2
+        files_touched:
+          - src/app/engines/hepan/ (MODIFY)
+          - src/app/pricing/page.tsx (MODIFY)
+        prompt: |
+          项目：C:/Users/86136/Desktop/miralife
+          任务：把合盘（Hepan）从 ¥19.9 waitlist 改为免费开放。
+
+          原因：合盘是最强裂变武器（用户天然想和朋友/伴侣比较）。
+          把它锁在付费后面 = 杀死裂变。赚钱靠 ¥9.9 报告，不靠合盘。
+
+          执行：
+          1. 在 src/app/pricing/page.tsx 中：
+             - 找到 SINGLE_PRODUCTS 中的 "双人合盘报告" (price: "¥19.9", active: false)
+             - 删除这个付费项，或标记为 "free"
+
+          2. 在合盘相关页面中：
+             - 找到所有 waitlist / paywall 门槛
+             - 移除付费检查，让用户可以直接使用合盘功能
+             - 保留分享机制（这是裂变的核心）
+
+          3. 在合盘结果页：
+             - 确保有醒目的分享按钮
+             - 确保分享链接的接收者不需要登录就能查看结果
+             - 在合盘结果页底部加一个 CTA：
+               "想更深入了解你们的关系？试试深度报告 ¥9.9"
+               链接到 /pricing 或 /report/sample
+
+          约束：
+          - 不改合盘的计算逻辑和 AI 叙事
+          - 只改访问控制和 CTA 指向
+          - 合盘结果页的分享功能要正常工作
+
+  - name: "Wave 4: 20人验证 (Day 4-7)"
+    tasks:
+      - id: beta-invite-kit
+        name: "制作 Beta 邀请素材包"
+        priority: P0
+        role: 增长官
+        level: L1
+        depends_on: [env-vars-verify]
+        files_touched:
+          - docs/beta-invite-kit.md (NEW)
+        prompt: |
+          项目：C:/Users/86136/Desktop/miralife
+          任务：制作一份 Beta 邀请素材包，让创始人能在 10 分钟内开始拉人。
+
+          创建 docs/beta-invite-kit.md，包含：
+
+          1. 朋友圈文案（3 个版本，直接复制粘贴）：
+             - 版本A（好奇型）："做了个东西，把 MBTI + 八字 + 塔罗三面镜子合在一起看你是谁。前 20 个人免费深度报告。链接：xxx"
+             - 版本B（挑战型）："你敢不敢用三面镜子照自己？MBTI告诉你性格，八字告诉你命盘，塔罗告诉你潜意识。合在一起看会怎样？"
+             - 版本C（送礼型）："做了个生日礼物神器——输入生日就能生成专属八维人格图。想试的评论区留言，限 20 人。"
+
+             文案规则：
+             - 用"你"开头或直接提问
+             - 15字以内的标题/第一句
+             - 给悬念，不给答案
+             - 禁止：AI驱动、智能洞察、一站式
+
+          2. 小红书帖子文案（2 个版本）：
+             - 标题要带 MBTI/八字/塔罗 关键词（搜索流量）
+             - 正文讲自己测试的过程和惊讶的发现
+             - 结尾引导私信获取链接
+
+          3. 微信群发消息（1 个版本）：
+             - 发给10个最可能感兴趣的朋友
+             - 简短，直接，附链接
+
+          4. 目标用户画像 checklist：
+             - 22-30岁女性
+             - 发过 MBTI 相关内容
+             - 对星座/玄学有兴趣
+             - 在小红书/微博活跃
+             - 优先找身边已知的这类朋友
+
+          5. 反馈收集模板（微信对话用）：
+             - "做完了吗？做了几个引擎？"
+             - "八维图看懂了吗？哪个维度最准？"
+             - "有没有哪里觉得不对劲或者卡住？"
+             - "如果这个报告卖 9.9 你会买吗？为什么？"
+             - "你会分享给朋友吗？为什么会/不会？"
+
+      - id: funnel-dashboard-verify
+        name: "确认 Funnel Dashboard 可用"
+        priority: P1
+        role: 尺子官
+        level: L1
+        depends_on: [env-vars-verify]
+        files_touched: []
+        prompt: |
+          项目：C:/Users/86136/Desktop/miralife
+          任务：验证 /ops/funnel 数据看板在生产环境可用。
+
+          检查：
+          1. 访问 https://[domain]/ops/funnel
+          2. 确认 conversion_events 和 lead_intents 数据正常聚合
+          3. 确认以下指标可追踪：
+             - 引擎完成事件
+             - pricing_viewed 事件
+             - checkout_initiated 事件（新增的）
+             - payment_completed 事件（新增的）
+          4. 如果 funnel 页面有权限控制，确认创始人能访问
+          5. 记录基线数据（部署后、拉人前的零点）
+
+          这个看板是7天验证期间的核心监控工具。
+          创始人需要每天看：完成率、付费点击率、实际支付数。

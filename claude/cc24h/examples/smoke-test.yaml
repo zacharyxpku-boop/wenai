@@ -1,0 +1,38 @@
+# cc24h smoke test — 2 parallel + 1 dependent
+tasks:
+  - id: smoke-add-hello
+    title: Add hello endpoint to main.ts
+    prompt: |
+      Read src/main.ts. Add a new exported function called greet(name: string) that returns `Hello, ${name}!`.
+      Then git add and commit with message "feat(smoke-add-hello): add greet function".
+    priority: 1
+    agent_role: implementer
+    files_touched:
+      - src/main.ts
+
+  - id: smoke-add-config
+    title: Add timeout to config.ts
+    prompt: |
+      Read src/config.ts. Add a `timeout: 5000` field to the config object.
+      Then git add and commit with message "feat(smoke-add-config): add timeout config".
+    priority: 1
+    agent_role: implementer
+    files_touched:
+      - src/config.ts
+
+  - id: smoke-verify
+    title: Verify both changes exist
+    prompt: |
+      Read src/main.ts and src/config.ts.
+      Verify that:
+      1. main.ts contains a greet function
+      2. config.ts contains a timeout field
+      If both exist, create a file called SMOKE_OK.txt with content "smoke test passed".
+      Then git add and commit with message "feat(smoke-verify): verification passed".
+    priority: 2
+    agent_role: tester
+    depends_on:
+      - smoke-add-hello
+      - smoke-add-config
+    files_touched:
+      - SMOKE_OK.txt

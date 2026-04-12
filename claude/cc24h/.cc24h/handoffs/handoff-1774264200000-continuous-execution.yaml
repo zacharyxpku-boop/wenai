@@ -1,0 +1,20 @@
+id: handoff-1774264200000-continuous-execution
+goal: Encode the user's standing preference that Commander should keep advancing without re-asking for permission after each round unless a real blocker appears.
+completed:
+  - Updated `.claude/agents/commander.md` with a default-continuation rule
+  - Updated `CLAUDE.md` so new sessions inherit the same "continue unless blocked" behavior at repo entry
+  - Updated `docs/progress.md` to record the policy change for future Claude/Codex handoff continuity
+remaining:
+  - Mirror the same policy into any future workflow/prompt templates if new commander entrypoints are added
+files_modified:
+  - .claude/agents/commander.md
+  - CLAUDE.md
+  - docs/progress.md
+risks:
+  - This changes execution style, not runtime locking or risk policy; high-risk pauses still remain mandatory
+next_steps: Continue normal execution without asking for permission between rounds unless blocked by risk, environment, or an irreversible decision fork
+can_parallel: false
+created_at: '2026-03-23T11:10:00.000Z'
+from_session: codex
+to_session: commander
+task_id: commander-continuous-execution

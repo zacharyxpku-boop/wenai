@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "beta-lab",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["serve", "C:/Users/86136/Desktop/ai-beta-lab", "-l", "3456"],
+      "port": 3456
+    }
+  ]
+}

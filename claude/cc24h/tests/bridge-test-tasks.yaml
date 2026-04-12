@@ -1,0 +1,29 @@
+tasks:
+  - id: test-hello
+    title: Create a hello world file
+    prompt: |
+      Create a file called hello.txt with content "Hello from Commander Core".
+      Then git add and commit with message "feat(test-hello): add hello file"
+    priority: 1
+    agent_role: builder
+    files_touched:
+      - hello.txt
+
+  - id: test-readme
+    title: Update README with test line
+    prompt: |
+      Add a line "## Commander Test" at the end of README.md.
+      Then git add and commit.
+    priority: 2
+    agent_role: builder
+    files_touched:
+      - README.md
+
+  - id: test-review
+    title: Review all test changes
+    prompt: |
+      Check that hello.txt exists and README.md has the Commander Test section.
+      Report findings.
+    priority: 3
+    agent_role: reviewer
+    depends_on: [test-hello, test-readme]

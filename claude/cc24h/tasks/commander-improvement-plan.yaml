@@ -1,0 +1,217 @@
+tasks:
+  # ── GAP 1: Hooks (CRITICAL) ──────────────────────────
+  - id: hooks-risk-check
+    title: "Add PreToolUse hook for risk policy enforcement"
+    goal: "Deterministic blocking of writes to high-risk zones (auth/payment/migration/secrets)"
+    owner_role: builder
+    priority: 1
+    status: done
+    depends_on: []
+    files_touched:
+      - .claude/settings.json
+      - .cc24h/hooks/risk-check.mjs
+    deliverables:
+      - PreToolUse hook script that checks file path against risk-policy.yaml
+      - Exit code 2 + stderr message when blocked
+      - settings.json with hook config
+    done_definition: "Attempting to Edit a file in src/auth/ triggers block message"
+    risk_level: L2
+    parallel_safe: true
+    review_checklist:
+      - Hook blocks auth/payment/migration/secrets writes
+      - Hook allows writes to tests/docs
+      - Non-zero exit doesn't crash Claude session
+    handoff_notes: "This is a new .claude/settings.json — if one already exists, merge hooks into it"
+
+  - id: hooks-verify-completion
+    title: "Add Stop hook for auto-verification"
+    goal: "Before a worker completes, verify it actually did what was asked"
+    owner_role: builder
+    priority: 1
+    status: done
+    depends_on: [hooks-risk-check]
+    files_touched:
+      - .claude/settings.json
+      - .cc24h/hooks/verify-completion.mjs
+    deliverables:
+      - Stop hook script that checks git diff for changes matching task prompt
+      - JSON output summarizing what changed
+    done_definition: "Worker session outputs structured completion summary before exit"
+    risk_level: L2
+    parallel_safe: true
+    review_checklist:
+      - Hook runs without error on task completion
+      - Hook outputs valid JSON with files_changed, tests_status
+      - Hook doesn't block if task legitimately has no changes
+
+  - id: hooks-postcompact
+    title: "Add PostCompact hook to re-inject commander context"
+    goal: "After compaction, restore critical commander state into worker context"
+    owner_role: builder
+    priority: 2
+    status: done
+    depends_on: [hooks-risk-check]
+    files_touched:
+      - .claude/settings.json
+      - .cc24h/hooks/postcompact-inject.mjs
+      - .cc24h/commander/context-inject.md
+    deliverables:
+      - PostCompact hook that reads context-inject.md
+      - context-inject.md template with current task, session, constraints
+      - Auto-generated on task claim by bridge
+    done_definition: "Long worker session compacts and retains task awareness"
+    risk_level: L1
+    parallel_safe: true
+    review_checklist:
+      - context-inject.md is generated on claim
+      - PostCompact hook outputs content to stdout
+      - Content includes task ID, goal, constraints, files_touched
+
+  # ── GAP 2: Session Resume (HIGH) ────────────────────
+  - id: worker-session-resume
+    title: "Use --name and --resume for worker sessions"
+    goal: "Workers can resume mid-task instead of restarting from scratch"
+    owner_role: builder
+    priority: 1
+    status: todo
+    depends_on: []
+    files_touched:
+      - src/autonomous.mjs
+      - src/orchestrator.mjs
+      - src/backends/cli-backend.mjs
+    deliverables:
+      - Workers spawned with --name cc24h-<task-id>
+      - On retry, use --resume cc24h-<task-id> instead of fresh -p
+      - Session name stored in task record
+    done_definition: "A failed task retries with --resume and continues from where it left off"
+    risk_level: L3
+    parallel_safe: true
+    review_checklist:
+      - New workers use --name
+      - Retry uses --resume
+      - Fallback to fresh -p if resume fails
+      - Session name persisted in DB
+    handoff_notes: "Check if --resume works with --print mode. If not, may need to adjust output capture."
+
+  # ── GAP 3: Compaction Config (HIGH, TRIVIAL) ────────
+  - id: worker-compaction-config
+    title: "Set CLAUDE_AUTOCOMPACT_PCT_OVERRIDE=50 for workers"
+    goal: "Workers compact earlier, preventing context overflow on long tasks"
+    owner_role: builder
+    priority: 1
+    status: todo
+    depends_on: []
+    files_touched:
+      - src/autonomous.mjs
+      - src/orchestrator.mjs
+      - src/backends/cli-backend.mjs
+    deliverables:
+      - CLAUDE_AUTOCOMPACT_PCT_OVERRIDE=50 in worker spawn env
+    done_definition: "Worker env includes compaction override"
+    risk_level: L1
+    parallel_safe: true
+    review_checklist:
+      - Environment variable set in spawn call
+      - Doesn't break other env vars
+
+  # ── GAP 4: Real Skill Files (HIGH) ──────────────────
+  - id: skill-files-create
+    title: "Create .claude/skills/ SKILL.md files for all 7 registered skills"
+    goal: "Skills become natively invocable by Claude Code, not just registry entries"
+    owner_role: builder
+    priority: 2
+    status: todo
+    depends_on: []
+    files_touched:
+      - .claude/skills/codebase-understand/SKILL.md
+      - .claude/skills/task-decomposition/SKILL.md
+      - .claude/skills/handoff-generation/SKILL.md
+      - .claude/skills/review-checklist/SKILL.md
+      - .claude/skills/page-copy-review/SKILL.md
+      - .claude/skills/test-generation/SKILL.md
+      - .claude/skills/risk-scan/SKILL.md
+    deliverables:
+      - 7 SKILL.md files with proper frontmatter
+      - Each skill has instructions, examples, scope limits
+    done_definition: "Running /review-checklist in any Claude Code session invokes the skill"
+    risk_level: L2
+    parallel_safe: true
+    review_checklist:
+      - Each SKILL.md has valid frontmatter (name, description, user-invocable)
+      - Instructions are specific and actionable
+      - Risk-appropriate tools are declared
+
+  # ── GAP 5: Conditional Rules (MEDIUM) ───────────────
+  - id: conditional-rules
+    title: "Add .claude/rules/ with path-conditional conventions"
+    goal: "Context-efficient: workers only load rules relevant to their task's files"
+    owner_role: builder
+    priority: 3
+    status: todo
+    depends_on: []
+    files_touched:
+      - .claude/rules/api.md
+      - .claude/rules/tests.md
+      - .claude/rules/docs.md
+      - .claude/rules/tui.md
+    deliverables:
+      - 4 rule files with paths frontmatter
+      - Each covers conventions for its area
+    done_definition: "Claude only loads API rules when reading src/api/ files"
+    risk_level: L1
+    parallel_safe: true
+    review_checklist:
+      - Rules have valid paths frontmatter
+      - Content is concise and actionable
+      - No overlap with CLAUDE.md
+
+  # ── GAP 9: Agent Definition Files (LOW) ─────────────
+  - id: agent-definition-files
+    title: "Create .claude/agents/ files for commander roles"
+    goal: "Roles discoverable by Claude Code natively"
+    owner_role: builder
+    priority: 3
+    status: todo
+    depends_on: []
+    files_touched:
+      - .claude/agents/builder.md
+      - .claude/agents/reviewer.md
+      - .claude/agents/qa-operator.md
+    deliverables:
+      - 3 agent files with frontmatter (name, description, tools, maxTurns)
+    done_definition: "@builder in any session invokes the builder agent"
+    risk_level: L1
+    parallel_safe: true
+    review_checklist:
+      - Frontmatter is valid
+      - Tool lists match role boundaries
+      - maxTurns is reasonable
+
+  # ── REVIEW ──────────────────────────────────────────
+  - id: v2-review
+    title: "Review all v2 changes"
+    goal: "Verify hooks, resume, skills, rules all work end-to-end"
+    owner_role: reviewer
+    priority: 4
+    status: todo
+    depends_on:
+      - hooks-risk-check
+      - hooks-verify-completion
+      - hooks-postcompact
+      - worker-session-resume
+      - worker-compaction-config
+      - skill-files-create
+    files_touched: []
+    deliverables:
+      - Review report covering all 6 predecessor tasks
+      - End-to-end test: claim → execute → verify → submit
+    done_definition: "All hooks fire correctly, resume works, skills invocable"
+    risk_level: L1
+    parallel_safe: true
+    review_checklist:
+      - PreToolUse blocks auth writes
+      - Stop hook outputs summary
+      - PostCompact re-injects context
+      - Resume works on retry
+      - Skills show in /skill menu
+      - Compaction threshold is 50%

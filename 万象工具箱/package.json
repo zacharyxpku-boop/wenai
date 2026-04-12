@@ -1,0 +1,21 @@
+{
+  "name": "wanxiang-toolbox",
+  "version": "1.0.0",
+  "description": "万象工具箱 - 一人企业自动化流水线",
+  "type": "module",
+  "scripts": {
+    "start": "node tools/launcher.js",
+    "下载视频": "node tools/video-downloader.js",
+    "爬小红书": "node tools/xhs-scraper.js",
+    "生成内容": "node tools/content-generator.js",
+    "去AI味": "node tools/humanizer.js",
+    "监控竞品": "node tools/competitor-monitor.js",
+    "日报": "node tools/daily-digest.js",
+    "批量去AI味": "node tools/batch-humanizer.js"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.0",
+    "playwright": "^1.40.0",
+    "readline": "^1.3.0"
+  }
+}

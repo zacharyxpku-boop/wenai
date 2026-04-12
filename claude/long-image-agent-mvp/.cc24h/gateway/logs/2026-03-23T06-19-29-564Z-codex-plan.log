@@ -1,0 +1,4 @@
+Planning: "smoke-test"
+Analyzing codebase...
+
+Plan failed: Planning failed: I’ve got enough on the runtime path. One last check is whether the repo already documents a preferred testing style; if not, the task should explicitly standardize on Node’s built-in test runner to av

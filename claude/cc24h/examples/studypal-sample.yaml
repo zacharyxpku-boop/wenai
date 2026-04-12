@@ -1,0 +1,46 @@
+# cc24h 任务示例 — 基于 studypal 项目
+# 导入: node bin/cc24h.mjs enqueue examples/studypal-sample.yaml -p C:\Users\86136\Desktop\studypal
+
+tasks:
+  - id: sp-add-error-boundary
+    title: Add global error boundary
+    prompt: |
+      Read src/app/layout.tsx and the project structure.
+      Create a React error boundary component at src/components/error-boundary.tsx.
+      It should:
+      1. Catch rendering errors
+      2. Show a friendly "Something went wrong" message with a retry button
+      3. Log the error to console
+      Follow the existing code style (TypeScript, Tailwind CSS, shadcn/ui).
+      After completing, git add and commit: "feat(sp-add-error-boundary): add global error boundary"
+    priority: 1
+    agent_role: implementer
+    files_touched:
+      - src/components/error-boundary.tsx
+
+  - id: sp-improve-loading
+    title: Add loading skeleton to coach page
+    prompt: |
+      Read src/app/(app)/coach/page.tsx.
+      Add a loading.tsx file at src/app/(app)/coach/loading.tsx that shows
+      a chat skeleton UI while the page loads. Use shadcn/ui Skeleton component.
+      After completing, git add and commit: "feat(sp-improve-loading): add coach loading skeleton"
+    priority: 1
+    agent_role: implementer
+    files_touched:
+      - src/app/(app)/coach/loading.tsx
+
+  - id: sp-review-both
+    title: Review the two new components
+    prompt: |
+      Review the changes in this branch:
+      1. Check src/components/error-boundary.tsx for correctness
+      2. Check src/app/(app)/coach/loading.tsx for correctness
+      3. Verify both follow the project's TypeScript + Tailwind conventions
+      4. Run `npx tsc --noEmit` to check for type errors
+      Output a brief review summary.
+    priority: 2
+    agent_role: reviewer
+    depends_on:
+      - sp-add-error-boundary
+      - sp-improve-loading

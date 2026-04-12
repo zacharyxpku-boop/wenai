@@ -1,0 +1,14 @@
+cc24h Doctor
+
+[✓] Node.js v24.14.0
+[✓] git version 2.53.0.windows.2
+[✓] Claude CLI: 2.1.78 (Claude Code)
+[~] Agent SDK not installed (CLI fallback)
+fatal: not a git repository (or any of the parent directories): .git
+
+Project: C:\Users\86136\Desktop\long-image-agent-mvp
+Git: no → worktree isolation unavailable
+
+Commander: 0 sessions, 0 active
+Tasks: todo=0 run=0 review=0 done=0 fail=0
+Locks: 0

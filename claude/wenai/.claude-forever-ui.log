@@ -1,0 +1,59 @@
+2026-04-11 23:52:21 | 不眠模式启动 | 任务: 阁主带队，内阁交叉协作，wenai项目UI全面升级。
+
+【必须调用的skills】
+1. /frontend-design — 每个页面组件改之前先用这个skill审视设计方向
+2. /baseline-ui — 强制执行UI基线规范
+3. /fixing-accessibility — 每个页面改完后跑一遍无障碍检查
+4. /fixing-metadata — 确保meta信息完整
+5. /fixing-motion-performance — 动画性能优化
+6. /simplify — 每个文件改完后检查代码复用和质量
+7. /verification-before-completion — 完成前验证
+
+【必须读的上下文】
+- CLAUDE.md（全局规则+万象阁路由+DESIGN.md强制规则+文案规则+UI反AI规则）
+- memory/MEMORY.md → 读取所有feedback_*.md和reference_design_md.md
+- wenai/DESIGN.md — Industrial Editorial设计系统，严格遵守
+- memory/feedback_gamification.md — 产品要有游戏互动感
+- memory/feedback_preview_workflow.md — 批量开发不开preview
+
+【UI升级清单】
+按优先级逐个文件改：
+
+P0 仪表盘 src/app/page.tsx：
+- 模块卡片需要层次感、T1徽章更突出
+- 统计数据区域视觉重量不够
+- 7日趋势图太小太弱
+- 商品库横滑条交互感不足
+
+P0 侧边栏 src/components/Layout/Sidebar.tsx：
+- 导航层级、当前态高亮、hover态过渡
+- 图标一致性检查
+- 分类分组视觉区隔
+
+P0 工作区 src/components/AIWorkspace.tsx：
+- 输入区/输出区/历史面板三栏布局优化
+- 结果渲染（markdown支持、代码块、表格）
+- 加载态要有质感不是简单spinner
+
+P1 登录页 src/app/login/page.tsx：
+- 简洁有质感，符合Industrial Editorial风格
+- 不要花哨动画
+
+P1 设置页 src/app/settings/page.tsx：
+- 表单组件统一风格
+- 开关/输入框对齐DESIGN.md
+
+P2 globals.css：
+- 补充缺失工具类
+- 检查所有CSS变量是否被正确使用
+
+【铁律】
+- 禁止Inter/Roboto/Poppins字体
+- 禁止紫蓝渐变、rounded-3xl+shadow-2xl、三列等宽卡片
+- 颜色只用DESIGN.md定义的CSS变量
+- 每改完一个文件就git commit
+- 不要开preview server
+- 完成后推送远程
+2026-04-11 23:52:21 | 第 1 轮
+2026-04-12 00:06:38 | 任务正常完成
+2026-04-12 00:06:38 | 不眠模式结束 (共 0 次重试)

@@ -3,8 +3,8 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 02-ai-pipeline-03-PLAN.md
-last_updated: "2026-04-12T17:56:41.127Z"
+stopped_at: Completed 02-ai-pipeline-04-PLAN.md
+last_updated: "2026-04-12T17:57:02.789Z"
 last_activity: 2026-04-12
 progress:
   total_phases: 3
@@ -53,7 +53,7 @@ Progress: [███░░░░░░░] 33%
 
 | Phase 01-foundation P01 | 10 | 3 tasks | 10 files |
 | Phase 01-foundation P03 | 6 | 2 tasks | 8 files |
-| Phase 02 P03 | 8 | 1 tasks | 2 files |
+| Phase 02-ai-pipeline P04 | 15 | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -70,8 +70,8 @@ Progress: [███░░░░░░░] 33%
 - [Phase 01-foundation]: Use getUser() not getSession() in middleware — server validates token, prevents cookie forgery
 - [Phase 01-foundation]: Admin gated by app_metadata.role (set server-side only, not user-writable)
 - [Phase 01-foundation]: fal.ai proxy via createRouteHandler — zero-config, reads FAL_KEY from process.env automatically
-- [Phase 02]: Parse Gemini response with StoryboardSchema.parse(JSON.parse(result.text!)) for explicit Zod validation
-- [Phase 02]: variantCount clamped to 3-5 range to satisfy HookVariantsSchema constraints
+- [Phase 02-ai-pipeline]: Flux Pro image_size uses 'portrait_16_9' enum (not '9:16' ratio format) — API pitfall difference from Kling aspect_ratio
+- [Phase 02-ai-pipeline]: Video synthesis sets waiting_external status after Kling submissions — webhook handler owns transition to post-processing
 
 ### Pending Todos
 
@@ -85,6 +85,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-12T17:56:41.120Z
-Stopped at: Completed 02-ai-pipeline-03-PLAN.md
+Last session: 2026-04-12T17:57:02.783Z
+Stopped at: Completed 02-ai-pipeline-04-PLAN.md
 Resume file: None

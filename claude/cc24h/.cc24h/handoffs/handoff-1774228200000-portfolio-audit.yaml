@@ -1,0 +1,22 @@
+id: handoff-1774228200000-portfolio-audit
+goal: Reconcile current desktop session report with actual Commander/runtime state and set the next safe priority
+completed:
+  - Audited `studypal`, `market-predictor`, `ai-crew`, `miralife`, and `cc24h` using the safe commander entrypoint and local repo checks
+  - Confirmed `studypal` has active task state (`run=2`, `review=45`) but zero local sessions; treat as externally active and do not mutate runtime
+  - Confirmed `market-predictor`, `ai-crew`, and `miralife` all have zero tasks and zero sessions in local commander state
+  - Confirmed `ai-crew` and `miralife` are not git repos locally; `market-predictor` is also not a git repo
+  - Confirmed `cc24h` still has the older `test-review` runtime continuity issue and remains the best place for low-disturbance follow-up
+remaining:
+  - Do not touch `studypal` runtime while the external Claude.ai session is still processing
+  - Re-open `market-predictor` in a fresh Claude.ai session before further development
+  - Repair `cc24h` stale `test-review` continuity before starting broader P0-P4 rollout
+files_modified:
+  - docs/progress.md
+test_results: Safe status checks succeeded for all five projects; git checks confirmed repo/non-repo mismatches in the user summary
+risks: Avoid mutating active external work in `studypal`; avoid broad P0-P4 rollout until `cc24h` runtime continuity is cleaner
+next_steps: Next best single issue is `cc24h` runtime cleanup around the historical `test-review` assignment and review closure
+can_parallel: true
+created_at: '2026-03-23T07:10:00.000Z'
+from_session: codex
+to_session: commander
+task_id: desktop-session-audit

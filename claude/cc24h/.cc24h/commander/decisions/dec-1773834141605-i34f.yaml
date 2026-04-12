@@ -1,0 +1,7 @@
+id: dec-1773834141605-i34f
+session: builder-1
+type: task_assigned
+input: Session builder-1 (builder) requested task
+decision: 'Assigned test-hello: Create a hello world file'
+reasoning: Priority 1, no lock conflicts, role match
+time: '2026-03-18T11:42:21.605Z'

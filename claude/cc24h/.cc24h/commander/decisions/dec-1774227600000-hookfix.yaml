@@ -1,0 +1,7 @@
+id: dec-1774227600000-hookfix
+session: codex
+type: continuity_fix
+input: Hook tasks were still marked todo while hooks were already wired, and verify-completion produced false-positive changed files on Windows/non-git directories.
+decision: Reconcile hook task state and patch verify-completion before attempting broader commander runtime cleanup.
+reasoning: This is the smallest high-value fix that improves completion summaries and handoff quality without disturbing routing, locks, or existing session continuity.
+time: '2026-03-23T07:00:00.000Z'

@@ -1,0 +1,7 @@
+id: dec-1774254800000-runtime-integrity
+session: codex
+type: runtime_continuity
+input: Historical `test-review` runtime state showed a stale reviewer session and predecessor tasks marked done even though claimed workspace artifacts were missing.
+decision: Extend `cc24h sync` with a runtime integrity audit that verifies explicit artifact expectations and auto-reopens high-confidence false-done tasks.
+reasoning: This fixes the highest-value continuity gap with low disturbance by combining stale-session recovery and explicit artifact verification, while preserving the existing Commander workflow and state model.
+time: '2026-03-23T08:33:00.000Z'

@@ -1,0 +1,35 @@
+id: review-checklist
+name: Code Review Checklist
+purpose: 'Systematic review: correctness, security, style, tests, edge cases'
+category: review
+risk_level: L1
+scope: []
+owner: system
+version: 1.0.0
+status: approved
+allowed_tools:
+  - Read
+  - Glob
+  - Grep
+  - Bash(git diff)
+forbidden_zones:
+  - auth
+  - payment
+  - migration
+  - secrets
+  - deploy
+  - database-schema
+  - ci-cd
+validation_checks:
+  - checklist has ≥5 items
+  - covers security and edge cases
+rollback_strategy: ''
+test_command: ''
+applicable_when: Task enters review status, PR ready, pre-merge check
+not_applicable_when: Draft/WIP code not yet ready for review
+adoption_score: 0
+use_count: 0
+success_count: 0
+fail_count: 0
+created_at: '2026-03-19T02:53:39.917Z'
+updated_at: '2026-03-19T02:53:39.917Z'

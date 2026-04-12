@@ -1,0 +1,39 @@
+id: progress-updater
+name: Progress Updater
+purpose: Update docs/progress.md, worklogs, and task status after work completion
+category: coordination
+risk_level: L2
+scope: []
+owner: system
+version: 1.0.0
+status: approved
+allowed_tools:
+  - Read
+  - Write(docs/progress.md)
+  - Write(.cc24h/worklogs/)
+  - Glob
+  - Grep
+  - Bash(git log)
+  - Bash(git diff)
+forbidden_zones:
+  - auth
+  - payment
+  - migration
+  - secrets
+  - deploy
+  - database-schema
+  - ci-cd
+validation_checks:
+  - progress.md updated with timestamp
+  - worklog entry created
+  - no existing entries deleted
+rollback_strategy: ''
+test_command: ''
+applicable_when: After completing a task, at session end, after submit-result
+not_applicable_when: No work has been done since last update
+adoption_score: 0
+use_count: 0
+success_count: 0
+fail_count: 0
+created_at: '2026-03-20T12:02:18.747Z'
+updated_at: '2026-03-20T12:02:18.747Z'

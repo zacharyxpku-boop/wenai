@@ -1,0 +1,13 @@
+{
+  "name": "claude-24h-agent",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Claude Code 24H 自动编码 - Agent SDK 编排器",
+  "scripts": {
+    "start": "node orchestrator.mjs",
+    "start:dev": "node orchestrator.mjs --dry-run"
+  },
+  "dependencies": {
+    "@anthropic-ai/claude-code": "^1.0.0"
+  }
+}

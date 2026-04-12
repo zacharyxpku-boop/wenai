@@ -1,0 +1,30 @@
+2026-04-11 22:45:38 | 不眠模式启动 | 任务: 阁主带队，内阁交叉审核wenai项目，重点任务：
+
+1. UI全面升级（最高优先级）：
+   - 严格按照 DESIGN.md 设计系统（Industrial Editorial暗色主题、amber accent #c8975a）
+   - 检查所有页面组件是否真正落地了设计系统（字体Outfit+IBM Plex Mono、颜色变量、间距、圆角等）
+   - 仪表盘(page.tsx)：模块卡片布局优化，信息密度提升，去掉AI感（禁止紫蓝渐变/rounded-3xl/shadow-2xl）
+   - 侧边栏(Sidebar.tsx)：导航层级清晰、hover态、当前态、图标一致性
+   - 模块工作区(AIWorkspace.tsx)：输入区/输出区/历史记录布局优化，专业感
+   - 登录页(login/page.tsx)：简洁有质感，不要花哨
+   - 设置页(settings/page.tsx)：表单/开关组件统一
+   - globals.css补充缺失的工具类和动画
+   - 响应式适配检查
+
+2. 功能巡检：
+   - 所有15个模块能正常加载和交互
+   - AI调用链路完整（prompt模板→reference注入→API调用→结果展示）
+   - 反馈/评分系统正常工作
+   - CSV批量处理流程验证
+
+3. 代码质量：
+   - TypeScript类型安全，消除any
+   - 组件拆分合理，避免单文件过大
+   - 删除dead code和unused imports
+
+每改完一个文件就 git commit。完成后推送到远程。
+不要开 preview server，直接改代码。
+读 CLAUDE.md 和 memory 获取完整上下文。
+2026-04-11 22:45:38 | 第 1 轮
+2026-04-11 23:13:47 | 任务正常完成
+2026-04-11 23:13:48 | 不眠模式结束 (共 0 次重试)

@@ -1,0 +1,32 @@
+id: handoff-generation
+name: Handoff Note Generation
+purpose: Generate structured handoff notes for session relay
+category: coordination
+risk_level: L1
+scope: []
+owner: system
+version: 1.0.0
+status: approved
+allowed_tools:
+  - Read
+  - Write(.cc24h/handoffs/)
+forbidden_zones:
+  - auth
+  - payment
+  - migration
+  - secrets
+  - deploy
+  - database-schema
+  - ci-cd
+validation_checks:
+  - 'covers: goal, completed, remaining, files, risks, next_steps'
+rollback_strategy: ''
+test_command: ''
+applicable_when: Session ending, task blocked, switching agents
+not_applicable_when: Single-shot tasks that complete in one session
+adoption_score: 0
+use_count: 0
+success_count: 0
+fail_count: 0
+created_at: '2026-03-20T12:02:18.731Z'
+updated_at: '2026-03-20T12:02:18.731Z'

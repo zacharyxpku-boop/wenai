@@ -1,0 +1,7 @@
+id: dec-1773834171693-tp1d
+session: builder-2
+type: task_assigned
+input: Session builder-2 (builder) requested task
+decision: 'Assigned test-readme: Update README with test line'
+reasoning: Priority 2, no lock conflicts, role match
+time: '2026-03-18T11:42:51.693Z'

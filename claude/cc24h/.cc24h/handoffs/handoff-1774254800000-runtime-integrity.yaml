@@ -1,0 +1,23 @@
+id: handoff-1774254800000-runtime-integrity
+goal: Add sync-time integrity recovery so stale Commander sessions and false-done tasks converge back to a trustworthy runtime state
+completed:
+  - Added `src/runtime-audit.mjs` to inspect completed and review-stage tasks against touched files and explicit prompt expectations
+  - Integrated runtime audit into `bin/cc24h.mjs` so `sync` now performs stale-session recovery and integrity repair in one pass
+  - Recovered the historical `test-review` chain into a consistent state: `reviewer-1` is stale, `test-review` returned to `todo`, and `test-hello` / `test-readme` were reopened with audit-backed error reasons
+  - Wrote runtime audit output under `.cc24h/audits/` for traceable postmortem and follow-up review
+  - Updated `docs/progress.md` with the continuity fix and the remaining multi-process persistence risk
+remaining:
+  - Decide whether to harden whole-file `state.db` persistence against concurrent CLI writers (`sync` / `status`) to eliminate last-writer-wins clobbering
+  - Optionally surface the latest runtime audit summary in a review-oriented CLI path for faster operator visibility
+files_modified:
+  - src/runtime-audit.mjs
+  - bin/cc24h.mjs
+  - docs/progress.md
+test_results: `cc24h sync -p C:\Users\86136\Desktop\cc24h` now reports integrity findings and reopens false-done tasks; subsequent `status` shows `todo=3`, `run=0`, `review=0`, `done=0`
+risks: Separate CLI processes can still clobber `state.db` because persistence uses whole-file saves without process-level serialization
+next_steps: Continue the same runtime continuity workstream by deciding whether to add persistence locking or to expose audit findings in the operator review loop first
+can_parallel: false
+created_at: '2026-03-23T08:33:00.000Z'
+from_session: codex
+to_session: commander
+task_id: runtime-continuity-sync-audit

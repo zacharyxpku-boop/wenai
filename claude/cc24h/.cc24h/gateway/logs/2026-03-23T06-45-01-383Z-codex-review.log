@@ -1,0 +1,13 @@
+═══════════════════════════════════════
+  CC24H Review — 2026-03-23T06:45
+═══════════════════════════════════════
+
+Tasks  todo:0 run:1 blocked:0 review:0 done:2 fail:0 total:3
+Sess   active:0 idle:0 stale:0 fail:0
+Locks  none
+
+Handoffs:
+  builder-2 → commander: Update README with test line
+  builder-1 → commander: Create a hello world file
+
+═══════════════════════════════════════
