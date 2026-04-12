@@ -7,11 +7,11 @@
 
 ### Authentication (AUTH)
 
-- [ ] **AUTH-01**: User can sign up with email/password
-- [ ] **AUTH-02**: User can sign up/login with Google OAuth
+- [x] **AUTH-01**: User can sign up with email/password
+- [x] **AUTH-02**: User can sign up/login with Google OAuth
 - [x] **AUTH-03**: User receives email verification after signup
-- [ ] **AUTH-04**: User can reset password via email link
-- [ ] **AUTH-05**: User session persists across browser refresh
+- [x] **AUTH-04**: User can reset password via email link
+- [x] **AUTH-05**: User session persists across browser refresh
 - [ ] **AUTH-06**: Role-based access: client vs operator vs admin
 
 ### Product Management (PROD)
