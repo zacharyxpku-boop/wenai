@@ -1,0 +1,19 @@
+{
+  "name": "clico-worker",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "tsx worker/index.ts",
+    "dev": "tsx watch worker/index.ts"
+  },
+  "dependencies": {
+    "bullmq": "^5.73.0",
+    "ioredis": "^5.0.0"
+  },
+  "devDependencies": {
+    "tsx": "^4.0.0",
+    "typescript": "^5.0.0",
+    "@types/node": "^22.0.0"
+  }
+}
