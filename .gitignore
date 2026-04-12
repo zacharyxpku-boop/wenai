@@ -39,3 +39,4 @@ dist/
 .env
 .env.local
 .env*.local
+# DO NOT ADD NEXT_PUBLIC_ prefix to FAL_KEY, SUPABASE_SERVICE_ROLE_KEY, or UPSTASH_REDIS_URL
