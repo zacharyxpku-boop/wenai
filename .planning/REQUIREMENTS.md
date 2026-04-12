@@ -76,12 +76,12 @@
 
 ### Infrastructure (INFRA)
 
-- [ ] **INFRA-01**: Supabase Postgres with RLS policies on all tables (tenant isolation)
-- [ ] **INFRA-02**: Supabase Storage for product images and generated videos (presigned upload)
+- [x] **INFRA-01**: Supabase Postgres with RLS policies on all tables (tenant isolation)
+- [x] **INFRA-02**: Supabase Storage for product images and generated videos (presigned upload)
 - [ ] **INFRA-03**: BullMQ on Upstash Redis (Fixed plan, noeviction policy) for async job queue
 - [ ] **INFRA-04**: Dedicated Railway worker process for long-running AI pipeline jobs
-- [ ] **INFRA-05**: Webhook receivers for Kling/fal.ai completion callbacks with idempotency keys
-- [ ] **INFRA-06**: API key management for Gemini, fal.ai, TikAPI stored as env vars (never client-side)
+- [x] **INFRA-05**: Webhook receivers for Kling/fal.ai completion callbacks with idempotency keys
+- [x] **INFRA-06**: API key management for Gemini, fal.ai, TikAPI stored as env vars (never client-side)
 
 ## v2 Requirements
 

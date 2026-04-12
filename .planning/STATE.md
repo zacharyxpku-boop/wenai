@@ -1,3 +1,19 @@
+---
+gsd_state_version: 1.0
+milestone: v1.0
+milestone_name: milestone
+status: planning
+stopped_at: Completed 01-foundation-02-PLAN.md
+last_updated: "2026-04-12T06:16:28.316Z"
+last_activity: 2026-04-12 — Roadmap created; all planning artifacts initialized
+progress:
+  total_phases: 3
+  completed_phases: 0
+  total_plans: 3
+  completed_plans: 1
+  percent: 33
+---
+
 # Project State
 
 ## Project Reference
@@ -14,11 +30,12 @@ Plan: 0 of TBD in current phase
 Status: Ready to plan
 Last activity: 2026-04-12 — Roadmap created; all planning artifacts initialized
 
-Progress: [░░░░░░░░░░] 0%
+Progress: [███░░░░░░░] 33%
 
 ## Performance Metrics
 
 **Velocity:**
+
 - Total plans completed: 0
 - Average duration: -
 - Total execution time: 0 hours
@@ -30,8 +47,11 @@ Progress: [░░░░░░░░░░] 0%
 | - | - | - | - |
 
 **Recent Trend:**
+
 - Last 5 plans: -
 - Trend: -
+
+| Phase 01-foundation P02 | 85s | 2 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -44,6 +64,8 @@ Progress: [░░░░░░░░░░] 0%
 - Pipeline: Webhook-first for Kling; polling (exp backoff) for Flux/Gemini — no persistent polling in workers
 - Pipeline: Gemini Flash not Pro — avoid 2x pricing at >200K context
 - Billing: Credit deduction must be a single atomic Postgres UPDATE with balance check
+- [Phase 01-foundation]: Worker lockDuration set to 20 minutes to cover maximum Kling/Seedance video generation time
+- [Phase 01-foundation]: enableReadyCheck: false paired with maxRetriesPerRequest: null for Upstash serverless Redis cold start compatibility
 
 ### Pending Todos
 
@@ -57,6 +79,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-12
-Stopped at: Roadmap created, no execution yet
+Last session: 2026-04-12T06:16:28.308Z
+Stopped at: Completed 01-foundation-02-PLAN.md
 Resume file: None
