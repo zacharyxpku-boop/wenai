@@ -9,7 +9,7 @@
 
 - [ ] **AUTH-01**: User can sign up with email/password
 - [ ] **AUTH-02**: User can sign up/login with Google OAuth
-- [ ] **AUTH-03**: User receives email verification after signup
+- [x] **AUTH-03**: User receives email verification after signup
 - [ ] **AUTH-04**: User can reset password via email link
 - [ ] **AUTH-05**: User session persists across browser refresh
 - [ ] **AUTH-06**: Role-based access: client vs operator vs admin
@@ -78,8 +78,8 @@
 
 - [ ] **INFRA-01**: Supabase Postgres with RLS policies on all tables (tenant isolation)
 - [ ] **INFRA-02**: Supabase Storage for product images and generated videos (presigned upload)
-- [ ] **INFRA-03**: BullMQ on Upstash Redis (Fixed plan, noeviction policy) for async job queue
-- [ ] **INFRA-04**: Dedicated Railway worker process for long-running AI pipeline jobs
+- [x] **INFRA-03**: BullMQ on Upstash Redis (Fixed plan, noeviction policy) for async job queue
+- [x] **INFRA-04**: Dedicated Railway worker process for long-running AI pipeline jobs
 - [ ] **INFRA-05**: Webhook receivers for Kling/fal.ai completion callbacks with idempotency keys
 - [ ] **INFRA-06**: API key management for Gemini, fal.ai, TikAPI stored as env vars (never client-side)
 
