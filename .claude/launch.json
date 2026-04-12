@@ -6,6 +6,7 @@
       "runtimeExecutable": "npm",
       "runtimeArgs": ["run", "dev", "--", "-p", "3000"],
       "port": 3000,
+      "autoPort": false,
       "cwd": "miralife"
     },
     {
@@ -45,8 +46,8 @@
     },
     {
       "name": "ai-edu-platform",
-      "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev", "--", "-p", "3006"],
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["http-server", ".", "-p", "3006", "-c-1"],
       "port": 3006,
       "cwd": "claude/ai-edu-platform"
     },
@@ -70,6 +71,13 @@
       "runtimeArgs": ["run", "dev", "--", "-p", "3009"],
       "port": 3009,
       "cwd": "market-predictor"
+    },
+    {
+      "name": "wenai",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev", "--", "-p", "3011"],
+      "port": 3011,
+      "cwd": "claude/wenai"
     }
   ]
 }
