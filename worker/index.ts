@@ -4,10 +4,7 @@ import './stalled-poller.js'  // starts interval-based stalled job detection
 import { runAnalysis } from './workers/analysis.worker.js'
 import { runFrameGeneration } from './workers/frame-generation.worker.js'
 import { runVideoSynthesis } from './workers/video-synthesis.worker.js'
-async function runPostProcessing(job: Job) {
-  console.log(`[post-proc] job ${job.id}:`, JSON.stringify(job.data))
-  return { status: 'placeholder' }
-}
+import { runPostProcessing } from './workers/post-processing.worker.js'
 
 console.log('[worker] starting clico pipeline workers...')
 
