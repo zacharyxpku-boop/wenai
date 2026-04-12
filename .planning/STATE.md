@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 01-foundation-03-PLAN.md
-last_updated: "2026-04-12T16:54:53.590Z"
-last_activity: 2026-04-12 -- Phase 02 execution started
+stopped_at: Completed 02-ai-pipeline-04-PLAN.md
+last_updated: "2026-04-12T17:57:02.789Z"
+last_activity: 2026-04-12
 progress:
   total_phases: 3
   completed_phases: 1
   total_plans: 8
-  completed_plans: 3
+  completed_plans: 5
   percent: 33
 ---
 
@@ -26,9 +26,9 @@ See: .planning/PROJECT.md (updated 2026-04-12)
 ## Current Position
 
 Phase: 02 (ai-pipeline) — EXECUTING
-Plan: 1 of 5
-Status: Executing Phase 02
-Last activity: 2026-04-12 -- Phase 02 execution started
+Plan: 2 of 5
+Status: Ready to execute
+Last activity: 2026-04-12
 
 Progress: [███░░░░░░░] 33%
 
@@ -53,6 +53,7 @@ Progress: [███░░░░░░░] 33%
 
 | Phase 01-foundation P01 | 10 | 3 tasks | 10 files |
 | Phase 01-foundation P03 | 6 | 2 tasks | 8 files |
+| Phase 02-ai-pipeline P04 | 15 | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -69,6 +70,8 @@ Progress: [███░░░░░░░] 33%
 - [Phase 01-foundation]: Use getUser() not getSession() in middleware — server validates token, prevents cookie forgery
 - [Phase 01-foundation]: Admin gated by app_metadata.role (set server-side only, not user-writable)
 - [Phase 01-foundation]: fal.ai proxy via createRouteHandler — zero-config, reads FAL_KEY from process.env automatically
+- [Phase 02-ai-pipeline]: Flux Pro image_size uses 'portrait_16_9' enum (not '9:16' ratio format) — API pitfall difference from Kling aspect_ratio
+- [Phase 02-ai-pipeline]: Video synthesis sets waiting_external status after Kling submissions — webhook handler owns transition to post-processing
 
 ### Pending Todos
 
@@ -82,6 +85,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-12T15:44:33.866Z
-Stopped at: Completed 01-foundation-03-PLAN.md
+Last session: 2026-04-12T17:57:02.783Z
+Stopped at: Completed 02-ai-pipeline-04-PLAN.md
 Resume file: None
