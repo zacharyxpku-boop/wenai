@@ -1,0 +1,18 @@
+2026-04-11 23:47:29 | 不眠模式启动 | 任务: 给wenai项目的IP侵权防控模块接入USPTO商标查询API，提升到80分水平。
+
+具体任务：
+1. 新建 src/app/api/trademark/route.ts — 调用USPTO TSDR API（https://tsdrapi.uspto.gov），输入关键词查询商标注册状态
+2. 修改 src/app/api/ai/route.ts — 当moduleId=ip-compliance时，先提取用户输入中的疑似品牌词（大写开头/全大写/驼峰），批量查USPTO，把查询结果注入到AI的system prompt里
+3. 更新 ip-compliance-examples.json — 加入真实USPTO查询结果的示例格式
+4. 前端AIWorkspace在ip-compliance模块下方显示商标查询状态指示器（查询中/已查N个词/发现N个已注册商标）
+
+技术要求：
+- USPTO API免费，无需API key，但有速率限制（~5req/s），做好throttle
+- 查询失败时graceful降级，仍走纯AI推理
+- TypeScript严格类型
+- 每改完一个文件git commit
+
+读 CLAUDE.md 和 memory 获取完整上下文。不要开preview server。
+2026-04-11 23:47:29 | 第 1 轮
+2026-04-11 23:53:45 | 任务正常完成
+2026-04-11 23:53:46 | 不眠模式结束 (共 0 次重试)
