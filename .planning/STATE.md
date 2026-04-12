@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: verifying
-stopped_at: Completed 01-foundation-03-PLAN.md
-last_updated: "2026-04-12T16:33:44.517Z"
+stopped_at: Completed 02-ai-pipeline-01-PLAN.md
+last_updated: "2026-04-12T17:01:34.426Z"
 last_activity: 2026-04-12
 progress:
   total_phases: 3
   completed_phases: 1
-  total_plans: 3
-  completed_plans: 3
+  total_plans: 8
+  completed_plans: 4
   percent: 33
 ---
 
@@ -53,6 +53,7 @@ Progress: [███░░░░░░░] 33%
 
 | Phase 01-foundation P01 | 10 | 3 tasks | 10 files |
 | Phase 01-foundation P03 | 6 | 2 tasks | 8 files |
+| Phase 02-ai-pipeline P01 | 15 | 2 tasks | 10 files |
 
 ## Accumulated Context
 
@@ -69,6 +70,8 @@ Progress: [███░░░░░░░] 33%
 - [Phase 01-foundation]: Use getUser() not getSession() in middleware — server validates token, prevents cookie forgery
 - [Phase 01-foundation]: Admin gated by app_metadata.role (set server-side only, not user-writable)
 - [Phase 01-foundation]: fal.ai proxy via createRouteHandler — zero-config, reads FAL_KEY from process.env automatically
+- [Phase 02-ai-pipeline]: zod added to worker deps — schemas import from zod, omitted from original plan install command
+- [Phase 02-ai-pipeline]: cost-logger uses RPC-first with direct fallback for append_step_cost — Postgres function may not exist yet
 
 ### Pending Todos
 
@@ -82,6 +85,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-12T15:44:33.866Z
-Stopped at: Completed 01-foundation-03-PLAN.md
+Last session: 2026-04-12T17:01:34.420Z
+Stopped at: Completed 02-ai-pipeline-01-PLAN.md
 Resume file: None
