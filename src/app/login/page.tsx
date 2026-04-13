@@ -143,6 +143,17 @@ export default function LoginPage() {
           >
             免登录体验 Demo →
           </a>
+
+          {/* Demo accounts */}
+          <div className="bg-bg-surface/50 border border-border-subtle rounded-md px-4 py-3 text-left">
+            <p className="text-[9px] font-mono text-text-tertiary mb-2 uppercase tracking-wider">Demo 账号</p>
+            <div className="space-y-1.5 text-[10px] font-mono text-text-secondary">
+              <div className="flex justify-between"><span>admin / admin123</span><span className="text-accent">管理员</span></div>
+              <div className="flex justify-between"><span>editor / editor123</span><span className="text-success">编辑</span></div>
+              <div className="flex justify-between"><span>viewer / viewer123</span><span className="text-text-tertiary">只读</span></div>
+            </div>
+          </div>
+
           <div className="flex items-center justify-center gap-3 text-[9px] font-mono text-text-tertiary/50">
             <a href="/terms" className="hover:text-text-tertiary transition-colors">服务条款</a>
             <span>·</span>

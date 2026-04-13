@@ -24,6 +24,14 @@ interface AIWorkspaceProps {
   assistOnlyReason?: string;
 }
 
+function useUserRole() {
+  const [role, setRole] = useState<string>('viewer');
+  useEffect(() => {
+    fetch('/api/auth/me').then(r => r.json()).then(d => setRole(d.role || 'viewer')).catch(() => {});
+  }, []);
+  return role;
+}
+
 export default function AIWorkspace({
   moduleId,
   moduleName,
@@ -34,6 +42,8 @@ export default function AIWorkspace({
   assistOnly = false,
   assistOnlyReason,
 }: AIWorkspaceProps) {
+  const userRole = useUserRole();
+  const canExport = userRole === 'admin' || userRole === 'editor';
   const [input, setInput] = useState('');
   const [params, setParams] = useState<Record<string, string>>({});
   const [result, setResult] = useState('');
@@ -360,7 +370,7 @@ export default function AIWorkspace({
               >
                 清除
               </button>
-              {csvResults.length > 0 && (
+              {csvResults.length > 0 && canExport && (
                 <>
                   <button
                     onClick={() => exportCSV(csvResults)}
@@ -502,12 +512,14 @@ export default function AIWorkspace({
                 >
                   {copied ? '✓ 已复制' : '复制'}
                 </button>
-                <button
-                  onClick={exportSingleResult}
-                  className="text-[9px] font-mono text-text-tertiary hover:text-accent px-2.5 py-1.5 border border-border-subtle rounded-md hover:border-accent/30 hover:bg-accent/5 transition-all"
-                >
-                  导出
-                </button>
+                {canExport && (
+                  <button
+                    onClick={exportSingleResult}
+                    className="text-[9px] font-mono text-text-tertiary hover:text-accent px-2.5 py-1.5 border border-border-subtle rounded-md hover:border-accent/30 hover:bg-accent/5 transition-all"
+                  >
+                    导出
+                  </button>
+                )}
               </div>
             )}
           </div>
