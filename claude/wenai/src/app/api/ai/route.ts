@@ -3,6 +3,7 @@ import { getReferenceContext } from '@/lib/references';
 import { logUsageEntry } from '@/lib/usage';
 import { checkRateLimit } from '@/lib/ratelimit';
 import { extractBrandKeywords, queryTrademark } from '@/app/api/trademark/route';
+import { getCachedResponse } from '@/lib/demo-cache';
 
 interface TrademarkQueryResult {
   results: Array<{
@@ -110,6 +111,9 @@ export async function POST(request: NextRequest) {
       trademarkQueryResult = result.queryResult;
     }
 
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 30000);
+
     const response = await fetch(endpoint, {
       method: 'POST',
       headers: {
@@ -125,10 +129,22 @@ export async function POST(request: NextRequest) {
         temperature: 0.7,
         max_tokens: 4096,
       }),
+      signal: controller.signal,
     });
+
+    clearTimeout(timeout);
 
     if (!response.ok) {
       const error = await response.text();
+      // Fallback to cached response on API error
+      const cached = moduleId ? getCachedResponse(moduleId) : null;
+      if (cached) {
+        return NextResponse.json({
+          content: cached + '\n\n---\n*⚡ 预缓存响应（AI服务暂时不可用）*',
+          usage: { promptTokens: 0, completionTokens: 0 },
+          cached: true,
+        });
+      }
       return NextResponse.json({ error: `AI API错误: ${error}` }, { status: 500 });
     }
 
@@ -141,9 +157,18 @@ export async function POST(request: NextRequest) {
         promptTokens: data.usage?.prompt_tokens || 0,
         completionTokens: data.usage?.completion_tokens || 0,
       },
-      trademarkQuery: trademarkQueryResult, // 返回商标查询结果供前端显示
+      trademarkQuery: trademarkQueryResult,
     });
   } catch (error) {
+    // Fallback to cached response on timeout/network error
+    const cached = moduleId ? getCachedResponse(moduleId) : null;
+    if (cached) {
+      return NextResponse.json({
+        content: cached + '\n\n---\n*⚡ 预缓存响应（AI服务超时）*',
+        usage: { promptTokens: 0, completionTokens: 0 },
+        cached: true,
+      });
+    }
     return NextResponse.json(
       { error: `请求失败: ${error instanceof Error ? error.message : '未知错误'}` },
       { status: 500 }
