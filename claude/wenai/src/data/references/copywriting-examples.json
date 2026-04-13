@@ -1,6 +1,6 @@
 {
   "module": "copywriting",
-  "description": "电商文案高转化案例 — 标题/详情页/卖点提炼",
+  "description": "电商文案高转化案例 — 标题/详情页/卖点提炼/A+内容/后台关键词",
   "sources": ["ECInstruct schema patterns", "Top seller analysis", "Manual curation"],
   "examples": [
     {
@@ -39,6 +39,147 @@
         {"point": "12h保温", "angle": "场景化", "copy": "早上8点倒的开水，晚上8点打开还是55°C以上。一整天不用找热水器"},
         {"point": "一键开盖", "angle": "便捷体验", "copy": "单手一按就开，开车、抱娃、打字的时候都能喝水。不用拧来拧去"}
       ]
+    },
+    {
+      "product": "空气净化器",
+      "platform": "Amazon",
+      "input": "品牌：PureAir，适用面积：600平方英尺，HEPA H13滤芯，除甲醛，噪音22dB，能耗22W，更换滤芯周期6个月",
+      "title_options": [
+        "PureAir HEPA H13 Air Purifier for 600 Sq Ft | True HEPA Formaldehyde Removal | 22dB Ultra-Quiet | 22W Low Energy",
+        "PureAir Air Purifier Large Room 600 Sq Ft | H13 True HEPA Filter | Removes 99.97% Dust Pollen Pet Dander | Sleep Mode 22dB"
+      ],
+      "bullet_points": [
+        "COVERS UP TO 600 SQ FT — Powerful enough for large living rooms, open-plan spaces, and master bedrooms. Cycles the air 5x per hour so you're breathing clean all day.",
+        "TRUE HEPA H13 FILTRATION — Captures 99.97% of particles as small as 0.3 microns: dust, pollen, pet dander, mold spores, and smoke. H13 grade is the same standard used in medical facilities.",
+        "REMOVES FORMALDEHYDE — Activated carbon layer specifically targets formaldehyde, VOCs, and household odors from new furniture, paint, and cooking. Not all air purifiers do this — ours does.",
+        "WHISPER-QUIET 22dB SLEEP MODE — At its lowest setting, quieter than a library. Run it overnight without disrupting sleep. The soft LED indicator can be fully dimmed.",
+        "ENERGY EFFICIENT — Only 22W at max speed. Running 24/7 costs less than $2/month. Filter replacement every 6 months keeps maintenance simple."
+      ],
+      "a_plus_content": {
+        "headline": "Breathe air that's actually clean — not just filtered",
+        "section1": {
+          "title": "Why H13 matters",
+          "copy": "Most purifiers use H11 filters. H13 True HEPA captures particles 10x smaller — including fine PM2.5, bacteria, and even some viruses. The difference is invisible, but your lungs notice."
+        },
+        "section2": {
+          "title": "Built for real homes, not lab conditions",
+          "copy": "600 sq ft is the real-world coverage, tested at the actual recommended fan speed — not the maximum speed that would make it unusable. We tested it in a 550 sq ft open-plan apartment and measured PM2.5 reduction from 85 to 8 in 30 minutes."
+        },
+        "section3": {
+          "title": "What's in the box",
+          "items": ["PureAir unit", "Pre-installed H13 HEPA + carbon combo filter", "Power cable", "Quick-start guide", "1 extra replacement filter ($29 value)"]
+        }
+      },
+      "backend_search_terms": "air purifier for bedroom air purifier large room hepa air purifier h13 air purifier for pets air purifier for allergies air cleaner formaldehyde remover quiet air purifier 600 sq ft purifier air filter for home pollen dust smoke",
+      "notes": "Amazon标题：核心词在前60字符内，避免'Best/Top/Guaranteed'等禁词；Bullet Points每条≤200字符；后台关键词不重复标题中已有的词"
+    },
+    {
+      "product": "防晒衣",
+      "platform": "Amazon",
+      "input": "UPF50+防晒，轻薄凉感面料，透气速干，连帽设计，拇指扣，适合户外徒步钓鱼",
+      "title_options": [
+        "Sun Protection Hoodie UPF 50+ | Lightweight Cooling Fabric | Quick-Dry Breathable | Thumb Holes | Outdoor Fishing Hiking",
+        "UPF 50+ Sun Hoodie for Men Women | Lightweight Long Sleeve Sun Shirt | Quick Dry | Fishing Hiking Running Beach"
+      ],
+      "bullet_points": [
+        "UPF 50+ SUN PROTECTION — Blocks 98%+ of harmful UVA and UVB rays. Certified by independent lab testing. Wear it all day without reapplying sunscreen on covered areas.",
+        "STAYS COOL EVEN IN HEAT — The moisture-wicking fabric moves sweat away from your skin and dries 3x faster than cotton. Built-in ventilation panels keep airflow moving so you don't overheat on the trail.",
+        "FULL COVERAGE DETAILS — Extended cuffs with thumb holes keep your hands covered. The adjustable hood fits over a cap and cinches down for wind protection. Long enough to stay tucked in.",
+        "VERSATILE FOR ANY ACTIVITY — Designed for fishing, hiking, gardening, beach days, and outdoor work. Worn by guides in the Pacific Northwest and Florida fishing charters.",
+        "EASY CARE, HOLDS ITS SHAPE — Machine washable, colorfastness-tested to keep colors bright after 50+ washes. Lightweight enough to pack into a day bag."
+      ],
+      "backend_search_terms": "sun hoodie upf 50 fishing shirt men sun protection shirt women hiking sun shirt rash guard long sleeve outdoor shirt cooling hoodie gardening shirt beach coverup sun protective clothing uv protection shirt",
+      "notes": "服装类别关键词策略：同时覆盖men/women两个细分人群；场景词(fishing/hiking/gardening)比功能词流量更精准"
+    },
+    {
+      "product": "硅胶厨具套装",
+      "platform": "Amazon",
+      "input": "6件套硅胶厨具，耐热230°C，不粘锅专用，抗菌材质，竹制手柄，洗碗机可洗",
+      "bullet_points": [
+        "WON'T SCRATCH YOUR PANS — Soft-tip silicone is gentle on nonstick, ceramic, and enamel cookware. No more scraping off coating flakes into your food. Safe on all surfaces including cast iron.",
+        "HANDLES REAL HEAT — Rated to 230°C (446°F). Leave the spatula in the pan while sautéing without worrying about the head melting or warping. Tested at actual cooking temperatures, not just on a spec sheet.",
+        "NATURALLY ANTIMICROBIAL BAMBOO HANDLES — The bamboo grips don't absorb bacteria or odors the way plastic does. They're also lighter than stainless steel handles so the set feels balanced in your hand.",
+        "COMPLETE 6-PIECE SET — Spatula, slotted spoon, solid spoon, ladle, pasta server, and tongs. Everything you need for a full meal, not a partial set that leaves you reaching for old tools.",
+        "DISHWASHER SAFE — Rinse or throw in the dishwasher. The silicone won't stain from tomato sauce and the bamboo is sealed to resist moisture. Comes in a storage stand so your drawer stays organized."
+      ],
+      "a_plus_content": {
+        "headline": "The last kitchen tool set you'll need to buy",
+        "section1": {
+          "title": "Real silicone vs cheap plastic",
+          "copy": "Food-grade silicone doesn't leach chemicals when heated, unlike lower-grade nylon utensils that can release trace amounts above 200°C. Our silicone is FDA-approved and BPA-free — the same material used in baby products."
+        },
+        "section2": {
+          "title": "Why bamboo handles",
+          "copy": "Plastic handles crack over time. Metal handles conduct heat. Bamboo is naturally antimicrobial, doesn't retain odors, and stays cool to the touch. It's also a renewable material — a practical choice that happens to be better for the planet."
+        }
+      },
+      "backend_search_terms": "silicone kitchen utensil set nonstick safe cooking utensils bamboo handle spatula set silicone cooking tools heat resistant utensils dishwasher safe kitchen tools silicone spoon set cooking utensil set"
+    },
+    {
+      "product": "瑜伽裤",
+      "platform": "Amazon",
+      "input": "高腰收腹，四向弹力，口袋设计，裆部加厚，适合瑜伽普拉提日常穿",
+      "bullet_points": [
+        "HIGH WAIST STAYS PUT — The 8-inch waistband doesn't roll down during downward dog, inversions, or any other pose that challenges regular leggings. The compression keeps your stomach feeling supported, not squeezed.",
+        "POCKETS THAT ACTUALLY FIT YOUR PHONE — Two side pockets deep enough to hold an iPhone 15 Pro Max without flopping out during lunges or a run. No more tucking your phone into your waistband.",
+        "4-WAY STRETCH MOVES WITH YOU — The fabric stretches in every direction and snaps back to shape. No bagging at the knees after an hour of practice. Opaque at any stretch level — tested in studio lighting.",
+        "REINFORCED GUSSET FOR FULL RANGE OF MOTION — The diamond-shaped gusset panel at the crotch eliminates seam stress during deep squats, hip openers, and high kicks. No pulling, no pinching.",
+        "WICKS MOISTURE, DRIES FAST — Sweat moves through the fabric and evaporates instead of soaking in. Odor-resistant treatment keeps them fresh through back-to-back sessions."
+      ],
+      "backend_search_terms": "yoga pants women high waist leggings with pockets workout leggings squat proof leggings yoga leggings with pockets high waisted leggings buttery soft leggings gym leggings compression leggings athletic pants"
+    },
+    {
+      "product": "婴儿推车",
+      "platform": "Shopee/Lazada (中文)",
+      "input": "品牌：BabyGo，轻便型，5.8kg，单手折叠，可平躺可坐，避震轮，5点式安全带，遮阳篷，适合0-3岁",
+      "title_options": [
+        "BabyGo 轻便婴儿推车 5.8kg超轻 单手折叠 0-3岁可平躺可坐 减震避震 遮阳推车",
+        "【免安装到手即用】BabyGo婴儿推车 5.8kg轻便折叠 0岁起用 双向可平躺 宝宝车"
+      ],
+      "selling_points": [
+        {"point": "5.8kg超轻", "angle": "场景对比", "copy": "5.8kg，跟一袋大米差不多。一只手就能搬上公交、抬进后备箱，不用叫老公来帮忙"},
+        {"point": "单手折叠", "angle": "实操场景", "copy": "一只手抱着孩子，另一只手三秒折叠推车。超市门口、地铁口，不用尴尬地找人帮你"},
+        {"point": "0岁可平躺", "angle": "用户投资回报", "copy": "从新生儿到3岁都能用。不是买了几个月就要淘汰的，一台用三年"},
+        {"point": "5点式安全带", "angle": "情感共鸣", "copy": "双肩+腰+双腿五个固定点。孩子睡着突然滑下来这种事，不会发生在我们这台车上"},
+        {"point": "减震轮", "angle": "对比痛点", "copy": "过个门槛、小石子，孩子不会被颠醒。减震轮不是噱头，是真的有感受到的区别"}
+      ]
+    },
+    {
+      "product": "电动牙刷",
+      "platform": "Amazon",
+      "input": "声波振动，38000次/分钟，5种模式，智能计时，2分钟自动关闭，30天续航，USB磁吸充电，IPX7防水，含4个刷头",
+      "bullet_points": [
+        "38,000 VIBRATIONS PER MINUTE — Sonic technology drives fluid between teeth and along the gumline, cleaning areas where manual brushing can't reach. Independent dental study showed 7x more plaque removal vs a manual toothbrush.",
+        "5 MODES FOR EVERY NEED — Clean (daily use), White (surface stain removal), Polish (gentle enamel care), Gum Care (sensitive areas), and Tongue Clean. Switch modes with a single button; the brush remembers your last setting.",
+        "BUILT-IN 2-MINUTE TIMER WITH QUADRANT ALERTS — Pulses every 30 seconds to prompt you to move to the next quadrant. Dentists recommend brushing each quadrant 30 seconds. Most people only brush for 45 seconds total without a timer.",
+        "30-DAY BATTERY ON A SINGLE CHARGE — Charge it once and forget about it for a month. The USB magnetic charging base works with any USB port. Full charge takes 4 hours; a 15-minute quick charge gives you one week.",
+        "WHAT'S INCLUDED — 1 sonic handle, 4 replacement brush heads (2 regular, 1 sensitive, 1 whitening), USB charging base, and a travel case. That's 12 months of heads upfront — most competitors sell heads separately."
+      ],
+      "backend_search_terms": "electric toothbrush sonic toothbrush rechargeable electric toothbrush with replacement heads sonic electric toothbrush whitening toothbrush bluetooth toothbrush oscillating toothbrush dental care toothbrush timer"
+    },
+    {
+      "product": "折叠办公椅",
+      "platform": "Amazon",
+      "input": "腰部支撑，3D扶手，可调节靠背倾角，透气网布，座椅高度可调，承重150kg，BIFMA认证",
+      "bullet_points": [
+        "LUMBAR SUPPORT THAT ADJUSTS TO YOUR BACK — The lumbar cushion moves up and down to fit your specific spine curve. People are different heights; their lower back support should be different positions too. Dial it in once and your posture stays correct automatically.",
+        "3D ARMRESTS MOVE WHERE YOUR ARMS ACTUALLY GO — Height, depth, and angle all adjust. Set them to where your elbows naturally fall when you're typing — not where a fixed armrest forces your arms to go. Shoulder tension drops noticeably in the first week.",
+        "BREATHABLE MESH KEEPS YOU COOL — The open-weave backrest allows constant airflow. No sweaty back after 3 hours of video calls. Unlike padded chairs, the mesh doesn't retain heat or flatten over time.",
+        "RECLINES FROM 90° TO 135° WITH TENSION CONTROL — Lock it upright for focused work. Open it to 110° for reading or calls. Adjust the recline tension so it moves with your body instead of fighting you. Smooth, no sudden drop.",
+        "BIFMA CERTIFIED FOR 150KG — BIFMA (Business and Institutional Furniture Manufacturers Association) is the North American safety standard for commercial office furniture. This chair passed the test for 150kg rated load, tilt testing, and 100,000 armrest push cycles."
+      ],
+      "a_plus_content": {
+        "headline": "An 8-hour chair. Not a 2-hour chair used for 8 hours.",
+        "section1": {
+          "title": "Why adjustability matters",
+          "copy": "Most chairs adjust one or two things and call it ergonomic. Real ergonomics means fitting to your body, not asking your body to fit the chair. We give you 7 adjustment points because people sit differently."
+        },
+        "section2": {
+          "title": "BIFMA certification explained",
+          "copy": "BIFMA tests office furniture under conditions that simulate years of office use — not just a single load test. Our chair passed without modification. It's the reason Fortune 500 companies specify BIFMA for their offices."
+        }
+      },
+      "backend_search_terms": "ergonomic office chair mesh office chair lumbar support chair adjustable desk chair computer chair home office chair executive chair gaming chair with lumbar support task chair high back office chair"
     }
   ],
   "copywriting_rules": [
@@ -47,6 +188,10 @@
     "每个卖点配一个数据锚点（35kPa/12小时/1.5kg）",
     "详情页首屏3秒定生死：产品图+3个核心数字",
     "用对比制造落差：'普通吸尘器XX，我们XX'",
-    "真实用户评价比品牌自夸有用10倍"
+    "真实用户评价比品牌自夸有用10倍",
+    "Amazon Bullet Points：全大写开头短语+破折号+正文，每条独立完整，不跨条引用",
+    "A+内容：讲故事+建信任，不是重复Bullet Points",
+    "后台关键词：不重复，不含标题已有词，覆盖长尾场景词",
+    "Shopee/Lazada中文标题：可以有促销标签如【免安装】【买一送一】，英文平台不行"
   ]
 }

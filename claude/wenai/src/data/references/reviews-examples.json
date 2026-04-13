@@ -35,6 +35,250 @@
           "P2: 充电盒大小是体验细节，可在下一代产品迭代"
         ]
       }
+    },
+    {
+      "input": "扫地机器人用了两个月，整体很满意。自动规划路径不会重复，一次能把客厅卧室全扫完。吸力很强，猫毛完全不在话下。充电自动回桩，不用操心。就是有点吵，开着睡觉不现实，一般设置午休时间段跑。APP控制很方便，在外面也能远程启动。\n---\n买来第三天就卡在沙发底下出不来了，我不在家它就一直在那趴着。设置了禁区还是会冲进去。客服说是正常现象，让我加装虚拟墙。买个机器人还要自己加配件解决问题，体验很差。\n---\n价格不便宜但物有所值。清扫效率比上一台高多了，边刷设计干净多了。滤网可以水洗，不用频繁换耗材。噪音比我预期小，孩子睡觉时段也能用。物流很快，包装也很好，没有磕碰。",
+      "output": {
+        "summary": {
+          "total_reviews": 3,
+          "positive": 2,
+          "negative": 1,
+          "avg_sentiment": 3.5
+        },
+        "selling_points": [
+          {"point": "路径规划智能，不重复清扫", "mention_count": 2, "confidence": "high"},
+          {"point": "吸力强，宠物毛发无死角", "mention_count": 1, "confidence": "medium"},
+          {"point": "自动回充，无需人工干预", "mention_count": 1, "confidence": "medium"},
+          {"point": "APP远程控制方便", "mention_count": 1, "confidence": "medium"},
+          {"point": "噪音比预期低", "mention_count": 2, "confidence": "high"},
+          {"point": "滤网可水洗，耗材成本低", "mention_count": 1, "confidence": "medium"}
+        ],
+        "pain_points": [
+          {"point": "噪音偏大，不适合有人睡觉时段", "mention_count": 1, "severity": "medium", "suggestion": "分时段运行策略，在listing中主动提示定时功能"},
+          {"point": "禁区设置无效，会进入不应进入区域", "mention_count": 1, "severity": "high", "suggestion": "优化LiDAR算法或磁条方案，listing不要过度宣传禁区功能"},
+          {"point": "容易卡住，售后态度敷衍", "mention_count": 1, "severity": "high", "suggestion": "增加防卡住检测逻辑，售后话术需改善避免推诿"}
+        ],
+        "competitor_mentions": [],
+        "actionable_insights": [
+          "P0: 禁区无效和卡机问题集中爆发，是差评核心——需固件更新解决",
+          "P1: 噪音是普遍关注点，建议listing明确标注分贝数而非笼统说'静音'",
+          "P2: 可水洗滤网是隐藏卖点，listing目前未突出，值得加入核心卖点"
+        ]
+      }
+    },
+    {
+      "input": "Great quality vacuum sealer! Used it for meal prep and the seal is airtight. My marinated meat stays fresh for over a week in the fridge. The bags are sturdy and don't leak at all. Setup took 5 minutes, super intuitive.\n---\nThis thing leaked on the third use. The gasket seems cheap. Tried to contact customer service — took 4 days to reply and offered only 10% refund. Not worth the hassle.\n---\nWorks perfectly for sous vide cooking. Seals bags tight enough for the water bath. Compact size fits well on my counter. Gets a bit warm after multiple uses but not a safety concern. Would recommend for home cooks.\n---\nBought two of these — one for home and one for the cabin. Both work great. The handheld mode is a lifesaver for quick snacks. 4.5 stars only because the cord is a bit short.",
+      "output": {
+        "summary": {
+          "total_reviews": 4,
+          "positive": 3,
+          "negative": 1,
+          "avg_sentiment": 3.9,
+          "language": "English",
+          "market": "North America"
+        },
+        "selling_points": [
+          {"point": "密封效果好，真空效果持久", "mention_count": 3, "confidence": "high"},
+          {"point": "适合sous vide低温慢煮场景", "mention_count": 1, "confidence": "medium"},
+          {"point": "操作简单，5分钟上手", "mention_count": 1, "confidence": "medium"},
+          {"point": "体积紧凑，不占台面", "mention_count": 1, "confidence": "medium"},
+          {"point": "手持模式灵活", "mention_count": 1, "confidence": "medium"}
+        ],
+        "pain_points": [
+          {"point": "密封圈质量差，第三次使用漏气", "mention_count": 1, "severity": "critical", "suggestion": "升级密封圈材料，listing明确标注密封圈质保"},
+          {"point": "售后响应慢（4天），赔偿方案差（10%）", "mention_count": 1, "severity": "high", "suggestion": "建立48小时响应SLA，质量问题直接换新政策"},
+          {"point": "电源线偏短", "mention_count": 1, "severity": "low", "suggestion": "下一代加长至1.8m，成本增加可忽略"}
+        ],
+        "competitor_mentions": [],
+        "actionable_insights": [
+          "P0: 密封圈耐久性是核心痛点，需升级材料并在listing承诺质保",
+          "P1: sous vide用户是高价值细分市场，建议单独针对这个场景做内容营销",
+          "P2: 北美市场多场景购买倾向明显（家+度假屋），可考虑套装bundle定价"
+        ]
+      }
+    },
+    {
+      "input": "收到货第一眼就觉得做工很好，比淘宝同价位强太多。不锈钢厚实，没有廉价感。用了两周，炒菜完全不粘，比家里的特氟龙锅还顺手。加热均匀，边缘不会糊。就是比较重，老人用可能费力。\n---\n味道！这个锅有很重的金属味！用了三四次都没去掉，煮什么都带着味道。按照说明用了醋水开锅还是有味道。完全影响食欲，差评。\n---\n不粘效果确实好，但是第一次用就发现底部有一个小坑，不是使用造成的，是出厂就有的瑕疵。客服给补偿了50元券，凑合用吧。如果不是有这个瑕疵可以给五星。\n---\n买来做无油煎蛋，非常完美，鸡蛋一点不粘，圆圆整整出锅。外形很好看，放在台面上也是装饰品。送给妈妈的，她非常喜欢。",
+      "output": {
+        "summary": {
+          "total_reviews": 4,
+          "positive": 2,
+          "negative": 2,
+          "avg_sentiment": 3.0
+        },
+        "selling_points": [
+          {"point": "不粘效果出色，炒菜零粘连", "mention_count": 3, "confidence": "high"},
+          {"point": "做工扎实，不锈钢厚实有质感", "mention_count": 1, "confidence": "medium"},
+          {"point": "加热均匀，边缘不糊", "mention_count": 1, "confidence": "medium"},
+          {"point": "外观好看，颜值高", "mention_count": 1, "confidence": "medium"}
+        ],
+        "pain_points": [
+          {"point": "锅体有强烈金属异味，多次使用不消失", "mention_count": 1, "severity": "critical", "suggestion": "检查镀层或涂层材质，优化开锅说明，必要时更换供应商"},
+          {"point": "出厂就有底部瑕疵（坑）", "mention_count": 1, "severity": "high", "suggestion": "加强出厂QC，增加底部检测工序"},
+          {"point": "偏重，老人使用不便", "mention_count": 1, "severity": "low", "suggestion": "可作为产品规格在listing中注明重量，减少预期差"}
+        ],
+        "competitor_mentions": [
+          {"brand": "特氟龙锅", "context": "不粘效果被对比，被认为优于特氟龙", "implication": "核心卖点已被用户验证，值得在listing中主动做对比"}
+        ],
+        "actionable_insights": [
+          "P0: 金属异味是严重问题，会导致食品安全顾虑和差评扩散，需立即检查材质",
+          "P1: 出厂瑕疵说明QC标准不稳定，建议建立百分百外观检测流程",
+          "P2: 与特氟龙的对比测试结果很正面，可提炼为listing卖点文案"
+        ]
+      }
+    },
+    {
+      "input": "My daughter loves this toy! She's been playing with it every day for 3 weeks and hasn't gotten bored yet. The colors are vibrant and the build quality is solid — nothing has broken despite rough play. Safe for 3-year-olds, no small parts that could be a choking hazard.\n---\nTook forever to ship (18 days!) and when it arrived the box was completely crushed. The toy inside was fine but really poor packaging. Also the instructions were only in Chinese — my daughter couldn't follow them.\n---\nAmazing educational toy. My son learned shapes and colors within a week. The interactive sounds are not too loud — a big win in our house! Battery lasts a long time, we've had it 6 weeks and still on the original batteries.",
+      "output": {
+        "summary": {
+          "total_reviews": 3,
+          "positive": 2,
+          "negative": 1,
+          "avg_sentiment": 3.7,
+          "language": "English",
+          "market": "North America / Europe"
+        },
+        "selling_points": [
+          {"point": "孩子长期保持兴趣，不易厌倦", "mention_count": 2, "confidence": "high"},
+          {"point": "做工扎实，经得住粗暴玩法", "mention_count": 1, "confidence": "medium"},
+          {"point": "无小零件设计，适合3岁以下安全玩耍", "mention_count": 1, "confidence": "medium"},
+          {"point": "音量适中，不扰民", "mention_count": 1, "confidence": "medium"},
+          {"point": "电池续航长，6周无需更换", "mention_count": 1, "confidence": "medium"},
+          {"point": "有教育意义，颜色形状学习", "mention_count": 1, "confidence": "medium"}
+        ],
+        "pain_points": [
+          {"point": "物流速度慢（18天），包装破损", "mention_count": 1, "severity": "high", "suggestion": "升级包装缓冲材料，海外仓备货缩短物流时效"},
+          {"point": "说明书只有中文，无英文/多语言版本", "mention_count": 1, "severity": "high", "suggestion": "补充多语言说明书（中英日韩），这是跨境必做项"}
+        ],
+        "competitor_mentions": [],
+        "actionable_insights": [
+          "P0: 说明书无英文是跨境出口的基本合规问题，需立即整改",
+          "P1: 包装强度不足是物流损坏根源，建议增加内衬泡沫和外箱双层结构",
+          "P2: '音量适中'是父母高度关注的产品属性，建议在listing中明确标注分贝数"
+        ]
+      }
+    },
+    {
+      "input": "这款面霜买了三瓶了，我妈用的。她是干性皮肤，用了之后明显感觉皮肤没那么紧绷了，秋冬季效果特别好。质地比较厚，晚上用最合适。香味挺好闻的，不是那种刺鼻的香精味，淡淡的花香。\n---\n用了两天就开始过敏，脸上起了很多小红疹，痒得要命。赶紧停用了。我皮肤一向不敏感的，这次真的是被坑了。\n---\n跟我用过的几款大牌比起来，这款性价比很突出。保湿效果不输百元以上的同类产品。上脸很滋润，不搓泥，吸收也快。唯一的问题是包装盖子比较松，第一次就掉了。\n---\n送给闺蜜的生日礼物，包装很精美，她非常喜欢。本来她是想买某大牌的，但价格太贵，换成这个她也很满意。作为礼物送出去很体面。\n---\n来货有点慢，等了五天。产品本身还可以，但没想象中那么惊艳。保湿力中等偏上，适合偶尔补水用，不适合特别干的皮肤。性价比还行，不亏。",
+      "output": {
+        "summary": {
+          "total_reviews": 5,
+          "positive": 4,
+          "negative": 1,
+          "avg_sentiment": 3.6
+        },
+        "selling_points": [
+          {"point": "干性皮肤改善效果明显，秋冬适用", "mention_count": 2, "confidence": "high"},
+          {"point": "质地滋润，不搓泥，吸收快", "mention_count": 2, "confidence": "high"},
+          {"point": "香味自然，无刺鼻香精感", "mention_count": 1, "confidence": "medium"},
+          {"point": "包装精美，适合作礼物", "mention_count": 1, "confidence": "medium"},
+          {"point": "性价比超出预期，对标百元以上大牌", "mention_count": 2, "confidence": "high"}
+        ],
+        "pain_points": [
+          {"point": "部分用户出现过敏反应（小红疹）", "mention_count": 1, "severity": "critical", "suggestion": "在listing中明确标注成分表，建议试用前做贴敏测试，不适合极敏感肌"},
+          {"point": "包装盖子松动易掉", "mention_count": 1, "severity": "medium", "suggestion": "检查瓶盖紧固设计，改为旋拧式代替卡扣式"},
+          {"point": "发货速度慢（5天）", "mention_count": 1, "severity": "low", "suggestion": "提升仓储发货效率或备现货"}
+        ],
+        "competitor_mentions": [
+          {"brand": "大牌（未具名）", "context": "价格对比，被认为性价比更好", "implication": "可在listing中主动做价格对比，强化平替定位"}
+        ],
+        "actionable_insights": [
+          "P0: 过敏反应是美妆品类最严重的差评来源，必须完善成分披露和敏感肌警示",
+          "P1: '平替大牌'是核心定位，当前listing未充分利用这一用户自发验证的卖点",
+          "P2: 礼品场景被用户自发挖掘，可单独开发礼盒SKU或礼品卡配套产品"
+        ]
+      }
+    },
+    {
+      "input": "家里装了两套这个收纳架，橱柜整洁了很多。承重不错，放了十几罐调味品完全没问题。安装简单，不需要打孔，用贴片固定就够了。不过放了重东西之后贴片有点松动迹象，建议放轻物品。\n---\n尺寸跟描述不符！产品描述说宽40cm，收到是35cm，差了整整5cm，刚好放不下我要放的地方。客服说可以退货但运费自付，太麻烦了。差评。\n---\n厨房用的，质量很好，不锈钢材质，不生锈。家里孩子乱扔东西，这个架子被碰了好几次都没变形。边角都做了圆弧处理，不会划手。做工比我在网上搜到的国外同类产品强很多，推荐。\n---\n买了三个，一个用在卫生间放护肤品，两个在厨房。颜值很高，放在台面上不显乱。我妈来了问我哪里买的，觉得像精品店里的东西。唯一小问题是说明贴纸撕不干净，留了点残胶。",
+      "output": {
+        "summary": {
+          "total_reviews": 4,
+          "positive": 3,
+          "negative": 1,
+          "avg_sentiment": 3.5
+        },
+        "selling_points": [
+          {"point": "承重良好，放多件物品不变形", "mention_count": 2, "confidence": "high"},
+          {"point": "免打孔安装，简单便捷", "mention_count": 1, "confidence": "medium"},
+          {"point": "不锈钢材质不生锈", "mention_count": 1, "confidence": "medium"},
+          {"point": "圆弧边角设计，安全不划手", "mention_count": 1, "confidence": "medium"},
+          {"point": "颜值高，有精品感", "mention_count": 2, "confidence": "high"}
+        ],
+        "pain_points": [
+          {"point": "尺寸与描述不符（差5cm）", "mention_count": 1, "severity": "critical", "suggestion": "严格核对listing尺寸参数，买家因尺寸问题退货时平台倾向买家"},
+          {"point": "贴片承重有限，重物易松动", "mention_count": 1, "severity": "medium", "suggestion": "在listing中注明最大承重数据，建议搭配配套螺丝安装"},
+          {"point": "说明贴纸残胶", "mention_count": 1, "severity": "low", "suggestion": "换用易撕型不残胶贴纸，采购成本增加可忽略"}
+        ],
+        "competitor_mentions": [
+          {"brand": "国外同类产品（未具名）", "context": "做工被认为优于海外同类", "implication": "出口市场有竞争力，建议重点布局欧美市场"}
+        ],
+        "actionable_insights": [
+          "P0: 尺寸描述不符是可直接导致差评和退货的错误，必须立即核查所有SKU参数",
+          "P1: 贴片限重需要明确披露，避免超重场景的用户失望",
+          "P2: 用户自发提到产品适合精品感场景，listing视觉可升级为生活方式图"
+        ]
+      }
+    },
+    {
+      "input": "给孩子买的益智玩具，3岁多。他特别喜欢，每天拿着玩。积木的尺寸比我想象的大，不用担心误吞。颜色鲜艳，质感很好，闻了没有异味。总体很满意。\n---\n玩具外包装印刷很粗糙，有色差，跟图片差太多。玩具本身质量还行，但如果是买来送礼，包装绝对丢脸。\n---\nPerfect size for my toddler. She loves the bright colors and spends 30+ minutes focused — huge win for her age. Nothing sharp, no small pieces. Already ordered a second set as a gift.\n---\n买之前看了很多测评，这款性价比很高。玩了快两个月了，零件一个都没坏，比想象中耐用。不过磁铁力度有点弱，比较大的积木拼不稳，容易倒。建议升级磁力。",
+      "output": {
+        "summary": {
+          "total_reviews": 4,
+          "positive": 3,
+          "negative": 1,
+          "avg_sentiment": 3.7,
+          "language": "Mixed (Chinese + English)",
+          "market": "China domestic + North America export"
+        },
+        "selling_points": [
+          {"point": "尺寸合理，不存在误吞风险", "mention_count": 2, "confidence": "high"},
+          {"point": "颜色鲜艳，孩子兴趣持久（30分钟+专注）", "mention_count": 3, "confidence": "high"},
+          {"point": "无异味，材质安全", "mention_count": 1, "confidence": "medium"},
+          {"point": "耐用性好，两个月无破损", "mention_count": 1, "confidence": "medium"}
+        ],
+        "pain_points": [
+          {"point": "磁铁力度不足，大件积木不稳", "mention_count": 1, "severity": "high", "suggestion": "升级磁力规格，大尺寸积木单独配强磁，这是购买决策的核心痛点"},
+          {"point": "外包装印刷粗糙，与图片差距大", "mention_count": 1, "severity": "medium", "suggestion": "礼品场景包装是重要竞争力，建议单独开发精装礼盒版本"}
+        ],
+        "competitor_mentions": [],
+        "actionable_insights": [
+          "P0: 磁力是积木类产品核心功能，磁力弱的差评会影响整体评分，需立即改进规格",
+          "P1: 北美市场对礼品场景需求明显（英文用户已购两套送礼），包装提升ROI高",
+          "P2: '专注时间30分钟+'是家长关心的教育指标，可作为listing核心文案"
+        ]
+      }
+    },
+    {
+      "input": "运动T恤穿了半年了，洗了几十次颜色没怎么变。速干效果好，跑完步十分钟就干了。版型不错，显瘦。面料亲肤，运动时不会有摩擦感。就是小了点，建议买大一码。\n---\n脱色！第一次洗就掉了一层红色在水里。洗完颜色发暗，完全不是购买时的颜色。卖家说是正常色差，我觉得是劣质面料。退款处理中，等待中。\n---\n工厂直供的感觉，做工比商场的运动品牌强，价格却便宜很多。拉链顺滑，接缝平整，细节处理比我预期好。买了三件，下次还会回购。\n---\n作为训练服来说完全满足需求，透气性比棉T好太多。出汗之后面料不贴皮肤，这点对长时间训练很重要。尺码表比较准，按表选码没问题。",
+      "output": {
+        "summary": {
+          "total_reviews": 4,
+          "positive": 3,
+          "negative": 1,
+          "avg_sentiment": 3.6
+        },
+        "selling_points": [
+          {"point": "色牢度好，多次洗涤不褪色（正品评价）", "mention_count": 1, "confidence": "medium"},
+          {"point": "速干效果好，运动后10分钟干", "mention_count": 2, "confidence": "high"},
+          {"point": "版型显瘦，视觉效果好", "mention_count": 1, "confidence": "medium"},
+          {"point": "透气性强，出汗不贴皮肤", "mention_count": 2, "confidence": "high"},
+          {"point": "做工细节好，拉链顺滑接缝平整", "mention_count": 1, "confidence": "medium"},
+          {"point": "尺码表准确", "mention_count": 1, "confidence": "medium"}
+        ],
+        "pain_points": [
+          {"point": "掉色严重，第一次洗就脱色", "mention_count": 1, "severity": "critical", "suggestion": "检查染色工艺，需达到国标或出口标准，这是服装品类最常见的差评触发点"},
+          {"point": "尺码偏小，需买大一码", "mention_count": 1, "severity": "medium", "suggestion": "在listing中主动提示'建议选大一码'，减少因尺码问题的退换货"}
+        ],
+        "competitor_mentions": [
+          {"brand": "商场运动品牌（未具名）", "context": "做工对比被认为相当甚至更好，价格更低", "implication": "工厂直供性价比是核心卖点，可在listing中主动定位"}
+        ],
+        "actionable_insights": [
+          "P0: 部分批次掉色问题说明染色工艺不稳定，需按批次抽检，出口市场有纺织品色牢度强制标准",
+          "P1: 速干+不贴皮肤是用户自发验证的核心功能卖点，建议listing中量化（10分钟速干）",
+          "P2: 尺码偏小是系统性问题，在尺码页或listing描述中直接说明，可减少退货率约20%"
+        ]
+      }
     }
   ]
 }
