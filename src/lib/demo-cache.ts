@@ -121,8 +121,8 @@ Transform your chaotic closets into Instagram-worthy spaces. HOMELODY storage bi
 
 | 风险项 | 品牌/专利 | 风险等级 | 详情 |
 |--------|----------|---------|------|
-| "AirPods Style" | Apple Inc. (US Reg. #5467585) | 🔴 高危 | 直接引用注册商标，构成侵权 |
-| "Compatible with iPhone" | Apple Inc. (US Reg. #3457218) | 🟡 中危 | 兼容性声明需加disclaimer |
+| "AirPods Style" | Apple Inc. (US Reg. #5467585) | 🔴 高危 | 直接引用注册商标，可能存在侵权风险 |
+| "Compatible with iPhone" | Apple Inc. (US Reg. #3457218) | 🟡 中危 | 兼容性声明建议添加disclaimer |
 | "Bluetooth" | Bluetooth SIG | 🟢 低危 | 需确认BQB认证 |
 
 ### 合规修改建议
@@ -134,7 +134,7 @@ Transform your chaotic closets into Instagram-worthy spaces. HOMELODY storage bi
 Wireless Earbuds with Charging Case, Bluetooth 5.3 in-Ear Headphones, Touch Control, 30H Playtime, IPX5 Waterproof
 
 **修改要点：**
-1. 删除"AirPods Style" — 任何形式引用Apple商标均构成侵权
+1. 删除"AirPods Style" — 引用Apple注册商标存在较高侵权风险
 2. 删除"Compatible with iPhone" — 改为"Compatible with iOS and Android devices"
 3. 用技术参数（Bluetooth 5.3, IPX5）替代品牌关联词
 

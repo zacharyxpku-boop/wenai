@@ -50,16 +50,16 @@ ${registeredMarks.map(mark => `
   - 权利人：${mark.data?.owner}
   - 状态：${mark.data?.status}
   - 商品/服务类别：${mark.data?.classes.join(', ')}
-  - 风险：使用该商标或近似词汇构成高风险侵权
+  - 风险提示：使用该商标或近似词汇可能存在侵权风险，需专业核查
 `).join('\n')}
 
-**使用规则：**
-- 禁止在listing标题/描述中直接使用上述商标
-- 禁止使用"XX Style"、"XX Compatible"、"XX Type"等关联用法
-- 即使拼写变体（如AirPod→AirPods、XM→Xiaomi）也构成侵权
+**风险规避建议：**
+- 避免在listing标题/描述中直接使用上述商标
+- 慎用"XX Style"、"XX Compatible"、"XX Type"等关联表述
+- 注意拼写变体（如AirPod→AirPods）同样可能触发风险
 - 建议改用通用产品描述（如"wireless earbuds"而非"AirPods-like"）
 
-⚠️ 免责声明：以上结果基于有限本地数据库，不构成法律意见。高风险项请咨询专业商标律师。
+⚠️ 重要声明：本检测基于有限参考数据库（当前覆盖约15个高频品牌），存在漏检可能，检测结果仅供初步参考，不构成任何法律意见。所有商标相关决策请咨询持证商标律师。
 `;
 
     return { context, queryResult: data };
