@@ -22,7 +22,7 @@
       },
       "findings": [
         {
-          "level": "🔴高风险",
+          "level": "高风险",
           "type": "商标侵权（USPTO已验证）",
           "detail": "标题含'AirPod Pro Style' — USPTO实时查询确认Apple已注册商标'AirPods'(US Reg. No. 5467585)，即使拼写不同也构成混淆性使用",
           "consequence": "Amazon直接下架+品牌投诉，严重可冻结账户资金",
@@ -30,14 +30,14 @@
           "verifiedBy": "USPTO TSDR API"
         },
         {
-          "level": "🟡中风险",
+          "level": "中风险",
           "type": "平台违禁词",
           "detail": "'Best Quality'属于Amazon禁止的主观性宣称词",
           "consequence": "listing被抑制搜索权重，不会被投诉但影响流量",
           "fix": "改为可验证的客观描述如'IPX5 Waterproof, 36H Battery Life'"
         },
         {
-          "level": "🟢低风险",
+          "level": "低风险",
           "type": "认证合规",
           "detail": "蓝牙设备在美国需FCC认证，在欧盟需CE认证",
           "action": "确认供应商已提供FCC ID和CE证书，listing中标注认证编号"
@@ -50,14 +50,14 @@
       "input_snippet": "标题: MUJI Style Minimalist Storage Box, Japanese Design Closet Organizer...",
       "findings": [
         {
-          "level": "🔴高风险",
+          "level": "高风险",
           "type": "商标侵权",
           "detail": "'MUJI'是良品计划株式会社注册商标(US Reg. No. 3123456)，'MUJI Style'仍构成商标关联使用",
           "consequence": "良品计划法务团队活跃，跨境卖家被投诉案例多",
           "fix": "改为'Minimalist Japanese-Inspired Storage Box'，描述风格而不引用品牌"
         },
         {
-          "level": "🟡中风险",
+          "level": "中风险",
           "type": "外观专利",
           "detail": "MUJI多款收纳盒在日本和美国有外观设计专利，如高度相似需核查",
           "action": "建议在USPTO Design Patent数据库搜索D类专利，或改变外观差异化元素（圆角→直角/颜色/把手造型）"
@@ -66,9 +66,9 @@
     },
     {
       "scenario": "运动水杯listing — USPTO多商标检测",
-      "input_snippet": "标题: YETI Style Insulated Tumbler, 30oz Stainless Steel Travel Mug, Keeps Drinks Cold for 24H, Fits in Car Cup Holder...",
+      "input_snippet": "标题: YETI Style Insulated Tumbler, 30oz Stainless Steel Travel Mug...",
       "uspto_query_result": {
-        "extractedKeywords": ["YETI", "STYLE", "INSULATED", "TUMBLER", "STAINLESS", "STEEL"],
+        "extractedKeywords": ["YETI", "STYLE", "INSULATED", "TUMBLER"],
         "registeredMarks": [
           {
             "keyword": "YETI",
@@ -84,51 +84,201 @@
       },
       "findings": [
         {
-          "level": "🔴高风险",
+          "level": "高风险",
           "type": "商标侵权（USPTO已验证）",
-          "detail": "'YETI Style' — USPTO查询确认YETI Coolers, LLC已注册'YETI'商标(US Reg. No. 3646271, Class 21: 保温杯)，该品牌法务团队极其活跃",
+          "detail": "'YETI Style' — USPTO查询确认YETI Coolers, LLC已注册'YETI'商标(US Reg. No. 3646271, Class 21)，该品牌法务团队极其活跃",
           "consequence": "YETI法务团队已知在Amazon/Shopee大规模投诉，账号冻结风险极高",
           "fix": "完全删除'YETI'引用，改为'Premium Insulated Tumbler'或'Double-Wall Vacuum Tumbler'",
-          "verifiedBy": "USPTO TSDR API",
-          "note": "YETI在保温杯类目投诉成功率>90%，务必规避"
+          "verifiedBy": "USPTO TSDR API"
         },
         {
-          "level": "🟢安全",
+          "level": "安全",
           "type": "通用描述词",
-          "detail": "'Insulated'、'Tumbler'、'Stainless Steel'均为行业通用术语，USPTO未显示注册冲突",
+          "detail": "'Insulated'、'Tumbler'、'Stainless Steel'均为行业通用术语",
           "action": "可安全使用，建议作为主要卖点词"
         }
       ],
       "safe_version": "Premium Insulated Tumbler, 30oz Stainless Steel Travel Mug, Double-Wall Vacuum Technology, Keeps Drinks Cold 24H, Sweat-Free Design, Fits Car Cup Holder"
+    },
+    {
+      "scenario": "花纹/图案侵权 — 运动服装版权检测",
+      "input_snippet": "产品：女士瑜伽裤，面料印有'Nike-inspired checkerboard pattern'，标题含'Dri-Fit Style Performance Leggings'",
+      "findings": [
+        {
+          "level": "高风险",
+          "type": "商标侵权",
+          "detail": "'Dri-Fit'是Nike注册技术商标(US Reg. No. 2951054)，即使加'Style'后缀仍构成侵权关联",
+          "consequence": "Nike法务是跨境电商最活跃的投诉方之一，Amazon投诉成功率95%+",
+          "fix": "改为'Moisture-Wicking Performance Leggings'，描述功能而非引用品牌技术名"
+        },
+        {
+          "level": "高风险",
+          "type": "图案版权侵权",
+          "detail": "某些棋盘格、条纹、三角形图案已被Nike/Adidas等品牌注册为商业外观(Trade Dress)。'Nike-inspired'字样明确承认了参照关系，在法律上自证侵权",
+          "consequence": "Trade Dress侵权诉讼赔偿金额高，相比商标侵权更难抗辩",
+          "fix": "完全删除'inspired by'类字样；如保留图案，需确认图案与品牌已注册版权无实质性相似；建议委托设计师原创图案"
+        },
+        {
+          "level": "中风险",
+          "type": "功能性声称合规",
+          "detail": "美国FTC要求'Performance'类声称需有数据支撑，如标注吸湿排汗速率需有检测报告",
+          "action": "联系供应商获取面料性能检测报告，或改为中性描述如'Stretchy Yoga Leggings'"
+        }
+      ],
+      "safe_version": "High-Waist Yoga Leggings for Women, 4-Way Stretch, Moisture-Wicking Fabric, Non-See-Through, Workout Running Fitness, Sizes XS-2XL"
+    },
+    {
+      "scenario": "外观设计专利侵权 — 家具类产品",
+      "input_snippet": "产品：北欧风格餐椅，外形与Herman Miller Eames DSW椅高度相似，listing描述含'Eames Style Dining Chair'",
+      "findings": [
+        {
+          "level": "高风险",
+          "type": "外观设计专利侵权",
+          "detail": "Herman Miller持有多项Eames系列椅子的外观设计专利，美国设计专利保护期15年（2012年后申请）。'Eames Style'字样直接建立品牌关联",
+          "consequence": "Herman Miller法务以设计专利提起诉讼时赔偿额基于整个产品利润，不是部分，跨境卖家被提起诉讼案例已有多起",
+          "fix": "删除'Eames'字样；外形需进行差异化设计（腿型/靠背角度/比例/材质）以规避设计专利；建议查询USPTO D类专利数据库确认专利状态"
+        },
+        {
+          "level": "中风险",
+          "type": "商标侵权",
+          "detail": "'Eames'和'Herman Miller'均为注册商标",
+          "fix": "改为'Mid-Century Modern Dining Chair'或'Scandinavian Style Accent Chair'描述风格"
+        },
+        {
+          "level": "低风险",
+          "type": "CARB合规（加州）",
+          "detail": "木制家具销往加州需符合CARB Phase 2甲醛排放标准",
+          "action": "要求供应商提供CARB认证报告，是加州家具销售的基本合规项"
+        }
+      ],
+      "safe_version": "Mid-Century Modern Dining Chair, Solid Beech Wood Legs, Ergonomic Seat Shell, Indoor Accent Chair for Dining Room Kitchen Bedroom, CARB Compliant"
+    },
+    {
+      "scenario": "仿冒与平行进口（灰色市场）区分",
+      "input_snippet": "场景：卖家销售某奢侈品包包，有两种情况：A) 工厂直接仿制，B) 从海外正品经销商低价购入正品后在国内销售",
+      "findings": [
+        {
+          "level": "高风险",
+          "type": "仿冒（情况A）",
+          "detail": "工厂仿制名牌产品属于商标侵权+不正当竞争。无论是否标注'inspired by'或'replica'，销售仿冒品在美国、欧盟、中国均构成刑事犯罪",
+          "consequence": "平台封号、货物被海关扣押、民事赔偿、刑事追诉（严重情节）",
+          "fix": "无可用安全版本，建议完全放弃该类商品"
+        },
+        {
+          "level": "中风险",
+          "type": "平行进口/灰色市场（情况B）",
+          "detail": "通过非官方渠道购入正品后销售，在不同国家有不同法律判断：美国：在原产国/特定地区销售的正品，平行进口存在一定法律空间，但品牌商可通过限制经销协议或质量差异（如无中文说明书）投诉；中国：正品平行进口通常合法，但需保证来源合规；欧盟：品牌商可通过'权利用尽原则'限制在欧盟外购入的正品在欧盟内销售",
+          "action": "不在listing中使用品牌商标超出必要范围；保留采购凭证证明货源合法；了解目标市场的平行进口法律",
+          "note": "灰色市场与仿冒的核心区别：货物是否真实。仿冒=假货，平行进口=真货但渠道非授权"
+        }
+      ]
+    },
+    {
+      "scenario": "健康/医疗类产品违规声称检测",
+      "input_snippet": "产品：保健品胶囊，listing声称'Cures arthritis pain'、'Treats insomnia'、'FDA Approved natural remedy'",
+      "findings": [
+        {
+          "level": "高风险",
+          "type": "违规医疗声称（FDA 21 CFR Part 101）",
+          "detail": "'Cures arthritis'和'Treats insomnia'属于疾病声称，未经FDA批准的保健品不能使用'cure/treat/prevent disease'类语言",
+          "consequence": "FDA Warning Letter、平台下架、严重情节面临FDA合规诉讼",
+          "fix": "结构/功能声称代替疾病声称：'supports healthy joints and mobility'代替'cures arthritis'；'promotes restful sleep'代替'treats insomnia'"
+        },
+        {
+          "level": "高风险",
+          "type": "虚假FDA认证声称",
+          "detail": "'FDA Approved'是谎称：保健品（dietary supplements）在美国不需要FDA预先批准，该声称等同于欺骗性广告",
+          "consequence": "FTC（联邦贸易委员会）可据此提起欺骗性广告诉讼，罚款可达每次违规$50,000+",
+          "fix": "改为'Made in FDA-registered facility'（如实际情况）或'GMP certified'，这是允许的合规表述"
+        }
+      ],
+      "safe_version": "Joint Support Supplement | Contains Glucosamine, Chondroitin & Turmeric | Supports Healthy Cartilage & Mobility | Non-GMO | Made in GMP-Certified Facility | Not intended to diagnose, treat, cure, or prevent any disease."
+    },
+    {
+      "scenario": "儿童玩具类目安全认证合规检测",
+      "input_snippet": "产品：12岁以下儿童积木玩具，美国市场销售，listing无认证信息",
+      "findings": [
+        {
+          "level": "高风险",
+          "type": "CPSC/ASTM F963合规缺失",
+          "detail": "美国CPSC要求12岁以下儿童玩具必须满足ASTM F963安全标准，并附有Children's Product Certificate (CPC)。无认证在美国销售属违规",
+          "consequence": "CPSC可强制召回，平台下架，潜在民事诉讼（如儿童受伤）",
+          "action": "向供应商索取ASTM F963测试报告 + CPC；测试需在CPSC认可的第三方实验室进行（SGS/Intertek/BV均可）"
+        },
+        {
+          "level": "高风险",
+          "type": "铅/邻苯二甲酸酯含量合规",
+          "detail": "美国CPSIA要求玩具表面涂料铅含量≤90ppm，基材≤100ppm；特定邻苯二甲酸酯含量≤0.1%",
+          "action": "要求供应商提供第三方化学成分检测报告"
+        },
+        {
+          "level": "中风险",
+          "type": "小零件警示标签",
+          "detail": "包含3岁以下儿童可触及的小零件（直径<31.7mm）产品需标注ASTM F963要求的窒息危险警示",
+          "action": "在产品和外包装上印刷'CHOKING HAZARD — Small parts. Not for children under 3 years.'标准警示语"
+        }
+      ]
+    },
+    {
+      "scenario": "Shopee东南亚市场 — 商标+平台规则双重合规",
+      "input_snippet": "产品：手机壳，标题含'Compatible with iPhone 15 Pro, Samsung Galaxy S24'，listing图片包含Apple Logo",
+      "findings": [
+        {
+          "level": "安全",
+          "type": "配件兼容声称（Compatible with）",
+          "detail": "注明兼容性是配件类目的标准做法，如实标注'Compatible with iPhone 15 Pro'属于描述性使用，不构成商标侵权",
+          "note": "但不能使用'Apple Certified'、'Made for iPhone'等认证类字样，这些是苹果授权标志"
+        },
+        {
+          "level": "高风险",
+          "type": "Apple Logo版权侵权",
+          "detail": "listing图片中包含Apple商标（咬苹果logo）构成商标侵权，即使是在使用场景图中展示iPhone也不能突出显示Apple Logo",
+          "consequence": "Shopee品牌投诉处理机制：首次可能警告，多次投诉封店",
+          "fix": "删除所有listing图片中可识别的Apple/三星品牌logo；使用透明背景手机外形或用白色矩形遮挡logo区域"
+        },
+        {
+          "level": "中风险",
+          "type": "平台类目禁止词（Shopee）",
+          "detail": "Shopee部分市场禁止在标题中使用'100%正品'等词汇，以及夸大承诺如'永不破裂'",
+          "fix": "改用客观描述：'Military-Grade Drop Protection, Tested to 6ft Drop'"
+        }
+      ]
     }
   ],
   "common_traps": {
     "trademark_keywords": [
       {"trap": "用竞品品牌名+compatible/style/like/type", "risk": "仍构成商标侵权，Amazon/Shopee均可触发投诉"},
       {"trap": "中文拼音变体(如Xiaomi→XM)", "risk": "平台算法可识别变体拼写"},
-      {"trap": "类目通用词被注册为商标(如'YETI'保温杯)", "risk": "需查询该品类哪些常见词已被注册"}
+      {"trap": "类目通用词被注册为商标(如'YETI'保温杯)", "risk": "需查询该品类哪些常见词已被注册"},
+      {"trap": "描述'inspired by'某品牌", "risk": "主动建立品牌关联，在法律上等同于使用商标"},
+      {"trap": "图片中出现竞品品牌Logo", "risk": "视觉商标侵权，比文字更难争辩"},
+      {"trap": "外观与知名产品高度相似+相似价格", "risk": "可能触发外观设计专利+Trade Dress双重侵权"}
     ],
     "platform_banned_words": {
-      "amazon": ["best", "top", "guaranteed", "cure", "treat", "#1", "authentic", "original"],
-      "shopee": ["100%正品", "假一赔十(需品牌授权)", "最低价"],
-      "lazada": ["cheapest", "best seller(需数据支撑)"]
+      "amazon": ["best", "top", "guaranteed", "cure", "treat", "#1", "authentic", "original", "FDA Approved（保健品）", "cheapest"],
+      "shopee": ["100%正品", "假一赔十（需品牌授权）", "最低价", "永久保修"],
+      "lazada": ["cheapest", "best seller（需数据支撑）", "免税"],
+      "tiktok_shop": ["最便宜", "全网最低价", "治疗/cure（功效声称需资质）"]
     },
     "certification_by_category": {
-      "数码电子": {"US": "FCC", "EU": "CE/RoHS", "UK": "UKCA"},
-      "家居用品": {"US": "CPSC/ASTM", "EU": "CE/REACH", "JP": "PSE(电器)"},
+      "数码电子": {"US": "FCC", "EU": "CE/RoHS", "UK": "UKCA", "AU": "RCM", "TH": "NBTC", "JP": "PSE"},
+      "家居用品": {"US": "CPSC/ASTM", "EU": "CE/REACH", "JP": "PSE（电器）", "CN": "CCC（强制）"},
+      "儿童玩具": {"US": "ASTM F963 + CPSIA + CPC", "EU": "EN71 + CE", "AU": "AS/NZS 8124"},
+      "食品接触材料": {"US": "FDA 21 CFR", "EU": "LFGB + EC 1935/2004", "JP": "食品衛生法"},
       "汽摩配件": {"US": "DOT/SAE", "EU": "ECE R", "AU": "ADR"},
-      "工具工艺": {"US": "UL/OSHA", "EU": "CE/EN standards"},
-      "生活百货": {"US": "FDA(食品接触)", "EU": "LFGB(食品接触)"}
+      "保健品/膳食补充剂": {"US": "DSHEA合规 + cGMP + FDA注册设施", "EU": "Novel Food Regulation（如需）"},
+      "服装纺织": {"US": "CPSA + RN号码", "EU": "REACH + OEKO-TEX", "CA": "加拿大消费品安全法"}
     }
   },
   "rules": [
-    "所有发现必须标注风险等级(🔴🟡🟢)和具体后果",
+    "所有发现必须标注风险等级（高风险/中风险/低风险/安全）和具体后果",
     "商标检测不能只查完全匹配，要查变体/缩写/拼音/style/compatible等关联用法",
     "每个高风险项必须给出安全替代文案",
     "认证要求按目标市场逐一列出，不能笼统说'需要认证'",
-    "**USPTO商标查询集成规则**：优先引用USPTO实时查询结果，发现已注册商标时标注'USPTO已验证'，包含Reg. No.和权利人信息，提升检测可信度",
-    "USPTO查询失败时graceful降级到纯AI推理，不影响整体分析",
-    "末尾必须加免责声明：AI检测不能替代专业法律意见，高风险项建议咨询知识产权律师"
+    "USPTO商标查询集成规则：优先引用USPTO实时查询结果，发现已注册商标时标注'USPTO已验证'，包含Reg. No.和权利人信息",
+    "USPTO查询失败时降级到纯AI推理，不影响整体分析",
+    "末尾必须加免责声明：AI检测不能替代专业法律意见，高风险项建议咨询知识产权律师",
+    "仿冒和灰色市场要明确区分，给出不同的合规路径"
   ],
   "technical_notes": {
     "uspto_integration": {

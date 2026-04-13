@@ -26,6 +26,189 @@
         "recommendation": "建议切入¥300-500中端带摄像头款，差异化点：双碗+视频互动+定时喂食三合一。避开低端价格战。",
         "confidence": "中高（市场增长确定，竞争格局有空间，但电子品类售后成本需验证）"
       }
+    },
+    {
+      "category": "空气炸锅（美国市场，Amazon）",
+      "analysis": {
+        "market_size": "美国小厨电市场$12B+，空气炸锅占约15%且仍在增长",
+        "search_trend": "Amazon'air fryer'月搜索量400万+，长尾词'air fryer for one person'月搜索8万+（竞争低）",
+        "competition": {
+          "top_brands": ["Instant Pot", "COSORI", "Ninja", "Philips"],
+          "price_distribution": "$30-50（入门）、$50-90（中端主力）、$90-150（大容量/双分区）",
+          "concentration": "CR4约50%，中端竞争激烈",
+          "gap_identified": "$45-65高性价比段有空白，IP不下探，Ninja向上走，COSORI质量投诉上升"
+        },
+        "profit_estimate": {
+          "cost_usd": "$15-22（FOB中国，含包装）",
+          "selling_price_usd": "$49-65",
+          "amazon_fees": "FBA费用约$12/件，15%佣金约$7-10，广告约$8-12",
+          "net_margin": "约20-28%（需控制退货率在5%以下）",
+          "note": "退货是空气炸锅的核心成本风险，差评主要来自温度不准和涂层问题"
+        },
+        "risks": [
+          {"level": "P0", "risk": "FCC认证必须（约¥15000/3个月）；ETL认证北美市场更被信任"},
+          {"level": "P0", "risk": "PFAS/PFOA不粘涂层监管趋严，需确认供应商用PTFE替代方案"},
+          {"level": "P1", "risk": "Amazon平台空气炸锅品牌投诉活跃，listing图片需严格IP合规审查"},
+          {"level": "P2", "risk": "物流体积重量大，FBA头程成本高，需测算利润"}
+        ],
+        "go_to_market": {
+          "differentiation": "6L双分区（同时炸两种食物不串味），附带100个食谱PDF，主打'家庭聚餐场景'",
+          "target_segment": "3-5人家庭，25-45岁，已经有小型炸锅想升级",
+          "launch_channel": "Amazon主战场 + TikTok Shop做年轻人菜谱内容引流"
+        },
+        "recommendation": "切入$55-70双分区大容量款，差异化标配食谱手册+专属菜谱App。避开$35-50低价段。前3个月需要5万美金广告预算拿评价和权重。",
+        "confidence": "中（市场空间存在，但竞争强度高，广告成本上升中，ROI需精细控制）"
+      }
+    },
+    {
+      "category": "防晒衣（跨境，Temu/速卖通+Amazon）",
+      "analysis": {
+        "market_size": "全球防晒服装市场$12B，北美+澳大利亚是最大市场，增速约8%/年",
+        "search_trend": "Amazon'sun hoodie'月搜索60万+，'UPF 50 shirt'月搜索45万+，春夏季节性强（3-8月高峰）",
+        "competition": {
+          "top_brands": ["Columbia（专业型$60+）", "Coolibar（医疗级$80+）", "中国品牌BALEAF/Rash Guard品类"],
+          "price_distribution": "$15-25（Temu/低价段）、$25-45（Amazon中端主力）、$50+（品牌溢价）",
+          "concentration": "服装类分散，CR5低于20%，新品机会多"
+        },
+        "profit_estimate": {
+          "cost_usd": "$4-8（包含UPF测试费用分摊）",
+          "selling_price_usd": "$28-42",
+          "amazon_fees": "FBA约$4/件，15%佣金约$4-6，广告约$5-8",
+          "net_margin": "约25-35%，服装退货率较高（12-18%）需计入",
+          "note": "服装退货率是核心变量，尺码不准会严重影响净利润"
+        },
+        "risks": [
+          {"level": "P0", "risk": "UPF 50+声称必须有第三方检测报告，不能只靠供应商自称；AATCC TM183是美国标准"},
+          {"level": "P0", "risk": "CPSA要求儿童服装特殊认证，如做儿童款需额外合规"},
+          {"level": "P1", "risk": "季节性强，库存管理关键，5-6月是清仓时机，9月开始滞销"},
+          {"level": "P2", "risk": "Temu低价竞争，$15以下段利润已极薄，需向上走$28+段"}
+        ],
+        "go_to_market": {
+          "differentiation": "钓鱼/园艺双场景款，带帽+拇指扣+侧口袋，UPF50+认证主图突出",
+          "target_segment": "户外爱好者（钓鱼/徒步/园艺），40-60岁，皮肤保护意识强",
+          "content_strategy": "Amazon Posts做钓鱼/户外场景图，TikTok发'太阳下30分钟测试'对比视频"
+        },
+        "recommendation": "切入$30-40成人款（男女款独立SKU），主打钓鱼场景（中老年用户忠诚度高、退货率低）。优先布局UPF认证+钓鱼关键词长尾。",
+        "confidence": "高（需求稳定，季节性可控，退货率可通过精准尺码图表压低，认证门槛过了就是护城河）"
+      }
+    },
+    {
+      "category": "宠物猫草种植套装（小红书+国内电商）",
+      "analysis": {
+        "market_size": "国内猫草市场¥3-5亿估算（细分品类，数据有限），小红书猫草话题播放量超10亿",
+        "search_trend": "淘宝'猫草'月搜索200万+，'猫草种子套装'月搜索30万+，高复购品类",
+        "competition": {
+          "top_brands": ["网易严选猫草", "小佩PETKIT猫草", "各类白牌"],
+          "price_distribution": "¥15-30（基础套装）、¥30-60（精品种植套装）、¥60-100（自动浇水款）",
+          "concentration": "白牌为主，CR5不足25%"
+        },
+        "profit_estimate": {
+          "cost": "¥8-15（含种子+容器+土）",
+          "selling_price": "¥29-59",
+          "gross_margin": "60-70%",
+          "logistics": "轻小件，快递成本低，适合小红书种草+抖音小店模式"
+        },
+        "risks": [
+          {"level": "P0", "risk": "猫草品种差异大，燕麦苗/小麦苗/大麦苗安全性不同，需明确标注，错误声称可导致猫咪伤害纠纷"},
+          {"level": "P1", "risk": "高复购品类，差评会直接影响复购；发芽率是核心产品指标"},
+          {"level": "P2", "risk": "季节性：夏季高温影响发芽率，物流热损需考虑"}
+        ],
+        "go_to_market": {
+          "channel": "小红书种草+抖音小店，视觉内容是核心（猫咪吃草视频天然高互动）",
+          "differentiation": "猫咪品种专属配方（不同猫咪草品偏好不同，是伪命题但营销力强）",
+          "repurchase": "主推订阅制（每月发货），猫草30天消耗，天然复购场景"
+        },
+        "recommendation": "切入¥39-59精品套装（优质种子+陶瓷/竹制容器），走高颜值路线配合小红书。重点做复购机制：扫码购买补充装。",
+        "confidence": "中高（品类小但复购强，内容营销天然场景，门槛低但护城河也低）"
+      }
+    },
+    {
+      "category": "膝盖护具（Amazon美国+欧洲）",
+      "analysis": {
+        "market_size": "美国运动护具市场$3.2B，膝盖护具占约25%，增速稳定",
+        "search_trend": "Amazon'knee brace'月搜索150万+，'knee sleeve for running'月搜索30万+，长尾空间大",
+        "competition": {
+          "top_brands": ["Bauerfeind（专业级$60-120）", "Sleeve Stars（中端$25-45）", "McDavid（专业运动$30-60）"],
+          "price_distribution": "$15-25（低端布料款）、$25-50（中端功能款主力）、$50+（医疗级）",
+          "concentration": "中端竞争激烈，但长尾场景（特定运动/特定伤势）机会多"
+        },
+        "profit_estimate": {
+          "cost_usd": "$3-7",
+          "selling_price_usd": "$25-40",
+          "amazon_fees": "FBA约$3/件，15%佣金约$4-6，广告约$5-8",
+          "net_margin": "约30-40%，退货率约8-12%"
+        },
+        "risks": [
+          {"level": "P0", "risk": "医疗器械合规：膝盖护具在美国按Class I医疗器械管理，需510(k)预市申请或豁免确认"},
+          {"level": "P0", "risk": "声称'治疗膝盖疼痛/关节炎'属于医疗声称，需FDA批准，禁止使用"},
+          {"level": "P1", "risk": "用于运动场景的护具需要防滑+透气测试，安全性投诉是差评主来源"},
+          {"level": "P2", "risk": "尺码是退货核心原因，尺码图表必须精准"}
+        ],
+        "go_to_market": {
+          "differentiation": "跑步专用款（前端加厚支撑+后端透气网格），附带康复动作指南PDF",
+          "target_segment": "35-55岁跑步爱好者，有轻微膝盖不适，非医疗需求",
+          "compliance_copy": "禁止：'Treats knee pain'。允许：'Provides compression and support during physical activity'"
+        },
+        "recommendation": "切入$28-38跑步/登山专用款，主打场景差异化（附二维码专属训练计划提升粘性）。合规文案必须提前审查，不能靠竞品复制。",
+        "confidence": "中（市场稳定，利润率好，但监管合规成本高，需要专业运动品牌认知背书才能打溢价）"
+      }
+    },
+    {
+      "category": "便携式迷你打印机（礼品市场+学生党，抖音小店+Shopee东南亚）",
+      "analysis": {
+        "market_size": "全球便携打印机市场$3B，亚太区增速最快，礼品+学生场景驱动",
+        "search_trend": "抖音#随身打印机话题播放量25亿，小红书相关笔记50万+，年轻女性主导",
+        "competition": {
+          "top_brands": ["Instax（富士）", "喵喵机", "咕咕机"],
+          "price_distribution": "¥100-200（入门热敏款）、¥200-400（主力市场）、¥400+（蓝牙相纸款）",
+          "concentration": "咕咕机/喵喵机CR约40%，但市场快速扩大"
+        },
+        "profit_estimate": {
+          "cost": "¥60-100",
+          "selling_price": "¥199-299",
+          "gross_margin": "50-60%",
+          "consumables_revenue": "相纸/贴纸耗材是长期流水来源，利润率70%+"
+        },
+        "risks": [
+          {"level": "P0", "risk": "相纸耗材兼容性问题：如果机器只兼容自家耗材，需要清楚告知；如果兼容第三方，需测试防粘连"},
+          {"level": "P1", "risk": "礼品市场季节性强（520/七夕/双11/年末），需提前2个月备货"},
+          {"level": "P2", "risk": "热敏纸成像容易褪色，长期保存效果差，不适合照片市场定位"}
+        ],
+        "go_to_market": {
+          "channel": "抖音小店+小红书种草，达人拍照场景视频是核心内容",
+          "differentiation": "贴纸功能（可打印防水贴纸用于手账/行李箱），比纯照片打印更高频",
+          "consumables_strategy": "机器低利润做量，耗材包月订阅做利润"
+        },
+        "recommendation": "切入¥199-249贴纸+照片双模式款，标配热转印纸+贴纸纸各一卷，走手账女生场景。上线第一个月配合送纸赠品做评分，耗材订阅设计进路线图。",
+        "confidence": "高（内容营销天然场景，耗材复购稳定，东南亚市场文化高亲和度，是优质选品）"
+      }
+    },
+    {
+      "category": "儿童编程玩具（全球市场，圣诞礼品季主力）",
+      "analysis": {
+        "market_size": "全球EdTech玩具市场$29B，编程玩具增速25%/年，圣诞礼品季占全年销售60%",
+        "search_trend": "Amazon'coding toy kids'月搜索18万+，'STEM toy age 8'月搜索35万+",
+        "competition": {
+          "top_brands": ["LEGO Spike（$200+）", "Osmo（$80-120）", "Kano（$100+）", "国产品类新兴品牌"],
+          "price_distribution": "$30-50（入门卡牌/积木编程）、$50-90（主力）、$90+（配套平板/高端）",
+          "concentration": "LEGO/Osmo占据高价段，中端有空间"
+        },
+        "profit_estimate": {
+          "cost_usd": "$12-25",
+          "selling_price_usd": "$45-75",
+          "amazon_fees": "FBA约$6/件，15%佣金约$7-11，广告约$10-15（礼品季竞争激烈广告贵）",
+          "net_margin": "约20-30%，礼品季利润率最高",
+          "note": "玩具类退货率低于服装，但季节性集中，圣诞后退货潮需预留"
+        },
+        "risks": [
+          {"level": "P0", "risk": "美国ASTM F963+CPSIA合规必须，含铅测试+窒息风险标注，周期长"},
+          {"level": "P0", "risk": "如含配套App，需要COPPA合规（13岁以下儿童数据保护）"},
+          {"level": "P1", "risk": "圣诞备货预判难，备少了卖断货，备多了跨年滞销"},
+          {"level": "P2", "risk": "APP维护成本高，如做配套App需要持续更新维护"}
+        ],
+        "recommendation": "切入$45-60可离线使用的实体编程玩具（无需App依赖），针对6-10岁，获Scratch/IEEE背书。避免做配套App的高维护成本路线。圣诞前3个月上架。",
+        "confidence": "中（市场增长确定，但合规成本高+圣诞库存赌注大，需要有渠道经验的操盘手）"
+      }
     }
   ],
   "output_rules": [
@@ -33,6 +216,8 @@
     "风险分P0/P1/P2三级，P0=可能导致亏损或合规问题",
     "recommendation必须给具体切入角度，不能泛泛说'有机会'",
     "标注confidence级别：高/中高/中/低",
+    "profit_estimate必须包含平台费用分解，不能只给毛利率",
+    "go_to_market必须包含具体差异化点和首选流量渠道",
     "提醒用户：AI选品仅做参考，最终决策需结合实际经验和供应链能力"
   ]
 }

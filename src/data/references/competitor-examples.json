@@ -45,6 +45,194 @@
           "避免：不要在$25-35价位段正面竞争，Anker在这个段位护城河很深"
         ]
       }
+    },
+    {
+      "input": "分析美妆类目竞品策略 — CeraVe vs La Roche-Posay (Amazon美国市场)",
+      "output": {
+        "positioning": {
+          "cerave": {
+            "price_band": "$10-25，主力款$12-18",
+            "target": "普通消费者，尤其是预算有限的大学生和年轻职场人",
+            "core_usp": "皮肤科医生推荐+神经酰胺科技+大众价格",
+            "brand_narrative": "皮肤科学，不卖情怀"
+          },
+          "la_roche_posay": {
+            "price_band": "$18-45，主力款$20-35",
+            "target": "有一定消费能力的成熟女性，25-45岁，更注重专业背书",
+            "core_usp": "La Roche-Posay火山温泉水+敏感肌专家",
+            "brand_narrative": "法国皮肤科实验室，带有欧洲护肤品可信度溢价"
+          }
+        },
+        "traffic_structure": {
+          "cerave": {
+            "organic": "约40%，'moisturizer for dry skin'/'cerave cream'长期占首页",
+            "influencer": "约35%，TikTok#skincare话题被皮肤科医生大规模推荐（免费种草）",
+            "ppc": "约15%",
+            "note": "CeraVe的TikTok皮肤科医生自发推荐是其品牌崛起的关键，近乎免费流量"
+          },
+          "la_roche_posay": {
+            "organic": "约50%，强品牌词流量",
+            "dermatologist_program": "约25%，全球50K+皮肤科医生样品推荐计划",
+            "ppc": "约20%"
+          }
+        },
+        "review_insights": {
+          "cerave_positive": ["保湿效果强", "不致痘不刺激", "用完皮肤不紧绷", "性价比高"],
+          "cerave_negative": ["质地偏厚，夏天油皮不友好", "包装设计普通", "气味有些人不喜欢"],
+          "lrp_positive": ["质地轻薄更宜人", "产品线齐全可搭配", "包装高级感"],
+          "lrp_negative": ["价格偏高", "部分用户换季过渡期过敏"],
+          "opportunity_for_challenger": "中国品牌在$12-20价格段有机会，提供LRP级质地+CeraVe级成分，配合亚洲肤色场景图"
+        },
+        "chinese_brand_implications": [
+          "成分透明化是必须的：罗列具体成分并解释功效，模仿CeraVe神经酰胺的科普话语",
+          "皮肤科医生/KOL背书是流量核心，需要投入资源做'医生种草'",
+          "包装需提升：CeraVe证明好包装不是必须，但想要溢价则需要LRP级的视觉",
+          "亚洲本土化是差异化机会：针对亚洲肤色/气候/使用习惯做产品和内容，欧美品牌做不好这点"
+        ]
+      }
+    },
+    {
+      "input": "分析户外品类竞品策略 — YETI vs Stanley (保温杯，Amazon美国市场)",
+      "output": {
+        "positioning": {
+          "yeti": {
+            "price_band": "$30-150，主力Tumbler $35-45",
+            "target": "户外运动爱好者，中高收入，25-50岁，愿意为品质溢价",
+            "core_usp": "Outdoor lifestyle品牌，保温杯界的'苹果'",
+            "brand_narrative": "不只是容器，是户外生活态度"
+          },
+          "stanley": {
+            "price_band": "$20-50，主力Quencher $35-45",
+            "target": "2023年后因Stanley Quencher走红，扩展至年轻女性群体（25-40岁）",
+            "core_usp": "Stanley Quencher的病毒式传播+颜色丰富度+社交媒体可见性",
+            "brand_narrative": "从100年工具品牌到Gen Z时尚单品，品牌重塑成功案例"
+          }
+        },
+        "key_event_analysis": {
+          "stanley_tiktok_moment": "2023年TikTok上Stanley Quencher因女性用户大规模分享'accessories haul'视频走红，销售额从$73M增长至$750M（一年10倍），颜色收藏成为核心购买驱动",
+          "lesson": "功能性产品通过颜色/外观差异化+社媒病毒传播可以实现品类重定义，颜色限定款制造稀缺感"
+        },
+        "review_insights": {
+          "yeti_positive": ["保温效果顶级", "耐用性好（多年使用无问题）", "密封性可靠"],
+          "yeti_negative": ["价格高，同功能产品贵2-3倍", "颜色选择少", "没有吸管口选项"],
+          "stanley_positive": ["颜色丰富", "吸管设计方便", "性价比高于YETI"],
+          "stanley_negative": ["保温时长略逊于YETI", "新款漆面有投诉脱落", "盖子设计复杂"]
+        },
+        "opportunity_for_chinese_brand": [
+          "颜色/图案差异化：中国工厂有供应链优势，可实现比Stanley更丰富的颜色定制",
+          "价格切入：YETI/Stanley定价$35-45，中国品牌可在$20-30高性价比段切入",
+          "功能创新：带温度显示/可折叠/内置过滤网等YETI/Stanley没有的功能",
+          "社媒颜色营销：Stanley Quencher的病毒传播模型值得复制——限定色+收藏攻略内容"
+        ]
+      }
+    },
+    {
+      "input": "分析国内跨境电商竞品 — 小米手环 vs 华为Band (Amazon英国市场)",
+      "output": {
+        "positioning": {
+          "xiaomi": {
+            "price_band": "£25-35",
+            "target": "价格敏感的健康追踪器入门用户",
+            "core_usp": "极致性价比+大厂品质背书",
+            "listing_language": "英文listing，产品图专业，但A+内容相对薄弱"
+          },
+          "huawei_band": {
+            "price_band": "£35-50",
+            "target": "Huawei手机用户+健康数据关注者",
+            "core_usp": "与华为生态深度集成+健康监测更全面",
+            "listing_language": "A+内容图文并茂，但部分市场面临品牌信任问题"
+          }
+        },
+        "traffic_structure": {
+          "xiaomi": {
+            "organic": "约50%，凭低价在'fitness tracker'词排名前列",
+            "ppc": "约30%",
+            "review_volume": "英国ASIN通常5000+评论，评分4.2-4.5"
+          },
+          "huawei": {
+            "organic": "约40%，品牌词为主",
+            "ppc": "约25%",
+            "challenge": "欧美市场部分消费者对华为品牌有顾虑，影响转化率"
+          }
+        },
+        "review_insights": {
+          "xiaomi_positive": ["价格超便宜", "基础功能够用", "续航长达14天", "配套APP界面好"],
+          "xiaomi_negative": ["心率精度一般", "GPS需要手机辅助", "屏幕亮度户外不足"],
+          "opportunity": "心率/血氧精度是米Band的短板，以精准健康数据为差异化点可以在£30-40段切入",
+          "third_party_opportunity": "非华为/小米品牌可以打'品牌无顾虑+功能对标旗舰'的定位"
+        }
+      }
+    },
+    {
+      "input": "分析厨房小家电竞品 — Instant Pot vs COSORI (多功能料理锅，Amazon美国)",
+      "output": {
+        "positioning": {
+          "instant_pot": {
+            "price_band": "$70-120",
+            "target": "家庭主妇/居家烹饪爱好者，35-60岁",
+            "core_usp": "多功能合一（7 in 1）开创者，品类代名词",
+            "market_share": "多功能电压力锅品类开创者，Amazon该品类历史第一"
+          },
+          "cosori": {
+            "price_band": "$50-90",
+            "target": "年轻家庭，25-40岁，更关注颜值和易用性",
+            "core_usp": "空气炸锅+多功能锅系列，颜值+操作简单",
+            "differentiator": "界面更简洁，食谱APP体验比Instant Pot好"
+          }
+        },
+        "review_insights": {
+          "instant_pot_positive": ["功能强大", "省时省力", "耐用（用了5年+）", "密封好"],
+          "instant_pot_negative": ["内胆涂层老款耐久性问题", "学习成本高", "APP更新慢"],
+          "cosori_positive": ["界面直觉操作", "APP食谱多", "外观比Instant Pot更现代"],
+          "cosori_negative": ["密封圈耐久性有投诉", "功率略低于IP同款"],
+          "opportunity_for_challenger": "专注某一细分场景（如专业蒸锅/亚洲菜系适配）比在7合1功能上竞争更聪明"
+        },
+        "chinese_brand_playbook": [
+          "功能聚焦：不要做7合1，做1个功能做到极致（比如专门的炖汤锅）",
+          "食谱内容营销：Instant Pot的社区食谱是护城河，可以针对华人/亚裔群体做亚洲料理食谱内容",
+          "价格切入：$45-65的优质产品有市场空白，IP不下探，COSORI勉强覆盖",
+          "颜值溢价：年轻消费者愿意为好看多付$15-20，这是中国工厂的供应链优势"
+        ]
+      }
+    },
+    {
+      "input": "分析宠物用品竞品 — Chewy自有品牌 vs 独立DTC品牌 (宠物床，Amazon美国)",
+      "output": {
+        "market_context": {
+          "market_size": "美国宠物床市场约$2B年销售额，Amazon占约35%份额",
+          "growth": "疫情后宠物化趋势，宠物床从功能品到情感/设计产品升级",
+          "key_trend": "宠物主人像对待婴儿一样对待宠物，愿意为'和人类寝具同等质量'的产品付溢价"
+        },
+        "competitive_landscape": {
+          "chewy_private_label": {
+            "price_band": "$30-70",
+            "advantage": "Chewy平台流量优势，App内搜索默认优先自有品牌",
+            "weakness": "设计感不足，款式陈旧，偏功能性"
+          },
+          "dtc_brands": {
+            "examples": ["Casper Dog Bed", "Tuft & Needle（延伸品线）"],
+            "price_band": "$150-300",
+            "advantage": "品牌故事强，沿用人类床垫的'睡眠健康'叙事，目标高收入宠物主人",
+            "weakness": "Amazon流量弱，主靠自有官网"
+          },
+          "mid_tier_amazon_natives": {
+            "price_band": "$40-80",
+            "leaders": "Best Friends by Sheri, Bedsure",
+            "key_differentiator": "Sheri靠AKC认证+特定犬种尺寸图表区分；Bedsure靠大量SKU颜色+快速迭代"
+          }
+        },
+        "review_insights": {
+          "high_value_features": ["机洗可拆洗（提及率最高）", "防水内衬", "高密度记忆棉（对老犬/关节问题犬特别有价值）"],
+          "pain_points": ["填充物压扁太快", "拉链质量差", "尺寸标注与实际差异"],
+          "emotional_drivers": ["狗狗睡着的可爱照片评论", "老犬关节问题场景", "和主人寝室装修搭配"]
+        },
+        "opportunity_for_chinese_brand": [
+          "老犬/关节问题专属：记忆棉+低进出门槛（斜坡边缘），是价格可以到$80+的细分",
+          "颜色/风格多样化：IKEA感极简+多色系，满足和家居搭配需求",
+          "机洗易维护作为核心卖点：主图展示'拆洗流程'，比竞品更直观",
+          "尺寸图表做到极致：按犬种/体重精准推荐，减少退货率"
+        ]
+      }
     }
   ]
 }
