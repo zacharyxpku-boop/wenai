@@ -123,7 +123,7 @@ export async function POST(request: NextRequest) {
       body: JSON.stringify({
         model,
         messages: [
-          { role: 'system', content: prompt + (moduleId ? getReferenceContext(moduleId) : '') + trademarkContext },
+          { role: 'system', content: prompt + (moduleId ? getReferenceContext(moduleId, input) : '') + trademarkContext },
           { role: 'user', content: input },
         ],
         temperature: 0.7,

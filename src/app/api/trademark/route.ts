@@ -1,23 +1,61 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { readFileSync } from 'fs';
+import { join } from 'path';
 
-// USPTO常见商标数据库（高频侵权品牌）
-const KNOWN_TRADEMARKS = new Map<string, { owner: string; regNo: string; status: 'Live' | 'Dead' | 'Pending'; classes: string[] }>([
-  ['APPLE', { owner: 'Apple Inc.', regNo: '1078312', status: 'Live', classes: ['9', '35', '38'] }],
-  ['AIRPODS', { owner: 'Apple Inc.', regNo: '5467585', status: 'Live', classes: ['9'] }],
-  ['IPHONE', { owner: 'Apple Inc.', regNo: '3457218', status: 'Live', classes: ['9'] }],
-  ['NIKE', { owner: 'Nike, Inc.', regNo: '1167867', status: 'Live', classes: ['25', '28'] }],
-  ['ADIDAS', { owner: 'adidas AG', regNo: '1018614', status: 'Live', classes: ['25'] }],
-  ['GUCCI', { owner: 'Gucci America, Inc.', regNo: '1004866', status: 'Live', classes: ['18', '25'] }],
-  ['SUPREME', { owner: 'Supreme, Inc.', regNo: '3762146', status: 'Live', classes: ['25'] }],
-  ['YETI', { owner: 'YETI Coolers, LLC', regNo: '3646271', status: 'Live', classes: ['21'] }],
-  ['LEGO', { owner: 'LEGO Juris A/S', regNo: '1018178', status: 'Live', classes: ['28'] }],
-  ['MUJI', { owner: 'Ryohin Keikaku Kabushiki Kaisha', regNo: '1659017', status: 'Live', classes: ['3', '16', '21'] }],
-  ['XIAOMI', { owner: 'Xiaomi Inc.', regNo: '4775405', status: 'Live', classes: ['9'] }],
-  ['DYSON', { owner: 'Dyson Technology Limited', regNo: '3090334', status: 'Live', classes: ['7', '11'] }],
-  ['BEATS', { owner: 'Beats Electronics, LLC', regNo: '4277590', status: 'Live', classes: ['9'] }],
-  ['BOSE', { owner: 'Bose Corporation', regNo: '1112396', status: 'Live', classes: ['9'] }],
-  ['SAMSUNG', { owner: 'Samsung Electronics Co., Ltd.', regNo: '1235729', status: 'Live', classes: ['9'] }],
-]);
+interface TrademarkEntry {
+  mark: string;
+  owner: string;
+  regNo: string;
+  status: 'Live' | 'Dead' | 'Pending';
+  classes: string[];
+  risk?: 'high' | 'medium';
+  categories?: string[];
+}
+
+// Lazy-load trademark database from JSON file
+let trademarkDB: Map<string, TrademarkEntry> | null = null;
+
+function getTrademarkDB(): Map<string, TrademarkEntry> {
+  if (trademarkDB) return trademarkDB;
+
+  trademarkDB = new Map();
+
+  // Try loading expanded database first
+  try {
+    const expandedPath = join(process.cwd(), 'src/data/trademarks.json');
+    const data = JSON.parse(readFileSync(expandedPath, 'utf-8'));
+    const entries: TrademarkEntry[] = data.trademarks || data;
+    for (const entry of entries) {
+      trademarkDB.set(entry.mark.toUpperCase(), entry);
+    }
+    console.log(`[Trademark] Loaded ${trademarkDB.size} entries from expanded database`);
+  } catch {
+    // Fallback to hardcoded essentials
+    const fallback: TrademarkEntry[] = [
+      { mark: 'APPLE', owner: 'Apple Inc.', regNo: '1078312', status: 'Live', classes: ['9', '35', '38'] },
+      { mark: 'AIRPODS', owner: 'Apple Inc.', regNo: '5467585', status: 'Live', classes: ['9'] },
+      { mark: 'IPHONE', owner: 'Apple Inc.', regNo: '3457218', status: 'Live', classes: ['9'] },
+      { mark: 'NIKE', owner: 'Nike, Inc.', regNo: '1167867', status: 'Live', classes: ['25', '28'] },
+      { mark: 'ADIDAS', owner: 'adidas AG', regNo: '1018614', status: 'Live', classes: ['25'] },
+      { mark: 'GUCCI', owner: 'Gucci America, Inc.', regNo: '1004866', status: 'Live', classes: ['18', '25'] },
+      { mark: 'SUPREME', owner: 'Supreme, Inc.', regNo: '3762146', status: 'Live', classes: ['25'] },
+      { mark: 'YETI', owner: 'YETI Coolers, LLC', regNo: '3646271', status: 'Live', classes: ['21'] },
+      { mark: 'LEGO', owner: 'LEGO Juris A/S', regNo: '1018178', status: 'Live', classes: ['28'] },
+      { mark: 'MUJI', owner: 'Ryohin Keikaku Kabushiki Kaisha', regNo: '1659017', status: 'Live', classes: ['3', '16', '21'] },
+      { mark: 'XIAOMI', owner: 'Xiaomi Inc.', regNo: '4775405', status: 'Live', classes: ['9'] },
+      { mark: 'DYSON', owner: 'Dyson Technology Limited', regNo: '3090334', status: 'Live', classes: ['7', '11'] },
+      { mark: 'BEATS', owner: 'Beats Electronics, LLC', regNo: '4277590', status: 'Live', classes: ['9'] },
+      { mark: 'BOSE', owner: 'Bose Corporation', regNo: '1112396', status: 'Live', classes: ['9'] },
+      { mark: 'SAMSUNG', owner: 'Samsung Electronics Co., Ltd.', regNo: '1235729', status: 'Live', classes: ['9'] },
+    ];
+    for (const entry of fallback) {
+      trademarkDB.set(entry.mark, entry);
+    }
+    console.log(`[Trademark] Using fallback database (${trademarkDB.size} entries)`);
+  }
+
+  return trademarkDB;
+}
 
 interface TrademarkResult {
   keyword: string;
@@ -58,14 +96,20 @@ async function throttle() {
 // 查询单个商标（先查本地库，再查USPTO）
 export async function queryTrademark(keyword: string): Promise<TrademarkResult> {
   const normalizedKeyword = keyword.toUpperCase();
+  const db = getTrademarkDB();
 
   // 先查本地库
-  const localData = KNOWN_TRADEMARKS.get(normalizedKeyword);
+  const localData = db.get(normalizedKeyword);
   if (localData) {
     return {
       keyword,
       found: true,
-      data: localData,
+      data: {
+        owner: localData.owner,
+        regNo: localData.regNo,
+        status: localData.status,
+        classes: localData.classes,
+      },
       source: 'local',
       searchedAt: Date.now(),
     };

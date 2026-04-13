@@ -44,6 +44,62 @@
       "ja": "最新Bluetooth 5.3チップ搭載、アクティブノイズキャンセリング対応。最大30時間の連続再生、わずか15分の充電で約2時間の再生が可能。13mm大口径ドライバーユニットにより、迫力あるサウンドをお届けします。IPX7防水等級で、ランニング中の汗も気になりません。タッチ操作で、ワンタッチで簡単コントロール。",
       "ko": "최신 블루투스 5.3 칩 탑재, 액티브 노이즈 캔슬링 지원. 최대 30시간 연속 재생, 15분 충전으로 약 2시간 사용 가능. 13mm 대형 다이나믹 드라이버로 풍부하고 강렬한 사운드 구현. IPX7 방수 등급으로 운동 중 땀도 걱정 없음. 터치 컨트롤로 원터치 간편 조작.",
       "notes": "描述体翻译：中文的感性表达(澎湃有力)→英文转化为具体描述(powerful, immersive)；保留数据参数原文"
+    },
+    {
+      "zh": "补水保湿面霜 玻尿酸+烟酰胺双重精华 敏感肌适用 无酒精无香料 深层修护 50g",
+      "en": "Hydrating Moisturizer Cream | Hyaluronic Acid + Niacinamide Dual Complex | Sensitive Skin Friendly | Alcohol-Free Fragrance-Free | Deep Repair | 50g",
+      "th": "ครีมบํารุงผิวหน้าให้ความชุ่มชื้น | ไฮยาลูโรนิค แอซิด + ไนอะซินาไมด์ | เหมาะสําหรับผิวแพ้ง่าย | ไม่มีแอลกอฮอล์ ไม่มีน้ำหอม | ฟื้นฟูผิวลึก | 50g",
+      "vi": "Kem Dưỡng Ẩm Sâu | Axit Hyaluronic + Niacinamide Kép | Dành Cho Da Nhạy Cảm | Không Cồn Không Hương Liệu | Phục Hồi Chuyên Sâu | 50g",
+      "notes": "东南亚美妆市场：泰语/越南语标题保留英文成分名(Hyaluronic Acid/Niacinamide)不翻译，因消费者认知度更高；敏感肌→ผิวแพ้ง่าย(TH)/da nhạy cảm(VI)"
+    },
+    {
+      "zh": "304不锈钢厨房刀具套装 主厨刀+水果刀+剪刀 德国工艺 人体工学防滑手柄 礼盒装",
+      "en": "304 Stainless Steel Kitchen Knife Set | Chef's Knife + Paring Knife + Kitchen Shears | German-Style Craftsmanship | Ergonomic Non-Slip Handle | Gift Box Set",
+      "th": "ชุดมีดครัวสแตนเลส 304 | มีดเชฟ + มีดปอกผลไม้ + กรรไกรครัว | งานฝีมือสไตล์เยอรมัน | ด้ามจับกันลื่นตามหลักสรีรศาสตร์ | ชุดของขวัญ",
+      "vi": "Bộ Dao Bếp Inox 304 | Dao Đầu Bếp + Dao Gọt Trái Cây + Kéo Bếp | Tay Nghề Kiểu Đức | Tay Cầm Chống Trượt Ergonomic | Hộp Quà Tặng",
+      "notes": "礼盒装在东南亚市场高需求；德国工艺是品质背书词，保留在译文中；不锈钢型号304在各语言中统一保留"
+    },
+    {
+      "zh": "宠物自动饮水机 3L大容量 循环过滤 静音泵 猫狗通用 LED照明 BPA-Free食品级材质",
+      "en": "Pet Water Fountain 3L | Continuous Filtration | Ultra-Quiet Pump | For Cats & Dogs | LED Indicator | BPA-Free Food-Safe Materials",
+      "th": "ที่ให้น้ำสัตว์เลี้ยงอัตโนมัติ 3L | กรองน้ำแบบหมุนเวียน | ปั๊มเงียบ | สําหรับแมวและสุนัข | ไฟ LED | วัสดุปลอดภัยปราศจาก BPA",
+      "vi": "Máy Uống Nước Tự Động Cho Thú Cưng 3L | Lọc Tuần Hoàn | Máy Bơm Siêu Yên Tĩnh | Dùng Cho Mèo & Chó | Đèn LED | Vật Liệu An Toàn BPA-Free",
+      "notes": "东南亚宠物市场增速快；BPA-Free保留原文，食品安全认证词不翻译；宠物名称均用当地通称"
+    },
+    {
+      "zh": "折叠瑜伽垫 加厚10mm 防滑天然橡胶底 吸汗速干面层 附收纳背包 专业级训练",
+      "en": "Foldable Yoga Mat 10mm Thick | Non-Slip Natural Rubber Base | Sweat-Absorbing Quick-Dry Surface | Includes Carry Bag | Professional Grade Training",
+      "th": "เสื่อโยคะพับได้ หนา 10mm | ฐานยางธรรมชาติกันลื่น | พื้นผิวดูดซับเหงื่อแห้งเร็ว | มาพร้อมกระเป๋าพกพา | ระดับมืออาชีพ",
+      "vi": "Thảm Yoga Gấp Gọn 10mm | Đế Cao Su Tự Nhiên Chống Trượt | Bề Mặt Thấm Hút Mồ Hôi Mau Khô | Kèm Túi Đựng | Chất Lượng Chuyên Nghiệp",
+      "notes": "健身品类东南亚需求旺盛；天然橡胶是高端背书，在泰越译文中保留；10mm厚度数字保留"
+    },
+    {
+      "zh": "产品描述：这款空气炸锅采用360度热风循环技术，用比传统油炸少80%的油脂制作酥脆食物。5.5L超大容量，一次可做4-6人份。触摸屏操控，8种预设模式，炸薯条/鸡翅/蛋糕全覆盖。不粘涂层内胆可拆卸，放进洗碗机轻松清洁。",
+      "en": "This air fryer uses 360° rapid hot air circulation technology to achieve crispy results with up to 80% less oil than traditional frying. The 5.5L XXL capacity handles 4-6 servings at once. Touch-screen controls with 8 preset cooking modes cover everything from french fries and chicken wings to cakes. The non-stick removable basket is dishwasher-safe for easy cleanup.",
+      "th": "เครื่องทอดอากาศนี้ใช้เทคโนโลยีไหลเวียนลมร้อน 360° เพื่อให้ได้ผลลัพธ์กรอบน่ารับประทาน โดยใช้น้ำมันน้อยกว่าการทอดแบบดั้งเดิมถึง 80% ความจุ 5.5 ลิตร รองรับ 4-6 คนต่อครั้ง หน้าจอสัมผัสพร้อม 8 โหมดตั้งค่าล่วงหน้า ครอบคลุมทุกเมนู ตั้งแต่เฟรนช์ฟรายส์ ปีกไก่ ไปจนถึงเค้ก ถาดเคลือบกันติดถอดออกได้ ล้างในเครื่องล้างจานได้",
+      "vi": "Nồi chiên không dầu này sử dụng công nghệ tuần hoàn khí nóng 360° để tạo ra độ giòn với lượng dầu ít hơn tới 80% so với chiên truyền thống. Dung tích 5.5L XXL phục vụ được 4-6 người một lần. Màn hình cảm ứng với 8 chế độ nấu đặt sẵn, từ khoai tây chiên, cánh gà đến bánh ngọt. Khay chống dính tháo rời được, có thể rửa trong máy rửa bát.",
+      "notes": "家电类描述翻译：中文'少80%的油脂'→英文'up to 80% less oil than traditional frying'(加参照物更清晰)；泰越语中洗碗机(เครื่องล้างจาน/máy rửa bát)是中产家庭高认知词汇，保留"
+    },
+    {
+      "zh": "户外登山包 50L大容量 防水尼龙材质 铝合金背负系统 胸扣+腰扣 多功能口袋 男女通用",
+      "en": "Outdoor Hiking Backpack 50L | Waterproof Nylon | Aluminum Frame Suspension System | Chest & Hip Strap | Multi-Pocket Organization | Unisex",
+      "th": "เป้สะพายหลังปีนเขา 50L | ไนลอนกันน้ำ | ระบบรับน้ำหนักโครงอลูมิเนียม | สายรัดหน้าอก + สายรัดเอว | ช่องเก็บของหลายช่อง | ยูนิเซ็กซ์",
+      "vi": "Ba Lô Leo Núi Ngoài Trời 50L | Vải Nylon Chống Thấm | Khung Nhôm Hỗ Trợ Lưng | Dây Ngực + Dây Hông | Nhiều Ngăn Tiện Dụng | Dành Cho Cả Nam Và Nữ",
+      "notes": "户外装备东南亚新兴市场；铝合金背负系统是专业级卖点，需翻译到位；50L容量数字保留"
+    },
+    {
+      "zh": "咖啡机全自动 意式浓缩 研磨一体 15Bar高压萃取 奶泡系统 定时预约 家用商用",
+      "en": "Fully Automatic Espresso Machine | Built-in Grinder | 15-Bar High-Pressure Extraction | Milk Frother System | Programmable Timer | Home & Commercial Use",
+      "th": "เครื่องชงกาแฟอัตโนมัติเต็มรูปแบบ | เครื่องบดในตัว | แรงดัน 15 บาร์ | ระบบทำฟองนม | ตั้งเวลาได้ | ใช้ในบ้านและเชิงพาณิชย์",
+      "vi": "Máy Pha Cà Phê Tự Động Hoàn Toàn | Tích Hợp Máy Xay | Áp Suất Cao 15 Bar | Hệ Thống Tạo Bọt Sữa | Hẹn Giờ Tự Động | Dùng Gia Đình & Thương Mại",
+      "notes": "咖啡文化在泰越渗透率快速增长；15Bar是专业咖啡师认可的标准压力，直译；奶泡/卡布奇诺场景在东南亚市场受年轻群体欢迎"
+    },
+    {
+      "zh": "产品描述：这款洗碗机采用76°C高温除菌洗涤，杀菌率99.99%。内置烘干功能，洗完直接放，省去擦碗环节。8套标准容量，适合3-4人家庭日常使用。独有静音设计，夜晚洗碗不扰邻。一键快洗45分钟完成，节水节电比手洗省50%。",
+      "en": "This dishwasher uses high-temperature washing at 76°C to eliminate 99.99% of bacteria. The built-in drying function means dishes go straight from the machine to the cupboard — no towel-drying needed. The 8-place-setting capacity suits families of 3-4 for daily use. A quiet motor design keeps noise levels low even for late-night cycles. The 45-minute QuickWash mode uses 50% less water and energy than hand washing.",
+      "th": "เครื่องล้างจานนี้ใช้การล้างด้วยอุณหภูมิสูง 76°C เพื่อกำจัดแบคทีเรีย 99.99% ฟังก์ชั่นอบแห้งในตัวช่วยให้ไม่ต้องเช็ดจาน รองรับภาชนะ 8 ชุด เหมาะสำหรับครอบครัว 3-4 คน ระบบเสียงเงียบใช้ได้แม้กลางคืน โหมดล้างเร็ว 45 นาที ประหยัดน้ำและไฟกว่าการล้างมือถึง 50%",
+      "vi": "Máy rửa bát này sử dụng nhiệt độ cao 76°C để tiêu diệt 99,99% vi khuẩn. Chức năng sấy khô tích hợp giúp bát đĩa có thể cất ngay vào tủ mà không cần lau. Sức chứa 8 bộ đồ ăn phù hợp gia đình 3-4 người. Thiết kế chống ồn hoạt động yên tĩnh ngay cả ban đêm. Chế độ rửa nhanh 45 phút tiết kiệm 50% nước và điện so với rửa tay.",
+      "notes": "家电描述翻译：76°C高温→保留温度数字；99.99%杀菌率是关键信任数据，翻译时完整保留；东南亚家用电器渗透率提升，消费者关注节水节电"
     }
   ]
 }

@@ -1,0 +1,563 @@
+{
+  "lastUpdated": "2026-04-14",
+  "source": "Aggregated from public Amazon seller data, Statista e-commerce reports, Jungle Scout 2025, Helium 10 2025, and industry trade publications",
+  "categories": {
+    "electronics": {
+      "avgPrice": { "min": 12, "max": 180, "median": 42 },
+      "avgRating": 4.1,
+      "avgReviewCount": 2340,
+      "returnRate": 0.09,
+      "topKeywords": ["wireless", "bluetooth", "fast charging", "waterproof", "USB-C", "noise cancelling", "smart", "portable", "rechargeable", "compatible with iPhone"],
+      "seasonality": { "peak": ["11", "12", "07"], "low": ["02", "03"] },
+      "margins": { "low": 0.12, "avg": 0.32, "high": 0.52 },
+      "competitorDensity": "high",
+      "compliance": ["FCC certification", "CE marking (EU)", "RoHS compliance", "UL listing for chargers", "California Prop 65"],
+      "topSubcategories": [
+        { "name": "Wireless Earbuds", "avgPrice": 32, "growth": 0.12, "saturation": "high" },
+        { "name": "Phone Accessories", "avgPrice": 14, "growth": 0.04, "saturation": "very_high" },
+        { "name": "Smart Home Devices", "avgPrice": 58, "growth": 0.24, "saturation": "medium" },
+        { "name": "Portable Chargers", "avgPrice": 26, "growth": 0.07, "saturation": "high" },
+        { "name": "Dash Cameras", "avgPrice": 68, "growth": 0.19, "saturation": "medium" },
+        { "name": "Gaming Accessories", "avgPrice": 45, "growth": 0.16, "saturation": "medium_high" },
+        { "name": "USB Hubs & Adapters", "avgPrice": 22, "growth": 0.09, "saturation": "high" }
+      ]
+    },
+    "home_kitchen": {
+      "avgPrice": { "min": 8, "max": 120, "median": 28 },
+      "avgRating": 4.3,
+      "avgReviewCount": 1850,
+      "returnRate": 0.06,
+      "topKeywords": ["BPA free", "dishwasher safe", "space saving", "non-stick", "stainless steel", "eco-friendly", "easy to clean", "leak proof", "airtight", "multi-purpose"],
+      "seasonality": { "peak": ["11", "12", "01"], "low": ["07", "08"] },
+      "margins": { "low": 0.20, "avg": 0.42, "high": 0.62 },
+      "competitorDensity": "medium_high",
+      "compliance": ["FDA food contact compliance", "LFGB (EU food safety)", "CPSC safety standards", "California Prop 65 for coatings"],
+      "topSubcategories": [
+        { "name": "Kitchen Gadgets", "avgPrice": 18, "growth": 0.08, "saturation": "high" },
+        { "name": "Food Storage Containers", "avgPrice": 24, "growth": 0.11, "saturation": "medium_high" },
+        { "name": "Coffee & Tea Accessories", "avgPrice": 32, "growth": 0.15, "saturation": "medium" },
+        { "name": "Cleaning Tools", "avgPrice": 16, "growth": 0.10, "saturation": "medium_high" },
+        { "name": "Bedding & Pillows", "avgPrice": 45, "growth": 0.13, "saturation": "medium" },
+        { "name": "Home Organization", "avgPrice": 22, "growth": 0.18, "saturation": "medium" },
+        { "name": "Candles & Aromatherapy", "avgPrice": 20, "growth": 0.21, "saturation": "low_medium" }
+      ]
+    },
+    "beauty_personal_care": {
+      "avgPrice": { "min": 6, "max": 80, "median": 22 },
+      "avgRating": 4.2,
+      "avgReviewCount": 3120,
+      "returnRate": 0.04,
+      "topKeywords": ["cruelty free", "vegan", "natural", "organic", "paraben free", "dermatologist tested", "hypoallergenic", "fragrance free", "anti-aging", "moisturizing"],
+      "seasonality": { "peak": ["11", "12", "02", "05"], "low": ["08", "09"] },
+      "margins": { "low": 0.35, "avg": 0.58, "high": 0.78 },
+      "competitorDensity": "very_high",
+      "compliance": ["FDA cosmetic regulations", "EU Cosmetics Regulation 1223/2009", "INCI ingredient listing", "GMP certification", "cruelty-free certifications (Leaping Bunny/PETA)"],
+      "topSubcategories": [
+        { "name": "Skincare Serums", "avgPrice": 28, "growth": 0.22, "saturation": "medium_high" },
+        { "name": "Hair Care Tools", "avgPrice": 38, "growth": 0.14, "saturation": "medium" },
+        { "name": "Nail Care", "avgPrice": 14, "growth": 0.09, "saturation": "high" },
+        { "name": "Men's Grooming", "avgPrice": 20, "growth": 0.25, "saturation": "low_medium" },
+        { "name": "Facial Cleansing Devices", "avgPrice": 45, "growth": 0.18, "saturation": "medium" },
+        { "name": "Lip Care & Gloss", "avgPrice": 12, "growth": 0.11, "saturation": "high" },
+        { "name": "Sunscreen & SPF", "avgPrice": 18, "growth": 0.20, "saturation": "medium" }
+      ]
+    },
+    "sports_outdoors": {
+      "avgPrice": { "min": 10, "max": 200, "median": 38 },
+      "avgRating": 4.4,
+      "avgReviewCount": 1620,
+      "returnRate": 0.07,
+      "topKeywords": ["lightweight", "durable", "waterproof", "adjustable", "breathable", "portable", "anti-slip", "UV protection", "quick dry", "high performance"],
+      "seasonality": { "peak": ["04", "05", "06", "07"], "low": ["11", "12"] },
+      "margins": { "low": 0.22, "avg": 0.44, "high": 0.64 },
+      "competitorDensity": "medium",
+      "compliance": ["ASTM safety standards for protective gear", "CPSC regulations", "EN standards (EU)", "CE marking for protective equipment"],
+      "topSubcategories": [
+        { "name": "Yoga & Fitness Mats", "avgPrice": 35, "growth": 0.10, "saturation": "high" },
+        { "name": "Resistance Bands", "avgPrice": 18, "growth": 0.08, "saturation": "very_high" },
+        { "name": "Camping & Hiking Gear", "avgPrice": 55, "growth": 0.20, "saturation": "low_medium" },
+        { "name": "Water Bottles & Hydration", "avgPrice": 22, "growth": 0.13, "saturation": "high" },
+        { "name": "Sports Bags & Backpacks", "avgPrice": 42, "growth": 0.15, "saturation": "medium" },
+        { "name": "Recovery & Massage Tools", "avgPrice": 48, "growth": 0.28, "saturation": "medium" },
+        { "name": "Pickleball Equipment", "avgPrice": 65, "growth": 0.45, "saturation": "low" }
+      ]
+    },
+    "fashion_apparel": {
+      "avgPrice": { "min": 8, "max": 90, "median": 25 },
+      "avgRating": 4.0,
+      "avgReviewCount": 890,
+      "returnRate": 0.18,
+      "topKeywords": ["oversized", "vintage", "sustainable", "streetwear", "cozy", "slim fit", "plus size", "breathable fabric", "machine washable", "casual"],
+      "seasonality": { "peak": ["10", "11", "12", "04"], "low": ["01", "08"] },
+      "margins": { "low": 0.30, "avg": 0.52, "high": 0.72 },
+      "competitorDensity": "very_high",
+      "compliance": ["CPSC flammability standards (children's clothing)", "OEKO-TEX certification", "REACH regulation (EU chemicals)", "CA TB 117 (flammability for CA sellers)"],
+      "topSubcategories": [
+        { "name": "Graphic Tees", "avgPrice": 18, "growth": 0.06, "saturation": "very_high" },
+        { "name": "Activewear / Athleisure", "avgPrice": 32, "growth": 0.18, "saturation": "medium_high" },
+        { "name": "Accessories (hats/scarves)", "avgPrice": 16, "growth": 0.10, "saturation": "high" },
+        { "name": "Swimwear", "avgPrice": 28, "growth": 0.14, "saturation": "medium" },
+        { "name": "Socks & Underwear", "avgPrice": 14, "growth": 0.09, "saturation": "high" },
+        { "name": "Puffer & Down Jackets", "avgPrice": 58, "growth": 0.12, "saturation": "medium" },
+        { "name": "Sustainable / Recycled Fabric", "avgPrice": 42, "growth": 0.32, "saturation": "low" }
+      ]
+    },
+    "pet_supplies": {
+      "avgPrice": { "min": 5, "max": 120, "median": 22 },
+      "avgRating": 4.5,
+      "avgReviewCount": 2100,
+      "returnRate": 0.05,
+      "topKeywords": ["durable", "safe for pets", "non-toxic", "interactive", "washable", "adjustable", "natural ingredients", "grain free", "vet recommended", "easy to use"],
+      "seasonality": { "peak": ["11", "12", "05"], "low": ["01", "02"] },
+      "margins": { "low": 0.28, "avg": 0.50, "high": 0.70 },
+      "competitorDensity": "medium",
+      "compliance": ["AAFCO standards (pet food)", "FDA animal food regulations", "ASTM F963 (pet toys)", "EU Pet Food Regulation 767/2009"],
+      "topSubcategories": [
+        { "name": "Interactive Dog Toys", "avgPrice": 18, "growth": 0.16, "saturation": "medium" },
+        { "name": "Pet Grooming Tools", "avgPrice": 24, "growth": 0.14, "saturation": "medium_high" },
+        { "name": "Cat Trees & Furniture", "avgPrice": 65, "growth": 0.12, "saturation": "medium" },
+        { "name": "Pet Travel Accessories", "avgPrice": 32, "growth": 0.22, "saturation": "low_medium" },
+        { "name": "Pet Supplements", "avgPrice": 28, "growth": 0.30, "saturation": "low_medium" },
+        { "name": "Pet Cameras & Monitors", "avgPrice": 75, "growth": 0.25, "saturation": "low" },
+        { "name": "Slow Feeder Bowls", "avgPrice": 16, "growth": 0.18, "saturation": "medium" }
+      ]
+    },
+    "toys_games": {
+      "avgPrice": { "min": 8, "max": 100, "median": 24 },
+      "avgRating": 4.3,
+      "avgReviewCount": 1760,
+      "returnRate": 0.09,
+      "topKeywords": ["educational", "STEM", "age appropriate", "durable", "non-toxic", "imaginative play", "battery free", "interactive", "screen free", "Montessori"],
+      "seasonality": { "peak": ["11", "12"], "low": ["02", "03", "08"] },
+      "margins": { "low": 0.25, "avg": 0.48, "high": 0.68 },
+      "competitorDensity": "high",
+      "compliance": ["CPSC ASTM F963 toy safety", "EN 71 (EU toy safety)", "REACH chemical restrictions", "CE marking", "ASTM lead paint standards", "CPSIA (children's products)"],
+      "topSubcategories": [
+        { "name": "STEM / Science Kits", "avgPrice": 32, "growth": 0.20, "saturation": "medium" },
+        { "name": "Outdoor Play", "avgPrice": 38, "growth": 0.14, "saturation": "medium" },
+        { "name": "Card & Board Games", "avgPrice": 22, "growth": 0.17, "saturation": "medium_high" },
+        { "name": "Slime & Sensory Kits", "avgPrice": 16, "growth": 0.10, "saturation": "high" },
+        { "name": "Puzzles", "avgPrice": 20, "growth": 0.13, "saturation": "medium_high" },
+        { "name": "Remote Control Vehicles", "avgPrice": 55, "growth": 0.11, "saturation": "medium" },
+        { "name": "Fidget & Stress Toys", "avgPrice": 12, "growth": 0.08, "saturation": "very_high" }
+      ]
+    },
+    "automotive_accessories": {
+      "avgPrice": { "min": 10, "max": 160, "median": 35 },
+      "avgRating": 4.2,
+      "avgReviewCount": 1340,
+      "returnRate": 0.07,
+      "topKeywords": ["universal fit", "easy install", "durable", "weather resistant", "OEM quality", "LED", "wireless", "fast charging", "heavy duty", "plug and play"],
+      "seasonality": { "peak": ["03", "04", "10", "11"], "low": ["01", "08"] },
+      "margins": { "low": 0.18, "avg": 0.38, "high": 0.58 },
+      "competitorDensity": "medium_high",
+      "compliance": ["SAE standards", "DOT compliance (lighting)", "FCC for wireless devices", "CARB emissions compliance (CA)", "ECE regulations (EU)"],
+      "topSubcategories": [
+        { "name": "Car Phone Mounts", "avgPrice": 18, "growth": 0.06, "saturation": "very_high" },
+        { "name": "Dash Cameras", "avgPrice": 72, "growth": 0.20, "saturation": "medium" },
+        { "name": "LED Car Lighting", "avgPrice": 28, "growth": 0.22, "saturation": "medium" },
+        { "name": "Car Organizers & Storage", "avgPrice": 22, "growth": 0.12, "saturation": "medium_high" },
+        { "name": "EV Charging Accessories", "avgPrice": 65, "growth": 0.38, "saturation": "low" },
+        { "name": "Car Seat Covers", "avgPrice": 48, "growth": 0.10, "saturation": "medium_high" },
+        { "name": "Jump Starters & Battery Boosters", "avgPrice": 85, "growth": 0.15, "saturation": "low_medium" }
+      ]
+    },
+    "health_wellness": {
+      "avgPrice": { "min": 10, "max": 150, "median": 30 },
+      "avgRating": 4.3,
+      "avgReviewCount": 2480,
+      "returnRate": 0.06,
+      "topKeywords": ["natural", "clinically tested", "non-GMO", "third party tested", "sugar free", "gluten free", "science backed", "doctor formulated", "lab certified", "bioavailable"],
+      "seasonality": { "peak": ["01", "02", "09", "10"], "low": ["06", "07"] },
+      "margins": { "low": 0.30, "avg": 0.55, "high": 0.75 },
+      "competitorDensity": "high",
+      "compliance": ["FDA Dietary Supplement regulations (DSHEA)", "cGMP certification", "NSF International certification", "EU Food Supplements Directive", "Health Canada NPN"],
+      "topSubcategories": [
+        { "name": "Vitamins & Minerals", "avgPrice": 22, "growth": 0.10, "saturation": "very_high" },
+        { "name": "Protein Powders", "avgPrice": 42, "growth": 0.12, "saturation": "high" },
+        { "name": "Sleep Support Supplements", "avgPrice": 24, "growth": 0.28, "saturation": "medium" },
+        { "name": "Collagen & Beauty Supplements", "avgPrice": 32, "growth": 0.25, "saturation": "medium" },
+        { "name": "Gut Health & Probiotics", "avgPrice": 28, "growth": 0.30, "saturation": "medium" },
+        { "name": "Blood Pressure & Heart Health", "avgPrice": 26, "growth": 0.15, "saturation": "medium_high" },
+        { "name": "Fitness Trackers & Smart Bands", "avgPrice": 58, "growth": 0.18, "saturation": "medium_high" }
+      ]
+    },
+    "baby_kids": {
+      "avgPrice": { "min": 8, "max": 130, "median": 26 },
+      "avgRating": 4.5,
+      "avgReviewCount": 2850,
+      "returnRate": 0.06,
+      "topKeywords": ["BPA free", "non-toxic", "soft", "washable", "safe", "ergonomic", "newborn", "developmental", "pediatrician approved", "eco-friendly"],
+      "seasonality": { "peak": ["10", "11", "12", "05"], "low": ["01", "08"] },
+      "margins": { "low": 0.28, "avg": 0.50, "high": 0.70 },
+      "competitorDensity": "medium_high",
+      "compliance": ["CPSIA (lead, phthalates)", "ASTM F963 toy safety", "JPMA certification", "EN 71 (EU)", "EN 1888 (baby strollers)", "FHSA flammability", "Juvenile Products Manufacturers Association"],
+      "topSubcategories": [
+        { "name": "Baby Feeding Accessories", "avgPrice": 18, "growth": 0.10, "saturation": "medium_high" },
+        { "name": "Baby Monitors", "avgPrice": 88, "growth": 0.16, "saturation": "medium" },
+        { "name": "Teething & Sensory Toys", "avgPrice": 16, "growth": 0.14, "saturation": "medium" },
+        { "name": "Diaper Bags", "avgPrice": 52, "growth": 0.12, "saturation": "medium" },
+        { "name": "Kids' Educational Toys", "avgPrice": 30, "growth": 0.22, "saturation": "medium" },
+        { "name": "Baby Sleep Products", "avgPrice": 42, "growth": 0.18, "saturation": "low_medium" },
+        { "name": "Strollers & Travel Systems", "avgPrice": 180, "growth": 0.08, "saturation": "medium_high" }
+      ]
+    }
+  },
+  "platforms": {
+    "amazon_us": {
+      "commissionRates": {
+        "electronics": 0.08,
+        "home_kitchen": 0.15,
+        "beauty_personal_care": 0.08,
+        "sports_outdoors": 0.15,
+        "fashion_apparel": 0.17,
+        "pet_supplies": 0.15,
+        "toys_games": 0.15,
+        "automotive_accessories": 0.12,
+        "health_wellness": 0.08,
+        "baby_kids": 0.08,
+        "base_rate": 0.15
+      },
+      "fbaFees": {
+        "small_standard": { "maxDims": "15x12x0.75in", "maxWeight": "16oz", "fee": 3.22 },
+        "large_standard": { "maxDims": "18x14x8in", "maxWeight": "20lbs", "fee": 5.42 },
+        "large_bulky": { "note": "oversized", "fee_starting": 9.73 }
+      },
+      "storageFeesPerCubicFt": { "jan_sep": 0.78, "oct_dec": 2.40 },
+      "categoryRestrictions": ["firearms", "prescription drugs", "hazmat without approval", "alcohol (requires approval)", "tobacco", "certain electronics (requires brand approval)"],
+      "sellerRequirements": {
+        "accountFee": "$39.99/month (Professional) or $0.99/unit (Individual)",
+        "minReviews": "none to open, but <3.5 star avg triggers review",
+        "returnPolicy": "Amazon standard 30-day return policy enforced",
+        "approvalCategories": ["grocery", "beauty", "health", "jewelry", "watches", "automotive"]
+      },
+      "avgShippingToFBA": { "perLb": 0.55, "minOrder": 50 },
+      "buyBoxWinFactors": ["competitive price", "FBA fulfillment", "seller rating >95%", "fast dispatch", "Prime eligible"]
+    },
+    "amazon_eu": {
+      "commissionRates": {
+        "electronics": 0.07,
+        "home_kitchen": 0.15,
+        "beauty_personal_care": 0.07,
+        "fashion_apparel": 0.15,
+        "base_rate": 0.15
+      },
+      "vatRequirements": {
+        "note": "VAT registration required in each EU country of storage/sale",
+        "threshold": "OSS (One Stop Shop) available for cross-border EU sales",
+        "ukNote": "Separate UK VAT registration required post-Brexit",
+        "deImportVAT": 0.19,
+        "frImportVAT": 0.20,
+        "ukImportVAT": 0.20
+      },
+      "keyMarkets": ["DE", "UK", "FR", "IT", "ES"],
+      "fbaFees": { "note": "Similar structure to US, 10-15% higher in EUR terms" },
+      "categoryRestrictions": ["WEEE compliance required for electronics", "REACH chemical restrictions", "CE marking mandatory", "EPR packaging compliance"],
+      "sellerRequirements": {
+        "accountFee": "€39/month (Professional)",
+        "localRepresentative": "Required for non-EU sellers under EU product safety regs",
+        "languageRequirements": "Listings must be in local language for each marketplace"
+      },
+      "avgShippingToFBA": { "perKg": 1.20, "note": "China to EU FBA typically $0.80-1.50/kg sea freight" }
+    },
+    "amazon_jp": {
+      "commissionRates": {
+        "electronics": 0.08,
+        "home_kitchen": 0.10,
+        "beauty_personal_care": 0.08,
+        "base_rate": 0.10
+      },
+      "consumptionTax": 0.10,
+      "fbaFees": { "note": "JPY-denominated, roughly equivalent to US rates" },
+      "categoryRestrictions": ["strict product safety laws (PSE mark required for electronics)", "Food Sanitation Act for consumables", "Pharmaceutical Affairs Law for cosmetics"],
+      "sellerRequirements": {
+        "accountFee": "¥4,900/month",
+        "japaneseLanguage": "Required for listings and customer service",
+        "localAddress": "Recommended for faster customs clearance",
+        "pse": "PSE certification mandatory for electrical appliances"
+      },
+      "marketNotes": "High customer expectations for quality; return rates lower but standards strict. Brand trust critical."
+    },
+    "shopee_sea": {
+      "commissionRates": {
+        "sg": 0.02,
+        "my": 0.02,
+        "th": 0.02,
+        "ph": 0.02,
+        "vn": 0.02,
+        "id": 0.02,
+        "note": "Base commission 2%, plus transaction fee ~2%, total ~4-6%"
+      },
+      "paymentProcessingFee": 0.02,
+      "shippingSubsidy": "Shopee frequently runs free shipping campaigns that sellers partially subsidize",
+      "categoryRestrictions": ["country-specific prohibited items", "health products require local MOH approval", "cosmetics require BPOM (ID) / HSA (SG) registration"],
+      "sellerRequirements": {
+        "localEntities": "Cross-border allowed but local entity preferred for lower fees",
+        "responseRate": ">90% chat response rate required for preferred seller",
+        "shippingTime": "Must ship within 2 business days",
+        "minimumRating": "3.5 stars to maintain visibility"
+      },
+      "keyMarkets": ["ID", "TH", "MY", "PH", "VN", "SG"],
+      "avgShippingCost": {
+        "sg": "$2-5/parcel (local)",
+        "my": "$1.50-4/parcel (local)",
+        "id": "$0.80-3/parcel (local)",
+        "crossBorder": "$3-8/parcel from CN"
+      },
+      "marketNotes": "Price-sensitive market; flash sales and vouchers are critical levers. COD (cash on delivery) still 30-40% of orders in some markets."
+    },
+    "lazada": {
+      "commissionRates": {
+        "base": 0.02,
+        "electronics": 0.02,
+        "fashion": 0.04,
+        "beauty": 0.04,
+        "note": "Commission 2-8% depending on category + 2% payment fee"
+      },
+      "lazMall": {
+        "requirements": "Brand authorization letter, brand trademark certificate, authorized distributor status",
+        "benefits": "Higher visibility, lower return disputes, dedicated account manager"
+      },
+      "categoryRestrictions": ["Alcohol (restricted in MY, SG)", "health supplements require registration", "cosmetics require import licenses"],
+      "sellerRequirements": {
+        "response_time": "Under 12 hours",
+        "shipping_sla": "Same-day or next-day processing",
+        "returns": "7-day return policy mandatory"
+      },
+      "keyMarkets": ["TH", "ID", "MY", "PH", "VN", "SG"],
+      "avgShippingCost": {
+        "local": "$1.50-4/parcel",
+        "crossBorder": "$4-10/parcel from CN"
+      },
+      "marketNotes": "Strong in MY and TH. Alibaba-backed logistics (AliExpress cross-border program). Flash sales and 11.11 campaigns drive >30% of annual GMV."
+    },
+    "tiktok_shop_us": {
+      "commissionRates": {
+        "base": 0.05,
+        "electronics": 0.05,
+        "beauty": 0.08,
+        "fashion": 0.08,
+        "note": "5-8% base commission + 2-3% payment processing; affiliate commission 5-20% on top if using creators"
+      },
+      "affiliateProgram": {
+        "creatorCommission": { "min": 0.05, "max": 0.20, "avg": 0.10 },
+        "note": "Brands pay creators 5-20% per sale; creator-led content drives 60%+ of TikTok Shop conversions"
+      },
+      "shippingRequirements": {
+        "processingTime": "24-hour processing required",
+        "deliveryWindow": "5-7 business days standard",
+        "freeShippingThreshold": "$35+ orders often qualify for free shipping subsidy from TikTok"
+      },
+      "categoryRestrictions": ["No supplements without FDA disclaimer", "weapons/firearms prohibited", "alcohol prohibited", "CPSC-regulated children's products require compliance docs"],
+      "sellerRequirements": {
+        "usBankAccount": "Required for USD payouts",
+        "taxId": "EIN or SSN required",
+        "minFollowers": "0 to open shop (seller account separate from creator)",
+        "productApproval": "Products reviewed within 48 hours"
+      },
+      "liveCommerce": {
+        "avgConversionRate": 0.04,
+        "avgOrderValue": 32,
+        "peakHours": ["19:00-22:00 EST"],
+        "topCategories": ["beauty", "fashion", "home", "wellness"]
+      },
+      "marketNotes": "Live shopping is fastest-growing segment. Creator partnerships are table stakes. Impulse purchase AOV ~$25-45. Gen Z + Millennial buyer base."
+    },
+    "tiktok_shop_sea": {
+      "commissionRates": {
+        "id": 0.02,
+        "th": 0.02,
+        "my": 0.02,
+        "ph": 0.02,
+        "vn": 0.02,
+        "sg": 0.02,
+        "note": "Base 2-5%, lower than US; platform subsidizes aggressively to gain market share"
+      },
+      "affiliateProgram": {
+        "creatorCommission": { "min": 0.03, "max": 0.15, "avg": 0.08 },
+        "note": "Local micro-influencers (10K-500K) drive majority of orders in SEA"
+      },
+      "shippingCost": {
+        "local": "$0.50-2.50/parcel (subsidized by TikTok in growth phase)",
+        "crossBorder": "TikTok Fulfilled (TKTF) program from CN warehouses, $2-5/parcel"
+      },
+      "categoryRestrictions": ["country-specific restrictions", "halal certification needed for food in MY/ID", "BPOM required for cosmetics in ID"],
+      "sellerRequirements": {
+        "localRegistration": "Local business registration strongly preferred",
+        "responseRate": ">85% chat response",
+        "shippingCompliance": "Must ship within 48 hours"
+      },
+      "marketNotes": "Explosive growth in ID and TH. Platform subsidizing logistics and coupons heavily. Live commerce penetration highest globally in SEA."
+    }
+  },
+  "trends2026": [
+    {
+      "productName": "AI-Powered Sleep Tracker Rings",
+      "category": "health_wellness",
+      "growthRate": 0.55,
+      "entryDifficulty": "high",
+      "estimatedMargin": 0.52,
+      "notes": "Oura Ring competitor space; requires hardware R&D but white-label options emerging at $18-25 COGS"
+    },
+    {
+      "productName": "Pickleball Paddles & Gear",
+      "category": "sports_outdoors",
+      "growthRate": 0.48,
+      "entryDifficulty": "medium",
+      "estimatedMargin": 0.48,
+      "notes": "Fastest growing sport in US; low saturation for premium segment >$80"
+    },
+    {
+      "productName": "EV Charging Cable Organizers",
+      "category": "automotive_accessories",
+      "growthRate": 0.42,
+      "entryDifficulty": "low",
+      "estimatedMargin": 0.55,
+      "notes": "Simple accessories for EV owners; growing with EV adoption; low barrier to entry"
+    },
+    {
+      "productName": "Gut Health Probiotic Supplements",
+      "category": "health_wellness",
+      "growthRate": 0.38,
+      "entryDifficulty": "medium",
+      "estimatedMargin": 0.62,
+      "notes": "Microbiome health trend; requires cGMP, NSF testing; repeat purchase product"
+    },
+    {
+      "productName": "Portable Sauna Blankets",
+      "category": "health_wellness",
+      "growthRate": 0.36,
+      "entryDifficulty": "medium",
+      "estimatedMargin": 0.50,
+      "notes": "Wellness recovery trend driven by athletes and biohackers; $80-200 AOV"
+    },
+    {
+      "productName": "Sustainable Pet Products (bamboo, recycled)",
+      "category": "pet_supplies",
+      "growthRate": 0.35,
+      "entryDifficulty": "low_medium",
+      "estimatedMargin": 0.58,
+      "notes": "Eco-conscious pet owners willing to pay 20-40% premium; certification adds credibility"
+    },
+    {
+      "productName": "Smart Home Security Cameras (under $40)",
+      "category": "electronics",
+      "growthRate": 0.34,
+      "entryDifficulty": "high",
+      "estimatedMargin": 0.35,
+      "notes": "Price compression ongoing; differentiate on privacy features or local storage angle"
+    },
+    {
+      "productName": "Collagen Beauty Supplements",
+      "category": "beauty_personal_care",
+      "growthRate": 0.33,
+      "entryDifficulty": "medium",
+      "estimatedMargin": 0.65,
+      "notes": "Ingestible beauty growing 30%+ YoY; gummies format outperforming powder; DTC friendly"
+    },
+    {
+      "productName": "Kids' STEM Coding Kits",
+      "category": "toys_games",
+      "growthRate": 0.30,
+      "entryDifficulty": "medium",
+      "estimatedMargin": 0.52,
+      "notes": "AI literacy push in K-12; parents spending more on educational toys; $30-60 sweet spot"
+    },
+    {
+      "productName": "Percussive Massage Guns (compact)",
+      "category": "sports_outdoors",
+      "growthRate": 0.28,
+      "entryDifficulty": "medium",
+      "estimatedMargin": 0.46,
+      "notes": "Mini format $30-60 taking share from $100+ segment; Theragun halo effect"
+    },
+    {
+      "productName": "Mushroom Coffee & Adaptogens",
+      "category": "health_wellness",
+      "growthRate": 0.38,
+      "entryDifficulty": "low_medium",
+      "estimatedMargin": 0.68,
+      "notes": "Lion's mane, chaga, reishi; beverage format driving repeat purchase; TikTok viral"
+    },
+    {
+      "productName": "AI-Generated Custom Prints & Wall Art",
+      "category": "home_kitchen",
+      "growthRate": 0.26,
+      "entryDifficulty": "low",
+      "estimatedMargin": 0.60,
+      "notes": "Print-on-demand + AI generation; zero inventory model; Etsy + Amazon handmade"
+    },
+    {
+      "productName": "Recyclable / Compostable Kitchen Products",
+      "category": "home_kitchen",
+      "growthRate": 0.25,
+      "entryDifficulty": "low_medium",
+      "estimatedMargin": 0.50,
+      "notes": "Compostable trash bags, beeswax wraps, bamboo utensils; regulatory tailwinds in EU/CA"
+    },
+    {
+      "productName": "Baby White Noise Machines (smart)",
+      "category": "baby_kids",
+      "growthRate": 0.24,
+      "entryDifficulty": "low_medium",
+      "estimatedMargin": 0.54,
+      "notes": "Premium smart versions with app control; strong gifting occasion; 4.7+ star average"
+    },
+    {
+      "productName": "Pet GPS Trackers & Smart Collars",
+      "category": "pet_supplies",
+      "growthRate": 0.40,
+      "entryDifficulty": "high",
+      "estimatedMargin": 0.42,
+      "notes": "Requires subscription revenue model; hardware cost high but LTV strong; cat market underpenetrated"
+    },
+    {
+      "productName": "Athleisure with Built-in Tech (pockets, clips)",
+      "category": "fashion_apparel",
+      "growthRate": 0.22,
+      "entryDifficulty": "medium",
+      "estimatedMargin": 0.55,
+      "notes": "Running vests, shorts with phone pockets; function-forward design; female demographic strongest"
+    },
+    {
+      "productName": "Car Interior LED Ambient Lighting Kits",
+      "category": "automotive_accessories",
+      "growthRate": 0.32,
+      "entryDifficulty": "low",
+      "estimatedMargin": 0.58,
+      "notes": "DIY install kits $15-35; RGB + app control; high repeat buying for color upgrades; TikTok showcase"
+    },
+    {
+      "productName": "Red Light Therapy Devices",
+      "category": "health_wellness",
+      "growthRate": 0.44,
+      "entryDifficulty": "medium",
+      "estimatedMargin": 0.55,
+      "notes": "Biohacking wellness trend; FDA clearance pathway important; $50-300 AOV range"
+    },
+    {
+      "productName": "Sensory Toys for Neurodivergent Children",
+      "category": "baby_kids",
+      "growthRate": 0.28,
+      "entryDifficulty": "low_medium",
+      "estimatedMargin": 0.56,
+      "notes": "Autism/ADHD awareness driving demand; under-served niche; OT/pediatrician endorsement valuable"
+    }
+  ],
+  "crossCategoryInsights": {
+    "highestMarginCategories": ["beauty_personal_care", "health_wellness", "baby_kids", "fashion_apparel"],
+    "lowestReturnRateCategories": ["pet_supplies", "baby_kids", "beauty_personal_care"],
+    "fastestGrowingNiches": ["EV accessories", "pet supplements", "red light therapy", "mushroom adaptogens", "pickleball"],
+    "saturatedAvoid": ["phone cases", "USB cables", "fidget spinners", "resistance bands (low end)", "generic graphic tees"],
+    "tiktokShopTopPerformers": ["beauty serums", "kitchen gadgets", "pet accessories", "fashion accessories", "wellness supplements"],
+    "platformFitByCategory": {
+      "electronics": ["amazon_us", "amazon_eu", "amazon_jp"],
+      "beauty_personal_care": ["amazon_us", "tiktok_shop_us", "shopee_sea"],
+      "fashion_apparel": ["tiktok_shop_us", "tiktok_shop_sea", "lazada", "shopee_sea"],
+      "health_wellness": ["amazon_us", "amazon_eu", "tiktok_shop_us"],
+      "home_kitchen": ["amazon_us", "tiktok_shop_us", "shopee_sea"],
+      "pet_supplies": ["amazon_us", "amazon_eu", "shopee_sea"],
+      "baby_kids": ["amazon_us", "amazon_eu", "lazada"]
+    }
+  }
+}
