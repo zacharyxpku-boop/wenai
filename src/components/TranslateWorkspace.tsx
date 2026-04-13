@@ -250,6 +250,7 @@ export default function TranslateWorkspace() {
               <textarea
                 value={input}
                 onChange={e => setInput(e.target.value)}
+                onKeyDown={e => { if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) { e.preventDefault(); handleTranslate(); } }}
                 placeholder="粘贴商品信息（标题、描述、卖点等）&#10;&#10;支持多字段，系统会自动识别并分别翻译"
                 className="flex-1 bg-transparent px-4 py-3 text-[13px] text-text-primary placeholder:text-text-tertiary resize-none focus:outline-none"
               />

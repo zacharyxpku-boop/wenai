@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import ReactMarkdown from 'react-markdown';
 import ResultFeedback from './ResultFeedback';
 import ExpertReview from './ExpertReview';
 
@@ -92,6 +93,9 @@ export default function AIWorkspace({
 
       if (!response.ok) {
         const data = await response.json();
+        if (response.status === 429) {
+          throw new Error(`今日该模块调用次数已达上限。${data.error || ''}`);
+        }
         throw new Error(data.error || '请求失败');
       }
 
@@ -106,15 +110,40 @@ export default function AIWorkspace({
     }
   };
 
+  const MAX_CSV_ROWS = 100;
+
+  const parseCSVLine = (line: string): string[] => {
+    const result: string[] = [];
+    let current = '';
+    let inQuotes = false;
+    for (let i = 0; i < line.length; i++) {
+      const ch = line[i];
+      if (ch === '"') { inQuotes = !inQuotes; continue; }
+      if (ch === ',' && !inQuotes) { result.push(current.trim()); current = ''; continue; }
+      current += ch;
+    }
+    result.push(current.trim());
+    return result;
+  };
+
   const handleCSVUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+    if (file.size > 2 * 1024 * 1024) {
+      setError('CSV文件不能超过2MB');
+      return;
+    }
     const reader = new FileReader();
     reader.onload = (event) => {
       const text = event.target?.result as string;
-      const rows = text.split('\n').filter(r => r.trim()).map(r => r.split(',').map(c => c.trim()));
+      const rows = text.split('\n').filter(r => r.trim()).map(parseCSVLine);
+      if (rows.length > MAX_CSV_ROWS + 1) {
+        setError(`CSV最多支持${MAX_CSV_ROWS}行数据（当前${rows.length - 1}行）`);
+        return;
+      }
       setCsvData(rows);
       setCsvResults([]);
+      setError('');
     };
     reader.readAsText(file, 'utf-8');
   };
@@ -479,8 +508,8 @@ export default function AIWorkspace({
               </div>
             )}
             {result && (
-              <div className="prose prose-invert prose-sm max-w-none">
-                <div className="text-[13px] text-text-secondary whitespace-pre-wrap leading-[1.8]">{result}</div>
+              <div className="prose prose-invert prose-sm max-w-none text-[13px] text-text-secondary leading-[1.8] [&_table]:border-collapse [&_th]:border [&_th]:border-border-subtle [&_th]:px-2 [&_th]:py-1 [&_th]:bg-bg-raised [&_th]:text-[11px] [&_th]:font-mono [&_td]:border [&_td]:border-border-subtle [&_td]:px-2 [&_td]:py-1 [&_td]:text-[12px] [&_strong]:text-text-primary [&_h2]:text-[14px] [&_h2]:text-text-primary [&_h2]:font-semibold [&_h2]:mt-4 [&_h2]:mb-2 [&_h3]:text-[13px] [&_h3]:text-text-primary [&_h3]:mt-3 [&_h3]:mb-1 [&_ul]:pl-4 [&_ol]:pl-4 [&_li]:mb-1 [&_code]:bg-bg-raised [&_code]:px-1 [&_code]:rounded [&_code]:text-[11px] [&_code]:font-mono">
+                <ReactMarkdown>{result}</ReactMarkdown>
               </div>
             )}
             {!result && !loading && !error && (

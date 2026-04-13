@@ -87,7 +87,7 @@ export default async function RootLayout({
             clientName={tenantConfig.clientName}
           />
         )}
-        <main className={showChrome ? "ml-[240px] min-h-screen p-8" : "min-h-screen"}>
+        <main className={showChrome ? "lg:ml-[240px] min-h-screen p-4 lg:p-8" : "min-h-screen"}>
           {children}
         </main>
       </body>
