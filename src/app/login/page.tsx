@@ -136,10 +136,13 @@ export default function LoginPage() {
           </div>
         </form>
 
-        <div className="text-center mt-6 space-y-2">
-          <p className="text-text-tertiary text-[9px] font-mono opacity-60 tracking-wide">
-            ⚡ 仅限授权访问
-          </p>
+        <div className="text-center mt-6 space-y-3">
+          <a
+            href="/demo"
+            className="inline-block text-[11px] font-mono text-accent/80 hover:text-accent transition-colors"
+          >
+            免登录体验 Demo →
+          </a>
           <div className="flex items-center justify-center gap-1">
             <div className="flex-1 h-px bg-border-subtle/30" />
             <span className="text-[8px] font-mono text-text-tertiary/40 uppercase px-2">secure session</span>
