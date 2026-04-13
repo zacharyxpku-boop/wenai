@@ -3,7 +3,12 @@ import { readUsage, logUsageEntry } from '@/lib/usage';
 
 // POST: log a usage event
 export async function POST(request: NextRequest) {
-  const { moduleId, tokens, rating } = await request.json();
+  let moduleId: string, tokens: number | undefined, rating: number | undefined;
+  try {
+    ({ moduleId, tokens, rating } = await request.json());
+  } catch {
+    return NextResponse.json({ error: '请求格式错误' }, { status: 400 });
+  }
   await logUsageEntry(moduleId, tokens || 0, rating);
   return NextResponse.json({ ok: true });
 }

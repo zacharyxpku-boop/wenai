@@ -3,7 +3,7 @@ import { SignJWT, jwtVerify } from 'jose';
 const DEFAULT_SECRET = 'wenai-default-secret-change-in-production';
 const secretValue = process.env.JWT_SECRET || DEFAULT_SECRET;
 
-if (process.env.NODE_ENV === 'production' && secretValue === DEFAULT_SECRET) {
+if (secretValue === DEFAULT_SECRET) {
   console.warn('[AUTH] ⚠️ 使用默认JWT密钥，请在环境变量中设置 JWT_SECRET');
 }
 
@@ -24,6 +24,9 @@ export interface AuthPayload extends AuthUser {
 }
 
 export async function createToken(user: AuthUser): Promise<string> {
+  if (process.env.NODE_ENV === 'production' && secretValue === DEFAULT_SECRET) {
+    throw new Error('JWT_SECRET 未设置，生产环境禁止使用默认密钥');
+  }
   return new SignJWT({
     username: user.username,
     tenantId: user.tenantId,
@@ -48,7 +51,12 @@ export function getCookieName(): string {
   return COOKIE_NAME;
 }
 
-const PASSWORD_SALT = process.env.PASSWORD_SALT || 'wenai-salt-2026';
+const DEFAULT_SALT = 'wenai-salt-2026';
+const PASSWORD_SALT = process.env.PASSWORD_SALT || DEFAULT_SALT;
+
+if (PASSWORD_SALT === DEFAULT_SALT && process.env.NODE_ENV === 'production') {
+  console.warn('[AUTH] ⚠️ 使用默认PASSWORD_SALT，请在环境变量中设置');
+}
 
 /**
  * Salted hash for password comparison.

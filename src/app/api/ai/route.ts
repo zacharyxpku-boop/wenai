@@ -69,7 +69,12 @@ ${registeredMarks.map(mark => `
 }
 
 export async function POST(request: NextRequest) {
-  const { prompt, input, moduleId } = await request.json();
+  let prompt: string, input: string, moduleId: string | undefined;
+  try {
+    ({ prompt, input, moduleId } = await request.json());
+  } catch {
+    return NextResponse.json({ error: '请求格式错误' }, { status: 400 });
+  }
 
   const apiKey = process.env.AI_API_KEY;
   const model = process.env.AI_MODEL || 'qwen-plus';
