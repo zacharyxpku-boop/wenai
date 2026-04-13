@@ -38,7 +38,7 @@ describe('queryTrademark', () => {
     expect(result.found).toBe(true);
     expect(result.source).toBe('local');
     expect(result.data?.owner).toBe('Apple Inc.');
-    expect(result.data?.status).toBe('Live');
+    expect(result.data?.status).toBe('REGISTERED');
   });
 
   it('is case-insensitive', async () => {
