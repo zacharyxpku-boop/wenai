@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { verifyToken, getCookieName } from '@/lib/auth';
+import { checkRouteAccess } from '@/lib/rbac';
 
 const PUBLIC_PATHS = ['/login', '/api/auth/login', '/api/auth/logout', '/api/auth/demo', '/demo', '/terms', '/privacy'];
 
@@ -27,6 +28,18 @@ export async function middleware(request: NextRequest) {
     const response = NextResponse.redirect(new URL('/login', request.url));
     response.cookies.delete(getCookieName());
     return response;
+  }
+
+  // Role-based access control
+  if (!checkRouteAccess(pathname, payload.role)) {
+    if (pathname.startsWith('/api/')) {
+      return NextResponse.json(
+        { error: '权限不足', requiredRole: 'admin' },
+        { status: 403 }
+      );
+    }
+    // Non-API routes: redirect to dashboard
+    return NextResponse.redirect(new URL('/', request.url));
   }
 
   // Inject tenant info into request headers for downstream use

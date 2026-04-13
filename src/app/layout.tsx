@@ -31,7 +31,12 @@ interface TenantConfig {
   [key: string]: unknown;
 }
 
-async function getTenantConfig(): Promise<TenantConfig | null> {
+interface SessionInfo {
+  tenant: TenantConfig;
+  role: string;
+}
+
+async function getSessionInfo(): Promise<SessionInfo | null> {
   try {
     const cookieStore = await cookies();
     const token = cookieStore.get(getCookieName())?.value;
@@ -42,7 +47,7 @@ async function getTenantConfig(): Promise<TenantConfig | null> {
 
     const tenantPath = join(process.cwd(), 'src/config/tenants', `${payload.tenantId}.json`);
     const data = await readFile(tenantPath, 'utf-8');
-    return JSON.parse(data) as TenantConfig;
+    return { tenant: JSON.parse(data) as TenantConfig, role: payload.role };
   } catch {
     return null;
   }
@@ -53,12 +58,14 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const tenantConfig = await getTenantConfig();
+  const session = await getSessionInfo();
 
-  // If no tenant config (not logged in), render without sidebar
-  const showChrome = !!tenantConfig;
+  // If no session (not logged in), render without sidebar
+  const showChrome = !!session;
+  const tenantConfig = session?.tenant;
+  const userRole = session?.role;
 
-  const enabledModules = showChrome
+  const enabledModules = showChrome && tenantConfig
     ? (() => {
         const enabledIds = new Set(tenantConfig.enabledModules);
         return modulesConfig.modules
@@ -84,7 +91,8 @@ export default async function RootLayout({
           <Sidebar
             modules={enabledModules}
             categories={modulesConfig.categories}
-            clientName={tenantConfig.clientName}
+            clientName={tenantConfig!.clientName}
+            userRole={userRole}
           />
         )}
         <main className={showChrome ? "lg:ml-[240px] min-h-screen p-4 lg:p-8" : "min-h-screen"}>

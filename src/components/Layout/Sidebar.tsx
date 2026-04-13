@@ -42,6 +42,7 @@ interface SidebarProps {
   modules: NavItem[];
   categories: { id: string; label: string; color: string }[];
   clientName: string;
+  userRole?: string;
 }
 
 const catColors: Record<string, string> = {
@@ -51,7 +52,7 @@ const catColors: Record<string, string> = {
   service: 'bg-cat-service',
 };
 
-export default function Sidebar({ modules, categories, clientName }: SidebarProps) {
+export default function Sidebar({ modules, categories, clientName, userRole }: SidebarProps) {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -171,24 +172,33 @@ export default function Sidebar({ modules, categories, clientName }: SidebarProp
         })}
       </nav>
 
-      {/* Settings */}
+      {/* Settings — admin only */}
       <div className="px-3.5 py-3.5 border-t border-border-default bg-bg-surface/50">
-        <Link
-          href="/settings"
-          className={`flex items-center gap-2.5 px-3 py-2.5 rounded-md text-[12px] transition-all duration-200 group ${
-            pathname === '/settings'
-              ? 'bg-accent/20 text-accent border border-accent/40 shadow-[0_2px_8px_rgba(200,151,90,0.15)] font-semibold'
-              : 'text-text-secondary hover:text-text-primary hover:bg-bg-hover border border-transparent hover:border-border-subtle'
-          }`}
-        >
-          <span className={`w-4 flex-shrink-0 transition-all ${pathname === '/settings' ? 'opacity-100' : 'opacity-70 group-hover:opacity-100'}`}>
-            <IconSettings />
-          </span>
-          <span className="font-[family-name:var(--font-outfit)] font-semibold">配置</span>
-          {pathname === '/settings' && (
-            <div className="ml-auto w-1 h-1 rounded-full bg-accent animate-pulse-dot" />
-          )}
-        </Link>
+        {userRole === 'admin' && (
+          <Link
+            href="/settings"
+            className={`flex items-center gap-2.5 px-3 py-2.5 rounded-md text-[12px] transition-all duration-200 group ${
+              pathname === '/settings'
+                ? 'bg-accent/20 text-accent border border-accent/40 shadow-[0_2px_8px_rgba(200,151,90,0.15)] font-semibold'
+                : 'text-text-secondary hover:text-text-primary hover:bg-bg-hover border border-transparent hover:border-border-subtle'
+            }`}
+          >
+            <span className={`w-4 flex-shrink-0 transition-all ${pathname === '/settings' ? 'opacity-100' : 'opacity-70 group-hover:opacity-100'}`}>
+              <IconSettings />
+            </span>
+            <span className="font-[family-name:var(--font-outfit)] font-semibold">配置</span>
+            {pathname === '/settings' && (
+              <div className="ml-auto w-1 h-1 rounded-full bg-accent animate-pulse-dot" />
+            )}
+          </Link>
+        )}
+        {/* Role badge */}
+        {userRole && (
+          <div className="flex items-center gap-2 px-3 mt-2">
+            <div className={`w-1.5 h-1.5 rounded-full ${userRole === 'admin' ? 'bg-accent' : userRole === 'editor' ? 'bg-success' : 'bg-text-tertiary'}`} />
+            <span className="text-[9px] font-mono text-text-tertiary uppercase">{userRole}</span>
+          </div>
+        )}
       </div>
     </aside>
     </>
