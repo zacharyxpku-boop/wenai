@@ -42,13 +42,13 @@ export function validateOutput(videoPath: string): Promise<ValidationResult> {
         return resolve({ valid: false, error: `Wrong resolution: ${width}x${height}, expected 1080x1920` })
       }
 
-      const duration = parseFloat(metadata.format.duration ?? '0')
+      const duration = parseFloat(String(metadata.format.duration ?? '0'))
       // QC-01: Duration must be at least 1 second
       if (duration < 1) {
         return resolve({ valid: false, error: `Duration too short: ${duration}s` })
       }
 
-      const fileSize = parseInt(metadata.format.size ?? '0')
+      const fileSize = parseInt(String(metadata.format.size ?? '0'))
       resolve({
         valid: true,
         metadata: { width, height, duration, fileSize },

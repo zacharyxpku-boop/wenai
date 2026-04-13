@@ -2,13 +2,15 @@ import 'server-only'
 import type Stripe from 'stripe'
 import { createClient } from '@supabase/supabase-js'
 
-// Service role client — webhook has no user session
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!,
-)
+function getSupabase() {
+  return createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!,
+  )
+}
 
 export async function handleCheckoutCompleted(event: Stripe.Event) {
+  const supabase = getSupabase()
   const session = event.data.object as Stripe.Checkout.Session
   const orgId = session.client_reference_id
   const credits = Number(session.metadata?.credits ?? 0)

@@ -41,7 +41,7 @@ async function checkStalledJobs() {
             { requestId: entry.requestId },
           )
           clipUrls[`${entry.type}-${entry.index}`] = (result as any).data?.video?.url
-        } else if (status.status === 'FAILED') {
+        } else if ((status.status as string) === 'FAILED') {
           console.error(`[stalled-poller] clip ${entry.type}-${entry.index} failed upstream`)
           await updateStepStatus(step.job_id, step.org_id, 'video_synthesis', 'failed', {
             error: `Kling clip ${entry.type}-${entry.index} failed (detected by stalled poller)`,
