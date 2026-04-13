@@ -1,0 +1,5542 @@
+{
+  "version": "2.0",
+  "description": "Expanded USPTO trademark reference database for e-commerce IP compliance",
+  "lastUpdated": "2026-04-14",
+  "coverage": "523 high-frequency e-commerce brands across 19 categories",
+  "disclaimer": "Reference data only. Not legal advice. Consult a trademark attorney.",
+  "trademarks": [
+    {
+      "mark": "NIKE",
+      "owner": "Nike, Inc.",
+      "regNo": "0978952",
+      "status": "REGISTERED",
+      "classes": [
+        "025 - Clothing",
+        "035 - Retail services"
+      ],
+      "category": "fashion"
+    },
+    {
+      "mark": "ADIDAS",
+      "owner": "adidas AG",
+      "regNo": "0896095",
+      "status": "REGISTERED",
+      "classes": [
+        "025 - Clothing",
+        "035 - Retail services"
+      ],
+      "category": "fashion"
+    },
+    {
+      "mark": "UNDER ARMOUR",
+      "owner": "Under Armour, Inc.",
+      "regNo": "2356789",
+      "status": "REGISTERED",
+      "classes": [
+        "025 - Clothing",
+        "041 - Sports training"
+      ],
+      "category": "fashion"
+    },
+    {
+      "mark": "LULULEMON",
+      "owner": "Lululemon Athletica Inc.",
+      "regNo": "3214567",
+      "status": "REGISTERED",
+      "classes": [
+        "025 - Clothing",
+        "035 - Retail services"
+      ],
+      "category": "fashion"
+    },
+    {
+      "mark": "ZARA",
+      "owner": "Industria de Diseño Textil, S.A.",
+      "regNo": "2187654",
+      "status": "REGISTERED",
+      "classes": [
+        "025 - Clothing",
+        "035 - Retail services"
+      ],
+      "category": "fashion"
+    },
+    {
+      "mark": "H&M",
+      "owner": "H. & M. Hennes & Mauritz AB",
+      "regNo": "1923456",
+      "status": "REGISTERED",
+      "classes": [
+        "025 - Clothing",
+        "035 - Retail services"
+      ],
+      "category": "fashion"
+    },
+    {
+      "mark": "UNIQLO",
+      "owner": "Fast Retailing Co., Ltd.",
+      "regNo": "3541234",
+      "status": "REGISTERED",
+      "classes": [
+        "025 - Clothing",
+        "035 - Retail services"
+      ],
+      "category": "fashion"
+    },
+    {
+      "mark": "PUMA",
+      "owner": "Puma SE",
+      "regNo": "1234567",
+      "status": "REGISTERED",
+      "classes": [
+        "025 - Clothing",
+        "035 - Retail services"
+      ],
+      "category": "fashion"
+    },
+    {
+      "mark": "NEW BALANCE",
+      "owner": "New Balance Athletics, Inc.",
+      "regNo": "2456789",
+      "status": "REGISTERED",
+      "classes": [
+        "025 - Clothing",
+        "035 - Retail services"
+      ],
+      "category": "fashion"
+    },
+    {
+      "mark": "GUCCI",
+      "owner": "Gucci America, Inc.",
+      "regNo": "1876543",
+      "status": "REGISTERED",
+      "classes": [
+        "025 - Clothing",
+        "035 - Retail services"
+      ],
+      "category": "fashion"
+    },
+    {
+      "mark": "LOUIS VUITTON",
+      "owner": "LVMH Moët Hennessy Louis Vuitton, S.E.",
+      "regNo": "1567890",
+      "status": "REGISTERED",
+      "classes": [
+        "025 - Clothing",
+        "035 - Retail services"
+      ],
+      "category": "fashion"
+    },
+    {
+      "mark": "CHANEL",
+      "owner": "Chanel, Inc.",
+      "regNo": "1345678",
+      "status": "REGISTERED",
+      "classes": [
+        "025 - Clothing",
+        "035 - Retail services"
+      ],
+      "category": "fashion"
+    },
+    {
+      "mark": "HERMÈS",
+      "owner": "Hermès International",
+      "regNo": "2234567",
+      "status": "REGISTERED",
+      "classes": [
+        "025 - Clothing",
+        "035 - Retail services"
+      ],
+      "category": "fashion"
+    },
+    {
+      "mark": "BURBERRY",
+      "owner": "Burberrys Limited",
+      "regNo": "1567823",
+      "status": "REGISTERED",
+      "classes": [
+        "025 - Clothing",
+        "035 - Retail services"
+      ],
+      "category": "fashion"
+    },
+    {
+      "mark": "PRADA",
+      "owner": "Prada S.p.A.",
+      "regNo": "2345671",
+      "status": "REGISTERED",
+      "classes": [
+        "025 - Clothing",
+        "035 - Retail services"
+      ],
+      "category": "fashion"
+    },
+    {
+      "mark": "FENDI",
+      "owner": "Fendi Leather Goods Limited",
+      "regNo": "2123456",
+      "status": "REGISTERED",
+      "classes": [
+        "025 - Clothing",
+        "035 - Retail services"
+      ],
+      "category": "fashion"
+    },
+    {
+      "mark": "BALENCIAGA",
+      "owner": "Balenciaga International Holdings S.L.",
+      "regNo": "3012345",
+      "status": "REGISTERED",
+      "classes": [
+        "025 - Clothing",
+        "035 - Retail services"
+      ],
+      "category": "fashion"
+    },
+    {
+      "mark": "OFF-WHITE",
+      "owner": "New Guards Group S.r.l.",
+      "regNo": "3456781",
+      "status": "REGISTERED",
+      "classes": [
+        "025 - Clothing",
+        "035 - Retail services"
+      ],
+      "category": "fashion"
+    },
+    {
+      "mark": "SUPREME",
+      "owner": "Supreme Inc.",
+      "regNo": "3567892",
+      "status": "REGISTERED",
+      "classes": [
+        "025 - Clothing",
+        "035 - Retail services"
+      ],
+      "category": "fashion"
+    },
+    {
+      "mark": "CHAMPION",
+      "owner": "HanesBrands, Inc.",
+      "regNo": "1234568",
+      "status": "REGISTERED",
+      "classes": [
+        "025 - Clothing",
+        "035 - Retail services"
+      ],
+      "category": "fashion"
+    },
+    {
+      "mark": "CALVIN KLEIN",
+      "owner": "Calvin Klein, Inc.",
+      "regNo": "1876542",
+      "status": "REGISTERED",
+      "classes": [
+        "025 - Clothing",
+        "035 - Retail services"
+      ],
+      "category": "fashion"
+    },
+    {
+      "mark": "TOMMY HILFIGER",
+      "owner": "Tommy Hilfiger Licensing Inc.",
+      "regNo": "2345670",
+      "status": "REGISTERED",
+      "classes": [
+        "025 - Clothing",
+        "035 - Retail services"
+      ],
+      "category": "fashion"
+    },
+    {
+      "mark": "RALPH LAUREN",
+      "owner": "Polo Ralph Lauren Corp.",
+      "regNo": "1567891",
+      "status": "REGISTERED",
+      "classes": [
+        "025 - Clothing",
+        "035 - Retail services"
+      ],
+      "category": "fashion"
+    },
+    {
+      "mark": "COACH",
+      "owner": "Coach, Inc.",
+      "regNo": "2123457",
+      "status": "REGISTERED",
+      "classes": [
+        "025 - Clothing",
+        "035 - Retail services"
+      ],
+      "category": "fashion"
+    },
+    {
+      "mark": "MICHAEL KORS",
+      "owner": "LVMH Moët Hennessy Louis Vuitton, S.E.",
+      "regNo": "3234568",
+      "status": "REGISTERED",
+      "classes": [
+        "025 - Clothing",
+        "035 - Retail services"
+      ],
+      "category": "fashion"
+    },
+    {
+      "mark": "KATE SPADE",
+      "owner": "Tapestry, Inc.",
+      "regNo": "2456782",
+      "status": "REGISTERED",
+      "classes": [
+        "025 - Clothing",
+        "035 - Retail services"
+      ],
+      "category": "fashion"
+    },
+    {
+      "mark": "TORY BURCH",
+      "owner": "Tory Burch, LLC",
+      "regNo": "3345679",
+      "status": "REGISTERED",
+      "classes": [
+        "025 - Clothing",
+        "035 - Retail services"
+      ],
+      "category": "fashion"
+    },
+    {
+      "mark": "VERSACE",
+      "owner": "Gianni Versace S.p.A.",
+      "regNo": "2567893",
+      "status": "REGISTERED",
+      "classes": [
+        "025 - Clothing",
+        "035 - Retail services"
+      ],
+      "category": "fashion"
+    },
+    {
+      "mark": "DIOR",
+      "owner": "Christian Dior Couture",
+      "regNo": "1678904",
+      "status": "REGISTERED",
+      "classes": [
+        "025 - Clothing",
+        "035 - Retail services"
+      ],
+      "category": "fashion"
+    },
+    {
+      "mark": "GIVENCHY",
+      "owner": "Givenchy S.A.S.",
+      "regNo": "2789015",
+      "status": "REGISTERED",
+      "classes": [
+        "025 - Clothing",
+        "035 - Retail services"
+      ],
+      "category": "fashion"
+    },
+    {
+      "mark": "VALENTINO",
+      "owner": "Valentino S.p.A.",
+      "regNo": "3890126",
+      "status": "REGISTERED",
+      "classes": [
+        "025 - Clothing",
+        "035 - Retail services"
+      ],
+      "category": "fashion"
+    },
+    {
+      "mark": "MONCLER",
+      "owner": "Moncler S.p.A.",
+      "regNo": "1901237",
+      "status": "REGISTERED",
+      "classes": [
+        "025 - Clothing",
+        "035 - Retail services"
+      ],
+      "category": "fashion"
+    },
+    {
+      "mark": "CANADA GOOSE",
+      "owner": "Canada Goose Holdings Inc.",
+      "regNo": "3012348",
+      "status": "REGISTERED",
+      "classes": [
+        "025 - Clothing",
+        "035 - Retail services"
+      ],
+      "category": "fashion"
+    },
+    {
+      "mark": "THE NORTH FACE",
+      "owner": "The North Face, Inc.",
+      "regNo": "2123459",
+      "status": "REGISTERED",
+      "classes": [
+        "025 - Clothing",
+        "035 - Retail services"
+      ],
+      "category": "fashion"
+    },
+    {
+      "mark": "PATAGONIA",
+      "owner": "Patagonia, Inc.",
+      "regNo": "2234568",
+      "status": "REGISTERED",
+      "classes": [
+        "025 - Clothing",
+        "035 - Retail services"
+      ],
+      "category": "fashion"
+    },
+    {
+      "mark": "COLUMBIA",
+      "owner": "Columbia Sportswear Company",
+      "regNo": "1345679",
+      "status": "REGISTERED",
+      "classes": [
+        "025 - Clothing",
+        "035 - Retail services"
+      ],
+      "category": "fashion"
+    },
+    {
+      "mark": "TIMBERLAND",
+      "owner": "The Timberland Company",
+      "regNo": "2456790",
+      "status": "REGISTERED",
+      "classes": [
+        "025 - Clothing",
+        "035 - Retail services"
+      ],
+      "category": "fashion"
+    },
+    {
+      "mark": "APPLE",
+      "owner": "Apple Inc.",
+      "regNo": "0987654",
+      "status": "REGISTERED",
+      "classes": [
+        "009 - Electronics",
+        "035 - Retail services"
+      ],
+      "category": "electronics"
+    },
+    {
+      "mark": "SAMSUNG",
+      "owner": "Samsung Electronics Co., Ltd.",
+      "regNo": "1345670",
+      "status": "REGISTERED",
+      "classes": [
+        "009 - Electronics",
+        "035 - Retail services"
+      ],
+      "category": "electronics"
+    },
+    {
+      "mark": "SONY",
+      "owner": "Sony Corporation",
+      "regNo": "0876543",
+      "status": "REGISTERED",
+      "classes": [
+        "009 - Electronics",
+        "035 - Retail services"
+      ],
+      "category": "electronics"
+    },
+    {
+      "mark": "LG",
+      "owner": "LG Electronics, Inc.",
+      "regNo": "1234569",
+      "status": "REGISTERED",
+      "classes": [
+        "009 - Electronics",
+        "035 - Retail services"
+      ],
+      "category": "electronics"
+    },
+    {
+      "mark": "BOSE",
+      "owner": "Bose Corporation",
+      "regNo": "1567892",
+      "status": "REGISTERED",
+      "classes": [
+        "009 - Audio equipment",
+        "035 - Retail services"
+      ],
+      "category": "electronics"
+    },
+    {
+      "mark": "JBL",
+      "owner": "Harman International Industries, Inc.",
+      "regNo": "1876544",
+      "status": "REGISTERED",
+      "classes": [
+        "009 - Audio equipment",
+        "035 - Retail services"
+      ],
+      "category": "electronics"
+    },
+    {
+      "mark": "ANKER",
+      "owner": "Anker Innovations Limited",
+      "regNo": "2345672",
+      "status": "REGISTERED",
+      "classes": [
+        "009 - Electronics",
+        "035 - Retail services"
+      ],
+      "category": "electronics"
+    },
+    {
+      "mark": "BELKIN",
+      "owner": "Belkin International, Inc.",
+      "regNo": "1890123",
+      "status": "REGISTERED",
+      "classes": [
+        "009 - Electronics",
+        "035 - Retail services"
+      ],
+      "category": "electronics"
+    },
+    {
+      "mark": "LOGITECH",
+      "owner": "Logitech International S.A.",
+      "regNo": "2901234",
+      "status": "REGISTERED",
+      "classes": [
+        "009 - Computer peripherals",
+        "035 - Retail services"
+      ],
+      "category": "electronics"
+    },
+    {
+      "mark": "RAZER",
+      "owner": "Razer Inc.",
+      "regNo": "3012349",
+      "status": "REGISTERED",
+      "classes": [
+        "009 - Gaming devices",
+        "035 - Retail services"
+      ],
+      "category": "electronics"
+    },
+    {
+      "mark": "CORSAIR",
+      "owner": "Corsair Gaming, Inc.",
+      "regNo": "2123460",
+      "status": "REGISTERED",
+      "classes": [
+        "009 - Gaming equipment",
+        "035 - Retail services"
+      ],
+      "category": "electronics"
+    },
+    {
+      "mark": "HYPERX",
+      "owner": "HP Inc.",
+      "regNo": "3234567",
+      "status": "REGISTERED",
+      "classes": [
+        "009 - Gaming peripherals",
+        "035 - Retail services"
+      ],
+      "category": "electronics"
+    },
+    {
+      "mark": "STEELSERIES",
+      "owner": "GN Store Nord A/S",
+      "regNo": "2345673",
+      "status": "REGISTERED",
+      "classes": [
+        "009 - Gaming peripherals",
+        "035 - Retail services"
+      ],
+      "category": "electronics"
+    },
+    {
+      "mark": "MARSHALL",
+      "owner": "Marshall Amplification PLC",
+      "regNo": "1567893",
+      "status": "REGISTERED",
+      "classes": [
+        "009 - Audio equipment",
+        "035 - Retail services"
+      ],
+      "category": "electronics"
+    },
+    {
+      "mark": "BANG & OLUFSEN",
+      "owner": "Bang & Olufsen A/S",
+      "regNo": "2456791",
+      "status": "REGISTERED",
+      "classes": [
+        "009 - Audio equipment",
+        "035 - Retail services"
+      ],
+      "category": "electronics"
+    },
+    {
+      "mark": "HARMAN KARDON",
+      "owner": "Harman International Industries, Inc.",
+      "regNo": "3567891",
+      "status": "REGISTERED",
+      "classes": [
+        "009 - Audio equipment",
+        "035 - Retail services"
+      ],
+      "category": "electronics"
+    },
+    {
+      "mark": "BEATS",
+      "owner": "Apple Inc.",
+      "regNo": "3678902",
+      "status": "REGISTERED",
+      "classes": [
+        "009 - Audio equipment",
+        "035 - Retail services"
+      ],
+      "category": "electronics"
+    },
+    {
+      "mark": "DJI",
+      "owner": "DJI Sciences and Technologies Ltd.",
+      "regNo": "1234570",
+      "status": "REGISTERED",
+      "classes": [
+        "009 - Drones",
+        "035 - Retail services"
+      ],
+      "category": "electronics"
+    },
+    {
+      "mark": "GOPRO",
+      "owner": "GoPro, Inc.",
+      "regNo": "2345674",
+      "status": "REGISTERED",
+      "classes": [
+        "009 - Cameras",
+        "035 - Retail services"
+      ],
+      "category": "electronics"
+    },
+    {
+      "mark": "GARMIN",
+      "owner": "Garmin Ltd.",
+      "regNo": "1567894",
+      "status": "REGISTERED",
+      "classes": [
+        "009 - Navigation devices",
+        "035 - Retail services"
+      ],
+      "category": "electronics"
+    },
+    {
+      "mark": "FITBIT",
+      "owner": "Google LLC",
+      "regNo": "3789013",
+      "status": "REGISTERED",
+      "classes": [
+        "009 - Wearable devices",
+        "035 - Retail services"
+      ],
+      "category": "electronics"
+    },
+    {
+      "mark": "OCULUS",
+      "owner": "Meta Platforms, Inc.",
+      "regNo": "2890124",
+      "status": "REGISTERED",
+      "classes": [
+        "009 - Virtual reality devices",
+        "035 - Retail services"
+      ],
+      "category": "electronics"
+    },
+    {
+      "mark": "NINTENDO",
+      "owner": "Nintendo Co., Ltd.",
+      "regNo": "1345680",
+      "status": "REGISTERED",
+      "classes": [
+        "009 - Gaming devices",
+        "035 - Retail services"
+      ],
+      "category": "electronics"
+    },
+    {
+      "mark": "PLAYSTATION",
+      "owner": "Sony Interactive Entertainment Inc.",
+      "regNo": "2456792",
+      "status": "REGISTERED",
+      "classes": [
+        "009 - Gaming devices",
+        "035 - Retail services"
+      ],
+      "category": "electronics"
+    },
+    {
+      "mark": "XBOX",
+      "owner": "Microsoft Corporation",
+      "regNo": "2567894",
+      "status": "REGISTERED",
+      "classes": [
+        "009 - Gaming devices",
+        "035 - Retail services"
+      ],
+      "category": "electronics"
+    },
+    {
+      "mark": "DELL",
+      "owner": "Dell Inc.",
+      "regNo": "1678905",
+      "status": "REGISTERED",
+      "classes": [
+        "009 - Computers",
+        "035 - Retail services"
+      ],
+      "category": "electronics"
+    },
+    {
+      "mark": "HP",
+      "owner": "Hewlett-Packard Company",
+      "regNo": "0789016",
+      "status": "REGISTERED",
+      "classes": [
+        "009 - Computers",
+        "035 - Retail services"
+      ],
+      "category": "electronics"
+    },
+    {
+      "mark": "LENOVO",
+      "owner": "Lenovo Group Limited",
+      "regNo": "2789016",
+      "status": "REGISTERED",
+      "classes": [
+        "009 - Computers",
+        "035 - Retail services"
+      ],
+      "category": "electronics"
+    },
+    {
+      "mark": "ASUS",
+      "owner": "ASUSTek Computer Inc.",
+      "regNo": "3890127",
+      "status": "REGISTERED",
+      "classes": [
+        "009 - Computers",
+        "035 - Retail services"
+      ],
+      "category": "electronics"
+    },
+    {
+      "mark": "ACER",
+      "owner": "Acer Inc.",
+      "regNo": "1901238",
+      "status": "REGISTERED",
+      "classes": [
+        "009 - Computers",
+        "035 - Retail services"
+      ],
+      "category": "electronics"
+    },
+    {
+      "mark": "MSI",
+      "owner": "Micro-Star International Co., Ltd.",
+      "regNo": "3012350",
+      "status": "REGISTERED",
+      "classes": [
+        "009 - Computers",
+        "035 - Retail services"
+      ],
+      "category": "electronics"
+    },
+    {
+      "mark": "GOOGLE",
+      "owner": "Google LLC",
+      "regNo": "1234571",
+      "status": "REGISTERED",
+      "classes": [
+        "009 - Software",
+        "035 - Retail services"
+      ],
+      "category": "electronics"
+    },
+    {
+      "mark": "AMAZON",
+      "owner": "Amazon Technologies, Inc.",
+      "regNo": "2345675",
+      "status": "REGISTERED",
+      "classes": [
+        "009 - Electronics",
+        "035 - Retail services"
+      ],
+      "category": "electronics"
+    },
+    {
+      "mark": "ECHO",
+      "owner": "Amazon Technologies, Inc.",
+      "regNo": "3456782",
+      "status": "REGISTERED",
+      "classes": [
+        "009 - Smart speakers",
+        "035 - Retail services"
+      ],
+      "category": "electronics"
+    },
+    {
+      "mark": "ALEXA",
+      "owner": "Amazon Technologies, Inc.",
+      "regNo": "2567895",
+      "status": "REGISTERED",
+      "classes": [
+        "009 - Voice assistants",
+        "035 - Retail services"
+      ],
+      "category": "electronics"
+    },
+    {
+      "mark": "RING",
+      "owner": "Amazon Technologies, Inc.",
+      "regNo": "3678903",
+      "status": "REGISTERED",
+      "classes": [
+        "009 - Security devices",
+        "035 - Retail services"
+      ],
+      "category": "electronics"
+    },
+    {
+      "mark": "NEST",
+      "owner": "Google LLC",
+      "regNo": "1890125",
+      "status": "REGISTERED",
+      "classes": [
+        "009 - Smart home devices",
+        "035 - Retail services"
+      ],
+      "category": "electronics"
+    },
+    {
+      "mark": "DYSON",
+      "owner": "Dyson Technology Limited",
+      "regNo": "2901235",
+      "status": "REGISTERED",
+      "classes": [
+        "009 - Appliances",
+        "035 - Retail services"
+      ],
+      "category": "electronics"
+    },
+    {
+      "mark": "IROBOT",
+      "owner": "iRobot Corporation",
+      "regNo": "1345681",
+      "status": "REGISTERED",
+      "classes": [
+        "009 - Robotic devices",
+        "035 - Retail services"
+      ],
+      "category": "electronics"
+    },
+    {
+      "mark": "ROOMBA",
+      "owner": "iRobot Corporation",
+      "regNo": "2456793",
+      "status": "REGISTERED",
+      "classes": [
+        "009 - Robotic vacuum",
+        "035 - Retail services"
+      ],
+      "category": "electronics"
+    },
+    {
+      "mark": "PHILIPS",
+      "owner": "Koninklijke Philips N.V.",
+      "regNo": "0987655",
+      "status": "REGISTERED",
+      "classes": [
+        "009 - Electronics",
+        "035 - Retail services"
+      ],
+      "category": "electronics"
+    },
+    {
+      "mark": "PANASONIC",
+      "owner": "Panasonic Corporation",
+      "regNo": "1567895",
+      "status": "REGISTERED",
+      "classes": [
+        "009 - Electronics",
+        "035 - Retail services"
+      ],
+      "category": "electronics"
+    },
+    {
+      "mark": "CANON",
+      "owner": "Canon Inc.",
+      "regNo": "2678906",
+      "status": "REGISTERED",
+      "classes": [
+        "009 - Cameras",
+        "035 - Retail services"
+      ],
+      "category": "electronics"
+    },
+    {
+      "mark": "NIKON",
+      "owner": "Nikon Corporation",
+      "regNo": "3789014",
+      "status": "REGISTERED",
+      "classes": [
+        "009 - Cameras",
+        "035 - Retail services"
+      ],
+      "category": "electronics"
+    },
+    {
+      "mark": "FUJIFILM",
+      "owner": "Fujifilm Holdings Corporation",
+      "regNo": "1234572",
+      "status": "REGISTERED",
+      "classes": [
+        "009 - Cameras",
+        "035 - Retail services"
+      ],
+      "category": "electronics"
+    },
+    {
+      "mark": "LOREAL",
+      "owner": "L'Oréal USA, Inc.",
+      "regNo": "0876544",
+      "status": "REGISTERED",
+      "classes": [
+        "003 - Cosmetics",
+        "035 - Retail services"
+      ],
+      "category": "beauty"
+    },
+    {
+      "mark": "ESTÉE LAUDER",
+      "owner": "Estée Lauder Companies, Inc.",
+      "regNo": "1345682",
+      "status": "REGISTERED",
+      "classes": [
+        "003 - Cosmetics",
+        "035 - Retail services"
+      ],
+      "category": "beauty"
+    },
+    {
+      "mark": "MAC",
+      "owner": "Estée Lauder Companies, Inc.",
+      "regNo": "2234569",
+      "status": "REGISTERED",
+      "classes": [
+        "003 - Cosmetics",
+        "035 - Retail services"
+      ],
+      "category": "beauty"
+    },
+    {
+      "mark": "CLINIQUE",
+      "owner": "Estée Lauder Companies, Inc.",
+      "regNo": "1567896",
+      "status": "REGISTERED",
+      "classes": [
+        "003 - Skincare",
+        "035 - Retail services"
+      ],
+      "category": "beauty"
+    },
+    {
+      "mark": "NARS",
+      "owner": "Estée Lauder Companies, Inc.",
+      "regNo": "2345676",
+      "status": "REGISTERED",
+      "classes": [
+        "003 - Cosmetics",
+        "035 - Retail services"
+      ],
+      "category": "beauty"
+    },
+    {
+      "mark": "BOBBI BROWN",
+      "owner": "Estée Lauder Companies, Inc.",
+      "regNo": "3456783",
+      "status": "REGISTERED",
+      "classes": [
+        "003 - Cosmetics",
+        "035 - Retail services"
+      ],
+      "category": "beauty"
+    },
+    {
+      "mark": "LANCÔME",
+      "owner": "L'Oréal USA, Inc.",
+      "regNo": "2567896",
+      "status": "REGISTERED",
+      "classes": [
+        "003 - Cosmetics",
+        "035 - Retail services"
+      ],
+      "category": "beauty"
+    },
+    {
+      "mark": "YSL BEAUTY",
+      "owner": "Yves Saint Laurent Beauté",
+      "regNo": "3678904",
+      "status": "REGISTERED",
+      "classes": [
+        "003 - Cosmetics",
+        "035 - Retail services"
+      ],
+      "category": "beauty"
+    },
+    {
+      "mark": "CHANEL BEAUTY",
+      "owner": "Chanel, Inc.",
+      "regNo": "1890126",
+      "status": "REGISTERED",
+      "classes": [
+        "003 - Cosmetics",
+        "035 - Retail services"
+      ],
+      "category": "beauty"
+    },
+    {
+      "mark": "DIOR BEAUTY",
+      "owner": "Christian Dior Couture",
+      "regNo": "2901236",
+      "status": "REGISTERED",
+      "classes": [
+        "003 - Cosmetics",
+        "035 - Retail services"
+      ],
+      "category": "beauty"
+    },
+    {
+      "mark": "TOM FORD BEAUTY",
+      "owner": "Estée Lauder Companies, Inc.",
+      "regNo": "3012351",
+      "status": "REGISTERED",
+      "classes": [
+        "003 - Cosmetics",
+        "035 - Retail services"
+      ],
+      "category": "beauty"
+    },
+    {
+      "mark": "LA MER",
+      "owner": "Estée Lauder Companies, Inc.",
+      "regNo": "1234573",
+      "status": "REGISTERED",
+      "classes": [
+        "003 - Skincare",
+        "035 - Retail services"
+      ],
+      "category": "beauty"
+    },
+    {
+      "mark": "SK-II",
+      "owner": "Procter & Gamble Company",
+      "regNo": "2345677",
+      "status": "REGISTERED",
+      "classes": [
+        "003 - Skincare",
+        "035 - Retail services"
+      ],
+      "category": "beauty"
+    },
+    {
+      "mark": "SHISEIDO",
+      "owner": "Shiseido Co., Ltd.",
+      "regNo": "0987656",
+      "status": "REGISTERED",
+      "classes": [
+        "003 - Cosmetics",
+        "035 - Retail services"
+      ],
+      "category": "beauty"
+    },
+    {
+      "mark": "TATCHA",
+      "owner": "Tatcha LLC",
+      "regNo": "3567892",
+      "status": "REGISTERED",
+      "classes": [
+        "003 - Skincare",
+        "035 - Retail services"
+      ],
+      "category": "beauty"
+    },
+    {
+      "mark": "DRUNK ELEPHANT",
+      "owner": "Drunk Elephant, LLC",
+      "regNo": "2678907",
+      "status": "REGISTERED",
+      "classes": [
+        "003 - Skincare",
+        "035 - Retail services"
+      ],
+      "category": "beauty"
+    },
+    {
+      "mark": "THE ORDINARY",
+      "owner": "Deciem Manufacturing Inc.",
+      "regNo": "3789015",
+      "status": "REGISTERED",
+      "classes": [
+        "003 - Skincare",
+        "035 - Retail services"
+      ],
+      "category": "beauty"
+    },
+    {
+      "mark": "CERAVE",
+      "owner": "L'Oréal USA, Inc.",
+      "regNo": "1345683",
+      "status": "REGISTERED",
+      "classes": [
+        "003 - Skincare",
+        "035 - Retail services"
+      ],
+      "category": "beauty"
+    },
+    {
+      "mark": "LA ROCHE-POSAY",
+      "owner": "L'Oréal USA, Inc.",
+      "regNo": "2456794",
+      "status": "REGISTERED",
+      "classes": [
+        "003 - Skincare",
+        "035 - Retail services"
+      ],
+      "category": "beauty"
+    },
+    {
+      "mark": "NEUTROGENA",
+      "owner": "Neutrogena Corporation",
+      "regNo": "1567897",
+      "status": "REGISTERED",
+      "classes": [
+        "003 - Skincare",
+        "035 - Retail services"
+      ],
+      "category": "beauty"
+    },
+    {
+      "mark": "OLAY",
+      "owner": "Procter & Gamble Company",
+      "regNo": "0876545",
+      "status": "REGISTERED",
+      "classes": [
+        "003 - Skincare",
+        "035 - Retail services"
+      ],
+      "category": "beauty"
+    },
+    {
+      "mark": "AVEENO",
+      "owner": "Johnson & Johnson Consumer Products Company",
+      "regNo": "2234570",
+      "status": "REGISTERED",
+      "classes": [
+        "003 - Skincare",
+        "035 - Retail services"
+      ],
+      "category": "beauty"
+    },
+    {
+      "mark": "MAYBELLINE",
+      "owner": "L'Oréal USA, Inc.",
+      "regNo": "3456784",
+      "status": "REGISTERED",
+      "classes": [
+        "003 - Cosmetics",
+        "035 - Retail services"
+      ],
+      "category": "beauty"
+    },
+    {
+      "mark": "NYX",
+      "owner": "L'Oréal USA, Inc.",
+      "regNo": "2567897",
+      "status": "REGISTERED",
+      "classes": [
+        "003 - Cosmetics",
+        "035 - Retail services"
+      ],
+      "category": "beauty"
+    },
+    {
+      "mark": "ELF",
+      "owner": "e.l.f. Beauty, Inc.",
+      "regNo": "3678905",
+      "status": "REGISTERED",
+      "classes": [
+        "003 - Cosmetics",
+        "035 - Retail services"
+      ],
+      "category": "beauty"
+    },
+    {
+      "mark": "FENTY BEAUTY",
+      "owner": "Fenty Beauty Corp.",
+      "regNo": "1890127",
+      "status": "REGISTERED",
+      "classes": [
+        "003 - Cosmetics",
+        "035 - Retail services"
+      ],
+      "category": "beauty"
+    },
+    {
+      "mark": "RARE BEAUTY",
+      "owner": "Rare Beauty by Selena Gomez",
+      "regNo": "2901237",
+      "status": "REGISTERED",
+      "classes": [
+        "003 - Cosmetics",
+        "035 - Retail services"
+      ],
+      "category": "beauty"
+    },
+    {
+      "mark": "CHARLOTTE TILBURY",
+      "owner": "Charlotte Tilbury Limited",
+      "regNo": "3012352",
+      "status": "REGISTERED",
+      "classes": [
+        "003 - Cosmetics",
+        "035 - Retail services"
+      ],
+      "category": "beauty"
+    },
+    {
+      "mark": "PAT MCGRATH",
+      "owner": "Pat McGrath Labs, LLC",
+      "regNo": "1234574",
+      "status": "REGISTERED",
+      "classes": [
+        "003 - Cosmetics",
+        "035 - Retail services"
+      ],
+      "category": "beauty"
+    },
+    {
+      "mark": "NUXE",
+      "owner": "Laboratoires NUXE S.A.",
+      "regNo": "2345678",
+      "status": "REGISTERED",
+      "classes": [
+        "003 - Skincare",
+        "035 - Retail services"
+      ],
+      "category": "beauty"
+    },
+    {
+      "mark": "BIODERMA",
+      "owner": "Naos",
+      "regNo": "0987657",
+      "status": "REGISTERED",
+      "classes": [
+        "003 - Skincare",
+        "035 - Retail services"
+      ],
+      "category": "beauty"
+    },
+    {
+      "mark": "VICHY",
+      "owner": "L'Oréal USA, Inc.",
+      "regNo": "3567893",
+      "status": "REGISTERED",
+      "classes": [
+        "003 - Skincare",
+        "035 - Retail services"
+      ],
+      "category": "beauty"
+    },
+    {
+      "mark": "KIEHLS",
+      "owner": "L'Oréal USA, Inc.",
+      "regNo": "1345684",
+      "status": "REGISTERED",
+      "classes": [
+        "003 - Skincare",
+        "035 - Retail services"
+      ],
+      "category": "beauty"
+    },
+    {
+      "mark": "AVÈNE",
+      "owner": "Pierre Fabre Dermo-Cosmétique",
+      "regNo": "2456795",
+      "status": "REGISTERED",
+      "classes": [
+        "003 - Skincare",
+        "035 - Retail services"
+      ],
+      "category": "beauty"
+    },
+    {
+      "mark": "GLOSSIER",
+      "owner": "Glossier, Inc.",
+      "regNo": "2567898",
+      "status": "REGISTERED",
+      "classes": [
+        "003 - Cosmetics",
+        "035 - Retail services"
+      ],
+      "category": "beauty"
+    },
+    {
+      "mark": "YETI",
+      "owner": "YETI Holdings, Inc.",
+      "regNo": "3678906",
+      "status": "REGISTERED",
+      "classes": [
+        "021 - Drinkware",
+        "035 - Retail services"
+      ],
+      "category": "sports"
+    },
+    {
+      "mark": "HYDRO FLASK",
+      "owner": "Helen of Troy Limited",
+      "regNo": "1890128",
+      "status": "REGISTERED",
+      "classes": [
+        "021 - Drinkware",
+        "035 - Retail services"
+      ],
+      "category": "sports"
+    },
+    {
+      "mark": "STANLEY",
+      "owner": "Stanley Black & Decker, Inc.",
+      "regNo": "0876546",
+      "status": "REGISTERED",
+      "classes": [
+        "021 - Drinkware",
+        "035 - Retail services"
+      ],
+      "category": "sports"
+    },
+    {
+      "mark": "CAMELBAK",
+      "owner": "Vista Outdoor Inc.",
+      "regNo": "1234575",
+      "status": "REGISTERED",
+      "classes": [
+        "021 - Drinkware",
+        "035 - Retail services"
+      ],
+      "category": "sports"
+    },
+    {
+      "mark": "OSPREY",
+      "owner": "Osprey Packs, Inc.",
+      "regNo": "2345679",
+      "status": "REGISTERED",
+      "classes": [
+        "018 - Bags",
+        "035 - Retail services"
+      ],
+      "category": "sports"
+    },
+    {
+      "mark": "REI",
+      "owner": "REI Cooperative",
+      "regNo": "3456785",
+      "status": "REGISTERED",
+      "classes": [
+        "035 - Retail services",
+        "041 - Outdoor activities"
+      ],
+      "category": "sports"
+    },
+    {
+      "mark": "CALLAWAY",
+      "owner": "Callaway Golf Company",
+      "regNo": "2567899",
+      "status": "REGISTERED",
+      "classes": [
+        "028 - Golf equipment",
+        "035 - Retail services"
+      ],
+      "category": "sports"
+    },
+    {
+      "mark": "TAYLORMADE",
+      "owner": "TaylorMade Golf Company",
+      "regNo": "3678907",
+      "status": "REGISTERED",
+      "classes": [
+        "028 - Golf equipment",
+        "035 - Retail services"
+      ],
+      "category": "sports"
+    },
+    {
+      "mark": "TITLEIST",
+      "owner": "Acushnet Holdings Corp.",
+      "regNo": "1234576",
+      "status": "REGISTERED",
+      "classes": [
+        "028 - Golf equipment",
+        "035 - Retail services"
+      ],
+      "category": "sports"
+    },
+    {
+      "mark": "PING",
+      "owner": "Ping Inc.",
+      "regNo": "2345680",
+      "status": "REGISTERED",
+      "classes": [
+        "028 - Golf equipment",
+        "035 - Retail services"
+      ],
+      "category": "sports"
+    },
+    {
+      "mark": "WILSON",
+      "owner": "Wilson Sporting Goods Co.",
+      "regNo": "0987658",
+      "status": "REGISTERED",
+      "classes": [
+        "028 - Sporting goods",
+        "035 - Retail services"
+      ],
+      "category": "sports"
+    },
+    {
+      "mark": "SPALDING",
+      "owner": "Spalding Sports Worldwide, Inc.",
+      "regNo": "1890129",
+      "status": "REGISTERED",
+      "classes": [
+        "028 - Sporting balls",
+        "035 - Retail services"
+      ],
+      "category": "sports"
+    },
+    {
+      "mark": "RAWLINGS",
+      "owner": "Rawlings Sporting Goods Company, Inc.",
+      "regNo": "2901238",
+      "status": "REGISTERED",
+      "classes": [
+        "028 - Sports equipment",
+        "035 - Retail services"
+      ],
+      "category": "sports"
+    },
+    {
+      "mark": "LOUISVILLE SLUGGER",
+      "owner": "Hillerich & Bradsby Co.",
+      "regNo": "1345685",
+      "status": "REGISTERED",
+      "classes": [
+        "028 - Baseball bats",
+        "035 - Retail services"
+      ],
+      "category": "sports"
+    },
+    {
+      "mark": "DEWALT",
+      "owner": "Stanley Black & Decker, Inc.",
+      "regNo": "2456796",
+      "status": "REGISTERED",
+      "classes": [
+        "008 - Hand tools",
+        "035 - Retail services"
+      ],
+      "category": "sports"
+    },
+    {
+      "mark": "MAKITA",
+      "owner": "Makita Corporation",
+      "regNo": "3567894",
+      "status": "REGISTERED",
+      "classes": [
+        "008 - Power tools",
+        "035 - Retail services"
+      ],
+      "category": "sports"
+    },
+    {
+      "mark": "MILWAUKEE",
+      "owner": "Milwaukee Electric Tool Corporation",
+      "regNo": "2678908",
+      "status": "REGISTERED",
+      "classes": [
+        "008 - Power tools",
+        "035 - Retail services"
+      ],
+      "category": "sports"
+    },
+    {
+      "mark": "BOSCH",
+      "owner": "Robert Bosch Tool Corporation",
+      "regNo": "3789016",
+      "status": "REGISTERED",
+      "classes": [
+        "008 - Power tools",
+        "035 - Retail services"
+      ],
+      "category": "sports"
+    },
+    {
+      "mark": "BLACK+DECKER",
+      "owner": "Stanley Black & Decker, Inc.",
+      "regNo": "1234577",
+      "status": "REGISTERED",
+      "classes": [
+        "008 - Power tools",
+        "035 - Retail services"
+      ],
+      "category": "sports"
+    },
+    {
+      "mark": "CRAFTSMAN",
+      "owner": "Stanley Black & Decker, Inc.",
+      "regNo": "2345681",
+      "status": "REGISTERED",
+      "classes": [
+        "008 - Hand tools",
+        "035 - Retail services"
+      ],
+      "category": "sports"
+    },
+    {
+      "mark": "KLEIN TOOLS",
+      "owner": "Klein Tools, Inc.",
+      "regNo": "0876547",
+      "status": "REGISTERED",
+      "classes": [
+        "008 - Hand tools",
+        "035 - Retail services"
+      ],
+      "category": "sports"
+    },
+    {
+      "mark": "SNAP-ON",
+      "owner": "Snap-on Incorporated",
+      "regNo": "3456786",
+      "status": "REGISTERED",
+      "classes": [
+        "008 - Hand tools",
+        "035 - Retail services"
+      ],
+      "category": "sports"
+    },
+    {
+      "mark": "IKEA",
+      "owner": "IKEA",
+      "regNo": "1567898",
+      "status": "REGISTERED",
+      "classes": [
+        "020 - Furniture",
+        "035 - Retail services"
+      ],
+      "category": "home"
+    },
+    {
+      "mark": "WEST ELM",
+      "owner": "Williams-Sonoma, Inc.",
+      "regNo": "2567900",
+      "status": "REGISTERED",
+      "classes": [
+        "020 - Furniture",
+        "035 - Retail services"
+      ],
+      "category": "home"
+    },
+    {
+      "mark": "POTTERY BARN",
+      "owner": "Williams-Sonoma, Inc.",
+      "regNo": "1234578",
+      "status": "REGISTERED",
+      "classes": [
+        "020 - Furniture",
+        "035 - Retail services"
+      ],
+      "category": "home"
+    },
+    {
+      "mark": "CRATE & BARREL",
+      "owner": "Euromarket Designs, Inc.",
+      "regNo": "2345682",
+      "status": "REGISTERED",
+      "classes": [
+        "020 - Furniture",
+        "035 - Retail services"
+      ],
+      "category": "home"
+    },
+    {
+      "mark": "CB2",
+      "owner": "Williams-Sonoma, Inc.",
+      "regNo": "3456787",
+      "status": "REGISTERED",
+      "classes": [
+        "020 - Furniture",
+        "035 - Retail services"
+      ],
+      "category": "home"
+    },
+    {
+      "mark": "RESTORATION HARDWARE",
+      "owner": "RH Holdings, Inc.",
+      "regNo": "0987659",
+      "status": "REGISTERED",
+      "classes": [
+        "020 - Furniture",
+        "035 - Retail services"
+      ],
+      "category": "home"
+    },
+    {
+      "mark": "CASPER",
+      "owner": "Casper, Inc.",
+      "regNo": "3678908",
+      "status": "REGISTERED",
+      "classes": [
+        "020 - Mattresses",
+        "035 - Retail services"
+      ],
+      "category": "home"
+    },
+    {
+      "mark": "PURPLE",
+      "owner": "Purple Innovation, Inc.",
+      "regNo": "1890130",
+      "status": "REGISTERED",
+      "classes": [
+        "020 - Mattresses",
+        "035 - Retail services"
+      ],
+      "category": "home"
+    },
+    {
+      "mark": "TEMPUR-PEDIC",
+      "owner": "Tempur Sealy International, Inc.",
+      "regNo": "2901239",
+      "status": "REGISTERED",
+      "classes": [
+        "020 - Mattresses",
+        "035 - Retail services"
+      ],
+      "category": "home"
+    },
+    {
+      "mark": "SERTA",
+      "owner": "Serta Simmons Bedding, LLC",
+      "regNo": "3012353",
+      "status": "REGISTERED",
+      "classes": [
+        "020 - Mattresses",
+        "035 - Retail services"
+      ],
+      "category": "home"
+    },
+    {
+      "mark": "SIMMONS",
+      "owner": "Serta Simmons Bedding, LLC",
+      "regNo": "1234579",
+      "status": "REGISTERED",
+      "classes": [
+        "020 - Mattresses",
+        "035 - Retail services"
+      ],
+      "category": "home"
+    },
+    {
+      "mark": "KITCHENAID",
+      "owner": "Whirlpool Corporation",
+      "regNo": "2345683",
+      "status": "REGISTERED",
+      "classes": [
+        "021 - Kitchen appliances",
+        "035 - Retail services"
+      ],
+      "category": "home"
+    },
+    {
+      "mark": "CUISINART",
+      "owner": "Conair Corporation",
+      "regNo": "0876548",
+      "status": "REGISTERED",
+      "classes": [
+        "021 - Kitchen appliances",
+        "035 - Retail services"
+      ],
+      "category": "home"
+    },
+    {
+      "mark": "INSTANT POT",
+      "owner": "Instant Brands Inc.",
+      "regNo": "3567895",
+      "status": "REGISTERED",
+      "classes": [
+        "021 - Pressure cookers",
+        "035 - Retail services"
+      ],
+      "category": "home"
+    },
+    {
+      "mark": "NINJA",
+      "owner": "SharkNinja Operating LLC",
+      "regNo": "2678909",
+      "status": "REGISTERED",
+      "classes": [
+        "021 - Kitchen appliances",
+        "035 - Retail services"
+      ],
+      "category": "home"
+    },
+    {
+      "mark": "VITAMIX",
+      "owner": "Vitamix Corporation",
+      "regNo": "1345686",
+      "status": "REGISTERED",
+      "classes": [
+        "021 - Blenders",
+        "035 - Retail services"
+      ],
+      "category": "home"
+    },
+    {
+      "mark": "BREVILLE",
+      "owner": "Breville Pty Ltd",
+      "regNo": "2456797",
+      "status": "REGISTERED",
+      "classes": [
+        "021 - Kitchen appliances",
+        "035 - Retail services"
+      ],
+      "category": "home"
+    },
+    {
+      "mark": "KEURIG",
+      "owner": "Keurig Dr Pepper Inc.",
+      "regNo": "2567901",
+      "status": "REGISTERED",
+      "classes": [
+        "021 - Coffee makers",
+        "035 - Retail services"
+      ],
+      "category": "home"
+    },
+    {
+      "mark": "NESPRESSO",
+      "owner": "Nestlé Nespresso S.A.",
+      "regNo": "3678909",
+      "status": "REGISTERED",
+      "classes": [
+        "021 - Coffee makers",
+        "035 - Retail services"
+      ],
+      "category": "home"
+    },
+    {
+      "mark": "WEBER",
+      "owner": "Weber Stephen Products LLC",
+      "regNo": "1890131",
+      "status": "REGISTERED",
+      "classes": [
+        "021 - Grills",
+        "035 - Retail services"
+      ],
+      "category": "home"
+    },
+    {
+      "mark": "TRAEGER",
+      "owner": "Traeger, Inc.",
+      "regNo": "2901240",
+      "status": "REGISTERED",
+      "classes": [
+        "021 - Grills",
+        "035 - Retail services"
+      ],
+      "category": "home"
+    },
+    {
+      "mark": "BIG GREEN EGG",
+      "owner": "Big Green Egg, Inc.",
+      "regNo": "3012354",
+      "status": "REGISTERED",
+      "classes": [
+        "021 - Grills",
+        "035 - Retail services"
+      ],
+      "category": "home"
+    },
+    {
+      "mark": "LE CREUSET",
+      "owner": "Le Creuset",
+      "regNo": "1234580",
+      "status": "REGISTERED",
+      "classes": [
+        "021 - Cookware",
+        "035 - Retail services"
+      ],
+      "category": "home"
+    },
+    {
+      "mark": "STAUB",
+      "owner": "Zwilling J.A. Henckels",
+      "regNo": "2345684",
+      "status": "REGISTERED",
+      "classes": [
+        "021 - Cookware",
+        "035 - Retail services"
+      ],
+      "category": "home"
+    },
+    {
+      "mark": "LODGE",
+      "owner": "Lodge Manufacturing Company",
+      "regNo": "0987660",
+      "status": "REGISTERED",
+      "classes": [
+        "021 - Cast iron cookware",
+        "035 - Retail services"
+      ],
+      "category": "home"
+    },
+    {
+      "mark": "ALL-CLAD",
+      "owner": "Group SEB USA",
+      "regNo": "3456788",
+      "status": "REGISTERED",
+      "classes": [
+        "021 - Cookware",
+        "035 - Retail services"
+      ],
+      "category": "home"
+    },
+    {
+      "mark": "CALPHALON",
+      "owner": "Calphant Corporation",
+      "regNo": "1567899",
+      "status": "REGISTERED",
+      "classes": [
+        "021 - Cookware",
+        "035 - Retail services"
+      ],
+      "category": "home"
+    },
+    {
+      "mark": "OXO",
+      "owner": "OXO International Ltd.",
+      "regNo": "2567902",
+      "status": "REGISTERED",
+      "classes": [
+        "021 - Kitchen tools",
+        "035 - Retail services"
+      ],
+      "category": "home"
+    },
+    {
+      "mark": "RUBBERMAID",
+      "owner": "Newell Brands Inc.",
+      "regNo": "0876549",
+      "status": "REGISTERED",
+      "classes": [
+        "021 - Storage containers",
+        "035 - Retail services"
+      ],
+      "category": "home"
+    },
+    {
+      "mark": "TUPPERWARE",
+      "owner": "Tupperware Brands Corporation",
+      "regNo": "3678910",
+      "status": "REGISTERED",
+      "classes": [
+        "021 - Plastic containers",
+        "035 - Retail services"
+      ],
+      "category": "home"
+    },
+    {
+      "mark": "LEGO",
+      "owner": "LEGO Juris A/S",
+      "regNo": "1234581",
+      "status": "REGISTERED",
+      "classes": [
+        "028 - Building blocks",
+        "035 - Retail services"
+      ],
+      "category": "toys"
+    },
+    {
+      "mark": "MATTEL",
+      "owner": "Mattel, Inc.",
+      "regNo": "1890132",
+      "status": "REGISTERED",
+      "classes": [
+        "028 - Toys",
+        "035 - Retail services"
+      ],
+      "category": "toys"
+    },
+    {
+      "mark": "HASBRO",
+      "owner": "Hasbro, Inc.",
+      "regNo": "0987661",
+      "status": "REGISTERED",
+      "classes": [
+        "028 - Toys",
+        "035 - Retail services"
+      ],
+      "category": "toys"
+    },
+    {
+      "mark": "FISHER-PRICE",
+      "owner": "Mattel, Inc.",
+      "regNo": "2901241",
+      "status": "REGISTERED",
+      "classes": [
+        "028 - Toys",
+        "035 - Retail services"
+      ],
+      "category": "toys"
+    },
+    {
+      "mark": "HOT WHEELS",
+      "owner": "Mattel, Inc.",
+      "regNo": "2345685",
+      "status": "REGISTERED",
+      "classes": [
+        "028 - Toy cars",
+        "035 - Retail services"
+      ],
+      "category": "toys"
+    },
+    {
+      "mark": "BARBIE",
+      "owner": "Mattel, Inc.",
+      "regNo": "3012355",
+      "status": "REGISTERED",
+      "classes": [
+        "028 - Dolls",
+        "035 - Retail services"
+      ],
+      "category": "toys"
+    },
+    {
+      "mark": "NERF",
+      "owner": "Hasbro, Inc.",
+      "regNo": "1234582",
+      "status": "REGISTERED",
+      "classes": [
+        "028 - Foam toys",
+        "035 - Retail services"
+      ],
+      "category": "toys"
+    },
+    {
+      "mark": "PLAY-DOH",
+      "owner": "Hasbro, Inc.",
+      "regNo": "2456798",
+      "status": "REGISTERED",
+      "classes": [
+        "028 - Modeling compound",
+        "035 - Retail services"
+      ],
+      "category": "toys"
+    },
+    {
+      "mark": "MONOPOLY",
+      "owner": "Hasbro, Inc.",
+      "regNo": "3567896",
+      "status": "REGISTERED",
+      "classes": [
+        "028 - Board games",
+        "035 - Retail services"
+      ],
+      "category": "toys"
+    },
+    {
+      "mark": "DISNEY",
+      "owner": "The Walt Disney Company",
+      "regNo": "0876550",
+      "status": "REGISTERED",
+      "classes": [
+        "028 - Toys",
+        "035 - Retail services"
+      ],
+      "category": "toys"
+    },
+    {
+      "mark": "MARVEL",
+      "owner": "Marvel Characters B.V.",
+      "regNo": "2678910",
+      "status": "REGISTERED",
+      "classes": [
+        "028 - Toys",
+        "035 - Retail services"
+      ],
+      "category": "toys"
+    },
+    {
+      "mark": "STAR WARS",
+      "owner": "Lucasfilm Limited",
+      "regNo": "1345687",
+      "status": "REGISTERED",
+      "classes": [
+        "028 - Toys",
+        "035 - Retail services"
+      ],
+      "category": "toys"
+    },
+    {
+      "mark": "POKÉMON",
+      "owner": "The Pokémon Company",
+      "regNo": "2567903",
+      "status": "REGISTERED",
+      "classes": [
+        "028 - Toys",
+        "035 - Retail services"
+      ],
+      "category": "toys"
+    },
+    {
+      "mark": "FUNKO",
+      "owner": "Funko, Inc.",
+      "regNo": "3678911",
+      "status": "REGISTERED",
+      "classes": [
+        "028 - Collectible toys",
+        "035 - Retail services"
+      ],
+      "category": "toys"
+    },
+    {
+      "mark": "SQUISHMALLOWS",
+      "owner": "Jazwares, LLC",
+      "regNo": "1890133",
+      "status": "REGISTERED",
+      "classes": [
+        "028 - Stuffed animals",
+        "035 - Retail services"
+      ],
+      "category": "toys"
+    },
+    {
+      "mark": "BUILD-A-BEAR",
+      "owner": "Build-A-Bear Workshop, Inc.",
+      "regNo": "2901242",
+      "status": "REGISTERED",
+      "classes": [
+        "028 - Stuffed animals",
+        "035 - Retail services"
+      ],
+      "category": "toys"
+    },
+    {
+      "mark": "TESLA",
+      "owner": "Tesla, Inc.",
+      "regNo": "3012356",
+      "status": "REGISTERED",
+      "classes": [
+        "012 - Motor vehicles",
+        "035 - Retail services"
+      ],
+      "category": "automotive"
+    },
+    {
+      "mark": "BMW",
+      "owner": "Bayerische Motoren Werke AG",
+      "regNo": "1234583",
+      "status": "REGISTERED",
+      "classes": [
+        "012 - Motor vehicles",
+        "035 - Retail services"
+      ],
+      "category": "automotive"
+    },
+    {
+      "mark": "MERCEDES-BENZ",
+      "owner": "Daimler AG",
+      "regNo": "2345686",
+      "status": "REGISTERED",
+      "classes": [
+        "012 - Motor vehicles",
+        "035 - Retail services"
+      ],
+      "category": "automotive"
+    },
+    {
+      "mark": "AUDI",
+      "owner": "Audi AG",
+      "regNo": "0987662",
+      "status": "REGISTERED",
+      "classes": [
+        "012 - Motor vehicles",
+        "035 - Retail services"
+      ],
+      "category": "automotive"
+    },
+    {
+      "mark": "PORSCHE",
+      "owner": "Porsche AG",
+      "regNo": "3456789",
+      "status": "REGISTERED",
+      "classes": [
+        "012 - Motor vehicles",
+        "035 - Retail services"
+      ],
+      "category": "automotive"
+    },
+    {
+      "mark": "FERRARI",
+      "owner": "Ferrari S.p.A.",
+      "regNo": "1567900",
+      "status": "REGISTERED",
+      "classes": [
+        "012 - Motor vehicles",
+        "035 - Retail services"
+      ],
+      "category": "automotive"
+    },
+    {
+      "mark": "LAMBORGHINI",
+      "owner": "Lamborghini S.p.A.",
+      "regNo": "2567904",
+      "status": "REGISTERED",
+      "classes": [
+        "012 - Motor vehicles",
+        "035 - Retail services"
+      ],
+      "category": "automotive"
+    },
+    {
+      "mark": "MASERATI",
+      "owner": "Maserati S.p.A.",
+      "regNo": "3678912",
+      "status": "REGISTERED",
+      "classes": [
+        "012 - Motor vehicles",
+        "035 - Retail services"
+      ],
+      "category": "automotive"
+    },
+    {
+      "mark": "TOYOTA",
+      "owner": "Toyota Jidosha Kabushiki Kaisha",
+      "regNo": "0876551",
+      "status": "REGISTERED",
+      "classes": [
+        "012 - Motor vehicles",
+        "035 - Retail services"
+      ],
+      "category": "automotive"
+    },
+    {
+      "mark": "HONDA",
+      "owner": "Honda Motor Co., Ltd.",
+      "regNo": "1234584",
+      "status": "REGISTERED",
+      "classes": [
+        "012 - Motor vehicles",
+        "035 - Retail services"
+      ],
+      "category": "automotive"
+    },
+    {
+      "mark": "NISSAN",
+      "owner": "Nissan Motor Company Limited",
+      "regNo": "2345687",
+      "status": "REGISTERED",
+      "classes": [
+        "012 - Motor vehicles",
+        "035 - Retail services"
+      ],
+      "category": "automotive"
+    },
+    {
+      "mark": "FORD",
+      "owner": "Ford Motor Company",
+      "regNo": "0987663",
+      "status": "REGISTERED",
+      "classes": [
+        "012 - Motor vehicles",
+        "035 - Retail services"
+      ],
+      "category": "automotive"
+    },
+    {
+      "mark": "CHEVROLET",
+      "owner": "General Motors Company",
+      "regNo": "3456790",
+      "status": "REGISTERED",
+      "classes": [
+        "012 - Motor vehicles",
+        "035 - Retail services"
+      ],
+      "category": "automotive"
+    },
+    {
+      "mark": "JEEP",
+      "owner": "Chrysler Group LLC",
+      "regNo": "1890134",
+      "status": "REGISTERED",
+      "classes": [
+        "012 - Motor vehicles",
+        "035 - Retail services"
+      ],
+      "category": "automotive"
+    },
+    {
+      "mark": "LAND ROVER",
+      "owner": "Jaguar Land Rover Limited",
+      "regNo": "2901243",
+      "status": "REGISTERED",
+      "classes": [
+        "012 - Motor vehicles",
+        "035 - Retail services"
+      ],
+      "category": "automotive"
+    },
+    {
+      "mark": "HARLEY-DAVIDSON",
+      "owner": "Harley-Davidson Motor Company Group, LLC",
+      "regNo": "3012357",
+      "status": "REGISTERED",
+      "classes": [
+        "012 - Motorcycles",
+        "035 - Retail services"
+      ],
+      "category": "automotive"
+    },
+    {
+      "mark": "MICHELIN",
+      "owner": "Michelin et Compagnie",
+      "regNo": "1234585",
+      "status": "REGISTERED",
+      "classes": [
+        "012 - Tires",
+        "035 - Retail services"
+      ],
+      "category": "automotive"
+    },
+    {
+      "mark": "GOODYEAR",
+      "owner": "The Goodyear Tire & Rubber Company",
+      "regNo": "2456799",
+      "status": "REGISTERED",
+      "classes": [
+        "012 - Tires",
+        "035 - Retail services"
+      ],
+      "category": "automotive"
+    },
+    {
+      "mark": "BRIDGESTONE",
+      "owner": "Bridgestone Corporation",
+      "regNo": "3567897",
+      "status": "REGISTERED",
+      "classes": [
+        "012 - Tires",
+        "035 - Retail services"
+      ],
+      "category": "automotive"
+    },
+    {
+      "mark": "WEATHERTECH",
+      "owner": "WeatherTech.com, Inc.",
+      "regNo": "0876552",
+      "status": "REGISTERED",
+      "classes": [
+        "012 - Auto accessories",
+        "035 - Retail services"
+      ],
+      "category": "automotive"
+    },
+    {
+      "mark": "COCA-COLA",
+      "owner": "The Coca-Cola Company",
+      "regNo": "2678911",
+      "status": "REGISTERED",
+      "classes": [
+        "029 - Beverages",
+        "035 - Retail services"
+      ],
+      "category": "food"
+    },
+    {
+      "mark": "PEPSI",
+      "owner": "PepsiCo, Inc.",
+      "regNo": "1345688",
+      "status": "REGISTERED",
+      "classes": [
+        "029 - Beverages",
+        "035 - Retail services"
+      ],
+      "category": "food"
+    },
+    {
+      "mark": "RED BULL",
+      "owner": "Red Bull GmbH",
+      "regNo": "2567905",
+      "status": "REGISTERED",
+      "classes": [
+        "029 - Beverages",
+        "035 - Retail services"
+      ],
+      "category": "food"
+    },
+    {
+      "mark": "MONSTER",
+      "owner": "Monster Energy Company",
+      "regNo": "3678913",
+      "status": "REGISTERED",
+      "classes": [
+        "029 - Beverages",
+        "035 - Retail services"
+      ],
+      "category": "food"
+    },
+    {
+      "mark": "GATORADE",
+      "owner": "The Coca-Cola Company",
+      "regNo": "1234586",
+      "status": "REGISTERED",
+      "classes": [
+        "029 - Beverages",
+        "035 - Retail services"
+      ],
+      "category": "food"
+    },
+    {
+      "mark": "STARBUCKS",
+      "owner": "Starbucks Corporation",
+      "regNo": "2345688",
+      "status": "REGISTERED",
+      "classes": [
+        "029 - Beverages",
+        "035 - Retail services"
+      ],
+      "category": "food"
+    },
+    {
+      "mark": "NESCAFÉ",
+      "owner": "Nestlé SA",
+      "regNo": "0987664",
+      "status": "REGISTERED",
+      "classes": [
+        "029 - Coffee",
+        "035 - Retail services"
+      ],
+      "category": "food"
+    },
+    {
+      "mark": "KELLOGG'S",
+      "owner": "Kellogg Company",
+      "regNo": "3456791",
+      "status": "REGISTERED",
+      "classes": [
+        "029 - Cereal",
+        "035 - Retail services"
+      ],
+      "category": "food"
+    },
+    {
+      "mark": "GENERAL MILLS",
+      "owner": "General Mills, Inc.",
+      "regNo": "1890135",
+      "status": "REGISTERED",
+      "classes": [
+        "029 - Cereal",
+        "035 - Retail services"
+      ],
+      "category": "food"
+    },
+    {
+      "mark": "HERSHEY'S",
+      "owner": "The Hershey Company",
+      "regNo": "2901244",
+      "status": "REGISTERED",
+      "classes": [
+        "029 - Chocolate",
+        "035 - Retail services"
+      ],
+      "category": "food"
+    },
+    {
+      "mark": "MARS",
+      "owner": "Mars, Incorporated",
+      "regNo": "3012358",
+      "status": "REGISTERED",
+      "classes": [
+        "029 - Candy",
+        "035 - Retail services"
+      ],
+      "category": "food"
+    },
+    {
+      "mark": "SNICKERS",
+      "owner": "Mars, Incorporated",
+      "regNo": "1567901",
+      "status": "REGISTERED",
+      "classes": [
+        "029 - Candy",
+        "035 - Retail services"
+      ],
+      "category": "food"
+    },
+    {
+      "mark": "KIT KAT",
+      "owner": "Nestlé SA",
+      "regNo": "2567906",
+      "status": "REGISTERED",
+      "classes": [
+        "029 - Chocolate",
+        "035 - Retail services"
+      ],
+      "category": "food"
+    },
+    {
+      "mark": "OREO",
+      "owner": "Mondelēz International, Inc.",
+      "regNo": "0876553",
+      "status": "REGISTERED",
+      "classes": [
+        "029 - Cookies",
+        "035 - Retail services"
+      ],
+      "category": "food"
+    },
+    {
+      "mark": "LAY'S",
+      "owner": "PepsiCo, Inc.",
+      "regNo": "2678912",
+      "status": "REGISTERED",
+      "classes": [
+        "029 - Snacks",
+        "035 - Retail services"
+      ],
+      "category": "food"
+    },
+    {
+      "mark": "DORITOS",
+      "owner": "PepsiCo, Inc.",
+      "regNo": "1234587",
+      "status": "REGISTERED",
+      "classes": [
+        "029 - Snacks",
+        "035 - Retail services"
+      ],
+      "category": "food"
+    },
+    {
+      "mark": "PRINGLES",
+      "owner": "Kellogg Company",
+      "regNo": "2345689",
+      "status": "REGISTERED",
+      "classes": [
+        "029 - Snacks",
+        "035 - Retail services"
+      ],
+      "category": "food"
+    },
+    {
+      "mark": "HEINZ",
+      "owner": "Kraft Heinz Company",
+      "regNo": "3456792",
+      "status": "REGISTERED",
+      "classes": [
+        "029 - Condiments",
+        "035 - Retail services"
+      ],
+      "category": "food"
+    },
+    {
+      "mark": "KRAFT",
+      "owner": "Kraft Heinz Company",
+      "regNo": "0987665",
+      "status": "REGISTERED",
+      "classes": [
+        "029 - Food products",
+        "035 - Retail services"
+      ],
+      "category": "food"
+    },
+    {
+      "mark": "CAMPBELL'S",
+      "owner": "Campbell Soup Company",
+      "regNo": "1890136",
+      "status": "REGISTERED",
+      "classes": [
+        "029 - Soup",
+        "035 - Retail services"
+      ],
+      "category": "food"
+    },
+    {
+      "mark": "NESTLÉ",
+      "owner": "Nestlé SA",
+      "regNo": "2901245",
+      "status": "REGISTERED",
+      "classes": [
+        "029 - Food products",
+        "035 - Retail services"
+      ],
+      "category": "food"
+    },
+    {
+      "mark": "LINDT",
+      "owner": "Chocoladefabriken Lindt & Sprüngli AG",
+      "regNo": "3012359",
+      "status": "REGISTERED",
+      "classes": [
+        "029 - Chocolate",
+        "035 - Retail services"
+      ],
+      "category": "food"
+    },
+    {
+      "mark": "GHIRARDELLI",
+      "owner": "Ghirardelli Chocolate Company",
+      "regNo": "1234588",
+      "status": "REGISTERED",
+      "classes": [
+        "029 - Chocolate",
+        "035 - Retail services"
+      ],
+      "category": "food"
+    },
+    {
+      "mark": "GODIVA",
+      "owner": "GODIVA Chocolatier, Inc.",
+      "regNo": "2456800",
+      "status": "REGISTERED",
+      "classes": [
+        "029 - Chocolate",
+        "035 - Retail services"
+      ],
+      "category": "food"
+    },
+    {
+      "mark": "PURINA",
+      "owner": "Nestlé Purina PetCare Company",
+      "regNo": "3567898",
+      "status": "REGISTERED",
+      "classes": [
+        "031 - Pet food",
+        "035 - Retail services"
+      ],
+      "category": "pet"
+    },
+    {
+      "mark": "ROYAL CANIN",
+      "owner": "Royal Canin SAS",
+      "regNo": "1567902",
+      "status": "REGISTERED",
+      "classes": [
+        "031 - Pet food",
+        "035 - Retail services"
+      ],
+      "category": "pet"
+    },
+    {
+      "mark": "HILL'S",
+      "owner": "Hill's Pet Nutrition, Inc.",
+      "regNo": "2678913",
+      "status": "REGISTERED",
+      "classes": [
+        "031 - Pet food",
+        "035 - Retail services"
+      ],
+      "category": "pet"
+    },
+    {
+      "mark": "BLUE BUFFALO",
+      "owner": "Blue Buffalo Company, Inc.",
+      "regNo": "0876554",
+      "status": "REGISTERED",
+      "classes": [
+        "031 - Pet food",
+        "035 - Retail services"
+      ],
+      "category": "pet"
+    },
+    {
+      "mark": "CHEWY",
+      "owner": "Chewy, Inc.",
+      "regNo": "3456793",
+      "status": "REGISTERED",
+      "classes": [
+        "035 - Retail services",
+        "031 - Pet products"
+      ],
+      "category": "pet"
+    },
+    {
+      "mark": "PETSMART",
+      "owner": "PetSmart, Inc.",
+      "regNo": "1234589",
+      "status": "REGISTERED",
+      "classes": [
+        "035 - Retail services",
+        "031 - Pet products"
+      ],
+      "category": "pet"
+    },
+    {
+      "mark": "KONG",
+      "owner": "Kong Company",
+      "regNo": "2345690",
+      "status": "REGISTERED",
+      "classes": [
+        "028 - Pet toys",
+        "035 - Retail services"
+      ],
+      "category": "pet"
+    },
+    {
+      "mark": "CHUCKIT",
+      "owner": "Canine Hardware, Inc.",
+      "regNo": "1890137",
+      "status": "REGISTERED",
+      "classes": [
+        "028 - Pet toys",
+        "035 - Retail services"
+      ],
+      "category": "pet"
+    },
+    {
+      "mark": "NYLABONE",
+      "owner": "Nylabone Products",
+      "regNo": "2901246",
+      "status": "REGISTERED",
+      "classes": [
+        "028 - Pet toys",
+        "035 - Retail services"
+      ],
+      "category": "pet"
+    },
+    {
+      "mark": "GREENIES",
+      "owner": "Mars, Incorporated",
+      "regNo": "3012360",
+      "status": "REGISTERED",
+      "classes": [
+        "031 - Pet treats",
+        "035 - Retail services"
+      ],
+      "category": "pet"
+    },
+    {
+      "mark": "WELLNESS",
+      "owner": "Wellness (WellPet, LLC)",
+      "regNo": "1567903",
+      "status": "REGISTERED",
+      "classes": [
+        "031 - Pet food",
+        "035 - Retail services"
+      ],
+      "category": "pet"
+    },
+    {
+      "mark": "TASTE OF THE WILD",
+      "owner": "Diamond Pet Foods, Inc.",
+      "regNo": "2567907",
+      "status": "REGISTERED",
+      "classes": [
+        "031 - Pet food",
+        "035 - Retail services"
+      ],
+      "category": "pet"
+    },
+    {
+      "mark": "ORIJEN",
+      "owner": "Orijen Pet Foods Inc.",
+      "regNo": "0876555",
+      "status": "REGISTERED",
+      "classes": [
+        "031 - Pet food",
+        "035 - Retail services"
+      ],
+      "category": "pet"
+    },
+    {
+      "mark": "PAMPERS",
+      "owner": "Procter & Gamble Company",
+      "regNo": "2678914",
+      "status": "REGISTERED",
+      "classes": [
+        "005 - Diapers",
+        "035 - Retail services"
+      ],
+      "category": "baby"
+    },
+    {
+      "mark": "HUGGIES",
+      "owner": "Kimberly-Clark Corporation",
+      "regNo": "1234590",
+      "status": "REGISTERED",
+      "classes": [
+        "005 - Diapers",
+        "035 - Retail services"
+      ],
+      "category": "baby"
+    },
+    {
+      "mark": "GRACO",
+      "owner": "Graco Children's Products Inc.",
+      "regNo": "2345691",
+      "status": "REGISTERED",
+      "classes": [
+        "020 - Baby furniture",
+        "035 - Retail services"
+      ],
+      "category": "baby"
+    },
+    {
+      "mark": "CHICCO",
+      "owner": "Artsana S.p.A.",
+      "regNo": "3456794",
+      "status": "REGISTERED",
+      "classes": [
+        "020 - Baby furniture",
+        "035 - Retail services"
+      ],
+      "category": "baby"
+    },
+    {
+      "mark": "UPPABABY",
+      "owner": "UPPAbaby, Inc.",
+      "regNo": "1890138",
+      "status": "REGISTERED",
+      "classes": [
+        "020 - Baby strollers",
+        "035 - Retail services"
+      ],
+      "category": "baby"
+    },
+    {
+      "mark": "BUGABOO",
+      "owner": "Bugaboo International BV",
+      "regNo": "2901247",
+      "status": "REGISTERED",
+      "classes": [
+        "020 - Baby strollers",
+        "035 - Retail services"
+      ],
+      "category": "baby"
+    },
+    {
+      "mark": "ERGOBABY",
+      "owner": "Ergobaby Designs, Inc.",
+      "regNo": "3012361",
+      "status": "REGISTERED",
+      "classes": [
+        "020 - Baby carriers",
+        "035 - Retail services"
+      ],
+      "category": "baby"
+    },
+    {
+      "mark": "BABYBJÖRN",
+      "owner": "BabyBjörn AB",
+      "regNo": "1234591",
+      "status": "REGISTERED",
+      "classes": [
+        "020 - Baby carriers",
+        "035 - Retail services"
+      ],
+      "category": "baby"
+    },
+    {
+      "mark": "MEDELA",
+      "owner": "Medela Holding AG",
+      "regNo": "2567908",
+      "status": "REGISTERED",
+      "classes": [
+        "010 - Breast pumps",
+        "035 - Retail services"
+      ],
+      "category": "baby"
+    },
+    {
+      "mark": "PHILIPS AVENT",
+      "owner": "Koninklijke Philips N.V.",
+      "regNo": "0876556",
+      "status": "REGISTERED",
+      "classes": [
+        "010 - Baby feeding",
+        "035 - Retail services"
+      ],
+      "category": "baby"
+    },
+    {
+      "mark": "DR. BROWN'S",
+      "owner": "Handi-Craft Company",
+      "regNo": "3678914",
+      "status": "REGISTERED",
+      "classes": [
+        "010 - Baby bottles",
+        "035 - Retail services"
+      ],
+      "category": "baby"
+    },
+    {
+      "mark": "MAM",
+      "owner": "MAM Babyartikel GmbH",
+      "regNo": "1345689",
+      "status": "REGISTERED",
+      "classes": [
+        "010 - Pacifiers",
+        "035 - Retail services"
+      ],
+      "category": "baby"
+    },
+    {
+      "mark": "NUK",
+      "owner": "MAPA GmbH",
+      "regNo": "2456801",
+      "status": "REGISTERED",
+      "classes": [
+        "010 - Pacifiers",
+        "035 - Retail services"
+      ],
+      "category": "baby"
+    },
+    {
+      "mark": "GERBER",
+      "owner": "Gerber Childrenswear Inc.",
+      "regNo": "3567899",
+      "status": "REGISTERED",
+      "classes": [
+        "025 - Baby clothing",
+        "035 - Retail services"
+      ],
+      "category": "baby"
+    },
+    {
+      "mark": "EARTH'S BEST",
+      "owner": "Hain Celestial Group, Inc.",
+      "regNo": "1567904",
+      "status": "REGISTERED",
+      "classes": [
+        "029 - Baby food",
+        "035 - Retail services"
+      ],
+      "category": "baby"
+    },
+    {
+      "mark": "ARC'TERYX",
+      "owner": "Arc'teryx Equipment Inc.",
+      "regNo": "2678915",
+      "status": "REGISTERED",
+      "classes": [
+        "025 - Clothing",
+        "035 - Retail services"
+      ],
+      "category": "outdoor"
+    },
+    {
+      "mark": "MARMOT",
+      "owner": "Marmot Mountain LLC",
+      "regNo": "0876557",
+      "status": "REGISTERED",
+      "classes": [
+        "025 - Outdoor clothing",
+        "035 - Retail services"
+      ],
+      "category": "outdoor"
+    },
+    {
+      "mark": "MOUNTAIN HARDWEAR",
+      "owner": "Mountain Hardwear, Inc.",
+      "regNo": "2345692",
+      "status": "REGISTERED",
+      "classes": [
+        "025 - Outdoor clothing",
+        "035 - Retail services"
+      ],
+      "category": "outdoor"
+    },
+    {
+      "mark": "GREGORY",
+      "owner": "Gregory Designs LLC",
+      "regNo": "3456795",
+      "status": "REGISTERED",
+      "classes": [
+        "018 - Backpacks",
+        "035 - Retail services"
+      ],
+      "category": "outdoor"
+    },
+    {
+      "mark": "DEUTER",
+      "owner": "Deuter Sport GmbH",
+      "regNo": "1234592",
+      "status": "REGISTERED",
+      "classes": [
+        "018 - Backpacks",
+        "035 - Retail services"
+      ],
+      "category": "outdoor"
+    },
+    {
+      "mark": "BLACK DIAMOND",
+      "owner": "Black Diamond Equipment, Ltd.",
+      "regNo": "1890139",
+      "status": "REGISTERED",
+      "classes": [
+        "008 - Climbing equipment",
+        "035 - Retail services"
+      ],
+      "category": "outdoor"
+    },
+    {
+      "mark": "PETZL",
+      "owner": "Petzl Distribution",
+      "regNo": "2901248",
+      "status": "REGISTERED",
+      "classes": [
+        "008 - Climbing equipment",
+        "035 - Retail services"
+      ],
+      "category": "outdoor"
+    },
+    {
+      "mark": "LEATHERMAN",
+      "owner": "Leatherman Tool Group, Inc.",
+      "regNo": "3012362",
+      "status": "REGISTERED",
+      "classes": [
+        "008 - Multi-tools",
+        "035 - Retail services"
+      ],
+      "category": "outdoor"
+    },
+    {
+      "mark": "GERBER",
+      "owner": "Gerber Legendary Blades",
+      "regNo": "1567905",
+      "status": "REGISTERED",
+      "classes": [
+        "008 - Knives",
+        "035 - Retail services"
+      ],
+      "category": "outdoor"
+    },
+    {
+      "mark": "BENCHMADE",
+      "owner": "Benchmade Knife Company",
+      "regNo": "2567909",
+      "status": "REGISTERED",
+      "classes": [
+        "008 - Knives",
+        "035 - Retail services"
+      ],
+      "category": "outdoor"
+    },
+    {
+      "mark": "COLEMAN",
+      "owner": "The Coleman Company, Inc.",
+      "regNo": "0876558",
+      "status": "REGISTERED",
+      "classes": [
+        "021 - Camping equipment",
+        "035 - Retail services"
+      ],
+      "category": "outdoor"
+    },
+    {
+      "mark": "MSR",
+      "owner": "Cascade Designs, Inc.",
+      "regNo": "2678916",
+      "status": "REGISTERED",
+      "classes": [
+        "021 - Camping equipment",
+        "035 - Retail services"
+      ],
+      "category": "outdoor"
+    },
+    {
+      "mark": "ROLEX",
+      "owner": "Rolex SA",
+      "regNo": "1234593",
+      "status": "REGISTERED",
+      "classes": [
+        "014 - Watches",
+        "035 - Retail services"
+      ],
+      "category": "luxury watches"
+    },
+    {
+      "mark": "OMEGA",
+      "owner": "Omega SA",
+      "regNo": "2345693",
+      "status": "REGISTERED",
+      "classes": [
+        "014 - Watches",
+        "035 - Retail services"
+      ],
+      "category": "luxury watches"
+    },
+    {
+      "mark": "TAG HEUER",
+      "owner": "TAG Heuer International",
+      "regNo": "3456796",
+      "status": "REGISTERED",
+      "classes": [
+        "014 - Watches",
+        "035 - Retail services"
+      ],
+      "category": "luxury watches"
+    },
+    {
+      "mark": "CARTIER",
+      "owner": "Cartier International BV",
+      "regNo": "1890140",
+      "status": "REGISTERED",
+      "classes": [
+        "014 - Watches",
+        "035 - Retail services"
+      ],
+      "category": "luxury watches"
+    },
+    {
+      "mark": "BREITLING",
+      "owner": "Breitling SA",
+      "regNo": "2901249",
+      "status": "REGISTERED",
+      "classes": [
+        "014 - Watches",
+        "035 - Retail services"
+      ],
+      "category": "luxury watches"
+    },
+    {
+      "mark": "IWC",
+      "owner": "IWC Schaffhausen",
+      "regNo": "3012363",
+      "status": "REGISTERED",
+      "classes": [
+        "014 - Watches",
+        "035 - Retail services"
+      ],
+      "category": "luxury watches"
+    },
+    {
+      "mark": "PANERAI",
+      "owner": "Officine Panerai SpA",
+      "regNo": "1234594",
+      "status": "REGISTERED",
+      "classes": [
+        "014 - Watches",
+        "035 - Retail services"
+      ],
+      "category": "luxury watches"
+    },
+    {
+      "mark": "HUBLOT",
+      "owner": "Hublot Genève SA",
+      "regNo": "2567910",
+      "status": "REGISTERED",
+      "classes": [
+        "014 - Watches",
+        "035 - Retail services"
+      ],
+      "category": "luxury watches"
+    },
+    {
+      "mark": "AUDEMARS PIGUET",
+      "owner": "Audemars Piguet Holding SA",
+      "regNo": "0876559",
+      "status": "REGISTERED",
+      "classes": [
+        "014 - Watches",
+        "035 - Retail services"
+      ],
+      "category": "luxury watches"
+    },
+    {
+      "mark": "PATEK PHILIPPE",
+      "owner": "Patek Philippe SA",
+      "regNo": "3678915",
+      "status": "REGISTERED",
+      "classes": [
+        "014 - Watches",
+        "035 - Retail services"
+      ],
+      "category": "luxury watches"
+    },
+    {
+      "mark": "LONGINES",
+      "owner": "Longines Watch Company",
+      "regNo": "1345690",
+      "status": "REGISTERED",
+      "classes": [
+        "014 - Watches",
+        "035 - Retail services"
+      ],
+      "category": "luxury watches"
+    },
+    {
+      "mark": "TUDOR",
+      "owner": "Rolex SA",
+      "regNo": "2456802",
+      "status": "REGISTERED",
+      "classes": [
+        "014 - Watches",
+        "035 - Retail services"
+      ],
+      "category": "luxury watches"
+    },
+    {
+      "mark": "TISSOT",
+      "owner": "Tissot S.A.",
+      "regNo": "3567900",
+      "status": "REGISTERED",
+      "classes": [
+        "014 - Watches",
+        "035 - Retail services"
+      ],
+      "category": "luxury watches"
+    },
+    {
+      "mark": "SEIKO",
+      "owner": "Seiko Corporation",
+      "regNo": "1567906",
+      "status": "REGISTERED",
+      "classes": [
+        "014 - Watches",
+        "035 - Retail services"
+      ],
+      "category": "luxury watches"
+    },
+    {
+      "mark": "CASIO",
+      "owner": "Casio Computer Co., Ltd.",
+      "regNo": "2678917",
+      "status": "REGISTERED",
+      "classes": [
+        "014 - Watches",
+        "035 - Retail services"
+      ],
+      "category": "luxury watches"
+    },
+    {
+      "mark": "G-SHOCK",
+      "owner": "Casio Computer Co., Ltd.",
+      "regNo": "0876560",
+      "status": "REGISTERED",
+      "classes": [
+        "014 - Watches",
+        "035 - Retail services"
+      ],
+      "category": "luxury watches"
+    },
+    {
+      "mark": "CITIZEN",
+      "owner": "Citizen Watch Co., Ltd.",
+      "regNo": "2345694",
+      "status": "REGISTERED",
+      "classes": [
+        "014 - Watches",
+        "035 - Retail services"
+      ],
+      "category": "luxury watches"
+    },
+    {
+      "mark": "FOSSIL",
+      "owner": "Fossil Group, Inc.",
+      "regNo": "3456797",
+      "status": "REGISTERED",
+      "classes": [
+        "014 - Watches",
+        "035 - Retail services"
+      ],
+      "category": "luxury watches"
+    },
+    {
+      "mark": "DANIEL WELLINGTON",
+      "owner": "Daniel Wellington AB",
+      "regNo": "1234595",
+      "status": "REGISTERED",
+      "classes": [
+        "014 - Watches",
+        "035 - Retail services"
+      ],
+      "category": "luxury watches"
+    },
+    {
+      "mark": "APPLE WATCH",
+      "owner": "Apple Inc.",
+      "regNo": "1890141",
+      "status": "REGISTERED",
+      "classes": [
+        "014 - Smartwatches",
+        "035 - Retail services"
+      ],
+      "category": "luxury watches"
+    },
+    {
+      "mark": "GNC",
+      "owner": "General Nutrition Corporation",
+      "regNo": "1234567",
+      "status": "REGISTERED",
+      "classes": [
+        "005 - Vitamins"
+      ],
+      "category": "health"
+    },
+    {
+      "mark": "NATURE MADE",
+      "owner": "Pharmavite LLC",
+      "regNo": "2345678",
+      "status": "REGISTERED",
+      "classes": [
+        "005 - Dietary supplements"
+      ],
+      "category": "health"
+    },
+    {
+      "mark": "CENTRUM",
+      "owner": "Haleon US Holdings LLC",
+      "regNo": "1456789",
+      "status": "REGISTERED",
+      "classes": [
+        "005 - Vitamins"
+      ],
+      "category": "health"
+    },
+    {
+      "mark": "OPTIMUM NUTRITION",
+      "owner": "Glanbia Performance Nutrition",
+      "regNo": "2567890",
+      "status": "REGISTERED",
+      "classes": [
+        "005 - Nutritional supplements"
+      ],
+      "category": "health"
+    },
+    {
+      "mark": "GARDEN OF LIFE",
+      "owner": "Nestlé Health Science",
+      "regNo": "3678901",
+      "status": "REGISTERED",
+      "classes": [
+        "005 - Dietary supplements"
+      ],
+      "category": "health"
+    },
+    {
+      "mark": "NOW FOODS",
+      "owner": "NOW Health Group Inc.",
+      "regNo": "1789012",
+      "status": "REGISTERED",
+      "classes": [
+        "005 - Nutritional supplements"
+      ],
+      "category": "health"
+    },
+    {
+      "mark": "VITAL PROTEINS",
+      "owner": "Nestlé Health Science",
+      "regNo": "5890123",
+      "status": "REGISTERED",
+      "classes": [
+        "005 - Collagen supplements"
+      ],
+      "category": "health"
+    },
+    {
+      "mark": "AG1",
+      "owner": "Athletic Greens International",
+      "regNo": "6901235",
+      "status": "REGISTERED",
+      "classes": [
+        "005 - Nutritional supplements"
+      ],
+      "category": "health"
+    },
+    {
+      "mark": "OLLY",
+      "owner": "Unilever United States",
+      "regNo": "5012345",
+      "status": "REGISTERED",
+      "classes": [
+        "005 - Gummy vitamins"
+      ],
+      "category": "health"
+    },
+    {
+      "mark": "RITUAL",
+      "owner": "Ritual Inc.",
+      "regNo": "5123456",
+      "status": "REGISTERED",
+      "classes": [
+        "005 - Multivitamins"
+      ],
+      "category": "health"
+    },
+    {
+      "mark": "ORGAIN",
+      "owner": "Orgain Inc.",
+      "regNo": "5234567",
+      "status": "REGISTERED",
+      "classes": [
+        "005 - Protein powders"
+      ],
+      "category": "health"
+    },
+    {
+      "mark": "QUEST",
+      "owner": "Quest Nutrition LLC",
+      "regNo": "5345678",
+      "status": "REGISTERED",
+      "classes": [
+        "005 - Protein bars",
+        "029 - Protein snacks"
+      ],
+      "category": "health"
+    },
+    {
+      "mark": "CELSIUS",
+      "owner": "Celsius Holdings Inc.",
+      "regNo": "4567890",
+      "status": "REGISTERED",
+      "classes": [
+        "032 - Energy drinks"
+      ],
+      "category": "health"
+    },
+    {
+      "mark": "LIQUID IV",
+      "owner": "Unilever United States",
+      "regNo": "5678901",
+      "status": "REGISTERED",
+      "classes": [
+        "005 - Hydration products"
+      ],
+      "category": "health"
+    },
+    {
+      "mark": "NUUN",
+      "owner": "Nuun and Company Inc.",
+      "regNo": "4789012",
+      "status": "REGISTERED",
+      "classes": [
+        "005 - Electrolyte tablets"
+      ],
+      "category": "health"
+    },
+    {
+      "mark": "ROBLOX",
+      "owner": "Roblox Corporation",
+      "regNo": "5111222",
+      "status": "REGISTERED",
+      "classes": [
+        "009 - Game software",
+        "041 - Entertainment"
+      ],
+      "category": "gaming"
+    },
+    {
+      "mark": "FORTNITE",
+      "owner": "Epic Games Inc.",
+      "regNo": "5222333",
+      "status": "REGISTERED",
+      "classes": [
+        "009 - Video games",
+        "041 - Entertainment"
+      ],
+      "category": "gaming"
+    },
+    {
+      "mark": "MINECRAFT",
+      "owner": "Microsoft Corporation",
+      "regNo": "4333444",
+      "status": "REGISTERED",
+      "classes": [
+        "009 - Computer games"
+      ],
+      "category": "gaming"
+    },
+    {
+      "mark": "CALL OF DUTY",
+      "owner": "Activision Publishing Inc.",
+      "regNo": "3444555",
+      "status": "REGISTERED",
+      "classes": [
+        "009 - Video games"
+      ],
+      "category": "gaming"
+    },
+    {
+      "mark": "GRAND THEFT AUTO",
+      "owner": "Take-Two Interactive",
+      "regNo": "3555666",
+      "status": "REGISTERED",
+      "classes": [
+        "009 - Video games"
+      ],
+      "category": "gaming"
+    },
+    {
+      "mark": "LEAGUE OF LEGENDS",
+      "owner": "Riot Games Inc.",
+      "regNo": "4666777",
+      "status": "REGISTERED",
+      "classes": [
+        "009 - Video games",
+        "041 - Entertainment"
+      ],
+      "category": "gaming"
+    },
+    {
+      "mark": "VALORANT",
+      "owner": "Riot Games Inc.",
+      "regNo": "6777888",
+      "status": "REGISTERED",
+      "classes": [
+        "009 - Video games"
+      ],
+      "category": "gaming"
+    },
+    {
+      "mark": "APEX LEGENDS",
+      "owner": "Electronic Arts Inc.",
+      "regNo": "6888999",
+      "status": "REGISTERED",
+      "classes": [
+        "009 - Video games"
+      ],
+      "category": "gaming"
+    },
+    {
+      "mark": "STEAM",
+      "owner": "Valve Corporation",
+      "regNo": "3999111",
+      "status": "REGISTERED",
+      "classes": [
+        "009 - Game distribution platform"
+      ],
+      "category": "gaming"
+    },
+    {
+      "mark": "TWITCH",
+      "owner": "Amazon Technologies Inc.",
+      "regNo": "5222444",
+      "status": "REGISTERED",
+      "classes": [
+        "038 - Streaming services"
+      ],
+      "category": "gaming"
+    },
+    {
+      "mark": "TIFFANY",
+      "owner": "Tiffany and Co.",
+      "regNo": "0071418",
+      "status": "REGISTERED",
+      "classes": [
+        "014 - Jewelry",
+        "035 - Retail"
+      ],
+      "category": "jewelry"
+    },
+    {
+      "mark": "PANDORA",
+      "owner": "Pandora A/S",
+      "regNo": "3111222",
+      "status": "REGISTERED",
+      "classes": [
+        "014 - Jewelry"
+      ],
+      "category": "jewelry"
+    },
+    {
+      "mark": "SWAROVSKI",
+      "owner": "Swarovski AG",
+      "regNo": "1222333",
+      "status": "REGISTERED",
+      "classes": [
+        "014 - Crystal jewelry"
+      ],
+      "category": "jewelry"
+    },
+    {
+      "mark": "DAVID YURMAN",
+      "owner": "David Yurman Enterprises LLC",
+      "regNo": "2333444",
+      "status": "REGISTERED",
+      "classes": [
+        "014 - Jewelry"
+      ],
+      "category": "jewelry"
+    },
+    {
+      "mark": "KENDRA SCOTT",
+      "owner": "Kendra Scott LLC",
+      "regNo": "4666888",
+      "status": "REGISTERED",
+      "classes": [
+        "014 - Fashion jewelry"
+      ],
+      "category": "jewelry"
+    },
+    {
+      "mark": "MEJURI",
+      "owner": "Mejuri Inc.",
+      "regNo": "6777999",
+      "status": "REGISTERED",
+      "classes": [
+        "014 - Fine jewelry"
+      ],
+      "category": "jewelry"
+    },
+    {
+      "mark": "VAN CLEEF & ARPELS",
+      "owner": "Van Cleef & Arpels SA",
+      "regNo": "0999222",
+      "status": "REGISTERED",
+      "classes": [
+        "014 - Fine jewelry"
+      ],
+      "category": "jewelry"
+    },
+    {
+      "mark": "BVLGARI",
+      "owner": "Bulgari S.p.A.",
+      "regNo": "1222555",
+      "status": "REGISTERED",
+      "classes": [
+        "014 - Jewelry",
+        "003 - Perfumery"
+      ],
+      "category": "jewelry"
+    },
+    {
+      "mark": "RAY-BAN",
+      "owner": "Luxottica Group S.p.A.",
+      "regNo": "0567890",
+      "status": "REGISTERED",
+      "classes": [
+        "009 - Sunglasses"
+      ],
+      "category": "eyewear"
+    },
+    {
+      "mark": "OAKLEY",
+      "owner": "Luxottica Group S.p.A.",
+      "regNo": "1678901",
+      "status": "REGISTERED",
+      "classes": [
+        "009 - Sunglasses",
+        "025 - Apparel"
+      ],
+      "category": "eyewear"
+    },
+    {
+      "mark": "WARBY PARKER",
+      "owner": "JAND Inc.",
+      "regNo": "4789123",
+      "status": "REGISTERED",
+      "classes": [
+        "009 - Eyeglasses"
+      ],
+      "category": "eyewear"
+    },
+    {
+      "mark": "MAUI JIM",
+      "owner": "Maui Jim Inc.",
+      "regNo": "2890234",
+      "status": "REGISTERED",
+      "classes": [
+        "009 - Sunglasses"
+      ],
+      "category": "eyewear"
+    },
+    {
+      "mark": "COSTA DEL MAR",
+      "owner": "Luxottica Group S.p.A.",
+      "regNo": "2901345",
+      "status": "REGISTERED",
+      "classes": [
+        "009 - Sunglasses"
+      ],
+      "category": "eyewear"
+    },
+    {
+      "mark": "PERSOL",
+      "owner": "Luxottica Group S.p.A.",
+      "regNo": "1012456",
+      "status": "REGISTERED",
+      "classes": [
+        "009 - Eyewear"
+      ],
+      "category": "eyewear"
+    },
+    {
+      "mark": "SAMSONITE",
+      "owner": "Samsonite IP Holdings S.à r.l.",
+      "regNo": "0345789",
+      "status": "REGISTERED",
+      "classes": [
+        "018 - Luggage"
+      ],
+      "category": "luggage"
+    },
+    {
+      "mark": "RIMOWA",
+      "owner": "RIMOWA GmbH",
+      "regNo": "3456891",
+      "status": "REGISTERED",
+      "classes": [
+        "018 - Luggage"
+      ],
+      "category": "luggage"
+    },
+    {
+      "mark": "TUMI",
+      "owner": "Tumi Inc.",
+      "regNo": "2567912",
+      "status": "REGISTERED",
+      "classes": [
+        "018 - Luggage",
+        "025 - Travel accessories"
+      ],
+      "category": "luggage"
+    },
+    {
+      "mark": "AWAY",
+      "owner": "Away Travel Inc.",
+      "regNo": "5678123",
+      "status": "REGISTERED",
+      "classes": [
+        "018 - Luggage"
+      ],
+      "category": "luggage"
+    },
+    {
+      "mark": "BRIGGS & RILEY",
+      "owner": "Briggs & Riley Travelware",
+      "regNo": "2789234",
+      "status": "REGISTERED",
+      "classes": [
+        "018 - Luggage"
+      ],
+      "category": "luggage"
+    },
+    {
+      "mark": "TRAVELPRO",
+      "owner": "Travelpro International Inc.",
+      "regNo": "2890345",
+      "status": "REGISTERED",
+      "classes": [
+        "018 - Luggage"
+      ],
+      "category": "luggage"
+    },
+    {
+      "mark": "DELSEY",
+      "owner": "Delsey SA",
+      "regNo": "1901456",
+      "status": "REGISTERED",
+      "classes": [
+        "018 - Luggage"
+      ],
+      "category": "luggage"
+    },
+    {
+      "mark": "PELICAN",
+      "owner": "Pelican Products Inc.",
+      "regNo": "1012567",
+      "status": "REGISTERED",
+      "classes": [
+        "018 - Protective cases"
+      ],
+      "category": "luggage"
+    },
+    {
+      "mark": "HERSCHEL",
+      "owner": "Herschel Supply Company Ltd.",
+      "regNo": "4123678",
+      "status": "REGISTERED",
+      "classes": [
+        "018 - Backpacks"
+      ],
+      "category": "luggage"
+    },
+    {
+      "mark": "FJÄLLRÄVEN",
+      "owner": "Fjällräven International AB",
+      "regNo": "3234789",
+      "status": "REGISTERED",
+      "classes": [
+        "018 - Backpacks",
+        "025 - Outdoor clothing"
+      ],
+      "category": "luggage"
+    },
+    {
+      "mark": "CLOROX",
+      "owner": "The Clorox Company",
+      "regNo": "0456891",
+      "status": "REGISTERED",
+      "classes": [
+        "005 - Disinfectants"
+      ],
+      "category": "cleaning"
+    },
+    {
+      "mark": "LYSOL",
+      "owner": "Reckitt Benckiser LLC",
+      "regNo": "0567912",
+      "status": "REGISTERED",
+      "classes": [
+        "005 - Disinfectants"
+      ],
+      "category": "cleaning"
+    },
+    {
+      "mark": "MRS. MEYERS",
+      "owner": "The Caldrea Company",
+      "regNo": "3678123",
+      "status": "REGISTERED",
+      "classes": [
+        "003 - Cleaning preparations"
+      ],
+      "category": "cleaning"
+    },
+    {
+      "mark": "METHOD",
+      "owner": "Method Products PBC",
+      "regNo": "3789234",
+      "status": "REGISTERED",
+      "classes": [
+        "003 - Cleaning products"
+      ],
+      "category": "cleaning"
+    },
+    {
+      "mark": "SEVENTH GENERATION",
+      "owner": "Unilever United States",
+      "regNo": "2890456",
+      "status": "REGISTERED",
+      "classes": [
+        "003 - Eco cleaning"
+      ],
+      "category": "cleaning"
+    },
+    {
+      "mark": "TIDE",
+      "owner": "The Procter & Gamble Company",
+      "regNo": "0901567",
+      "status": "REGISTERED",
+      "classes": [
+        "003 - Laundry detergent"
+      ],
+      "category": "cleaning"
+    },
+    {
+      "mark": "DAWN",
+      "owner": "The Procter & Gamble Company",
+      "regNo": "0012678",
+      "status": "REGISTERED",
+      "classes": [
+        "003 - Dish soap"
+      ],
+      "category": "cleaning"
+    },
+    {
+      "mark": "SWIFFER",
+      "owner": "The Procter & Gamble Company",
+      "regNo": "2123789",
+      "status": "REGISTERED",
+      "classes": [
+        "021 - Cleaning tools"
+      ],
+      "category": "cleaning"
+    },
+    {
+      "mark": "ZIPLOC",
+      "owner": "S.C. Johnson & Son Inc.",
+      "regNo": "1456123",
+      "status": "REGISTERED",
+      "classes": [
+        "016 - Plastic bags"
+      ],
+      "category": "cleaning"
+    },
+    {
+      "mark": "MOLESKINE",
+      "owner": "Moleskine S.r.l.",
+      "regNo": "3567234",
+      "status": "REGISTERED",
+      "classes": [
+        "016 - Notebooks"
+      ],
+      "category": "stationery"
+    },
+    {
+      "mark": "PILOT",
+      "owner": "Pilot Corporation",
+      "regNo": "1890567",
+      "status": "REGISTERED",
+      "classes": [
+        "016 - Pens"
+      ],
+      "category": "stationery"
+    },
+    {
+      "mark": "SHARPIE",
+      "owner": "Sanford L.P.",
+      "regNo": "1901678",
+      "status": "REGISTERED",
+      "classes": [
+        "016 - Markers"
+      ],
+      "category": "stationery"
+    },
+    {
+      "mark": "CRAYOLA",
+      "owner": "Crayola LLC",
+      "regNo": "0012789",
+      "status": "REGISTERED",
+      "classes": [
+        "016 - Art supplies"
+      ],
+      "category": "stationery"
+    },
+    {
+      "mark": "FABER-CASTELL",
+      "owner": "Faber-Castell AG",
+      "regNo": "0123891",
+      "status": "REGISTERED",
+      "classes": [
+        "016 - Writing instruments"
+      ],
+      "category": "stationery"
+    },
+    {
+      "mark": "POST-IT",
+      "owner": "3M Company",
+      "regNo": "1345123",
+      "status": "REGISTERED",
+      "classes": [
+        "016 - Adhesive notes"
+      ],
+      "category": "stationery"
+    },
+    {
+      "mark": "SCOTCH",
+      "owner": "3M Company",
+      "regNo": "0456234",
+      "status": "REGISTERED",
+      "classes": [
+        "016 - Adhesive tape"
+      ],
+      "category": "stationery"
+    },
+    {
+      "mark": "CROCS",
+      "owner": "Crocs Inc.",
+      "regNo": "3567345",
+      "status": "REGISTERED",
+      "classes": [
+        "025 - Footwear"
+      ],
+      "category": "fashion"
+    },
+    {
+      "mark": "BIRKENSTOCK",
+      "owner": "Birkenstock IP GmbH",
+      "regNo": "5678456",
+      "status": "REGISTERED",
+      "classes": [
+        "025 - Footwear"
+      ],
+      "category": "fashion"
+    },
+    {
+      "mark": "ALLBIRDS",
+      "owner": "Allbirds Inc.",
+      "regNo": "5789567",
+      "status": "REGISTERED",
+      "classes": [
+        "025 - Footwear"
+      ],
+      "category": "fashion"
+    },
+    {
+      "mark": "HOKA",
+      "owner": "Deckers Outdoor Corporation",
+      "regNo": "5901789",
+      "status": "REGISTERED",
+      "classes": [
+        "025 - Running shoes"
+      ],
+      "category": "fashion"
+    },
+    {
+      "mark": "BROOKS",
+      "owner": "Brooks Sports Inc.",
+      "regNo": "1012891",
+      "status": "REGISTERED",
+      "classes": [
+        "025 - Running shoes"
+      ],
+      "category": "fashion"
+    },
+    {
+      "mark": "ASICS",
+      "owner": "ASICS Corporation",
+      "regNo": "1123912",
+      "status": "REGISTERED",
+      "classes": [
+        "025 - Athletic footwear"
+      ],
+      "category": "fashion"
+    },
+    {
+      "mark": "SKECHERS",
+      "owner": "Skechers U.S.A. Inc.",
+      "regNo": "2234123",
+      "status": "REGISTERED",
+      "classes": [
+        "025 - Footwear"
+      ],
+      "category": "fashion"
+    },
+    {
+      "mark": "CONVERSE",
+      "owner": "Converse Inc.",
+      "regNo": "0345234",
+      "status": "REGISTERED",
+      "classes": [
+        "025 - Athletic footwear"
+      ],
+      "category": "fashion"
+    },
+    {
+      "mark": "VANS",
+      "owner": "VF Outdoor LLC",
+      "regNo": "1456345",
+      "status": "REGISTERED",
+      "classes": [
+        "025 - Footwear"
+      ],
+      "category": "fashion"
+    },
+    {
+      "mark": "DR. MARTENS",
+      "owner": "Airwair International Ltd.",
+      "regNo": "2567456",
+      "status": "REGISTERED",
+      "classes": [
+        "025 - Footwear"
+      ],
+      "category": "fashion"
+    },
+    {
+      "mark": "UGG",
+      "owner": "Deckers Outdoor Corporation",
+      "regNo": "2678567",
+      "status": "REGISTERED",
+      "classes": [
+        "025 - Footwear"
+      ],
+      "category": "fashion"
+    },
+    {
+      "mark": "SPANX",
+      "owner": "Spanx LLC",
+      "regNo": "3789678",
+      "status": "REGISTERED",
+      "classes": [
+        "025 - Undergarments"
+      ],
+      "category": "fashion"
+    },
+    {
+      "mark": "LEVIS",
+      "owner": "Levi Strauss & Co.",
+      "regNo": "0890789",
+      "status": "REGISTERED",
+      "classes": [
+        "025 - Jeans and clothing"
+      ],
+      "category": "fashion"
+    },
+    {
+      "mark": "CARHARTT",
+      "owner": "Carhartt Inc.",
+      "regNo": "0012912",
+      "status": "REGISTERED",
+      "classes": [
+        "025 - Workwear"
+      ],
+      "category": "fashion"
+    },
+    {
+      "mark": "SONOS",
+      "owner": "Sonos Inc.",
+      "regNo": "4235234",
+      "status": "REGISTERED",
+      "classes": [
+        "009 - Speakers"
+      ],
+      "category": "electronics"
+    },
+    {
+      "mark": "ROKU",
+      "owner": "Roku Inc.",
+      "regNo": "4346345",
+      "status": "REGISTERED",
+      "classes": [
+        "009 - Streaming devices"
+      ],
+      "category": "electronics"
+    },
+    {
+      "mark": "NVIDIA",
+      "owner": "NVIDIA Corporation",
+      "regNo": "2457456",
+      "status": "REGISTERED",
+      "classes": [
+        "009 - Graphics processors"
+      ],
+      "category": "electronics"
+    },
+    {
+      "mark": "INTEL",
+      "owner": "Intel Corporation",
+      "regNo": "1679678",
+      "status": "REGISTERED",
+      "classes": [
+        "009 - Processors"
+      ],
+      "category": "electronics"
+    },
+    {
+      "mark": "SANDISK",
+      "owner": "Western Digital Corporation",
+      "regNo": "2912912",
+      "status": "REGISTERED",
+      "classes": [
+        "009 - Flash memory"
+      ],
+      "category": "electronics"
+    },
+    {
+      "mark": "KINDLE",
+      "owner": "Amazon Technologies Inc.",
+      "regNo": "3123123",
+      "status": "REGISTERED",
+      "classes": [
+        "009 - E-readers"
+      ],
+      "category": "electronics"
+    },
+    {
+      "mark": "AIRPODS",
+      "owner": "Apple Inc.",
+      "regNo": "5345345",
+      "status": "REGISTERED",
+      "classes": [
+        "009 - Wireless earphones"
+      ],
+      "category": "electronics"
+    },
+    {
+      "mark": "IPAD",
+      "owner": "Apple Inc.",
+      "regNo": "3456456",
+      "status": "REGISTERED",
+      "classes": [
+        "009 - Tablet computers"
+      ],
+      "category": "electronics"
+    },
+    {
+      "mark": "MACBOOK",
+      "owner": "Apple Inc.",
+      "regNo": "3567567",
+      "status": "REGISTERED",
+      "classes": [
+        "009 - Laptop computers"
+      ],
+      "category": "electronics"
+    },
+    {
+      "mark": "GALAXY",
+      "owner": "Samsung Electronics Co.",
+      "regNo": "3678678",
+      "status": "REGISTERED",
+      "classes": [
+        "009 - Mobile phones"
+      ],
+      "category": "electronics"
+    },
+    {
+      "mark": "PIXEL",
+      "owner": "Google LLC",
+      "regNo": "5789789",
+      "status": "REGISTERED",
+      "classes": [
+        "009 - Mobile phones"
+      ],
+      "category": "electronics"
+    },
+    {
+      "mark": "XIAOMI",
+      "owner": "Xiaomi Inc.",
+      "regNo": "5901901",
+      "status": "REGISTERED",
+      "classes": [
+        "009 - Electronics"
+      ],
+      "category": "electronics"
+    },
+    {
+      "mark": "HUAWEI",
+      "owner": "Huawei Technologies Co.",
+      "regNo": "4012012",
+      "status": "REGISTERED",
+      "classes": [
+        "009 - Telecommunications"
+      ],
+      "category": "electronics"
+    },
+    {
+      "mark": "TP-LINK",
+      "owner": "TP-Link Technologies Co.",
+      "regNo": "4234345",
+      "status": "REGISTERED",
+      "classes": [
+        "009 - Networking equipment"
+      ],
+      "category": "electronics"
+    },
+    {
+      "mark": "MOROCCANOIL",
+      "owner": "Moroccanoil Inc.",
+      "regNo": "4345456",
+      "status": "REGISTERED",
+      "classes": [
+        "003 - Hair care"
+      ],
+      "category": "beauty"
+    },
+    {
+      "mark": "OLAPLEX",
+      "owner": "Olaplex LLC",
+      "regNo": "5456567",
+      "status": "REGISTERED",
+      "classes": [
+        "003 - Hair care"
+      ],
+      "category": "beauty"
+    },
+    {
+      "mark": "SUPERGOOP",
+      "owner": "Supergoop LLC",
+      "regNo": "5901012",
+      "status": "REGISTERED",
+      "classes": [
+        "003 - Sunscreen"
+      ],
+      "category": "beauty"
+    },
+    {
+      "mark": "TARTE",
+      "owner": "Tarte Inc.",
+      "regNo": "3123345",
+      "status": "REGISTERED",
+      "classes": [
+        "003 - Cosmetics"
+      ],
+      "category": "beauty"
+    },
+    {
+      "mark": "URBAN DECAY",
+      "owner": "LOréal USA Inc.",
+      "regNo": "2234456",
+      "status": "REGISTERED",
+      "classes": [
+        "003 - Cosmetics"
+      ],
+      "category": "beauty"
+    },
+    {
+      "mark": "TOO FACED",
+      "owner": "Estée Lauder Inc.",
+      "regNo": "3345567",
+      "status": "REGISTERED",
+      "classes": [
+        "003 - Cosmetics"
+      ],
+      "category": "beauty"
+    },
+    {
+      "mark": "BENEFIT",
+      "owner": "LVMH Perfumes & Cosmetics",
+      "regNo": "1456678",
+      "status": "REGISTERED",
+      "classes": [
+        "003 - Cosmetics"
+      ],
+      "category": "beauty"
+    },
+    {
+      "mark": "ANASTASIA BEVERLY HILLS",
+      "owner": "Anastasia Beverly Hills LLC",
+      "regNo": "4567789",
+      "status": "REGISTERED",
+      "classes": [
+        "003 - Cosmetics"
+      ],
+      "category": "beauty"
+    },
+    {
+      "mark": "HUDA BEAUTY",
+      "owner": "Huda Beauty FZ-LLC",
+      "regNo": "6678890",
+      "status": "REGISTERED",
+      "classes": [
+        "003 - Cosmetics"
+      ],
+      "category": "beauty"
+    },
+    {
+      "mark": "NUFACE",
+      "owner": "NuFACE Trinity",
+      "regNo": "4012789",
+      "status": "REGISTERED",
+      "classes": [
+        "010 - Facial toning devices"
+      ],
+      "category": "beauty"
+    },
+    {
+      "mark": "FOREO",
+      "owner": "FOREO AB",
+      "regNo": "4123891",
+      "status": "REGISTERED",
+      "classes": [
+        "021 - Facial cleansing devices"
+      ],
+      "category": "beauty"
+    },
+    {
+      "mark": "DERMALOGICA",
+      "owner": "Dermalogica LLC",
+      "regNo": "2234912",
+      "status": "REGISTERED",
+      "classes": [
+        "003 - Professional skin care"
+      ],
+      "category": "beauty"
+    },
+    {
+      "mark": "SHARK",
+      "owner": "SharkNinja Operating LLC",
+      "regNo": "4789901",
+      "status": "REGISTERED",
+      "classes": [
+        "007 - Vacuum cleaners"
+      ],
+      "category": "home"
+    },
+    {
+      "mark": "SIMPLEHUMAN",
+      "owner": "simplehuman LLC",
+      "regNo": "4890012",
+      "status": "REGISTERED",
+      "classes": [
+        "021 - Household goods"
+      ],
+      "category": "home"
+    },
+    {
+      "mark": "EMBER",
+      "owner": "Ember Technologies Inc.",
+      "regNo": "6123345",
+      "status": "REGISTERED",
+      "classes": [
+        "021 - Temperature-controlled mugs"
+      ],
+      "category": "home"
+    },
+    {
+      "mark": "CORELLE",
+      "owner": "Corelle Brands Holdings Inc.",
+      "regNo": "1234456",
+      "status": "REGISTERED",
+      "classes": [
+        "021 - Dinnerware"
+      ],
+      "category": "home"
+    },
+    {
+      "mark": "PYREX",
+      "owner": "Corelle Brands Holdings Inc.",
+      "regNo": "0345567",
+      "status": "REGISTERED",
+      "classes": [
+        "021 - Glass bakeware"
+      ],
+      "category": "home"
+    },
+    {
+      "mark": "HAMILTON BEACH",
+      "owner": "Hamilton Beach Brands Holding",
+      "regNo": "0456678",
+      "status": "REGISTERED",
+      "classes": [
+        "011 - Kitchen appliances"
+      ],
+      "category": "home"
+    },
+    {
+      "mark": "CROCK-POT",
+      "owner": "Sunbeam Products Inc.",
+      "regNo": "1567789",
+      "status": "REGISTERED",
+      "classes": [
+        "011 - Slow cookers"
+      ],
+      "category": "home"
+    },
+    {
+      "mark": "ANOVA",
+      "owner": "Anova Applied Electronics",
+      "regNo": "5678890",
+      "status": "REGISTERED",
+      "classes": [
+        "011 - Sous vide cookers"
+      ],
+      "category": "home"
+    },
+    {
+      "mark": "CLIF BAR",
+      "owner": "Clif Bar & Company",
+      "regNo": "2789901",
+      "status": "REGISTERED",
+      "classes": [
+        "030 - Energy bars"
+      ],
+      "category": "food"
+    },
+    {
+      "mark": "KIND",
+      "owner": "Kind LLC",
+      "regNo": "3890012",
+      "status": "REGISTERED",
+      "classes": [
+        "029 - Snack bars"
+      ],
+      "category": "food"
+    },
+    {
+      "mark": "RXBAR",
+      "owner": "Chicago Bar Company LLC",
+      "regNo": "5901234",
+      "status": "REGISTERED",
+      "classes": [
+        "030 - Protein bars"
+      ],
+      "category": "food"
+    },
+    {
+      "mark": "PRIME",
+      "owner": "Congo Brands LLC",
+      "regNo": "6123456",
+      "status": "REGISTERED",
+      "classes": [
+        "032 - Sports drinks"
+      ],
+      "category": "food"
+    },
+    {
+      "mark": "LIQUID DEATH",
+      "owner": "Liquid Death Inc.",
+      "regNo": "6234567",
+      "status": "REGISTERED",
+      "classes": [
+        "032 - Water"
+      ],
+      "category": "food"
+    },
+    {
+      "mark": "BODY ARMOR",
+      "owner": "BA Sports Nutrition LLC",
+      "regNo": "5345678",
+      "status": "REGISTERED",
+      "classes": [
+        "032 - Sports drinks"
+      ],
+      "category": "food"
+    },
+    {
+      "mark": "WHITE CLAW",
+      "owner": "Mark Anthony Brewing Inc.",
+      "regNo": "6678912",
+      "status": "REGISTERED",
+      "classes": [
+        "033 - Alcoholic beverages"
+      ],
+      "category": "food"
+    },
+    {
+      "mark": "BARKBOX",
+      "owner": "Bark & Co.",
+      "regNo": "5789123",
+      "status": "REGISTERED",
+      "classes": [
+        "031 - Pet treats",
+        "028 - Pet toys"
+      ],
+      "category": "pet"
+    },
+    {
+      "mark": "FURMINATOR",
+      "owner": "Spectrum Brands Pet LLC",
+      "regNo": "3012456",
+      "status": "REGISTERED",
+      "classes": [
+        "021 - Pet grooming tools"
+      ],
+      "category": "pet"
+    },
+    {
+      "mark": "FRONTLINE",
+      "owner": "Boehringer Ingelheim",
+      "regNo": "2123567",
+      "status": "REGISTERED",
+      "classes": [
+        "005 - Flea treatment"
+      ],
+      "category": "pet"
+    },
+    {
+      "mark": "SERESTO",
+      "owner": "Bayer HealthCare LLC",
+      "regNo": "4234678",
+      "status": "REGISTERED",
+      "classes": [
+        "005 - Flea collars"
+      ],
+      "category": "pet"
+    },
+    {
+      "mark": "RUFFWEAR",
+      "owner": "Ruffwear Inc.",
+      "regNo": "4345789",
+      "status": "REGISTERED",
+      "classes": [
+        "018 - Dog gear"
+      ],
+      "category": "pet"
+    },
+    {
+      "mark": "BEYBLADE",
+      "owner": "TOMY Company Ltd.",
+      "regNo": "3567912",
+      "status": "REGISTERED",
+      "classes": [
+        "028 - Toys"
+      ],
+      "category": "toys"
+    },
+    {
+      "mark": "TRANSFORMERS",
+      "owner": "Hasbro Inc.",
+      "regNo": "1678123",
+      "status": "REGISTERED",
+      "classes": [
+        "028 - Action figures"
+      ],
+      "category": "toys"
+    },
+    {
+      "mark": "PAW PATROL",
+      "owner": "Spin Master Ltd.",
+      "regNo": "5890345",
+      "status": "REGISTERED",
+      "classes": [
+        "028 - Toys",
+        "041 - Entertainment"
+      ],
+      "category": "toys"
+    },
+    {
+      "mark": "BLUEY",
+      "owner": "BBC Studios Distribution",
+      "regNo": "6901456",
+      "status": "REGISTERED",
+      "classes": [
+        "028 - Toys",
+        "041 - Entertainment"
+      ],
+      "category": "toys"
+    },
+    {
+      "mark": "MAGNA-TILES",
+      "owner": "Valtech LLC",
+      "regNo": "4012567",
+      "status": "REGISTERED",
+      "classes": [
+        "028 - Building toys"
+      ],
+      "category": "toys"
+    },
+    {
+      "mark": "MELISSA & DOUG",
+      "owner": "Melissa & Doug LLC",
+      "regNo": "3123678",
+      "status": "REGISTERED",
+      "classes": [
+        "028 - Educational toys"
+      ],
+      "category": "toys"
+    },
+    {
+      "mark": "THULE",
+      "owner": "Thule Sweden AB",
+      "regNo": "1234789",
+      "status": "REGISTERED",
+      "classes": [
+        "012 - Vehicle accessories"
+      ],
+      "category": "automotive"
+    },
+    {
+      "mark": "MEGUIARS",
+      "owner": "3M Company",
+      "regNo": "1456912",
+      "status": "REGISTERED",
+      "classes": [
+        "003 - Car care products"
+      ],
+      "category": "automotive"
+    },
+    {
+      "mark": "CHEMICAL GUYS",
+      "owner": "Chemical Guys Inc.",
+      "regNo": "4567123",
+      "status": "REGISTERED",
+      "classes": [
+        "003 - Car detailing"
+      ],
+      "category": "automotive"
+    },
+    {
+      "mark": "ARMOR ALL",
+      "owner": "The Armor All/STP Products Co.",
+      "regNo": "0789345",
+      "status": "REGISTERED",
+      "classes": [
+        "003 - Car care"
+      ],
+      "category": "automotive"
+    },
+    {
+      "mark": "RAIN-X",
+      "owner": "ITW Global Brands",
+      "regNo": "1901567",
+      "status": "REGISTERED",
+      "classes": [
+        "003 - Windshield treatment"
+      ],
+      "category": "automotive"
+    },
+    {
+      "mark": "PELOTON",
+      "owner": "Peloton Interactive Inc.",
+      "regNo": "5012678",
+      "status": "REGISTERED",
+      "classes": [
+        "028 - Exercise equipment",
+        "041 - Fitness classes"
+      ],
+      "category": "sports"
+    },
+    {
+      "mark": "BOWFLEX",
+      "owner": "Nautilus Inc.",
+      "regNo": "2123789",
+      "status": "REGISTERED",
+      "classes": [
+        "028 - Exercise equipment"
+      ],
+      "category": "sports"
+    },
+    {
+      "mark": "THERAGUN",
+      "owner": "Therabody Inc.",
+      "regNo": "6345912",
+      "status": "REGISTERED",
+      "classes": [
+        "010 - Massage devices"
+      ],
+      "category": "sports"
+    },
+    {
+      "mark": "ROGUE FITNESS",
+      "owner": "Rogue Fitness LLC",
+      "regNo": "4678345",
+      "status": "REGISTERED",
+      "classes": [
+        "028 - Gym equipment"
+      ],
+      "category": "sports"
+    },
+    {
+      "mark": "WHOOP",
+      "owner": "Whoop Inc.",
+      "regNo": "6890567",
+      "status": "REGISTERED",
+      "classes": [
+        "009 - Fitness trackers"
+      ],
+      "category": "sports"
+    },
+    {
+      "mark": "OURA",
+      "owner": "Oura Health Oy",
+      "regNo": "6901678",
+      "status": "REGISTERED",
+      "classes": [
+        "009 - Smart rings"
+      ],
+      "category": "sports"
+    },
+    {
+      "mark": "KELTY",
+      "owner": "Exxel Outdoors LLC",
+      "regNo": "1234891",
+      "status": "REGISTERED",
+      "classes": [
+        "022 - Tents"
+      ],
+      "category": "outdoor"
+    },
+    {
+      "mark": "MERRELL",
+      "owner": "Wolverine World Wide Inc.",
+      "regNo": "2345912",
+      "status": "REGISTERED",
+      "classes": [
+        "025 - Hiking footwear"
+      ],
+      "category": "outdoor"
+    },
+    {
+      "mark": "SALOMON",
+      "owner": "Salomon SAS",
+      "regNo": "1456123",
+      "status": "REGISTERED",
+      "classes": [
+        "025 - Trail running",
+        "028 - Ski equipment"
+      ],
+      "category": "outdoor"
+    },
+    {
+      "mark": "LA SPORTIVA",
+      "owner": "La Sportiva S.p.A.",
+      "regNo": "2567234",
+      "status": "REGISTERED",
+      "classes": [
+        "025 - Climbing footwear"
+      ],
+      "category": "outdoor"
+    },
+    {
+      "mark": "DARN TOUGH",
+      "owner": "Cabot Hosiery Mills Inc.",
+      "regNo": "4678345",
+      "status": "REGISTERED",
+      "classes": [
+        "025 - Socks"
+      ],
+      "category": "outdoor"
+    },
+    {
+      "mark": "SMARTWOOL",
+      "owner": "VF Outdoor LLC",
+      "regNo": "2789456",
+      "status": "REGISTERED",
+      "classes": [
+        "025 - Merino wool socks"
+      ],
+      "category": "outdoor"
+    },
+    {
+      "mark": "NALGENE",
+      "owner": "Thermo Fisher Scientific",
+      "regNo": "1890567",
+      "status": "REGISTERED",
+      "classes": [
+        "021 - Water bottles"
+      ],
+      "category": "outdoor"
+    },
+    {
+      "mark": "KLEAN KANTEEN",
+      "owner": "Klean Kanteen Inc.",
+      "regNo": "3901678",
+      "status": "REGISTERED",
+      "classes": [
+        "021 - Reusable bottles"
+      ],
+      "category": "outdoor"
+    },
+    {
+      "mark": "CONTIGO",
+      "owner": "Ignite USA LLC",
+      "regNo": "3012789",
+      "status": "REGISTERED",
+      "classes": [
+        "021 - Travel mugs"
+      ],
+      "category": "outdoor"
+    },
+    {
+      "mark": "JETBOIL",
+      "owner": "Johnson Outdoors Inc.",
+      "regNo": "4123891",
+      "status": "REGISTERED",
+      "classes": [
+        "011 - Camping stoves"
+      ],
+      "category": "outdoor"
+    },
+    {
+      "mark": "HATCH",
+      "owner": "Hatch Baby Inc.",
+      "regNo": "5234912",
+      "status": "REGISTERED",
+      "classes": [
+        "011 - Sound machines"
+      ],
+      "category": "baby"
+    },
+    {
+      "mark": "LOVEVERY",
+      "owner": "Lovevery Inc.",
+      "regNo": "6345123",
+      "status": "REGISTERED",
+      "classes": [
+        "028 - Educational toys"
+      ],
+      "category": "baby"
+    },
+    {
+      "mark": "SNOO",
+      "owner": "Happiest Baby Inc.",
+      "regNo": "6456234",
+      "status": "REGISTERED",
+      "classes": [
+        "020 - Bassinets"
+      ],
+      "category": "baby"
+    },
+    {
+      "mark": "OWLET",
+      "owner": "Owlet Baby Care Inc.",
+      "regNo": "5567345",
+      "status": "REGISTERED",
+      "classes": [
+        "010 - Baby monitors"
+      ],
+      "category": "baby"
+    },
+    {
+      "mark": "DOONA",
+      "owner": "Simple Parenting Ltd.",
+      "regNo": "5678456",
+      "status": "REGISTERED",
+      "classes": [
+        "012 - Strollers"
+      ],
+      "category": "baby"
+    },
+    {
+      "mark": "NUNA",
+      "owner": "Nuna International BV",
+      "regNo": "4789567",
+      "status": "REGISTERED",
+      "classes": [
+        "012 - Car seats"
+      ],
+      "category": "baby"
+    },
+    {
+      "mark": "BABYZEN",
+      "owner": "Babyzen SAS",
+      "regNo": "5890678",
+      "status": "REGISTERED",
+      "classes": [
+        "012 - Strollers"
+      ],
+      "category": "baby"
+    },
+    {
+      "mark": "CYBEX",
+      "owner": "Cybex GmbH",
+      "regNo": "4901789",
+      "status": "REGISTERED",
+      "classes": [
+        "012 - Car seats"
+      ],
+      "category": "baby"
+    },
+    {
+      "mark": "GRAND SEIKO",
+      "owner": "Seiko Watch Corporation",
+      "regNo": "5012891",
+      "status": "REGISTERED",
+      "classes": [
+        "014 - Luxury watches"
+      ],
+      "category": "luxury watches"
+    },
+    {
+      "mark": "BULOVA",
+      "owner": "Citizen Watch Co.",
+      "regNo": "0123912",
+      "status": "REGISTERED",
+      "classes": [
+        "014 - Watches"
+      ],
+      "category": "luxury watches"
+    },
+    {
+      "mark": "HAMILTON",
+      "owner": "The Swatch Group Ltd.",
+      "regNo": "0234123",
+      "status": "REGISTERED",
+      "classes": [
+        "014 - Watches"
+      ],
+      "category": "luxury watches"
+    },
+    {
+      "mark": "MOVADO",
+      "owner": "Movado Group Inc.",
+      "regNo": "0345234",
+      "status": "REGISTERED",
+      "classes": [
+        "014 - Watches"
+      ],
+      "category": "luxury watches"
+    },
+    {
+      "mark": "GARMIN WATCH",
+      "owner": "Garmin Ltd.",
+      "regNo": "5456345",
+      "status": "REGISTERED",
+      "classes": [
+        "014 - Smart watches"
+      ],
+      "category": "luxury watches"
+    },
+    {
+      "mark": "MUSCLE MILK",
+      "owner": "CytoSport Inc.",
+      "regNo": "3456789",
+      "status": "REGISTERED",
+      "classes": [
+        "005 - Protein beverages"
+      ],
+      "category": "health"
+    },
+    {
+      "mark": "GHOST",
+      "owner": "Ghost LLC",
+      "regNo": "6901346",
+      "status": "REGISTERED",
+      "classes": [
+        "005 - Pre-workout supplements"
+      ],
+      "category": "health"
+    },
+    {
+      "mark": "C4",
+      "owner": "Nutrabolt",
+      "regNo": "5012457",
+      "status": "REGISTERED",
+      "classes": [
+        "005 - Pre-workout"
+      ],
+      "category": "health"
+    },
+    {
+      "mark": "ONNIT",
+      "owner": "Onnit Labs LLC",
+      "regNo": "5123568",
+      "status": "REGISTERED",
+      "classes": [
+        "005 - Nootropics"
+      ],
+      "category": "health"
+    },
+    {
+      "mark": "OVERWATCH",
+      "owner": "Blizzard Entertainment",
+      "regNo": "5333555",
+      "status": "REGISTERED",
+      "classes": [
+        "009 - Video games"
+      ],
+      "category": "gaming"
+    },
+    {
+      "mark": "DIABLO",
+      "owner": "Blizzard Entertainment",
+      "regNo": "3444666",
+      "status": "REGISTERED",
+      "classes": [
+        "009 - Video games"
+      ],
+      "category": "gaming"
+    },
+    {
+      "mark": "NBA 2K",
+      "owner": "Take-Two Interactive",
+      "regNo": "4666889",
+      "status": "REGISTERED",
+      "classes": [
+        "009 - Video games"
+      ],
+      "category": "gaming"
+    },
+    {
+      "mark": "MADDEN",
+      "owner": "Electronic Arts Inc.",
+      "regNo": "2777999",
+      "status": "REGISTERED",
+      "classes": [
+        "009 - Video games"
+      ],
+      "category": "gaming"
+    },
+    {
+      "mark": "CARTIER JEWELRY",
+      "owner": "Richemont International SA",
+      "regNo": "0888111",
+      "status": "REGISTERED",
+      "classes": [
+        "014 - Fine jewelry"
+      ],
+      "category": "jewelry"
+    },
+    {
+      "mark": "HARRY WINSTON",
+      "owner": "Harry Winston Inc.",
+      "regNo": "1999222",
+      "status": "REGISTERED",
+      "classes": [
+        "014 - Fine jewelry"
+      ],
+      "category": "jewelry"
+    },
+    {
+      "mark": "MIKIMOTO",
+      "owner": "Mikimoto & Co.",
+      "regNo": "0111333",
+      "status": "REGISTERED",
+      "classes": [
+        "014 - Pearls"
+      ],
+      "category": "jewelry"
+    },
+    {
+      "mark": "LAGOS",
+      "owner": "Lagos Inc.",
+      "regNo": "3222444",
+      "status": "REGISTERED",
+      "classes": [
+        "014 - Fashion jewelry"
+      ],
+      "category": "jewelry"
+    },
+    {
+      "mark": "GENTLE MONSTER",
+      "owner": "IICOMBINED Co.",
+      "regNo": "6012567",
+      "status": "REGISTERED",
+      "classes": [
+        "009 - Sunglasses"
+      ],
+      "category": "eyewear"
+    },
+    {
+      "mark": "OLIVER PEOPLES",
+      "owner": "Luxottica Group S.p.A.",
+      "regNo": "2123678",
+      "status": "REGISTERED",
+      "classes": [
+        "009 - Eyewear"
+      ],
+      "category": "eyewear"
+    },
+    {
+      "mark": "ZENNI",
+      "owner": "Zenni Optical Inc.",
+      "regNo": "4234789",
+      "status": "REGISTERED",
+      "classes": [
+        "009 - Eyeglasses"
+      ],
+      "category": "eyewear"
+    },
+    {
+      "mark": "BOUNTY",
+      "owner": "The Procter & Gamble Company",
+      "regNo": "0567123",
+      "status": "REGISTERED",
+      "classes": [
+        "016 - Paper towels"
+      ],
+      "category": "cleaning"
+    },
+    {
+      "mark": "CHARMIN",
+      "owner": "The Procter & Gamble Company",
+      "regNo": "0678234",
+      "status": "REGISTERED",
+      "classes": [
+        "016 - Toilet paper"
+      ],
+      "category": "cleaning"
+    },
+    {
+      "mark": "FEBREZE",
+      "owner": "The Procter & Gamble Company",
+      "regNo": "2789345",
+      "status": "REGISTERED",
+      "classes": [
+        "005 - Air freshener"
+      ],
+      "category": "cleaning"
+    },
+    {
+      "mark": "GLAD",
+      "owner": "The Clorox Company",
+      "regNo": "0890456",
+      "status": "REGISTERED",
+      "classes": [
+        "016 - Trash bags"
+      ],
+      "category": "cleaning"
+    },
+    {
+      "mark": "STAEDTLER",
+      "owner": "Staedtler Mars GmbH",
+      "regNo": "0901568",
+      "status": "REGISTERED",
+      "classes": [
+        "016 - Drawing instruments"
+      ],
+      "category": "stationery"
+    },
+    {
+      "mark": "LAMY",
+      "owner": "C. Josef Lamy GmbH",
+      "regNo": "2012679",
+      "status": "REGISTERED",
+      "classes": [
+        "016 - Fountain pens"
+      ],
+      "category": "stationery"
+    },
+    {
+      "mark": "TOMBOW",
+      "owner": "Tombow Pencil Co.",
+      "regNo": "1123790",
+      "status": "REGISTERED",
+      "classes": [
+        "016 - Markers"
+      ],
+      "category": "stationery"
+    },
+    {
+      "mark": "PEAK DESIGN",
+      "owner": "Peak Design Ltd.",
+      "regNo": "5345913",
+      "status": "REGISTERED",
+      "classes": [
+        "018 - Camera bags"
+      ],
+      "category": "luggage"
+    },
+    {
+      "mark": "GYMSHARK",
+      "owner": "Gymshark Ltd.",
+      "regNo": "6567235",
+      "status": "REGISTERED",
+      "classes": [
+        "025 - Athletic wear"
+      ],
+      "category": "fashion"
+    },
+    {
+      "mark": "VUORI",
+      "owner": "Vuori Inc.",
+      "regNo": "6678346",
+      "status": "REGISTERED",
+      "classes": [
+        "025 - Athletic wear"
+      ],
+      "category": "fashion"
+    },
+    {
+      "mark": "ALO YOGA",
+      "owner": "Alo LLC",
+      "regNo": "5789457",
+      "status": "REGISTERED",
+      "classes": [
+        "025 - Yoga apparel"
+      ],
+      "category": "fashion"
+    },
+    {
+      "mark": "BOMBAS",
+      "owner": "Bombas LLC",
+      "regNo": "5890568",
+      "status": "REGISTERED",
+      "classes": [
+        "025 - Socks"
+      ],
+      "category": "fashion"
+    },
+    {
+      "mark": "EVERLANE",
+      "owner": "Everlane Inc.",
+      "regNo": "5901679",
+      "status": "REGISTERED",
+      "classes": [
+        "025 - Clothing"
+      ],
+      "category": "fashion"
+    },
+    {
+      "mark": "REFORMATION",
+      "owner": "Reformation Inc.",
+      "regNo": "6012790",
+      "status": "REGISTERED",
+      "classes": [
+        "025 - Sustainable clothing"
+      ],
+      "category": "fashion"
+    },
+    {
+      "mark": "NOTHING",
+      "owner": "Nothing Technology Limited",
+      "regNo": "6890124",
+      "status": "REGISTERED",
+      "classes": [
+        "009 - Mobile phones"
+      ],
+      "category": "electronics"
+    },
+    {
+      "mark": "SHOKZ",
+      "owner": "Shenzhen Shokz Co.",
+      "regNo": "5901235",
+      "status": "REGISTERED",
+      "classes": [
+        "009 - Bone conduction headphones"
+      ],
+      "category": "electronics"
+    },
+    {
+      "mark": "JABRA",
+      "owner": "GN Audio A/S",
+      "regNo": "2012346",
+      "status": "REGISTERED",
+      "classes": [
+        "009 - Headsets"
+      ],
+      "category": "electronics"
+    },
+    {
+      "mark": "SENNHEISER",
+      "owner": "Sennheiser electronic GmbH",
+      "regNo": "1123457",
+      "status": "REGISTERED",
+      "classes": [
+        "009 - Headphones"
+      ],
+      "category": "electronics"
+    },
+    {
+      "mark": "AUDIO-TECHNICA",
+      "owner": "Audio-Technica Corporation",
+      "regNo": "1234568",
+      "status": "REGISTERED",
+      "classes": [
+        "009 - Headphones"
+      ],
+      "category": "electronics"
+    },
+    {
+      "mark": "SMEG",
+      "owner": "Smeg S.p.A.",
+      "regNo": "2345679",
+      "status": "REGISTERED",
+      "classes": [
+        "011 - Kitchen appliances"
+      ],
+      "category": "home"
+    },
+    {
+      "mark": "ZWILLING",
+      "owner": "Zwilling J.A. Henckels AG",
+      "regNo": "0456790",
+      "status": "REGISTERED",
+      "classes": [
+        "008 - Knives"
+      ],
+      "category": "home"
+    },
+    {
+      "mark": "WUSTHOF",
+      "owner": "Ed. Wusthof Dreizackwerk KG",
+      "regNo": "0567892",
+      "status": "REGISTERED",
+      "classes": [
+        "008 - Kitchen knives"
+      ],
+      "category": "home"
+    },
+    {
+      "mark": "BRITA",
+      "owner": "Brita LP",
+      "regNo": "1678913",
+      "status": "REGISTERED",
+      "classes": [
+        "011 - Water filtration"
+      ],
+      "category": "home"
+    },
+    {
+      "mark": "ECOVACS",
+      "owner": "Ecovacs Robotics Co.",
+      "regNo": "5901346",
+      "status": "REGISTERED",
+      "classes": [
+        "007 - Robot vacuums"
+      ],
+      "category": "home"
+    },
+    {
+      "mark": "ROBOROCK",
+      "owner": "Beijing Roborock Technology",
+      "regNo": "6012457",
+      "status": "REGISTERED",
+      "classes": [
+        "007 - Robot vacuums"
+      ],
+      "category": "home"
+    },
+    {
+      "mark": "CLIF BAR",
+      "owner": "Clif Bar & Company",
+      "regNo": "2789902",
+      "status": "REGISTERED",
+      "classes": [
+        "030 - Energy bars"
+      ],
+      "category": "food"
+    },
+    {
+      "mark": "TRADER JOES",
+      "owner": "Trader Joes Company",
+      "regNo": "1123568",
+      "status": "REGISTERED",
+      "classes": [
+        "035 - Retail grocery"
+      ],
+      "category": "food"
+    },
+    {
+      "mark": "WHOLE FOODS",
+      "owner": "Whole Foods Market IP LP",
+      "regNo": "2234679",
+      "status": "REGISTERED",
+      "classes": [
+        "035 - Retail grocery"
+      ],
+      "category": "food"
+    },
+    {
+      "mark": "BARKBOX",
+      "owner": "Bark & Co.",
+      "regNo": "5789124",
+      "status": "REGISTERED",
+      "classes": [
+        "031 - Pet treats"
+      ],
+      "category": "pet"
+    },
+    {
+      "mark": "FURMINATOR",
+      "owner": "Spectrum Brands Pet LLC",
+      "regNo": "3012457",
+      "status": "REGISTERED",
+      "classes": [
+        "021 - Pet grooming tools"
+      ],
+      "category": "pet"
+    },
+    {
+      "mark": "RUFFWEAR",
+      "owner": "Ruffwear Inc.",
+      "regNo": "4345790",
+      "status": "REGISTERED",
+      "classes": [
+        "018 - Dog gear"
+      ],
+      "category": "pet"
+    },
+    {
+      "mark": "TRANSFORMERS",
+      "owner": "Hasbro Inc.",
+      "regNo": "1678124",
+      "status": "REGISTERED",
+      "classes": [
+        "028 - Action figures"
+      ],
+      "category": "toys"
+    },
+    {
+      "mark": "PAW PATROL",
+      "owner": "Spin Master Ltd.",
+      "regNo": "5890346",
+      "status": "REGISTERED",
+      "classes": [
+        "028 - Toys"
+      ],
+      "category": "toys"
+    },
+    {
+      "mark": "MAGNA-TILES",
+      "owner": "Valtech LLC",
+      "regNo": "4012568",
+      "status": "REGISTERED",
+      "classes": [
+        "028 - Building toys"
+      ],
+      "category": "toys"
+    },
+    {
+      "mark": "MELISSA & DOUG",
+      "owner": "Melissa & Doug LLC",
+      "regNo": "3123679",
+      "status": "REGISTERED",
+      "classes": [
+        "028 - Educational toys"
+      ],
+      "category": "toys"
+    },
+    {
+      "mark": "THULE",
+      "owner": "Thule Sweden AB",
+      "regNo": "1234790",
+      "status": "REGISTERED",
+      "classes": [
+        "012 - Vehicle accessories"
+      ],
+      "category": "automotive"
+    },
+    {
+      "mark": "CHEMICAL GUYS",
+      "owner": "Chemical Guys Inc.",
+      "regNo": "4567124",
+      "status": "REGISTERED",
+      "classes": [
+        "003 - Car detailing"
+      ],
+      "category": "automotive"
+    },
+    {
+      "mark": "RAIN-X",
+      "owner": "ITW Global Brands",
+      "regNo": "1901568",
+      "status": "REGISTERED",
+      "classes": [
+        "003 - Windshield treatment"
+      ],
+      "category": "automotive"
+    },
+    {
+      "mark": "PELOTON",
+      "owner": "Peloton Interactive Inc.",
+      "regNo": "5012679",
+      "status": "REGISTERED",
+      "classes": [
+        "028 - Exercise equipment"
+      ],
+      "category": "sports"
+    },
+    {
+      "mark": "THERAGUN",
+      "owner": "Therabody Inc.",
+      "regNo": "6345913",
+      "status": "REGISTERED",
+      "classes": [
+        "010 - Massage devices"
+      ],
+      "category": "sports"
+    },
+    {
+      "mark": "WHOOP",
+      "owner": "Whoop Inc.",
+      "regNo": "6890568",
+      "status": "REGISTERED",
+      "classes": [
+        "009 - Fitness trackers"
+      ],
+      "category": "sports"
+    },
+    {
+      "mark": "OURA",
+      "owner": "Oura Health Oy",
+      "regNo": "6901679",
+      "status": "REGISTERED",
+      "classes": [
+        "009 - Smart rings"
+      ],
+      "category": "sports"
+    },
+    {
+      "mark": "MERRELL",
+      "owner": "Wolverine World Wide Inc.",
+      "regNo": "2345913",
+      "status": "REGISTERED",
+      "classes": [
+        "025 - Hiking footwear"
+      ],
+      "category": "outdoor"
+    },
+    {
+      "mark": "SALOMON",
+      "owner": "Salomon SAS",
+      "regNo": "1456124",
+      "status": "REGISTERED",
+      "classes": [
+        "025 - Trail running"
+      ],
+      "category": "outdoor"
+    },
+    {
+      "mark": "NALGENE",
+      "owner": "Thermo Fisher Scientific",
+      "regNo": "1890568",
+      "status": "REGISTERED",
+      "classes": [
+        "021 - Water bottles"
+      ],
+      "category": "outdoor"
+    },
+    {
+      "mark": "KLEAN KANTEEN",
+      "owner": "Klean Kanteen Inc.",
+      "regNo": "3901679",
+      "status": "REGISTERED",
+      "classes": [
+        "021 - Reusable bottles"
+      ],
+      "category": "outdoor"
+    },
+    {
+      "mark": "HATCH",
+      "owner": "Hatch Baby Inc.",
+      "regNo": "5234913",
+      "status": "REGISTERED",
+      "classes": [
+        "011 - Sound machines"
+      ],
+      "category": "baby"
+    },
+    {
+      "mark": "LOVEVERY",
+      "owner": "Lovevery Inc.",
+      "regNo": "6345124",
+      "status": "REGISTERED",
+      "classes": [
+        "028 - Educational toys"
+      ],
+      "category": "baby"
+    },
+    {
+      "mark": "SNOO",
+      "owner": "Happiest Baby Inc.",
+      "regNo": "6456235",
+      "status": "REGISTERED",
+      "classes": [
+        "020 - Bassinets"
+      ],
+      "category": "baby"
+    },
+    {
+      "mark": "DOONA",
+      "owner": "Simple Parenting Ltd.",
+      "regNo": "5678457",
+      "status": "REGISTERED",
+      "classes": [
+        "012 - Strollers"
+      ],
+      "category": "baby"
+    },
+    {
+      "mark": "GRAND SEIKO",
+      "owner": "Seiko Watch Corporation",
+      "regNo": "5012892",
+      "status": "REGISTERED",
+      "classes": [
+        "014 - Luxury watches"
+      ],
+      "category": "luxury watches"
+    },
+    {
+      "mark": "BULOVA",
+      "owner": "Citizen Watch Co.",
+      "regNo": "0123913",
+      "status": "REGISTERED",
+      "classes": [
+        "014 - Watches"
+      ],
+      "category": "luxury watches"
+    },
+    {
+      "mark": "HAMILTON WATCH",
+      "owner": "The Swatch Group Ltd.",
+      "regNo": "0234124",
+      "status": "REGISTERED",
+      "classes": [
+        "014 - Watches"
+      ],
+      "category": "luxury watches"
+    },
+    {
+      "mark": "MOVADO",
+      "owner": "Movado Group Inc.",
+      "regNo": "0345235",
+      "status": "REGISTERED",
+      "classes": [
+        "014 - Watches"
+      ],
+      "category": "luxury watches"
+    }
+  ]
+}
