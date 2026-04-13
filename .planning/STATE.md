@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 03-product-surface-01-PLAN.md
-last_updated: "2026-04-12T19:00:37.034Z"
+stopped_at: Completed 03-product-surface-02-PLAN.md
+last_updated: "2026-04-13T10:28:40.814Z"
 last_activity: 2026-04-12
 progress:
   total_phases: 3
   completed_phases: 1
   total_plans: 13
-  completed_plans: 8
+  completed_plans: 9
   percent: 33
 ---
 
@@ -56,6 +56,7 @@ Progress: [███░░░░░░░] 33%
 | Phase 02-ai-pipeline P04 | 15 | 2 tasks | 3 files |
 | Phase 02-ai-pipeline P05 | 18 | 2 tasks | 5 files |
 | Phase 03-product-surface P01 | 8 | 2 tasks | 5 files |
+| Phase 03-product-surface P02 | 263 | 2 tasks | 7 files |
 
 ## Accumulated Context
 
@@ -79,6 +80,8 @@ Progress: [███░░░░░░░] 33%
 - [Phase 03-product-surface]: Design system uses system font stack (-apple-system), not Inter/Roboto/Poppins
 - [Phase 03-product-surface]: deductCredits returns typed error object instead of throwing for insufficient_credits — clean business vs system error separation
 - [Phase 03-product-surface]: stripe_events UNIQUE constraint enforces webhook idempotency at DB level
+- [Phase 03-product-surface]: Stripe webhook idempotency via DB UNIQUE constraint on stripe_events.stripe_event_id — 23505 error = already processed
+- [Phase 03-product-surface]: app_config key-value table for spend cap flag — job submission API reads daily_spend_cap_reached before accepting new jobs
 
 ### Pending Todos
 
@@ -92,6 +95,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-12T19:00:17.733Z
-Stopped at: Completed 03-product-surface-01-PLAN.md
+Last session: 2026-04-13T10:28:40.802Z
+Stopped at: Completed 03-product-surface-02-PLAN.md
 Resume file: None

@@ -58,12 +58,12 @@
 
 ### Credits & Billing (BILL)
 
-- [ ] **BILL-01**: Credit-based pricing system — each video generation consumes credits
+- [x] **BILL-01**: Credit-based pricing system — each video generation consumes credits
 - [ ] **BILL-02**: Stripe integration for credit package purchases and subscriptions
-- [ ] **BILL-03**: Free tier with limited credits (e.g., 3 free videos with watermark)
-- [ ] **BILL-04**: Credit balance displayed prominently in UI
+- [x] **BILL-03**: Free tier with limited credits (e.g., 3 free videos with watermark)
+- [x] **BILL-04**: Credit balance displayed prominently in UI
 - [ ] **BILL-05**: Credit deduction is atomic (Postgres single-statement, no race conditions)
-- [ ] **BILL-06**: Failed generations refund credits automatically
+- [x] **BILL-06**: Failed generations refund credits automatically
 - [ ] **BILL-07**: Usage history shows per-video cost breakdown
 
 ### Internal Operations (OPS)
