@@ -143,10 +143,10 @@ export default function LoginPage() {
           >
             免登录体验 Demo →
           </a>
-          <div className="flex items-center justify-center gap-1">
-            <div className="flex-1 h-px bg-border-subtle/30" />
-            <span className="text-[8px] font-mono text-text-tertiary/40 uppercase px-2">secure session</span>
-            <div className="flex-1 h-px bg-border-subtle/30" />
+          <div className="flex items-center justify-center gap-3 text-[9px] font-mono text-text-tertiary/50">
+            <a href="/terms" className="hover:text-text-tertiary transition-colors">服务条款</a>
+            <span>·</span>
+            <a href="/privacy" className="hover:text-text-tertiary transition-colors">隐私政策</a>
           </div>
         </div>
       </div>
