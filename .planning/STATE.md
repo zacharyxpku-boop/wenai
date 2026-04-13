@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 02-ai-pipeline-05-PLAN.md
-last_updated: "2026-04-12T18:34:57.127Z"
+stopped_at: Completed 03-product-surface-01-PLAN.md
+last_updated: "2026-04-12T19:00:37.034Z"
 last_activity: 2026-04-12
 progress:
   total_phases: 3
   completed_phases: 1
-  total_plans: 8
-  completed_plans: 7
+  total_plans: 13
+  completed_plans: 8
   percent: 33
 ---
 
@@ -55,6 +55,7 @@ Progress: [███░░░░░░░] 33%
 | Phase 01-foundation P03 | 6 | 2 tasks | 8 files |
 | Phase 02-ai-pipeline P04 | 15 | 2 tasks | 3 files |
 | Phase 02-ai-pipeline P05 | 18 | 2 tasks | 5 files |
+| Phase 03-product-surface P01 | 8 | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -75,6 +76,9 @@ Progress: [███░░░░░░░] 33%
 - [Phase 02-ai-pipeline]: Video synthesis sets waiting_external status after Kling submissions — webhook handler owns transition to post-processing
 - [Phase 02-ai-pipeline]: SRT colon escaping uses double-backslash before colon for FFmpeg subtitle filter on Windows paths
 - [Phase 02-ai-pipeline]: Post-processing concurrency: 1 (FFmpeg memory constraint per research)
+- [Phase 03-product-surface]: Design system uses system font stack (-apple-system), not Inter/Roboto/Poppins
+- [Phase 03-product-surface]: deductCredits returns typed error object instead of throwing for insufficient_credits — clean business vs system error separation
+- [Phase 03-product-surface]: stripe_events UNIQUE constraint enforces webhook idempotency at DB level
 
 ### Pending Todos
 
@@ -88,6 +92,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-12T18:02:51.549Z
-Stopped at: Completed 02-ai-pipeline-05-PLAN.md
+Last session: 2026-04-12T19:00:17.733Z
+Stopped at: Completed 03-product-surface-01-PLAN.md
 Resume file: None
