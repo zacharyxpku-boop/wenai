@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 03-product-surface-04-PLAN.md
-last_updated: "2026-04-13T14:09:53.956Z"
+stopped_at: Completed 03-product-surface-05-PLAN.md
+last_updated: "2026-04-13T16:02:42.393Z"
 last_activity: 2026-04-12
 progress:
   total_phases: 3
   completed_phases: 1
   total_plans: 13
-  completed_plans: 10
+  completed_plans: 11
   percent: 33
 ---
 
@@ -58,6 +58,7 @@ Progress: [███░░░░░░░] 33%
 | Phase 03-product-surface P01 | 8 | 2 tasks | 5 files |
 | Phase 03-product-surface P02 | 263 | 2 tasks | 7 files |
 | Phase 03-product-surface P04 | 12 | 3 tasks | 15 files |
+| Phase 03-product-surface P05 | 7 | 2 tasks | 8 files |
 
 ## Accumulated Context
 
@@ -86,6 +87,9 @@ Progress: [███░░░░░░░] 33%
 - [Phase 03-product-surface]: dnd-kit (not rbd) for Kanban — react-beautiful-dnd unmaintained since 2022
 - [Phase 03-product-surface]: Kanban droppable IDs prefixed col-{stage} to avoid collision with job UUIDs
 - [Phase 03-product-surface]: SortableContext receives primitive string[] not objects — required by dnd-kit
+- [Phase 03-product-surface]: Storage cleanup happens after delivery confirmation with non-blocking try/catch — cleanup failure cannot break delivery
+- [Phase 03-product-surface]: Credit refund fires on BullMQ postWorker failed event after all retries exhausted, not on individual step retries
+- [Phase 03-product-surface]: Reconciliation compares sum(org.credit_balance) vs sum(credit_transactions.delta) — balance drift is the mismatch signal
 
 ### Pending Todos
 
@@ -99,6 +103,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-13T14:09:53.948Z
-Stopped at: Completed 03-product-surface-04-PLAN.md
+Last session: 2026-04-13T16:02:29.201Z
+Stopped at: Completed 03-product-surface-05-PLAN.md
 Resume file: None

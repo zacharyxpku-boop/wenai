@@ -1,5 +1,6 @@
 {
   "crons": [
-    { "path": "/api/cron/daily-spend-cap", "schedule": "0 * * * *" }
+    { "path": "/api/cron/daily-spend-cap", "schedule": "0 * * * *" },
+    { "path": "/api/cron/stripe-reconciliation", "schedule": "0 2 * * *" }
   ]
 }

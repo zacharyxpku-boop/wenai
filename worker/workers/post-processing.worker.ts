@@ -8,6 +8,7 @@ import { logCost } from '../lib/cost-logger.js'
 import { promises as fs } from 'fs'
 import path from 'path'
 import os from 'os'
+import { refundCredits } from '../../src/lib/credits/atomic.js'
 
 const MAX_RETRIES = 2  // QC-01: auto-retry up to 2x on validation failure
 
@@ -138,6 +139,14 @@ export async function runPostProcessing(job: Job<PostProcJobData>) {
       estimatedCostUsd: 0,
     })
 
+    // STOR-05: Clean up intermediate files after confirmed delivery
+    // Failure must NOT block delivery — wrapped in try/catch
+    try {
+      await cleanupIntermediateFiles(jobId)
+    } catch (cleanupErr: any) {
+      console.warn(`[post-proc] cleanup failed for job ${jobId} (non-blocking):`, cleanupErr.message)
+    }
+
   } catch (err: any) {
     await updateStepStatus(jobId, orgId, 'post_processing', 'failed', { error: err.message })
     await broadcastProgress(jobId, 'post_processing', 'failed')
@@ -151,6 +160,25 @@ export async function runPostProcessing(job: Job<PostProcJobData>) {
   } finally {
     // Cleanup temp directory
     await fs.rm(tempDir, { recursive: true, force: true }).catch(() => {})
+  }
+}
+
+// STOR-05: Remove keyframe and raw-clip intermediates from Supabase storage after delivery
+async function cleanupIntermediateFiles(jobId: string): Promise<void> {
+  const prefixes = [
+    `keyframes/${jobId}/`,
+    `raw-clips/${jobId}/`,
+  ]
+
+  for (const prefix of prefixes) {
+    const { data: files } = await supabase.storage
+      .from('intermediates')
+      .list(prefix)
+
+    if (files?.length) {
+      const paths = files.map(f => `${prefix}${f.name}`)
+      await supabase.storage.from('intermediates').remove(paths)
+    }
   }
 }
 
