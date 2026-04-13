@@ -16,6 +16,25 @@ interface UsageStats {
   dailyTrend: { date: string; count: number; tokens: number }[];
 }
 
+// 每次AI调用替代的人工时间(分钟)和人力时薪(元)
+const MODULE_ROI: Record<string, { minutesSaved: number; label: string }> = {
+  translate: { minutesSaved: 45, label: '翻译' },
+  outreach: { minutesSaved: 30, label: '外联' },
+  reviews: { minutesSaved: 60, label: '评论分析' },
+  copywriting: { minutesSaved: 40, label: '文案' },
+  'ip-compliance': { minutesSaved: 90, label: '合规检索' },
+  content: { minutesSaved: 35, label: '种草内容' },
+  images: { minutesSaved: 50, label: '主图设计' },
+  livestream: { minutesSaved: 25, label: '直播脚本' },
+  competitor: { minutesSaved: 120, label: '竞品拆解' },
+  selection: { minutesSaved: 80, label: '选品' },
+  operations: { minutesSaved: 60, label: '运营策略' },
+  'customer-service': { minutesSaved: 15, label: '客服' },
+  leads: { minutesSaved: 40, label: '获客' },
+  video: { minutesSaved: 30, label: '视频' },
+};
+const HOURLY_COST_RMB = 35; // 代运营公司普通员工时薪
+
 export default function Dashboard() {
   const enabledIds = new Set(clientConfig.enabledModules);
   const categories = modulesConfig.categories;
@@ -46,6 +65,18 @@ export default function Dashboard() {
   }
 
   const maxTrend = stats ? Math.max(...stats.dailyTrend.map(d => d.count), 1) : 1;
+
+  // ROI calculations
+  const totalMinutesSaved = stats
+    ? stats.ranking.reduce((sum, r) => {
+        const roi = MODULE_ROI[r.moduleId];
+        return sum + (roi ? roi.minutesSaved * r.count : 20 * r.count);
+      }, 0)
+    : 0;
+  const totalHoursSaved = totalMinutesSaved / 60;
+  const costSavedRMB = totalHoursSaved * HOURLY_COST_RMB;
+  const aiCostRMB = stats ? (stats.weekTokens / 1000) * 0.002 * 7.2 : 0; // ~$0.002/1k tok, 7.2 CNY/USD
+  const roiMultiple = aiCostRMB > 0 ? costSavedRMB / aiCostRMB : 0;
 
   return (
     <div className="max-w-[1200px]">
@@ -150,6 +181,68 @@ export default function Dashboard() {
           )}
         </div>
       </div>
+
+      {/* ROI metrics */}
+      {stats && stats.totalCount > 0 && (
+        <div className="mb-6 animate-fade-up stagger-2">
+          <div className="flex items-center gap-2 mb-2.5">
+            <span className="label-mono">投产效益（7日）</span>
+            <div className="flex-1 h-px bg-border-subtle" />
+          </div>
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+            <div className="bg-bg-surface border border-border-subtle rounded-md p-4">
+              <p className="label-mono mb-2">节省人时</p>
+              <div className="flex items-baseline gap-1">
+                <span className="text-2xl font-bold text-accent font-mono tabular-nums">
+                  {totalHoursSaved < 1 ? `${totalMinutesSaved}` : totalHoursSaved.toFixed(1)}
+                </span>
+                <span className="text-[10px] font-mono text-text-tertiary">
+                  {totalHoursSaved < 1 ? 'min' : 'hrs'}
+                </span>
+              </div>
+              <p className="text-[9px] font-mono text-text-tertiary mt-2 pt-2 border-t border-border-subtle/40">
+                ≈ {(totalHoursSaved / 8).toFixed(1)} 人天
+              </p>
+            </div>
+            <div className="bg-bg-surface border border-border-subtle rounded-md p-4">
+              <p className="label-mono mb-2">节省人力成本</p>
+              <div className="flex items-baseline gap-1">
+                <span className="text-[10px] font-mono text-text-tertiary">¥</span>
+                <span className="text-2xl font-bold text-text-primary font-mono tabular-nums">
+                  {costSavedRMB < 1000 ? costSavedRMB.toFixed(0) : `${(costSavedRMB / 1000).toFixed(1)}k`}
+                </span>
+              </div>
+              <p className="text-[9px] font-mono text-text-tertiary mt-2 pt-2 border-t border-border-subtle/40">
+                按 ¥{HOURLY_COST_RMB}/时计算
+              </p>
+            </div>
+            <div className="bg-bg-surface border border-border-subtle rounded-md p-4">
+              <p className="label-mono mb-2">AI 消耗</p>
+              <div className="flex items-baseline gap-1">
+                <span className="text-[10px] font-mono text-text-tertiary">¥</span>
+                <span className="text-2xl font-bold text-text-primary font-mono tabular-nums">
+                  {aiCostRMB < 1 ? aiCostRMB.toFixed(2) : aiCostRMB.toFixed(1)}
+                </span>
+              </div>
+              <p className="text-[9px] font-mono text-text-tertiary mt-2 pt-2 border-t border-border-subtle/40">
+                {stats ? (stats.weekTokens / 1000).toFixed(1) : '0'}k tokens
+              </p>
+            </div>
+            <div className="bg-bg-surface border border-accent/30 rounded-md p-4">
+              <p className="label-mono mb-2">投产比 ROI</p>
+              <div className="flex items-baseline gap-1">
+                <span className="text-2xl font-bold text-accent font-mono tabular-nums">
+                  {roiMultiple > 0 ? `${roiMultiple.toFixed(0)}` : '∞'}
+                </span>
+                <span className="text-[10px] font-mono text-text-tertiary">x</span>
+              </div>
+              <p className="text-[9px] font-mono text-accent/70 mt-2 pt-2 border-t border-accent/20">
+                每花 ¥1 AI成本节省 ¥{roiMultiple > 0 ? roiMultiple.toFixed(0) : '—'} 人力
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Module ranking */}
       {stats && stats.ranking.length > 0 && (
