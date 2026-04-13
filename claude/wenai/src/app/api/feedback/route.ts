@@ -40,7 +40,12 @@ async function writeJSON(path: string, data: Record<string, unknown>) {
 
 // POST: save feedback or review
 export async function POST(request: NextRequest) {
-  const { type, moduleId, key, data } = await request.json();
+  let type: string, moduleId: string, key: string, data: unknown;
+  try {
+    ({ type, moduleId, key, data } = await request.json());
+  } catch {
+    return NextResponse.json({ error: '请求格式错误' }, { status: 400 });
+  }
 
   if (type === 'feedback') {
     const all = await readJSON(FEEDBACK_FILE) as Record<string, unknown[]>;
