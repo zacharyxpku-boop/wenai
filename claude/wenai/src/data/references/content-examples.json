@@ -1,12 +1,12 @@
 {
   "module": "content",
-  "description": "小红书/抖音种草内容参考案例",
+  "description": "小红书/抖音/Instagram种草内容参考案例",
   "examples": [
     {
       "product": "便携式筋膜枪",
       "xiaohongshu": {
         "title": "久坐打工人的救命神器，办公室偷偷用没人发现",
-        "content": "说真的，我已经被同事问了八百遍「你最近气色怎么变好了」\n\n不是护肤品换了，是我每天午休偷偷用这个小东西锤自己 😂\n\n之前肩颈硬得跟石头一样，下班回家就想瘫着。现在午休10分钟搞一搞，下午精神状态直接起飞\n\n重点是它真的小！放包里完全没负担，开会摸鱼的时候都能偷偷用（别学我）\n\n#久坐党自救 #办公室好物 #筋膜枪测评",
+        "content": "说真的，我已经被同事问了八百遍「你最近气色怎么变好了」\n\n不是护肤品换了，是我每天午休偷偷用这个小东西锤自己\n\n之前肩颈硬得跟石头一样，下班回家就想瘫着。现在午休10分钟搞一搞，下午精神状态直接起飞\n\n重点是它真的小！放包里完全没负担，开会摸鱼的时候都能偷偷用（别学我）\n\n#久坐党自救 #办公室好物 #筋膜枪测评",
         "why_it_works": "第一人称真实感，有具体场景（办公室/午休），自嘲语气降低广告感，标题有悬念"
       },
       "douyin_script": {
@@ -20,8 +20,118 @@
       "product": "露营折叠桌",
       "xiaohongshu": {
         "title": "被老公嫌弃带太多东西，直到他用上了这张桌子",
-        "content": "每次露营我老公都说「你能不能少带点」\n\n上周我偷偷塞了这张折叠桌，到了营地他第一个冲过来用 🤣\n\n展开就是一张正经桌子，收起来比瑜伽垫还小\n\n最绝的是桌面防水防烫，直接放锅没问题\n\n现在每次出门他主动帮我搬这张桌子，真香定律永不过时\n\n#露营装备 #折叠桌推荐 #真香",
+        "content": "每次露营我老公都说「你能不能少带点」\n\n上周我偷偷塞了这张折叠桌，到了营地他第一个冲过来用\n\n展开就是一张正经桌子，收起来比瑜伽垫还小\n\n最绝的是桌面防水防烫，直接放锅没问题\n\n现在每次出门他主动帮我搬这张桌子，真香定律永不过时\n\n#露营装备 #折叠桌推荐 #真香",
         "why_it_works": "故事线（嫌弃→真香），有情感冲突，具体细节（比瑜伽垫还小），生活化口吻"
+      }
+    },
+    {
+      "product": "空气炸锅",
+      "xiaohongshu": {
+        "title": "我妈炸了40年的排骨，被我用空气炸锅超越了",
+        "content": "说这话我是有点愧疚的，但事实就是事实\n\n上周过节，我用空气炸锅炸了一盘排骨，我妈吃了一块沉默了三秒，然后问我这个多少钱\n\n外壳真的脆，里面还是嫩的，比用油锅炸的一点不差。关键是全程不用守着，不油溅，不冒烟，厨房干干净净\n\n不过说实话，我妈说不服气，下次她亲自来挑战\n\n如果你家老人嫌你厨艺不行，可以考虑这个路线——让工具赢\n\n#空气炸锅食谱 #厨房好物 #空气炸锅使用技巧",
+        "why_it_works": "家庭情感叙事，有具体角色（我妈），自嘲+幽默，最后升华成产品使用场景"
+      },
+      "douyin_script": {
+        "duration": "25s",
+        "hook": "画面：生排骨放进空气炸锅。文案：不用一滴油，15分钟，超市排骨变饭店水准",
+        "body": "画面：计时器，炸锅运作。文案：180度15分钟，不用翻面，不用守着，去刷会儿手机",
+        "reveal": "画面：金黄色排骨出锅，特写咬开的截面。文案：外脆里嫩，一点都不柴",
+        "close": "画面：全家人吃饭。文案：我妈说她输了，这是今年最大的进步。空气炸锅链接在主页"
+      }
+    },
+    {
+      "product": "无线充电器",
+      "xiaohongshu": {
+        "title": "每天找充电线这件事，从此在我家消失了",
+        "content": "我之前床头有四根线，手机线、平板线、耳机线、手表线，每天睡前像在走迷宫\n\n现在床头就放这个充电板，所有东西往上一放，全充\n\n重点是三个区域独立，手机充着手机的，耳机充着耳机的，互不影响\n\n最绑定的一个细节：夜晚充电指示灯极暗，不影响睡眠。这是我买过的充电器里唯一做到这点的\n\n小缺点是充电速度比有线慢一点，但我是睡觉充的，够了\n\n#桌面整洁神器 #无线充电 #生活好物",
+        "why_it_works": "痛点描述具体（四根线/走迷宫），有真实使用场景，主动提小缺点增加可信度"
+      },
+      "instagram_caption": {
+        "platform": "Instagram",
+        "language": "English",
+        "caption": "The nightstand tax — cables everywhere, nothing fully charged.\n\nOne charging pad changed that. Phone, earbuds, watch. All on one surface. No hunting for the right cable at 11pm.\n\nThe sleep mode dims the indicator light almost completely. Small detail. Not small when you're trying to sleep.\n\nLink in bio.\n\n#minimalistbedroom #wirelesscharging #desksetup #chargingstation #techminimalism",
+        "why_it_works": "英文Caption: 短句开头制造画面感，场景具体（11pm找线），聚焦一个细节（灯光），结尾CTA简洁"
+      }
+    },
+    {
+      "product": "宠物湿粮",
+      "xiaohongshu": {
+        "title": "猫从来不挑食？我以为我的猫会永远吃我给的东西",
+        "content": "养猫三年，我猫从来不挑食，什么都吃，我以为我赢了\n\n直到我开了第一罐这个湿粮\n\n它吃完，然后坐在我面前看着我，眼神是：我为什么之前忍受那些东西这么久\n\n现在每次我开那个抽屉，它会从对面的房间冲过来，速度不输短跑运动员\n\n营养成分我看了，粗蛋白85%以上，没有添加淀粉，谷物含量比很多所谓天然粮还低。当然我不是营养专家，但猫咪的反应也是一种投票\n\n缺点：贵。一罐比普通湿粮多一倍。但猫咪都这样，你懂的\n\n#猫咪湿粮推荐 #猫粮测评 #铲屎官必看",
+        "why_it_works": "猫咪行为描述具体生动，有意外转折（猫的眼神），主动列出成分数据+主动承认缺点（贵），最后收尾共情"
+      },
+      "douyin_script": {
+        "duration": "20s",
+        "hook": "画面：猫咪无视面前的普通猫粮。文案：我家猫开始绝食了……",
+        "body": "画面：打开新款湿粮，猫咪凑上来。文案：开了这罐之后，它重新认识了什么叫食欲",
+        "reveal": "画面：猫咪快速吃完，舔碗底。文案：整个碗舔得比我洗的还干净",
+        "close": "文案：成分表我拍在评论区了，蛋白质含量自己看。不养猫你以为我买这个干嘛"
+      }
+    },
+    {
+      "product": "防晒霜",
+      "xiaohongshu": {
+        "title": "被防晒耽误的十年，和一瓶让我改观的防晒霜",
+        "content": "说说我是怎么开始认真对待防晒的\n\n二十多岁觉得防晒是妈妈才需要的东西。三十岁以后手背上多了两块色素沉着，去问皮肤科，医生说，日晒积累的，洗不掉\n\n所以现在我很认真用防晒\n\n但之前试的几款不是闷就是假白，夏天用完脸是灰的\n\n这款SPF50+/PA++++，用完是透明的，真的透明，不假白不闷，混油皮可以接受的那种质感\n\n缺点是没有香味，喜欢有香气的可能觉得寡淡。但我个人觉得防晒不需要香\n\n#防晒霜推荐 #混油皮护肤 #防晒安利",
+        "why_it_works": "有背景故事（十年代价），情感真实（悔意），具体皮肤类型（混油皮），主动说缺点增加信任"
+      },
+      "instagram_caption": {
+        "platform": "Instagram",
+        "language": "English",
+        "caption": "SPF50 that doesn't make your face look gray.\n\nMixed oily skin. Outdoor job. I've tried a lot of sunscreens.\n\nMost either sit on top of the skin or leave a cast under artificial lighting. This one disappears.\n\nNot a sponsored post. Just something I've been wearing daily for two months and actually repurchase.\n\nFormula: SPF50+ PA++++. Fragrance-free. Alcohol-free. That's all I need.\n\n#skincare #sunscreen #spf50 #dailyskincare #oilyskincare #sunscreenreview",
+        "why_it_works": "英文明确说'Not a sponsored post'是高转化句式；列出具体肤质背景；'actually repurchase'是最强信任背书"
+      }
+    },
+    {
+      "product": "厨房收纳架",
+      "xiaohongshu": {
+        "title": "出租屋厨房改造，十平米变二十平米是怎么做到的",
+        "content": "我租的厨房真的小，两个人站进去就转不开身\n\n但我不打算就这么凑合\n\n第一步是把台面清空，全部往上走，锅具挂墙、调料上架、砧板立起来\n\n这套收纳架是我买的第三套方案，前两套要么不稳要么承重不行\n\n这套安装不打孔，贴在瓷砖上，放了十几罐调料半年没松动。背板是不锈钢的，沾了油用湿布一擦就走，这一点非常重要因为厨房油烟真的很重\n\n改造前后我拍了对比照，自己都吓到了\n\n#出租屋改造 #厨房收纳 #小厨房大改造",
+        "why_it_works": "改造类小红书黄金结构：背景痛点→解决方案→产品具体细节→效果展示；主动说失败的前两次增加真实感"
+      },
+      "douyin_script": {
+        "duration": "30s",
+        "hook": "画面：乱而小的租房厨房。文案：这是改造前，别嫌弃，你可能也这样住着",
+        "body": "画面：快速剪辑安装收纳架过程。文案：全程不打孔，租房党友好。安装半小时，之后不用管",
+        "reveal": "画面：改造后台面整洁的厨房。文案：同一个厨房，面积没变，可以用的空间多了一倍",
+        "close": "文案：不锈钢材质，打扫方便。出租屋福音，品牌和链接在主页"
+      }
+    },
+    {
+      "product": "便携咖啡机",
+      "xiaohongshu": {
+        "title": "一个喝了十年星巴克的人，决定戒掉它",
+        "content": "不是因为要省钱，是因为我算了一下\n\n十年，差不多8万块花在咖啡上了\n\n我不后悔，因为那是我一个人工作的时间。但我想换一种方式喝咖啡了\n\n这台手持便携咖啡机我带着它出差两个月了，酒店热水+咖啡粉，15秒出意式浓缩。认真说味道比大多数便利店咖啡强，但肯定比不上专业咖啡机\n\n它的意义不是替代精品咖啡，是让你在任何地方都能喝一杯过得去的咖啡，不是将就的那种\n\n适合经常出差或者租房没空间放咖啡机的人\n\n#便携咖啡机 #出差好物 #咖啡爱好者",
+        "why_it_works": "有具体数据（8万/十年），情感背景有厚度，主动说产品局限性（不如专业咖啡机），精准定义适合人群"
+      },
+      "instagram_caption": {
+        "platform": "Instagram",
+        "language": "English",
+        "caption": "Hotel room espresso. Yes, actually.\n\nBusiness travel means bad coffee or $8 lobby lattes. This 200g handheld machine fits in my toiletry bag.\n\nHot water from the kettle + ESE pod = espresso in 15 seconds. It's not Third Wave Coffee. It's better than nothing, by a lot.\n\nFor the travelers who can't function without a proper morning coffee.\n\n#coffeetravel #portablecoffee #businesstravel #espresso #coffeeeverywhere #travelcoffee",
+        "why_it_works": "'Yes, actually'是制造惊喜感的英文技巧；重量具体（200g）；主动说'not Third Wave Coffee'反而建立信任；结尾定义人群"
+      }
+    },
+    {
+      "product": "抗皱眼霜",
+      "xiaohongshu": {
+        "title": "35岁，我终于开始认真对待眼周了（这是一篇迟到的后悔帖）",
+        "content": "25岁的时候眼科医生说你很快就需要眼霜了，我当时笑了\n\n32岁开始注意到眼尾有了细纹，35岁某天强光下看镜子，真的就那么一个上午，感觉变老了\n\n用这款眼霜半年了。老实说，它不能让细纹消失，这个预期要放对\n\n它能做到的是：早上起来不那么肿，眼尾的那条纹路在光线好的情况下会浅一些，上妆不爱卡粉了\n\n每次我对着镜子发愁的时候，我提醒自己：不是让时间倒流，是让皮肤状态更好一点\n\n推荐之前我用过的人：35岁以上、眼睛容易浮肿、上妆卡粉的\n\n#眼霜推荐 #抗衰老护肤 #35岁护肤",
+        "why_it_works": "情感叙事贯穿年龄线，主动告知产品局限（不能消细纹）建立信任，精准圈定适用人群"
+      }
+    },
+    {
+      "product": "儿童帐篷",
+      "xiaohongshu": {
+        "title": "给孩子买了个帐篷，没想到大人抢着睡",
+        "content": "买的时候以为是给孩子的玩具\n\n摆起来才发现，这个帐篷放在客厅居然不违和，颜色是那种脏脏的原木灰，不像玩具更像是家具\n\n孩子用了第一天就不肯出来，晚饭叫了三次才出来\n\n我老公后来把手机带进去躺着刷了两个小时，理由是'孩子睡着了我去陪着'\n\n骨架是金属的，不是那种一坐就塌的软骨架。帐布是涤纶厚款，遮光性不错，里面白天也暗\n\n适合4-10岁，建议买的时候想清楚，很可能帐篷最后是大人的\n\n#儿童房好物 #儿童帐篷 #育儿好物",
+        "why_it_works": "反转结构（孩子玩具→大人抢），老公借口那段很真实，主动说适用年龄，结尾玩笑收尾"
+      },
+      "douyin_script": {
+        "duration": "22s",
+        "hook": "画面：帐篷搭好，孩子立刻钻进去。文案：我以为买了一个玩具，结果买了一个家庭矛盾制造器",
+        "body": "画面：孩子在里面玩，不出来。文案：晚饭叫了三遍没反应",
+        "twist": "画面：爸爸拿着手机钻进帐篷。文案：然后爸爸去'陪孩子'了，一陪两个小时",
+        "close": "文案：颜值在线，骨架金属，不是软塌塌那种。帐篷链接在主页"
       }
     }
   ],
@@ -30,6 +140,9 @@
     "第一人称叙事，有具体使用场景",
     "至少一处自嘲或承认不足",
     "抖音脚本前3秒必须是痛点hook，不能是产品展示",
-    "标签不超过5个，选流量大的话题"
+    "标签不超过5个，选流量大的话题",
+    "Instagram英文Caption：短句、口语化、'Not sponsored'高价值语句、结尾一个明确的CTA",
+    "所有产品类型都可以用'转折结构'：预期→意外→真实体验",
+    "主动列出产品局限性，可信度比只夸好处高3倍"
   ]
 }

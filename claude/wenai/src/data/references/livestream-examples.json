@@ -21,6 +21,133 @@
         {"question": "什么颜色好看", "answer": "香槟色最百搭，深色的话墨绿卖得最好。犹豫的直接拍香槟色不会错"},
         {"question": "能退吗", "answer": "7天无理由，不喜欢直接退。但是说真的，退货率不到3%，基本用了都不舍得退"}
       ]
+    },
+    {
+      "product": "无线蓝牙耳机",
+      "price": 129,
+      "opening": {
+        "script": "家人们，你们现在用的耳机多少钱买的？300？500？今天这款耳机，降噪效果我不敢说比AirPods强，但是我敢说，你花十分之一的价格能拿到八成的体验",
+        "duration": "25s",
+        "why": "用价格对比制造认知冲突，高性价比品的核心话术"
+      },
+      "selling_flow": [
+        {"step": "场景痛点", "script": "地铁上打电话对面听不清，跑步耳机老掉，睡觉侧躺耳机硌得慌——这三个问题，今天一副耳机全解决", "duration": "15s"},
+        {"step": "技术展示", "script": "蓝牙5.3不是噱头，来，我走到直播间门口你听，声音有没有断？没有。10米范围稳得一批", "duration": "20s"},
+        {"step": "实测对比", "script": "我现在开降噪，旁边放个音箱。你们听，是不是安静了？降噪深度-28dB", "duration": "20s"},
+        {"step": "逼单", "script": "50套赠品送完就没了，不补！来，上车的扣1", "duration": "10s"}
+      ],
+      "interaction_templates": [
+        {"question": "苹果手机能用吗", "answer": "安卓苹果都能用，蓝牙5.3向下兼容。iPhone 15实测秒连"},
+        {"question": "续航多久", "answer": "单次6小时，加充电盒一共30小时。一周充一次够了"}
+      ]
+    },
+    {
+      "product": "智能保温杯",
+      "price": 159,
+      "opening": {
+        "script": "我问你们一个问题，你们泡的枸杞水，喝到嘴里的时候是热的还是凉的？凉的对吧？因为你泡上就忘了喝。这个杯子会提醒你喝水",
+        "duration": "25s",
+        "why": "用具体生活场景引发共鸣，再引出产品功能"
+      },
+      "selling_flow": [
+        {"step": "功能演示", "script": "屏幕实时显示水温56度，刚好入口。早上倒进去的开水，6小时后还有68度", "duration": "15s"},
+        {"step": "场景渲染", "script": "办公室用：开会回来水还是温的。带娃用：冲奶粉直接看温度。送长辈：提醒喝水功能比你打电话管用", "duration": "20s"},
+        {"step": "逼单", "script": "159送礼盒包装+定制刻字，送人太有面子了。限量100套刻字款", "duration": "10s"}
+      ],
+      "interaction_templates": [
+        {"question": "充电麻烦吗", "answer": "底座磁吸充电，放上去就充，一次充电用两周"},
+        {"question": "能洗吗", "answer": "杯身可以洗，底座不沾水就行。杯盖可以拆开单独清洗"}
+      ]
+    },
+    {
+      "product": "美白面膜套装",
+      "price": 69,
+      "opening": {
+        "script": "有没有姐妹是那种一到夏天就黑两个色号的？我自己就是，去年军训回来我妈都差点没认出我。今天这个面膜我从去年9月用到现在，你们看我现在的肤色",
+        "duration": "30s",
+        "why": "自嘲建立亲近感，亲身使用的变化比任何数据都有说服力"
+      },
+      "selling_flow": [
+        {"step": "成分解读", "script": "烟酰胺5%+VC衍生物+熊果苷。美白铁三角，你去看雅诗兰黛小棕瓶也是类似配方", "duration": "20s"},
+        {"step": "社交证据", "script": "上个月卖了8万盒，回购率38%。10个人里4个人回头买第二盒", "duration": "10s"},
+        {"step": "逼单", "script": "今天买两盒送一盒，30片只要138。夏天要来了，现在囤才来得及", "duration": "10s"}
+      ],
+      "interaction_templates": [
+        {"question": "敏感肌能用吗", "answer": "5%烟酰胺属于温和区间，但第一次建议先贴手腕内侧试15分钟"},
+        {"question": "多久见效", "answer": "28天一个代谢周期，坚持用一盒能看到变化。立竿见影的都是荧光剂"}
+      ]
+    },
+    {
+      "product": "儿童电动牙刷",
+      "price": 79,
+      "opening": {
+        "script": "当妈的举个手，每天最头疼的事是什么？辅导作业对吧？第二头疼的呢？让孩子刷牙！三岁的崽子跟你打游击战，刷了跟没刷一样",
+        "duration": "25s",
+        "why": "精准命中妈妈群体痛点，幽默方式引发共鸣"
+      },
+      "selling_flow": [
+        {"step": "痛点放大", "script": "手动牙刷孩子随便糊弄两下，一分钟都不到。结果？蛀牙，去一趟牙科少说五百", "duration": "15s"},
+        {"step": "趣味演示", "script": "APP连蓝牙，孩子刷牙的时候屏幕上有个怪兽，刷哪个区域怪兽就掉血。我家那个为了打怪现在抢着刷牙", "duration": "20s"},
+        {"step": "逼单", "script": "79块钱省掉以后几千块牙科费。买给自家孩子的扣1，送侄子外甥的扣2", "duration": "10s"}
+      ],
+      "interaction_templates": [
+        {"question": "几岁能用", "answer": "3岁以上，配了两种刷头。3岁以下牙齿没长全不建议电动"},
+        {"question": "声波会不会伤牙", "answer": "儿童模式振动频率比成人低40%，杜邦软毛不伤牙龈"}
+      ]
+    },
+    {
+      "product": "车载空气净化器",
+      "price": 199,
+      "opening": {
+        "script": "上个月那个雾霾天，我打车闻到车里那个味道直接想吐。新车甲醛味、烟味、火锅味……你以为关窗就没有了？PM2.5在车里能飙到200+",
+        "duration": "25s",
+        "why": "用具体事件制造紧迫感，数据增加可信度"
+      },
+      "selling_flow": [
+        {"step": "数据冲击", "script": "我现在测直播间PM2.5是57。同事车里呢？128！密闭空间比室外还脏", "duration": "20s"},
+        {"step": "实测", "script": "开机看数字掉：128...95...60...3分钟到50以下。H13级HEPA滤芯，医院手术室同级", "duration": "25s"},
+        {"step": "逼单", "script": "199保护全家的呼吸，北方必备南方梅雨天也需要。点下面链接", "duration": "10s"}
+      ],
+      "interaction_templates": [
+        {"question": "噪音大吗", "answer": "最低档28分贝基本听不到，最高档也就45分贝比正常说话声小"},
+        {"question": "滤芯多久换", "answer": "6-8个月换一次，送了一块备用的。单独买一块59"}
+      ]
+    },
+    {
+      "product": "Portable Blender (TikTok Shop US English)",
+      "price_usd": 24.99,
+      "opening": {
+        "script": "Okay real talk — how many of you bought a blender that's just sitting on your counter collecting dust? This one is literally smaller than your water bottle and it makes smoothies in 30 seconds flat",
+        "duration": "25s",
+        "why": "TikTok Shop US风格：casual口语，短句快节奏"
+      },
+      "selling_flow": [
+        {"step": "Demo", "script": "Frozen strawberries, banana, a little milk. Close it, press the button... done. 20 seconds. Look at that consistency, no chunks", "duration": "25s"},
+        {"step": "Lifestyle", "script": "I bring this to the gym, to the office, on road trips. USB-C rechargeable, 15 blends per charge", "duration": "15s"},
+        {"step": "CTA", "script": "Tap the yellow basket, $24.99 with free shipping. First 100 orders get a free recipe book in your DMs", "duration": "10s"}
+      ],
+      "interaction_templates": [
+        {"question": "Can it crush ice?", "answer": "Small ice cubes yes, big chunks no. Pro tip: use frozen fruit instead, tastes better anyway"},
+        {"question": "How to clean?", "answer": "Add water and a drop of soap, blend 10 seconds, rinse. That's it"}
+      ]
+    },
+    {
+      "product": "宠物自动喂食器",
+      "price": 259,
+      "opening": {
+        "script": "养猫的姐妹问你们——出差旅游的时候猫怎么办？寄养一天80，三天240。或者花259让它自己在家吃喝不愁",
+        "duration": "25s",
+        "why": "直接算账对比，让消费者自己得出'买更划算'的结论"
+      },
+      "selling_flow": [
+        {"step": "功能展示", "script": "APP设好时间份量，到点自动出粮。还有摄像头看它在不在吃", "duration": "20s"},
+        {"step": "防疑虑", "script": "螺旋出粮不是翻斗式，卡粮率低90%。WiFi断了本机也有定时记忆", "duration": "15s"},
+        {"step": "逼单", "script": "259送密封粮桶+清洁刷。养猫人的出行自由从今天开始", "duration": "10s"}
+      ],
+      "interaction_templates": [
+        {"question": "能装多少粮", "answer": "4L容量，一只猫够吃10-15天，两只猫大概一周"},
+        {"question": "多只猫能用吗", "answer": "可以设多餐多份量。多猫家庭建议两台，买两台减50"}
+      ]
     }
   ],
   "principles": [
@@ -28,6 +155,7 @@
     "价格锚定：先说高价参照物，再说直播价",
     "逼单用倒计时+库存紧迫感，不用虚假数据",
     "弹幕回复要快、要具体、要带推荐",
-    "每15分钟循环一次核心卖点，照顾新进来的观众"
+    "每15分钟循环一次核心卖点，照顾新进来的观众",
+    "英文直播节奏更快，句子更短，多用demo少用形容词"
   ]
 }

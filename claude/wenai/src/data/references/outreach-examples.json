@@ -41,13 +41,122 @@
         "'不需要发笔记'反而让博主更愿意发",
         "关联到博主具体内容场景"
       ]
+    },
+    {
+      "type": "TikTok创作者合作",
+      "context": "宠物用品品牌联系TikTok宠物博主（50-200万粉丝）",
+      "email": {
+        "subject": "Your cat's reaction to the crinkle toy 😂 — quick collab idea",
+        "body": "Hi [Creator Name],\n\nThat clip of your cat going absolutely feral for the crinkle tunnel has been living in my head rent-free for two weeks (you know the one — 1.4M views, the zoomies at the end).\n\nI'm [Name] at [PetBrand], and we just launched a new line of interactive cat toys designed for exactly that kind of chaos energy.\n\nI'd love to send you our full 'Chaos Collection' (retails $65) to film whatever natural reaction your cat has. No brief, no talking points. The last creator we worked with just set up the camera and let their cat do the rest — it got 2.8M views.\n\nOn our end:\n- Full product kit shipped to you this week\n- 15% affiliate commission on every sale through your link\n- You own the content — we'll only reshare if you give permission\n\nIf the products don't resonate with your cat, no post needed. But if they do, we'd love to work together more formally.\n\nWorth a try?\n\n[Name]"
+      },
+      "why_it_works": [
+        "引用具体视频和数据（1.4M views）证明真实关注",
+        "提到另一个创作者案例（2.8M views）提供社会证明",
+        "承诺内容所有权消除创作者最大顾虑",
+        "给猫做决定的框架让整封信有趣且低压"
+      ]
+    },
+    {
+      "type": "Instagram微型网红合作",
+      "context": "户外运动品牌联系Instagram户外博主（1-10万粉丝）",
+      "email": {
+        "subject": "Your Patagonia shot from last week — are you based in the PNW?",
+        "body": "Hi [Creator],\n\nYour shot from last week's Patagonia trek stopped my scroll completely — the light through the tent at golden hour is one of the best outdoor photos I've seen this month.\n\nI'm [Name] from [OutdoorBrand]. We make lightweight hiking gear for people who take their trips seriously. Based on your feed, you're exactly our type of customer.\n\nWe're building a small group of micro-influencers (under 100K) for an ongoing ambassador program — we've found that smaller, more dedicated audiences convert better than big-name celebrities.\n\nWhat we offer ambassadors:\n- 40% off all products for personal use\n- Commission structure: 15% on first 3 months, 20% after\n- Access to new gear before public launch\n- A feature spot in our quarterly 'Out There' newsletter (87K subscribers)\n\nNo content quotas, no forced posts. Just honest reviews when you use our gear.\n\nInterested in hopping on a 15-minute call?\n\n[Name]",
+        "followup_day5": "Hey [Name] — just wanted to make sure my last message didn't get buried. Quick yes/no: would a 15-minute call make sense this week? Happy to share more details about the ambassador program either way."
+      },
+      "why_it_works": [
+        "具体描述特定照片而非泛泛夸赞",
+        "解释为什么选择小账号（而非大账号）——给对方尊重感",
+        "Ambassador框架比一次性合作更有吸引力",
+        "无内容配额是微型网红最关心的条款",
+        "跟进邮件极短、直接问yes/no降低决策成本"
+      ]
+    },
+    {
+      "type": "Amazon Vine评测申请",
+      "context": "新品上架后申请Vine计划（通过Seller Central操作，无需直接触达评测员）",
+      "process_note": "Amazon Vine无法直接联系评测员，需通过Seller Central > Advertising > Vine计划申请。以下为申请前内部评估清单。",
+      "pre_vine_checklist": [
+        "listing已有主图5张+视频",
+        "产品详情页完整，bullet points填满",
+        "品牌注册（Brand Registry）已完成",
+        "ASIN评论数少于30条（Vine最适合新品）",
+        "库存充足（建议备货30单以上用于Vine配送）",
+        "产品定价合理（Vine费用按类别，通常$200/ASIN）"
+      ],
+      "product_brief_for_vine": {
+        "format": "在申请时需填写产品简介供Vine评测员参考",
+        "example": "This is a compact HEPA H13 air purifier designed for bedrooms and small offices up to 300 sq ft. The key features are: (1) True HEPA H13 filter removes 99.97% of particles including PM2.5, (2) Near-silent operation at 22dB on sleep mode, (3) Covers 300 sq ft in one air cycle. No assembly required. Ships with one filter pre-installed. Reviewer note: the filter replacement indicator will activate after 2,000 hours — this is normal and expected."
+      },
+      "why_vine_works": [
+        "Vine评测员是Amazon优质评价者，评价质量高",
+        "早期评论对listing权重影响显著",
+        "Vine评测不能选择评测员，但可控制产品简介内容",
+        "适合新品，不适合已有大量评论的产品"
+      ]
+    },
+    {
+      "type": "YouTube开箱博主合作",
+      "context": "家用电器品牌联系YouTube家用电器开箱频道（5-50万订阅）",
+      "email": {
+        "subject": "Review unit for your channel — [Brand] air fryer (shipping this week)",
+        "body": "Hi [Channel Name],\n\nYour review of the [Competitor Air Fryer] six months ago was genuinely useful — you were the only reviewer who tested the actual temperature accuracy with a probe thermometer instead of just taking the display at face value. That's the kind of testing our product team pays attention to.\n\nWe're [Brand], and we have a new 6L air fryer ([Model]) launching in Q2. Before the public launch, we're sending review units to 8 channels.\n\nWhat sets this one apart from what you've reviewed:\n- Dual-zone cooking (two independent baskets at different temps simultaneously)\n- 360° rapid convection, not just bottom-up heat\n- Actual temperature accuracy ±5°C (we have the test data)\n\nReview terms:\n- Unit is yours to keep\n- No approval or pre-review required\n- We ask for FTC disclosure only\n- If you prefer not to review positively, we still want your honest assessment — negative reviews help us improve\n\nWant the unit? I can ship within 48 hours.\n\n[Name]\n[Brand] Media Relations",
+        "followup_day7": "Hi [Name] — following up on the [Brand] air fryer from last week. Happy to answer any technical questions before you decide. If it's not the right fit for your channel right now, totally understand."
+      },
+      "why_it_works": [
+        "称赞具体测试方法（温度探针）而非频道数据，表明真的看过",
+        "主动提到愿意接受差评——这是专业媒体关系的核心信任建立",
+        "列出与竞品的具体区别点（双分区、温度精度数据）",
+        "48小时发货承诺显示执行力"
+      ]
+    },
+    {
+      "type": "抖音达人BD",
+      "context": "母婴品牌联系抖音母婴类达人（粉丝10-100万）",
+      "dm": "你好，[达人名]老师～\n\n刷到你上周那条「宝宝第一次吃辅食」的视频，弹幕里好多宝妈在问辅食工具怎么选，看到你用的那套辅食套装好像不太顺手。\n\n我们是[品牌]，做婴儿辅食工具的，有一套专门针对你视频里那个场景的产品想寄给你试试——软头勺+带刻度储存罐+研磨碗，用一次就不想换别家的那种。\n\n不要求挂链接，不要求发视频，你觉得好用自然愿意分享，不好用也欢迎告诉我哪里不行。\n\n方便的话发一下收件地址？",
+      "why_it_works": [
+        "指出达人视频里的具体痛点场景，有针对性",
+        "主动说不挂链接不要求发视频，降低合作门槛",
+        "欢迎负面反馈建立真诚感",
+        "结尾直接问收件地址推动行动"
+      ]
+    },
+    {
+      "type": "跨境平台KOL合作（东南亚）",
+      "context": "家居品牌联系Shopee/TikTok Shop泰国或越南本地达人",
+      "email": {
+        "subject": "Collaboration Proposal — [Brand] Home Storage Products",
+        "body": "Dear [KOL Name],\n\nI came across your home organization content on TikTok Shop Thailand — your kitchen storage video last month has been very helpful for many families.\n\nI represent [Brand], a Chinese home storage brand currently expanding in Southeast Asia. We would like to invite you to be our product reviewer/ambassador in Thailand.\n\nOur offer:\n- Send you 3-5 products from our new collection (free of charge)\n- Commission: 8-12% on all sales through your affiliate link\n- Exclusive discount code for your followers (15% off)\n- Preferred partnership for future product launches\n\nOur products have good ratings on Shopee Thailand (4.7 average, 2,000+ reviews). We focus on practical, affordable storage solutions for urban apartments.\n\nWould you be interested? We can send products within 5 business days.\n\nBest regards,\n[Name]\n[Brand] SEA Partnerships"
+      },
+      "why_it_works": [
+        "东南亚达人偏好正式邮件格式",
+        "说明品牌在当地平台已有口碑（Shopee评分）",
+        "佣金比例明确（8-12%），东南亚达人对佣金敏感",
+        "提到未来优先合作机会，建立长期关系预期"
+      ]
+    },
+    {
+      "type": "播客赞助",
+      "context": "户外装备品牌联系美国户外/运动播客",
+      "email": {
+        "subject": "Sponsorship inquiry — [Brand] for [Podcast Name] (natural fit)",
+        "body": "Hi [Host Name],\n\nI listen to [Podcast Name] during my weekend trail runs — the episode with [Guest Name] on ultramarathon nutrition was exactly what I needed before my first 50K.\n\nI'm [Name] from [OutdoorBrand]. We make lightweight trail running and hiking gear, and your listener demographic (serious outdoor enthusiasts, 28-45) overlaps almost perfectly with our customer profile.\n\nI'd like to explore a sponsorship arrangement — specifically a mid-roll or host-read ad spot. We're not looking for a scripted ad; we'd prefer you describe the product in your own words after testing it. Authentic host-reads perform 4x better than produced ads in our experience.\n\nWhat we're thinking:\n- 2-3 episodes per month over 3 months\n- You test the products yourself first (we ship a full kit)\n- We provide talking points but you say it your way\n- $[XXX] per episode or a flat 3-month rate\n\nHappy to share our audience overlap data and past podcast performance if useful.\n\nWorth a conversation?\n\n[Name]"
+      },
+      "why_it_works": [
+        "提到具体剧集证明是真听众",
+        "强调Host-read而非脚本广告，符合播客文化",
+        "提供数据支撑（Host-read效果4倍）",
+        "表示愿意提供受众重叠数据，显示专业度"
+      ]
     }
   ],
   "outreach_principles": [
     "第一句话必须证明你看过对方内容，泛泛夸赞=批量模板=直接被忽略",
     "说清楚'你要什么+给什么'，不要绕弯子",
     "给达人的价值 > 你期望的回报（初次合作）",
-    "不同平台用不同语气：YouTube/Email偏正式，小红书/TikTok偏口语",
-    "跟进不超过2次，间隔3-5天，第三次不回=放弃"
+    "不同平台用不同语气：YouTube/Email偏正式，小红书/TikTok偏口语，东南亚偏正式",
+    "跟进不超过2次，间隔3-5天，第三次不回=放弃",
+    "允许差评政策是与专业内容创作者建立信任的最有效语句",
+    "明确FTC/当地广告法披露要求，显示专业度且降低创作者法律风险"
   ]
 }

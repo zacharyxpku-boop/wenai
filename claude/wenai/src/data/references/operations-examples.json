@@ -30,6 +30,170 @@
         "week3_4": "¥500-800/天，加入人群定向，开始投信息流",
         "roi_target": "首月ROI目标1.5-2.0，允许亏损换权重"
       }
+    },
+    {
+      "scenario": "Amazon美国站新品Launch — 车载手机支架",
+      "sop_week1": {
+        "day1_2": "Listing完善：7张主图（白底+场景+安装步骤+兼容机型表+vs竞品对比），5点Bullet Points含关键词，Backend Search Terms填满",
+        "day3_4": "Vine计划：申请Amazon Vine获取首批30条评论，同时开Coupon 20% off",
+        "day5_7": "PPC启动：Auto Campaign $30/day收集数据，Exact Match Campaign $20/day锁定10个核心词"
+      },
+      "sop_week2": {
+        "focus": "搜索排名冲刺",
+        "actions": [
+          "从Auto Campaign搜索词报告提取高转化词，迁移到Manual Campaign",
+          "否定不相关词（如branded terms），降低ACoS",
+          "根据Vine评论反馈优化Bullet Points措辞",
+          "提交A+ Content（品牌故事+对比图表+使用场景）"
+        ]
+      },
+      "pricing_strategy": {
+        "launch_price": "$12.99 + 20% Coupon = 实付$10.39",
+        "normal_price": "$15.99",
+        "competitor_benchmark": "Top 3竞品均价$14-18，我们用价格优势抢BSR",
+        "margin_analysis": "成本$3.2 + FBA费$4.5 + 广告$2 = $9.7，售价$12.99毛利$3.29（25%），恢复$15.99后毛利$6.29（39%）"
+      },
+      "ad_budget": {
+        "week1_2": "$50/day（Auto+Manual混合），目标ACoS<35%",
+        "week3_4": "$80/day，加入Sponsored Brand Video和Product Targeting",
+        "scaling_trigger": "BSR进入类目Top 50后日预算翻倍冲排名"
+      }
+    },
+    {
+      "scenario": "季节性产品运营 — 便携风扇（夏季爆品）",
+      "timeline": {
+        "march": "选品确认+工厂打样+主图拍摄，提前备货入仓",
+        "april": "Listing上架+种子评论积累+低预算PPC测试",
+        "may": "加大投放+社媒种草铺量+达人合作（5-10个中腰部）",
+        "june_july": "全力冲量期：日预算¥2000+，直播间每周3场，限时折扣",
+        "august": "收尾清货：逐步降价+捆绑销售+参加平台清仓活动",
+        "september": "复盘+剩余库存打折清完，不留尾货"
+      },
+      "risk_management": {
+        "overstock": "5月底根据销售趋势决定是否追单，宁可少赚不压货",
+        "competitor_price_war": "不跟进极端低价，用赠品策略（送收纳袋/充电线）维持价格带",
+        "weather_risk": "凉夏导致需求不及预期，Plan B：转型为桌面USB风扇推办公场景"
+      },
+      "pricing_strategy": {
+        "early_bird": "¥39（4月预售价，锁定首批用户）",
+        "peak_season": "¥59（6-7月正价）",
+        "clearance": "¥29（8月清货价，保本即可）"
+      }
+    },
+    {
+      "scenario": "TikTok Shop美区新品冷启动 — 便携搅拌杯",
+      "sop_week1": {
+        "day1_3": "店铺装修+产品上架，拍摄3条短视频素材（开箱/使用场景/vs普通杯对比）",
+        "day4_5": "联系10-20个1-5万粉丝的健身/健康类达人，寄样合作（佣金30%+免费产品）",
+        "day6_7": "开通TikTok Ads，投Product Shopping Ads $30/day，测试素材"
+      },
+      "sop_week2_4": {
+        "focus": "达人矩阵+内容放量",
+        "actions": [
+          "持续拓展达人池，目标20-30个活跃达人持续出内容",
+          "自有账号日更1条，保持店铺活跃度",
+          "筛选高GMV素材，追加Spark Ads预算",
+          "开一场直播测试（2小时），观察实时转化数据"
+        ]
+      },
+      "key_metrics": {
+        "video_views_target": "单条视频>1万播放才算合格素材",
+        "conversion_rate": "商品卡点击率>3%，下单转化>2%",
+        "affiliate_roi": "达人带货ROI>2（扣除佣金和产品成本后）"
+      },
+      "pricing_strategy": {
+        "price": "$19.99",
+        "affiliate_commission": "30%（$6/单），前期让利给达人换曝光",
+        "bundle": "买2个$34.99（第二个半价），提升客单价"
+      }
+    },
+    {
+      "scenario": "Shopee东南亚站运营 — 手机壳（马来西亚站）",
+      "sop_week1": {
+        "day1_3": "上架30-50个SKU（多机型+多颜色），标题含马来语关键词，开Free Shipping优惠",
+        "day4_7": "报名Shopee Daily Deals和Flash Sale，设置店铺关注优惠券（关注减RM2）"
+      },
+      "sop_week2_4": {
+        "focus": "店铺评分+流量获取",
+        "actions": [
+          "保持Chat Response Rate>90%（影响店铺排名）",
+          "每周上新5-10个SKU保持店铺活跃",
+          "Shopee Ads: 搜索广告RM0.3/click开始测，发现广告RM0.1/click铺量",
+          "参加每月大促（9.9/10.10/11.11），提前15天报名"
+        ]
+      },
+      "localization": {
+        "language": "产品标题和描述用马来语+英语双语",
+        "pricing": "RM10-25区间，符合当地消费力",
+        "shipping": "必须开Free Shipping（Shopee补贴），否则转化率砍半",
+        "payment": "支持ShopeePay和货到付款（COD占东南亚订单40%+）"
+      }
+    },
+    {
+      "scenario": "店铺诊断与优化 — 现有Amazon店铺月销$20K想突破$50K",
+      "diagnosis": {
+        "current_state": "15个ASIN，3个贡献80%销售额，其余12个几乎零单",
+        "problems": [
+          "流量过度依赖PPC（60%付费流量），自然流量弱",
+          "主力产品评分4.1，低于类目平均4.3",
+          "A+ Content缺失，详情页图片质量一般",
+          "无品牌故事，消费者无法区分你和其他白牌"
+        ]
+      },
+      "optimization_plan": {
+        "phase1_listing": "重拍主力3个ASIN的主图（请专业摄影），重写Bullet Points含长尾关键词，补充A+ Content",
+        "phase2_reviews": "对差评逐条回复（展示品牌态度），开Vine补评，产品改进（根据差评高频词）",
+        "phase3_traffic": "建立品牌旗舰店(Storefront)，开Sponsored Brand广告，做品牌词防御",
+        "phase4_expansion": "砍掉8个死ASIN，把广告预算集中到Top 5+2个新品"
+      },
+      "expected_outcome": {
+        "month1": "Listing优化→转化率从8%提升至12%，自然排名上升",
+        "month3": "品牌建设→自然流量占比从40%提升至55%，ACoS从25%降至18%",
+        "month6": "月销$40-50K，利润率从15%提升至22%"
+      }
+    },
+    {
+      "scenario": "大促备战SOP — 双11/Black Friday",
+      "timeline": {
+        "t_minus_45d": "选定参加大促的SKU，确认库存量（预估大促期间销量=日常3-5倍），向工厂追加订单",
+        "t_minus_30d": "主图替换为大促氛围版（加促销角标），预热短视频拍摄，达人合作锁定档期",
+        "t_minus_15d": "设置优惠券/满减梯度，提交平台活动报名（会场/秒杀/直播），PPC预算提前30%测试",
+        "t_minus_7d": "私域预热（微信群/WhatsApp发大促攻略），直播间预告，短视频发布倒计时内容",
+        "d_day": "凌晨12点开抢：直播间4小时连播，客服全员在线，每30分钟更新库存状态",
+        "t_plus_3d": "复盘：GMV/ROI/退货率/客诉量，快速处理售后问题防止差评"
+      },
+      "pricing_matrix": {
+        "tier1_hero_sku": "原价的7折（利润最薄但拉流量）",
+        "tier2_profit_sku": "原价的85折（利润品，搭配Hero一起卖）",
+        "tier3_bundle": "Hero+Profit组合价=单买两个的75折（提升客单价）"
+      },
+      "risk_items": [
+        "库存不足：宁可少备不超卖，超卖=平台处罚+差评",
+        "物流爆仓：大促期间发货时效延长2-3天，提前告知客户",
+        "价格战：不追竞品极端低价，用赠品/服务差异化"
+      ]
+    },
+    {
+      "scenario": "跨境独立站DTC运营 — Shopify + Facebook Ads",
+      "sop_month1": {
+        "week1": "Shopify建站：选主题(Dawn/Minimog)，上架5-10个核心SKU，设置Stripe/PayPal支付，安装GA4+Meta Pixel",
+        "week2": "内容准备：拍摄产品视频（15s竖版用于Reels/TikTok），写6篇博客(SEO长尾词)，设计3组Ad Creative",
+        "week3_4": "广告测试：Facebook CBO $50/day，3组Ad Set（兴趣定向/Lookalike/Broad），每组2-3条素材A/B测试"
+      },
+      "unit_economics": {
+        "product_cost": "$8",
+        "shipping": "$5",
+        "ad_cost_per_acquisition": "目标CPA $12-15",
+        "selling_price": "$35",
+        "margin_per_order": "$35 - $8 - $5 - $13 = $9（26%）",
+        "breakeven_roas": "2.7x（低于此亏钱）"
+      },
+      "scaling_criteria": [
+        "ABO测试阶段ROAS>3x → 迁移到CBO放量",
+        "单条素材CPA连续3天低于$12 → 追加预算50%",
+        "单条素材CTR<1% → 关停替换",
+        "日预算超$200后开始投Google Shopping做流量补充"
+      ]
     }
   ],
   "principles": [
