@@ -5,6 +5,8 @@ import { runAnalysis } from './workers/analysis.worker.js'
 import { runFrameGeneration } from './workers/frame-generation.worker.js'
 import { runVideoSynthesis } from './workers/video-synthesis.worker.js'
 import { runPostProcessing } from './workers/post-processing.worker.js'
+import { supabase } from './lib/supabase.js'
+import { refundCredits } from '../src/lib/credits/atomic.js'
 
 console.log('[worker] starting clico pipeline workers...')
 
@@ -30,6 +32,23 @@ for (const w of ALL_WORKERS) {
   w.on('failed', (job, err) => console.error(`[worker] ${w.name} job ${job?.id} failed:`, err.message))
   w.on('error', (err) => console.error(`[worker] ${w.name} error:`, err.message))
 }
+
+// BILL-05: Refund credits on confirmed failure (after max retries exhausted)
+// Only fires once per job — BullMQ 'failed' fires after all retries are done
+postWorker.on('failed', async (job: Job | undefined, err: Error) => {
+  if (!job?.data?.jobId || !job?.data?.orgId) return
+
+  const { jobId, orgId } = job.data
+  const creditCost = job.data.creditCost ?? 1  // default cost per job
+
+  try {
+    await supabase.from('jobs').update({ status: 'failed' }).eq('id', jobId)
+    await refundCredits(supabase, orgId, creditCost)
+    console.log(`[worker] refunded ${creditCost} credits to org ${orgId} for failed job ${jobId}`)
+  } catch (refundErr: any) {
+    console.error(`[worker] failed to refund credits for job ${jobId}:`, refundErr.message)
+  }
+})
 
 // INFRA-05: Graceful shutdown on SIGTERM
 const shutdown = async (signal: string) => {

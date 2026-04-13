@@ -30,6 +30,20 @@ export async function POST(req: NextRequest) {
   const { productName, referenceVideoUrl, hookVariantCount } = parsed.data
   const orgId = user.app_metadata?.org_id
 
+  // BILL-05: Daily spend cap check — operator sets this flag via admin when cost threshold hit
+  const { data: capConfig } = await supabase
+    .from('app_config')
+    .select('value')
+    .eq('key', 'daily_spend_cap_reached')
+    .single()
+
+  if (capConfig?.value === 'true') {
+    return NextResponse.json(
+      { error: 'Daily generation limit reached. Try again tomorrow.' },
+      { status: 429, headers: { 'Retry-After': '3600' } },
+    )
+  }
+
   // QUEUE-04: Per-user concurrent job cap (max 3)
   const { count } = await supabase
     .from('jobs')
