@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
@@ -190,5 +191,6 @@ export default function Sidebar({ modules, categories, clientName }: SidebarProp
         </Link>
       </div>
     </aside>
+    </>
   );
 }
