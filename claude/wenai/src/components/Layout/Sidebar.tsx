@@ -52,9 +52,35 @@ const catColors: Record<string, string> = {
 
 export default function Sidebar({ modules, categories, clientName }: SidebarProps) {
   const pathname = usePathname();
+  const [mobileOpen, setMobileOpen] = useState(false);
+
+  // Close mobile sidebar on navigation
+  useEffect(() => {
+    setMobileOpen(false);
+  }, [pathname]);
 
   return (
-    <aside className="w-[240px] h-screen bg-bg-surface flex flex-col border-r border-border-default fixed left-0 top-0 z-40 shadow-[2px_0_12px_rgba(0,0,0,0.4)]">
+    <>
+      {/* Mobile toggle */}
+      <button
+        onClick={() => setMobileOpen(!mobileOpen)}
+        className="lg:hidden fixed top-3 left-3 z-50 w-9 h-9 bg-bg-surface border border-border-subtle rounded-md flex items-center justify-center text-text-secondary hover:text-text-primary hover:bg-bg-hover transition-colors"
+        aria-label="Toggle menu"
+      >
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          {mobileOpen
+            ? <path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+            : <path d="M2 4h12M2 8h12M2 12h12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+          }
+        </svg>
+      </button>
+
+      {/* Overlay */}
+      {mobileOpen && (
+        <div className="lg:hidden fixed inset-0 bg-black/60 z-30" onClick={() => setMobileOpen(false)} />
+      )}
+
+      <aside className={`w-[240px] h-screen bg-bg-surface flex flex-col border-r border-border-default fixed left-0 top-0 z-40 shadow-[2px_0_12px_rgba(0,0,0,0.4)] transition-transform duration-200 ${mobileOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0`}>
       {/* Brand */}
       <div className="px-4 py-4 border-b border-border-default">
         <div className="flex items-center gap-2.5 group cursor-pointer">
