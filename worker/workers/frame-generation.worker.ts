@@ -135,7 +135,7 @@ async function generateKeyframe(
       return (result as any).data.images[0].url
     }
 
-    if (status.status === 'FAILED') {
+    if ((status.status as string) === 'FAILED') {
       throw new Error(`Flux Pro failed for ${sceneKey}: request_id=${request_id}`)
     }
   }

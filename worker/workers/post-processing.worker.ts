@@ -185,7 +185,7 @@ async function concatAndBurnSubtitles(
       .audioCodec('aac')
       .audioBitrate('128k')
       .output(outputPath)
-      .on('end', resolve)
+      .on('end', () => resolve())
       .on('error', reject)
       .run()
   })

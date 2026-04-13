@@ -124,7 +124,7 @@ async function analyzeVideo(videoUrl: string, jobId: string): Promise<Storyboard
   }
 
   // Step 2: Poll until ACTIVE — Pitfall 2 from research (state starts as PROCESSING)
-  let file = await ai.files.get(uploadedFile.name!)
+  let file = await ai.files.get({ name: uploadedFile.name! })
   let pollCount = 0
   while (file.state === 'PROCESSING') {
     if (pollCount++ > 60) {
@@ -132,7 +132,7 @@ async function analyzeVideo(videoUrl: string, jobId: string): Promise<Storyboard
       throw new Error('Gemini file processing timeout (5 min)')
     }
     await new Promise(r => setTimeout(r, 5000))
-    file = await ai.files.get(uploadedFile.name!)
+    file = await ai.files.get({ name: uploadedFile.name! })
   }
   if (file.state === 'FAILED') {
     await fs.rm(tempDir, { recursive: true, force: true }).catch(() => {})

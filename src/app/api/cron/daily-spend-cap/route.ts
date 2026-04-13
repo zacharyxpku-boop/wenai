@@ -1,11 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 
-// Service role client — cron has no user session
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!,
-)
+function getSupabase() {
+  return createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!,
+  )
+}
 
 const DAILY_BUDGET_USD = Number(process.env.DAILY_AI_BUDGET_USD ?? 100)
 
@@ -20,6 +21,7 @@ export async function GET(req: NextRequest) {
   const todayStart = new Date()
   todayStart.setUTCHours(0, 0, 0, 0)
 
+  const supabase = getSupabase()
   const { data, error } = await supabase
     .from('job_steps')
     .select('cost_usd')
