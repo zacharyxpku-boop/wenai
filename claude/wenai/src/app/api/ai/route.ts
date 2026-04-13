@@ -92,7 +92,7 @@ export async function POST(request: NextRequest) {
   // 速率限制检查
   const tenantId = request.headers.get('x-tenant-id') || 'default';
   if (moduleId) {
-    const limit = checkRateLimit(moduleId, tenantId);
+    const limit = await checkRateLimit(moduleId, tenantId);
     if (!limit.allowed) {
       return NextResponse.json(
         { error: `今日调用次数已达上限，将于 ${new Date(limit.resetAt).toLocaleString('zh-CN')} 重置` },
@@ -150,7 +150,7 @@ export async function POST(request: NextRequest) {
 
     const data = await response.json();
     const totalTokens = (data.usage?.prompt_tokens || 0) + (data.usage?.completion_tokens || 0);
-    if (moduleId) logUsageEntry(moduleId, totalTokens);
+    if (moduleId) logUsageEntry(moduleId, totalTokens, undefined, tenantId, request.headers.get('x-username') || undefined);
     return NextResponse.json({
       content: data.choices[0].message.content,
       usage: {

@@ -110,7 +110,8 @@ export default function AIWorkspace({
     }
   };
 
-  const MAX_CSV_ROWS = 100;
+  const MAX_CSV_ROWS = 1000;
+  const CSV_CONCURRENCY = 5;
 
   const parseCSVLine = (line: string): string[] => {
     const result: string[] = [];
@@ -129,8 +130,8 @@ export default function AIWorkspace({
   const handleCSVUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    if (file.size > 2 * 1024 * 1024) {
-      setError('CSV文件不能超过2MB');
+    if (file.size > 10 * 1024 * 1024) {
+      setError('CSV文件不能超过10MB');
       return;
     }
     const reader = new FileReader();
@@ -154,9 +155,10 @@ export default function AIWorkspace({
     setCsvResults([]);
     const dataRows = csvData.slice(1);
     setCsvProgress({ current: 0, total: dataRows.length });
-    const results: { input: string; output: string }[] = [];
+    const results: { input: string; output: string }[] = new Array(dataRows.length);
+    let completed = 0;
 
-    for (let i = 0; i < dataRows.length; i++) {
+    const processRow = async (i: number) => {
       const rowText = csvData[0].map((h, j) => `${h}: ${dataRows[i][j] || ''}`).join('\n');
       try {
         let prompt = modulePrompt;
@@ -167,16 +169,29 @@ export default function AIWorkspace({
         const response = await fetch('/api/ai', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ moduleId, prompt, input: rowText }),
+          body: JSON.stringify({ moduleId, prompt, input: rowText, params }),
         });
         const data = await response.json();
-        results.push({ input: rowText, output: data.content || data.error || '' });
+        results[i] = { input: rowText, output: data.content || data.error || '' };
       } catch {
-        results.push({ input: rowText, output: '[处理失败]' });
+        results[i] = { input: rowText, output: '[处理失败]' };
       }
-      setCsvProgress({ current: i + 1, total: dataRows.length });
-      setCsvResults([...results]);
+      completed++;
+      setCsvProgress({ current: completed, total: dataRows.length });
+      setCsvResults(results.filter(Boolean));
+    };
+
+    // Process in batches of CSV_CONCURRENCY
+    for (let batch = 0; batch < dataRows.length; batch += CSV_CONCURRENCY) {
+      const batchEnd = Math.min(batch + CSV_CONCURRENCY, dataRows.length);
+      const batchPromises = [];
+      for (let i = batch; i < batchEnd; i++) {
+        batchPromises.push(processRow(i));
+      }
+      await Promise.all(batchPromises);
     }
+
+    setCsvResults(results.filter(Boolean));
     setCsvProcessing(false);
   };
 
@@ -186,6 +201,18 @@ export default function AIWorkspace({
       `"${r.input.replace(/"/g, '""').replace(/\n/g, ' ')}","${r.output.replace(/"/g, '""').replace(/\n/g, ' ')}"`
     ).join('\n');
     downloadFile(header + rows, `wenai_${moduleId}_${Date.now()}.csv`, 'text/csv;charset=utf-8');
+  };
+
+  const exportXLSX = async (data: { input: string; output: string }[]) => {
+    const XLSX = await import('xlsx');
+    const ws = XLSX.utils.aoa_to_sheet([
+      ['输入', 'AI结果'],
+      ...data.map(r => [r.input, r.output]),
+    ]);
+    ws['!cols'] = [{ wch: 60 }, { wch: 80 }];
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, moduleId || 'results');
+    XLSX.writeFile(wb, `wenai_${moduleId}_${Date.now()}.xlsx`);
   };
 
   const exportSingleResult = () => {
@@ -334,12 +361,20 @@ export default function AIWorkspace({
                 清除
               </button>
               {csvResults.length > 0 && (
-                <button
-                  onClick={() => exportCSV(csvResults)}
-                  className="text-[9px] font-mono text-success px-2.5 py-1 border border-success/30 rounded-md hover:bg-success/10 transition-colors"
-                >
-                  导出
-                </button>
+                <>
+                  <button
+                    onClick={() => exportCSV(csvResults)}
+                    className="text-[9px] font-mono text-success px-2.5 py-1 border border-success/30 rounded-md hover:bg-success/10 transition-colors"
+                  >
+                    CSV
+                  </button>
+                  <button
+                    onClick={() => exportXLSX(csvResults)}
+                    className="text-[9px] font-mono text-success px-2.5 py-1 border border-success/30 rounded-md hover:bg-success/10 transition-colors"
+                  >
+                    XLSX
+                  </button>
+                </>
               )}
               <button
                 onClick={processCSVBatch}

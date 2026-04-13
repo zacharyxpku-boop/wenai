@@ -1,30 +1,53 @@
-// 简易内存速率限制器（serverless环境下每个冷启动重置）
-// 生产环境应替换为 Vercel KV / Upstash Redis
+/**
+ * Rate limiter with Upstash Redis backend.
+ * Falls back to in-memory when UPSTASH_REDIS_REST_URL is not configured.
+ *
+ * Setup: add UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN to .env.local
+ */
 
+import { Ratelimit } from '@upstash/ratelimit';
+import { Redis } from '@upstash/redis';
+
+const LIMITS: Record<string, number> = {
+  default: 50,
+  translate: 100,
+  reviews: 80,
+  copywriting: 80,
+  outreach: 60,
+  'ip-compliance': 60,
+};
+
+// --- Upstash Redis backend ---
+let redisRatelimit: Ratelimit | null = null;
+
+if (process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN) {
+  const redis = new Redis({
+    url: process.env.UPSTASH_REDIS_REST_URL,
+    token: process.env.UPSTASH_REDIS_REST_TOKEN,
+  });
+  redisRatelimit = new Ratelimit({
+    redis,
+    limiter: Ratelimit.slidingWindow(50, '1 d'),
+    prefix: 'wenai:rl',
+  });
+}
+
+// --- In-memory fallback ---
 interface RateBucket {
   count: number;
   resetAt: number;
 }
 
-const buckets = new Map<string, RateBucket>();
+const memBuckets = new Map<string, RateBucket>();
 
-const LIMITS: Record<string, number> = {
-  default: 50,    // 每模块每天50次
-  translate: 100,  // 翻译高频，放宽
-  reviews: 80,
-};
-
-export function checkRateLimit(moduleId: string, tenantId: string): { allowed: boolean; remaining: number; resetAt: number } {
-  const key = `${tenantId}:${moduleId}`;
+function checkMemoryLimit(key: string, limit: number): { allowed: boolean; remaining: number; resetAt: number } {
   const now = Date.now();
   const dayMs = 24 * 60 * 60 * 1000;
-  const limit = LIMITS[moduleId] || LIMITS.default;
 
-  let bucket = buckets.get(key);
-
+  let bucket = memBuckets.get(key);
   if (!bucket || now > bucket.resetAt) {
     bucket = { count: 0, resetAt: now + dayMs };
-    buckets.set(key, bucket);
+    memBuckets.set(key, bucket);
   }
 
   bucket.count++;
@@ -32,6 +55,33 @@ export function checkRateLimit(moduleId: string, tenantId: string): { allowed: b
   if (bucket.count > limit) {
     return { allowed: false, remaining: 0, resetAt: bucket.resetAt };
   }
-
   return { allowed: true, remaining: limit - bucket.count, resetAt: bucket.resetAt };
+}
+
+// --- Public API ---
+export async function checkRateLimit(
+  moduleId: string,
+  tenantId: string
+): Promise<{ allowed: boolean; remaining: number; resetAt: number }> {
+  const key = `${tenantId}:${moduleId}`;
+  const limit = LIMITS[moduleId] || LIMITS.default;
+
+  if (redisRatelimit) {
+    try {
+      const result = await redisRatelimit.limit(key);
+      return {
+        allowed: result.success,
+        remaining: result.remaining,
+        resetAt: result.reset,
+      };
+    } catch (err) {
+      console.warn('[RateLimit] Redis error, falling back to memory:', err);
+    }
+  }
+
+  return checkMemoryLimit(key, limit);
+}
+
+export function getModuleLimit(moduleId: string): number {
+  return LIMITS[moduleId] || LIMITS.default;
 }

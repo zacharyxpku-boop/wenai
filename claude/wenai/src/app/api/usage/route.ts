@@ -9,19 +9,24 @@ export async function POST(request: NextRequest) {
   } catch {
     return NextResponse.json({ error: '请求格式错误' }, { status: 400 });
   }
-  await logUsageEntry(moduleId, tokens || 0, rating);
+  const tenantId = request.headers.get('x-tenant-id') || 'default';
+  const userId = request.headers.get('x-username') || undefined;
+  await logUsageEntry(moduleId, tokens || 0, rating, tenantId, userId);
   return NextResponse.json({ ok: true });
 }
 
-// GET: return aggregated stats
-export async function GET() {
+// GET: return aggregated stats (filtered by tenant from middleware)
+export async function GET(request: NextRequest) {
   const data = await readUsage();
+  const tenantId = request.headers.get('x-tenant-id') || 'default';
   const now = Date.now();
   const today = now - 24 * 60 * 60 * 1000;
   const week = now - 7 * 24 * 60 * 60 * 1000;
 
-  const todayEntries = data.entries.filter(e => e.timestamp > today);
-  const weekEntries = data.entries.filter(e => e.timestamp > week);
+  // Filter by tenant
+  const tenantEntries = data.entries.filter(e => !e.tenantId || e.tenantId === tenantId);
+  const todayEntries = tenantEntries.filter(e => e.timestamp > today);
+  const weekEntries = tenantEntries.filter(e => e.timestamp > week);
 
   // Module usage ranking (7-day)
   const moduleCount: Record<string, number> = {};
@@ -33,7 +38,7 @@ export async function GET() {
     .map(([moduleId, count]) => ({ moduleId, count }));
 
   // Average rating (all time, only entries with rating)
-  const rated = data.entries.filter(e => e.rating && e.rating > 0);
+  const rated = tenantEntries.filter(e => e.rating && e.rating > 0);
   const avgRating = rated.length > 0
     ? Math.round((rated.reduce((s, e) => s + (e.rating || 0), 0) / rated.length) * 10) / 10
     : 0;
@@ -46,7 +51,7 @@ export async function GET() {
   for (let i = 6; i >= 0; i--) {
     const dayStart = now - (i + 1) * 24 * 60 * 60 * 1000;
     const dayEnd = now - i * 24 * 60 * 60 * 1000;
-    const dayEntries = data.entries.filter(e => e.timestamp > dayStart && e.timestamp <= dayEnd);
+    const dayEntries = tenantEntries.filter(e => e.timestamp > dayStart && e.timestamp <= dayEnd);
     const d = new Date(dayEnd);
     dailyTrend.push({
       date: `${d.getMonth() + 1}/${d.getDate()}`,
@@ -58,11 +63,12 @@ export async function GET() {
   return NextResponse.json({
     todayCount: todayEntries.length,
     weekCount: weekEntries.length,
-    totalCount: data.entries.length,
+    totalCount: tenantEntries.length,
     weekTokens,
     avgRating,
     ratingCount: rated.length,
     ranking,
     dailyTrend,
+    tenantId,
   });
 }
