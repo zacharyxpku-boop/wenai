@@ -16,10 +16,26 @@
         "budget_sensitivity": "中等，愿意为提效工具付费，但需要看到ROI"
       },
       "channels": [
-        {"channel": "1688/阿里国际站卖家社群", "reason": "目标客户聚集地，可直接触达", "priority": "P0"},
-        {"channel": "跨境电商展会（广交会/跨交会）", "reason": "面对面建立信任，转化率最高", "priority": "P0"},
-        {"channel": "LinkedIn/脉脉", "reason": "搜索'跨境运营'定向连接", "priority": "P1"},
-        {"channel": "知乎/小红书行业内容", "reason": "通过干货内容吸引，转化周期长但质量高", "priority": "P2"}
+        {
+          "channel": "1688/阿里国际站卖家社群",
+          "reason": "目标客户聚集地，可直接触达",
+          "priority": "P0"
+        },
+        {
+          "channel": "跨境电商展会（广交会/跨交会）",
+          "reason": "面对面建立信任，转化率最高",
+          "priority": "P0"
+        },
+        {
+          "channel": "LinkedIn/脉脉",
+          "reason": "搜索'跨境运营'定向连接",
+          "priority": "P1"
+        },
+        {
+          "channel": "知乎/小红书行业内容",
+          "reason": "通过干货内容吸引，转化周期长但质量高",
+          "priority": "P2"
+        }
       ],
       "outreach_scripts": {
         "cold_message": "你好，看到贵司在做[平台]代运营，想请教一个问题：你们团队里翻译和客服大概占多少人？我们帮几家类似规模的公司把这两块的人力成本砍了60%，方便聊5分钟吗？",
@@ -43,9 +59,21 @@
         "budget_range": "SaaS工具月付$200-500可接受，前提是ROI清晰"
       },
       "channels": [
-        {"channel": "亚马逊卖家交流群（微信/Facebook）", "reason": "精准聚集，信任度高（同行推荐）", "priority": "P0"},
-        {"channel": "Jungle Scout/Helium 10同类工具用户", "reason": "已有付费工具使用习惯，对SaaS无教育成本", "priority": "P0"},
-        {"channel": "跨境电商峰会/Amazon Seller中心线下活动", "reason": "决策层参与，1对1交流机会", "priority": "P1"}
+        {
+          "channel": "亚马逊卖家交流群（微信/Facebook）",
+          "reason": "精准聚集，信任度高（同行推荐）",
+          "priority": "P0"
+        },
+        {
+          "channel": "Jungle Scout/Helium 10同类工具用户",
+          "reason": "已有付费工具使用习惯，对SaaS无教育成本",
+          "priority": "P0"
+        },
+        {
+          "channel": "跨境电商峰会/Amazon Seller中心线下活动",
+          "reason": "决策层参与，1对1交流机会",
+          "priority": "P1"
+        }
       ],
       "outreach_scripts": {
         "cold_message": "你好，我看你们在[平台]做[类目]，你们有没有遇到过这个问题：Listing被MUJI/YETI这类品牌投诉，明明没有用他们的名字，但还是被下架了？我们最近出了一个AI侵权检测功能，专门识别这种隐性侵权，有几个案例想发给你看一眼",
@@ -73,9 +101,21 @@
         "key_insight": "工厂最大的优势是成本，最大的劣势是平台运营能力——这是AI工具最大的差异化价值场景"
       },
       "channels": [
-        {"channel": "广交会/义博会工厂展商", "reason": "直接触达工厂主，需求强烈", "priority": "P0"},
-        {"channel": "1688优质供应商认证卖家", "reason": "已有平台化意识，更容易接受SaaS工具", "priority": "P0"},
-        {"channel": "制造业产业带（东莞/义乌/潮汕）本地BD", "reason": "地推转化率最高，建立信任快", "priority": "P1"}
+        {
+          "channel": "广交会/义博会工厂展商",
+          "reason": "直接触达工厂主，需求强烈",
+          "priority": "P0"
+        },
+        {
+          "channel": "1688优质供应商认证卖家",
+          "reason": "已有平台化意识，更容易接受SaaS工具",
+          "priority": "P0"
+        },
+        {
+          "channel": "制造业产业带（东莞/义乌/潮汕）本地BD",
+          "reason": "地推转化率最高，建立信任快",
+          "priority": "P1"
+        }
       ],
       "outreach_scripts": {
         "cold_message": "你好，听说贵厂在做家居收纳出口，想问一下你们现在Amazon/Shopee的Listing是自己写还是请人的？我们有个AI工具，工厂把产品参数发进去，1分钟出8个语言的优化Listing，正在找几家工厂免费试用，贵司有兴趣吗？",
@@ -98,9 +138,21 @@
         "partnership_model": "渠道分佣：推荐客户成交，给咨询机构20-30%分成"
       },
       "channels": [
-        {"channel": "品牌出海社群（Brand Builders Group等）", "reason": "集中了做品牌出海的服务机构", "priority": "P0"},
-        {"channel": "LinkedIn搜索'Cross-border e-commerce consultant'", "reason": "专业化渠道，英文市场覆盖", "priority": "P0"},
-        {"channel": "公众号/播客投稿", "reason": "内容营销建立行业影响力，吸引入站", "priority": "P1"}
+        {
+          "channel": "品牌出海社群（Brand Builders Group等）",
+          "reason": "集中了做品牌出海的服务机构",
+          "priority": "P0"
+        },
+        {
+          "channel": "LinkedIn搜索'Cross-border e-commerce consultant'",
+          "reason": "专业化渠道，英文市场覆盖",
+          "priority": "P0"
+        },
+        {
+          "channel": "公众号/播客投稿",
+          "reason": "内容营销建立行业影响力，吸引入站",
+          "priority": "P1"
+        }
       ],
       "outreach_scripts": {
         "partnership_pitch": "你好，我们在做一个AI跨境运营工具，主要解决多语言Listing和竞品分析问题。现在在找5家合作咨询机构，作为我们在东南亚市场的推荐合作伙伴，你们推荐的客户成交我们给30%分成，而且你们的客户可以用你们专属的定制版本。想了解一下吗？",
@@ -120,8 +172,16 @@
         "decision_maker": "运营总监或老板"
       },
       "channels": [
-        {"channel": "ERP工具官方用户群（通过合作伙伴权限进入）", "reason": "通过背书进入，信任度比冷触达高5倍", "priority": "P0"},
-        {"channel": "ERP工具的共同营销（联合推文/用户活动）", "reason": "借助现有用户基数快速覆盖目标人群", "priority": "P0"}
+        {
+          "channel": "ERP工具官方用户群（通过合作伙伴权限进入）",
+          "reason": "通过背书进入，信任度比冷触达高5倍",
+          "priority": "P0"
+        },
+        {
+          "channel": "ERP工具的共同营销（联合推文/用户活动）",
+          "reason": "借助现有用户基数快速覆盖目标人群",
+          "priority": "P0"
+        }
       ],
       "outreach_scripts": {
         "in_community_message": "Hi 各位，我们是[品牌]，跟[ERP工具名]有合作。有没有在做Amazon/Shopee多语言listing但觉得翻译质量不行的？我们有AI工具专门解决这个，现在[ERP工具]用户可以免费试用3个月。感兴趣的扫码或者私信我。",
@@ -142,9 +202,21 @@
         "value_proposition": "AI产品分析工具帮助达人快速了解新品，提高直播中的产品专业度"
       },
       "channels": [
-        {"channel": "TikTok Creator Marketplace", "reason": "官方渠道，可直接接触高质量带货达人", "priority": "P0"},
-        {"channel": "MCN机构BD合作", "reason": "一次合作覆盖多个达人，效率更高", "priority": "P0"},
-        {"channel": "TikTok Shop达人社群（Telegram/Discord）", "reason": "TikTok Shop达人的聚集社区", "priority": "P1"}
+        {
+          "channel": "TikTok Creator Marketplace",
+          "reason": "官方渠道，可直接接触高质量带货达人",
+          "priority": "P0"
+        },
+        {
+          "channel": "MCN机构BD合作",
+          "reason": "一次合作覆盖多个达人，效率更高",
+          "priority": "P0"
+        },
+        {
+          "channel": "TikTok Shop达人社群（Telegram/Discord）",
+          "reason": "TikTok Shop达人的聚集社区",
+          "priority": "P1"
+        }
       ],
       "outreach_scripts": {
         "cold_dm": "Hi [达人名]，你好！我们有款AI工具可以帮达人在30秒内了解一款新品的所有卖点、常见问题和竞品对比，直播前快速准备产品知识。现在在招募10个达人免费内测，你有兴趣吗？",
@@ -166,9 +238,21 @@
         "preferred_content_channel": "YouTube教程、跨境SOHO公众号、微信/Telegram卖家群"
       },
       "channels": [
-        {"channel": "YouTube跨境电商教程频道下方评论区", "reason": "高度精准，主动学习中的用户是最好的转化目标", "priority": "P0"},
-        {"channel": "SOHO跨境公众号内容合作（软文/工具推荐）", "reason": "内容营销，成本低但需持续投入", "priority": "P0"},
-        {"channel": "Reddit r/FulfillmentByAmazon", "reason": "英文市场个人卖家社区，增长迅速", "priority": "P1"}
+        {
+          "channel": "YouTube跨境电商教程频道下方评论区",
+          "reason": "高度精准，主动学习中的用户是最好的转化目标",
+          "priority": "P0"
+        },
+        {
+          "channel": "SOHO跨境公众号内容合作（软文/工具推荐）",
+          "reason": "内容营销，成本低但需持续投入",
+          "priority": "P0"
+        },
+        {
+          "channel": "Reddit r/FulfillmentByAmazon",
+          "reason": "英文市场个人卖家社区，增长迅速",
+          "priority": "P1"
+        }
       ],
       "outreach_scripts": {
         "content_hook": "文章标题：一个人做Amazon，这3件事用AI工具后我每周省了15小时",
@@ -191,13 +275,150 @@
         "key_trigger": "国内竞争白热化，寻找第二增长曲线"
       },
       "channels": [
-        {"channel": "消费品行业协会/出海峰会", "reason": "决策层集中，预算充足，是高价值客户", "priority": "P0"},
-        {"channel": "头部咨询公司（麦肯锡/贝恩东南亚团队）合作转介绍", "reason": "咨询公司客户背书最强，直接切入决策层", "priority": "P0"},
-        {"channel": "东南亚互联网峰会（Tech in Asia等）", "reason": "这类客户会参加此类活动洞察市场", "priority": "P1"}
+        {
+          "channel": "消费品行业协会/出海峰会",
+          "reason": "决策层集中，预算充足，是高价值客户",
+          "priority": "P0"
+        },
+        {
+          "channel": "头部咨询公司（麦肯锡/贝恩东南亚团队）合作转介绍",
+          "reason": "咨询公司客户背书最强，直接切入决策层",
+          "priority": "P0"
+        },
+        {
+          "channel": "东南亚互联网峰会（Tech in Asia等）",
+          "reason": "这类客户会参加此类活动洞察市场",
+          "priority": "P1"
+        }
       ],
       "outreach_scripts": {
         "cold_email": "您好，我是[名字]，来自[品牌]。\n\n看到贵品牌在国内[品类]的市场地位，想聊一个机会：[类似品类]在泰国和越南的增长速度是国内的3倍，且市场竞争格局比国内宽松很多。\n\n我们最近帮[某同类品牌]用AI工具完成了泰越两国的市场分析+多语言listing+KOL触达，3个月GMV做到了$20万。想问问贵司有没有计划2026年进入东南亚市场？\n\n如果有，15分钟通话可以吗？我分享一下我们的市场调研数据。",
         "why": "品牌商重视市场数据和同类案例；提到具体GMV数据有说服力；15分钟门槛低"
+      }
+    },
+    {
+      "target": "Amazon聚合商/品牌收购基金（年收购预算$500万-$5000万）",
+      "profile": {
+        "industry": "电商品牌收购/运营",
+        "size": "20-100人投后运营团队",
+        "pain_points": [
+          "收购后需要快速优化多品牌的Listing和广告，人力跟不上",
+          "缺乏对东南亚/欧洲等新市场的本地化能力",
+          "投后整合效率决定IRR，工具化降本是核心诉求"
+        ],
+        "decision_maker": "投后运营VP或CEO",
+        "budget_range": "企业级SaaS年付$5K-$50K，看ROI决策快"
+      },
+      "channels": [
+        {
+          "channel": "Prosper Show / White Label Expo等行业展会",
+          "reason": "聚合商高管密集出席",
+          "priority": "P0"
+        },
+        {
+          "channel": "LinkedIn搜索\"Amazon aggregator\"运营负责人",
+          "reason": "精准触达决策层",
+          "priority": "P0"
+        },
+        {
+          "channel": "eCommerceChris等行业播客/newsletter赞助",
+          "reason": "行业影响力背书",
+          "priority": "P1"
+        }
+      ],
+      "outreach_scripts": {
+        "cold_email": "您好，了解到贵司在持续收购Amazon品牌。想问一个很具体的问题：投后整合阶段，多品牌的Listing翻译和合规检查，你们现在是怎么做的？如果一个工具能把这块的人力成本砍掉一半，值得聊10分钟吗？",
+        "why": "聚合商最关注的是投后运营效率和IRR，直接切入他们的核心pain point"
+      }
+    },
+    {
+      "target": "跨境物流/海外仓服务商（想给客户提供增值服务）",
+      "profile": {
+        "industry": "跨境供应链服务",
+        "size": "50-500人，年处理包裹量100万+",
+        "pain_points": [
+          "物流服务同质化严重，价格战利润越来越薄",
+          "客户(卖家)粘性低，随时可能换服务商",
+          "想提供一站式服务但缺乏内容/运营工具"
+        ],
+        "decision_maker": "业务拓展总监或CEO",
+        "partnership_model": "白标合作：物流商以自己品牌提供AI工具，按使用量分成"
+      },
+      "channels": [
+        {
+          "channel": "跨境物流行业峰会（如PARCEL Forum/全球智慧物流峰会）",
+          "reason": "集中触达决策层",
+          "priority": "P0"
+        },
+        {
+          "channel": "递四方/云途/燕文等头部物流商BD部门直接对接",
+          "reason": "头部客户标杆效应",
+          "priority": "P0"
+        }
+      ],
+      "outreach_scripts": {
+        "partnership_pitch": "你好，我们有个提案：把AI翻译+Listing优化工具白标给贵司，你们的卖家客户用贵司品牌的工具做内容，对他们来说是增值服务提升粘性，对贵司来说是新的利润来源。目前有2家物流商在谈，想不想先看个demo？",
+        "why": "物流商的核心诉求是客户粘性和新利润点，白标模式让他们零开发成本"
+      }
+    },
+    {
+      "target": "高校/培训机构（跨境电商专业/培训班）",
+      "profile": {
+        "industry": "教育培训",
+        "size": "高校国际贸易/电商专业 或 社会培训机构",
+        "pain_points": [
+          "教学内容与行业实操脱节，学生毕业不会用工具",
+          "实训环节缺乏真实工具和数据",
+          "想引入AI工具但预算有限"
+        ],
+        "decision_maker": "系主任/培训机构校长",
+        "value_proposition": "教育版免费/极低价，换取品牌曝光和未来付费用户培养"
+      },
+      "channels": [
+        {
+          "channel": "中国跨境电商教育联盟/各省商务厅培训项目",
+          "reason": "政策导向，学校容易接受",
+          "priority": "P0"
+        },
+        {
+          "channel": "知名跨境培训IP（如小马宋/蚊子会/跨境知道）",
+          "reason": "通过KOL进入培训体系",
+          "priority": "P1"
+        }
+      ],
+      "outreach_scripts": {
+        "cold_email": "老师您好，我们开发了一套跨境电商AI实训工具（涵盖选品/翻译/Listing/合规），想免费提供给贵校做教学实训平台。学生用我们的工具做真实项目练习，贵校教学质量提升，我们获得用户积累，双赢。方便约个时间演示吗？",
+        "why": "教育渠道是长期品牌投资：学生毕业进入行业就是付费用户"
+      }
+    },
+    {
+      "target": "产业带政府招商办/跨境电商产业园",
+      "profile": {
+        "industry": "政府/产业园区",
+        "size": "地级市商务局或国家级跨境电商综试区",
+        "pain_points": [
+          "引进了跨境电商企业但留不住，缺乏配套服务",
+          "产业带需要提升品牌出海能力，不能只做低价代工",
+          "KPI是入驻企业数和出口额增长"
+        ],
+        "decision_maker": "招商办主任/产业园运营方",
+        "partnership_model": "入驻产业园+为园区企业提供培训和工具，园区给补贴/免租"
+      },
+      "channels": [
+        {
+          "channel": "各地跨境电商综试区官网招商信息",
+          "reason": "直接对接政策需求",
+          "priority": "P0"
+        },
+        {
+          "channel": "商务部跨境电商峰会/APEC中小企业论坛",
+          "reason": "政府官员集中参与",
+          "priority": "P1"
+        }
+      ],
+      "outreach_scripts": {
+        "proposal": "关于为[城市名]跨境电商产业园企业提供AI出海工具及培训服务的合作方案。核心价值：1)帮助园区企业降低30-50%内容运营成本；2)提升品牌出海能力（非白牌低价）；3)可作为产业园数字化升级的标杆案例。我们可以入驻园区，为企业提供免费试用+定期培训。",
+        "why": "产业园合作可以批量获客(一个园区50-200家企业)，且有政府背书"
       }
     }
   ],

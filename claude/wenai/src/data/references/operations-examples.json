@@ -194,6 +194,83 @@
         "单条素材CTR<1% → 关停替换",
         "日预算超$200后开始投Google Shopping做流量补充"
       ]
+    },
+    {
+      "scenario": "Lazada东南亚多站点铺货 — 家居小件（泰国/越南/菲律宾）",
+      "sop_month1": {
+        "week1": "开通3个站点，上架30个SKU（以厨房收纳/浴室置物架/桌面整理为主），统一采用Lazada官方仓(LGS)",
+        "week2": "翻译优化：泰文/越南文标题用本地关键词工具(ShopeeFan/SellerCenter)校正，图片加本地尺寸对比",
+        "week3_4": "Lazada Sponsored Discovery投放，每SKU日预算-5，重点推首单转化活动(Free Shipping+Voucher叠加)"
+      },
+      "pricing_strategy": {
+        "approach": "对标本地竞品定价，通常比Amazon同款低30-40%",
+        "example": "硅胶厨具套装：Amazon8.99，Lazada泰国站定价฿299(约.5)，工厂成本¥15(约)",
+        "margin": "扣除平台佣金(3-5%)+物流(LGS约.5)，净利润约-4/单"
+      },
+      "key_metrics": {
+        "visit_to_order": "2-4%",
+        "return_rate": "低于5%（家居品类优势）",
+        "target_monthly_orders": "300单/站点"
+      }
+    },
+    {
+      "scenario": "亚马逊欧洲站VAT合规运营 — 电子配件（德国/法国/西班牙）",
+      "sop_month1": {
+        "week1": "VAT注册确认（德国OSS/法国本地号），WEEE注册，包装法合规(Lucid/CITEO)，CE认证文件备齐",
+        "week2": "FBA发货至德国仓(FBA EU统一配送)，Listing翻译用母语写手(非机翻)，A+内容本地化",
+        "week3_4": "PPC启动：自动广告→2周数据→手动精准词，预算从15欧/天起步"
+      },
+      "compliance_checklist": [
+        "VAT注册+申报(月/季)",
+        "WEEE电子废弃物注册",
+        "包装法注册(德Lucid/法CITEO)",
+        "CE DoC符合性声明",
+        "产品说明书多语言版(德/法/西/意)"
+      ],
+      "pricing_strategy": {
+        "note": "欧洲定价通常比美国高15-25%（含VAT），消费者预期含税价",
+        "example": "65W充电器：Amazon US 4.99，Amazon DE €29.99(含19%VAT)"
+      },
+      "key_risk": "VAT申报漏报罚款严重，建议用AVASK/hellotax等专业服务商"
+    },
+    {
+      "scenario": "抖音电商全域兴趣电商 — 食品零食（自播+达人分销）",
+      "sop_month1": {
+        "week1": "开通抖店+绑定5个自播账号，上架15个SKU，设置随心推测试素材",
+        "week2": "自播节奏：每天开播4-6小时(分2场)，主播+助播+场控3人配置，前7天不投流纯自然流测款",
+        "week3_4": "达人分销：精选联盟设置20-30%佣金，对接50个1万-10万粉的美食达人寄样"
+      },
+      "traffic_mix": {
+        "natural": "自然推荐流（靠停留时长+互动率拉满）占40%",
+        "paid": "千川投流（投短视频引流直播间）占30%",
+        "affiliate": "达人分销（精选联盟）占30%"
+      },
+      "unit_economics": {
+        "product_cost": "¥8（代工出厂价）",
+        "shipping": "¥3（快递费）",
+        "platform_fee": "约5%技术服务费",
+        "ad_cost": "¥5-8/单（千川ROI目标3:1）",
+        "selling_price": "¥29.9（3袋装主力价格带）",
+        "margin": "¥5-8/单，靠复购和客单价提升"
+      }
+    },
+    {
+      "scenario": "Walmart Marketplace入驻运营 — 家庭日用品（清洁/收纳）",
+      "sop_month1": {
+        "week1": "Walmart Seller Center注册审批(2-4周)，品牌备案(Brand Portal)，WFS(Walmart Fulfillment Services)入仓准备",
+        "week2": "上架20个SKU，Listing优化(Walmart SEO与Amazon不同：标题75字符限制，属性填充比关键词堆砌重要)",
+        "week3_4": "Walmart Connect广告启动：Sponsored Products自动广告0/day，利用Walmart+会员日做促销"
+      },
+      "walmart_vs_amazon": {
+        "pricing": "Walmart对价格极度敏感，有价格匹配算法，定价必须≤Amazon同款",
+        "competition": "竞争密度约Amazon的1/5，但流量也少，转化率通常更高(5-8%)",
+        "fulfillment": "WFS比FBA便宜约15%，且享有2-day delivery标签加权"
+      },
+      "key_metrics": {
+        "target_monthly_gmv": "K-15K(首3个月)",
+        "acos_target": "25-35%",
+        "organic_ratio": "争取60%+（Walmart有机排名权重更高）"
+      }
     }
   ],
   "principles": [
