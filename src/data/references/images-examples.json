@@ -1,0 +1,424 @@
+{
+  "module": "images",
+  "description": "电商主图与营销图参考案例 — AI prompt + 平台规范",
+  "platform_specs": {
+    "amazon": {
+      "main_image": "1000x1000 min, white bg, no text/badge",
+      "lifestyle": "1000x1000, in-use context",
+      "a_plus": "970x600 banner, 300x300 comparison"
+    },
+    "shopee": {
+      "main_image": "800x800, white bg, can have sale badge",
+      "carousel": "800x800, up to 9 images"
+    },
+    "tiktok_shop": {
+      "product_image": "800x800, clean bg",
+      "video_thumbnail": "1080x1920 vertical"
+    },
+    "xiaohongshu": {
+      "cover": "1080x1440 (3:4), text overlay OK",
+      "detail": "1080x1440, multi-image carousel"
+    },
+    "douyin": {
+      "product_image": "800x800",
+      "short_video_cover": "1080x1920"
+    }
+  },
+  "examples": [
+    {
+      "product": "蓝牙耳机",
+      "platform": "Amazon",
+      "image_set": [
+        {
+          "type": "main_image",
+          "description": "纯白背景产品正面图，突出外形设计",
+          "ai_prompt": "Professional product photography of wireless Bluetooth earbuds, pure white background, studio lighting with soft shadows, front-facing view showing both earpieces and charging case open, ultra-sharp focus, 8K resolution, commercial product shot",
+          "dimensions": "1000x1000",
+          "key_elements": ["白色背景", "耳机+充电盒同框", "无文字", "无徽章", "正面视角"]
+        },
+        {
+          "type": "lifestyle",
+          "description": "模特户外跑步场景佩戴图",
+          "ai_prompt": "Young athletic woman running in a park wearing wireless earbuds, golden hour lighting, motion blur background suggesting speed, earbuds clearly visible and secure in ears, natural smile, athletic wear, Canon 85mm f/1.4 style bokeh",
+          "dimensions": "1000x1000",
+          "key_elements": ["真实使用场景", "模特面部自然表情", "耳机可见度高", "环境感强"]
+        },
+        {
+          "type": "infographic",
+          "description": "功能卖点标注图，40h续航/ANC主动降噪/IPX5防水",
+          "ai_prompt": "Clean infographic-style product image of Bluetooth earbuds on light gray background, minimalist annotation lines pointing to key features, modern sans-serif typography, tech-blue accent color scheme, flat lay with slight perspective",
+          "dimensions": "1000x1000",
+          "key_elements": ["数据标注清晰", "箭头线条简洁", "字体可读性强", "不超过5个标注点"]
+        },
+        {
+          "type": "comparison",
+          "description": "与竞品尺寸/重量/续航参数对比表格图",
+          "ai_prompt": "Professional comparison chart graphic, earbuds image on left side, clean grid table on right, product highlighted in brand color column, competitive features in gray, modern B2C e-commerce style, white background",
+          "dimensions": "1000x1000",
+          "key_elements": ["己方列高亮", "参数维度3-5个", "竞品名称模糊处理"]
+        },
+        {
+          "type": "packaging",
+          "description": "产品+包装盒+配件全家福平铺图",
+          "ai_prompt": "Flat lay product photography of Bluetooth earbuds unboxing: earbuds, charging case, USB-C cable, ear tips set, user manual, arranged symmetrically on white surface, overhead shot, soft natural light, premium unboxing feel",
+          "dimensions": "1000x1000",
+          "key_elements": ["配件齐全展示", "对称摆放", "俯视角度", "传递开箱感"]
+        },
+        {
+          "type": "size",
+          "description": "耳机与手掌/硬币尺寸参照对比图",
+          "ai_prompt": "Product size reference photo of wireless earbuds held in an open palm, clean white background, clear size comparison showing the compact form factor, natural skin tone hand, product in focus, shallow depth of field",
+          "dimensions": "1000x1000",
+          "key_elements": ["手掌参照直观", "耳机尺寸感清晰", "白色背景保持一致"]
+        },
+        {
+          "type": "lifestyle2",
+          "description": "居家沙发场景听音乐放松图",
+          "ai_prompt": "Young man relaxing on modern couch wearing wireless earbuds, cozy living room interior, warm ambient lighting, eyes closed and relaxed expression suggesting immersive audio, holding smartphone, lifestyle photography editorial style",
+          "dimensions": "1000x1000",
+          "key_elements": ["居家场景与户外形成互补", "情绪氛围感", "产品清晰可辨"]
+        }
+      ],
+      "style_guide": {
+        "color_palette": ["#FFFFFF", "#1A1A2E", "#00B4D8", "#E8F4F8"],
+        "font_style": "无衬线现代字体，标注文字12-14pt，主标题18pt+",
+        "mood": "科技感、专业、运动活力",
+        "brand_tone": "高性价比旗舰，强调参数与场景兼顾"
+      },
+      "common_mistakes": [
+        "主图放文字或促销角标（违反Amazon规则直接被下架）",
+        "充电盒闭合拍摄，买家看不到耳机形态",
+        "生活场景图背景杂乱导致产品不突出",
+        "infographic标注超过7个点，视觉混乱",
+        "模特佩戴方式不符合人体工学，引发买家质疑产品设计"
+      ]
+    },
+    {
+      "product": "美白精华",
+      "platform": "小红书",
+      "image_set": [
+        {
+          "type": "成分可视化",
+          "description": "烟酰胺/VC衍生物成分与原料视觉化展示",
+          "ai_prompt": "Beauty product flat lay with serum bottle surrounded by fresh ingredients: niacinamide crystal powder, lemon slices, vitamin C orange cross-section, white flower petals, glass dropper, minimal aesthetic on soft cream textured background, warm natural daylight, overhead 45-degree shot",
+          "dimensions": "1080x1440",
+          "key_elements": ["成分实物道具", "瓶身居中", "背景不抢主体", "文字叠加空间预留在上方1/3区域"]
+        },
+        {
+          "type": "使用前后对比",
+          "description": "28天肌肤亮度对比拼图，真实肤色变化",
+          "ai_prompt": "Split-screen beauty before-after skin comparison, left side showing dull uneven skin tone, right side showing brighter luminous skin, same lighting conditions, clean makeup-free face, clinical photography style, soft studio lighting, realistic skin texture maintained",
+          "dimensions": "1080x1440",
+          "key_elements": ["同一光线环境拍摄", "不过度修图保留真实感", "标注天数/用量", "脸部裁切到眉毛到下巴"]
+        }
+      ],
+      "style_guide": {
+        "color_palette": ["#FFF8F0", "#F2C9A0", "#E8A87C", "#FFFFFF"],
+        "font_style": "手写风+现代无衬线混排，中英文混用增加国际感",
+        "mood": "温柔、自然、真实可信",
+        "brand_tone": "成分党信任感，姐妹亲测推荐"
+      },
+      "common_mistakes": [
+        "过度磨皮修图导致前后对比失去说服力",
+        "成分道具与产品毫无关联，买家看不懂",
+        "封面图文字过多超过5行，小红书首图显示截断",
+        "色调过于苍白使肤色显不健康",
+        "前后对比光线不一致，被质疑PS造假"
+      ]
+    },
+    {
+      "product": "瑜伽裤",
+      "platform": "Amazon",
+      "image_set": [
+        {
+          "type": "main_image",
+          "description": "纯白背景模特穿搭全身正面图",
+          "ai_prompt": "Professional apparel photography, athletic female model wearing high-waist yoga leggings, pure white seamless background, full body shot from head to toe, neutral standing pose showing fit and silhouette, studio strobe lighting, skin tone accurate, no distracting accessories",
+          "dimensions": "1000x1000",
+          "key_elements": ["全身入镜", "白色无缝背景", "姿态自然不夸张", "裤型轮廓清晰"]
+        },
+        {
+          "type": "面料细节",
+          "description": "4向弹力面料特写+面料成分标注",
+          "ai_prompt": "Extreme close-up macro photography of athletic leggings fabric texture, showing the four-way stretch weave pattern, soft fabric sheen under directional studio lighting, slight stretch demonstration with hands pulling fabric, clean neutral background, product detail shot",
+          "dimensions": "1000x1000",
+          "key_elements": ["面料纹理清晰可见", "弹性演示动作", "成分标注（80%锦纶+20%氨纶）", "不出现人脸"]
+        }
+      ],
+      "style_guide": {
+        "color_palette": ["#FFFFFF", "#2D2D2D", "#A8D5BA", "#F5F0EB"],
+        "font_style": "简洁无衬线，标注字体不超过两种",
+        "mood": "专业运动、品质感、功能性",
+        "brand_tone": "日常运动与专业瑜伽兼顾"
+      },
+      "common_mistakes": [
+        "服装主图只拍上半身，买家无法判断裤型和长度",
+        "面料特写模糊，无法传递质感",
+        "模特尺码与标题声称尺码区间不匹配",
+        "多色款只展示一个颜色主图，其他颜色点击率低"
+      ]
+    },
+    {
+      "product": "智能手表",
+      "platform": "Shopee",
+      "image_set": [
+        {
+          "type": "main_image",
+          "description": "白色背景产品正面+侧面45度组合图，搭配功能徽章",
+          "ai_prompt": "Smart watch product photography on white background, front face showing vibrant AMOLED display with health dashboard UI, 45-degree side angle showing slim profile, subtle reflection on surface, professional tech product photography style, slight shadow for depth",
+          "dimensions": "800x800",
+          "key_elements": ["正面+45度侧面双视角", "表盘界面展示功能", "可加促销角标（Shopee规则允许）"]
+        },
+        {
+          "type": "功能展示",
+          "description": "6大健康功能图标网格图：血氧/心率/睡眠/步数/GPS/NFC",
+          "ai_prompt": "Clean feature grid infographic for smartwatch, 6 icons arranged in 2x3 grid, each with feature name below, modern flat icon style in brand blue color, white background with subtle card shadows, health and fitness themed icons, professional e-commerce graphic design",
+          "dimensions": "800x800",
+          "key_elements": ["图标统一风格", "中英双语标注", "不超过6个功能点", "品牌色高亮重点功能"]
+        }
+      ],
+      "style_guide": {
+        "color_palette": ["#FFFFFF", "#0066FF", "#1A1A2E", "#00D4AA"],
+        "font_style": "科技感无衬线字体，Shopee本地化加入马来语/泰语备注",
+        "mood": "科技、时尚、健康生活",
+        "brand_tone": "高性价比智能穿戴，面向东南亚中端消费者"
+      },
+      "common_mistakes": [
+        "表盘展示的UI与实际固件界面差异过大引发差评",
+        "促销角标字体过小在手机端看不清",
+        "功能图标数量超过8个导致每个图标过小无法识别",
+        "侧面图没有展示，买家不清楚表厚"
+      ]
+    },
+    {
+      "product": "车载收纳",
+      "platform": "TikTok Shop",
+      "image_set": [
+        {
+          "type": "安装演示分步图",
+          "description": "4步安装流程图：取出-对准-按压-完成",
+          "ai_prompt": "Step-by-step car organizer installation photo sequence, 4 panels labeled Step 1-4, showing hands installing the product onto car headrest, clean car interior background, overhead and angle shots mixed, clear visual progress arrows between steps, practical demonstration photography",
+          "dimensions": "800x800",
+          "key_elements": ["4步分格清晰", "箭头引导视线", "手部操作清晰可见", "安装完成效果图收尾"]
+        }
+      ],
+      "style_guide": {
+        "color_palette": ["#1A1A1A", "#FF4D4D", "#FFFFFF", "#F5F5F5"],
+        "font_style": "粗体无衬线，TikTok风格大字分步标注",
+        "mood": "实用、快节奏、生活技巧感",
+        "brand_tone": "解决车内杂乱问题，一装搞定"
+      },
+      "common_mistakes": [
+        "只展示安装好的成品图，不展示安装过程，买家担心安装困难",
+        "车型适配说明缺失，买家不确定是否适合自己的车",
+        "分步图各步骤视角差异太大，跳跃感强看不懂",
+        "TikTok产品图尺寸不对导致裁切变形"
+      ]
+    },
+    {
+      "product": "宠物玩具",
+      "platform": "Amazon",
+      "image_set": [
+        {
+          "type": "a_plus_banner",
+          "description": "品牌故事横幅：创始人与宠物的情感联结叙事",
+          "ai_prompt": "Wide banner lifestyle photography for pet toy brand A+ content, warm golden hour lighting, happy golden retriever playing with colorful rope toy in a modern living room, owner's hands partially visible showing interaction, 16:9 wide crop, editorial magazine quality, brand story mood",
+          "dimensions": "970x600",
+          "key_elements": ["品牌叙事情感", "宠物与人互动", "暖色调营造温馨感", "左侧留文字区域"]
+        },
+        {
+          "type": "product_matrix",
+          "description": "产品矩阵图：5款玩具系列展示（适龄/材质/功能分类）",
+          "ai_prompt": "Clean product line-up photography of 5 pet toys arranged in a row on white background, each toy clearly labeled with pet size and play type, consistent lighting across all products, flat lay with slight perspective, e-commerce catalog style",
+          "dimensions": "300x300",
+          "key_elements": ["系列感统一", "尺寸标注（S/M/L犬适用）", "材质差异可见", "价格区间暗示"]
+        }
+      ],
+      "style_guide": {
+        "color_palette": ["#FF8C42", "#FFF3E0", "#2E4057", "#FFFFFF"],
+        "font_style": "圆角友好字体，配合宠物品牌亲切感",
+        "mood": "温暖、快乐、信赖",
+        "brand_tone": "宠物主人的贴心伙伴，安全材质第一"
+      },
+      "common_mistakes": [
+        "A+ Banner只放产品不放故事，浪费情感营销机会",
+        "宠物图片使用库存图与实际使用场景不符",
+        "产品矩阵图中玩具大小比例不一致，误导买家判断尺寸",
+        "没有展示玩具耐咬测试或材质安全认证"
+      ]
+    },
+    {
+      "product": "咖啡豆",
+      "platform": "抖音小店",
+      "image_set": [
+        {
+          "type": "产地故事",
+          "description": "埃塞俄比亚庄园产地实拍风格图，咖啡树+晾晒台",
+          "ai_prompt": "Documentary-style photography of Ethiopian coffee farm at sunrise, red ripe coffee cherries on branches in foreground, traditional raised drying beds with sorted coffee beans in background, warm morning light, shallow depth of field on cherries, authentic farm workers silhouette, travel photography aesthetic",
+          "dimensions": "800x800",
+          "key_elements": ["产地真实感强", "咖啡果实清晰", "自然光无过度处理", "故事感叙事"]
+        },
+        {
+          "type": "冲泡过程",
+          "description": "手冲V60全过程俯视图：注水+粉层膨胀",
+          "ai_prompt": "Overhead pour-over coffee brewing process photography, V60 dripper on elegant wooden base, hot water being poured in spiral pattern, coffee bloom bubbling up showing fresh roast, steam wisps rising, minimal wooden table background, warm café atmosphere, fine art food photography style",
+          "dimensions": "800x800",
+          "key_elements": ["俯视构图有设计感", "热气/水流增加动感", "咖啡器具精致", "画面整洁无杂乱"]
+        }
+      ],
+      "style_guide": {
+        "color_palette": ["#3B1F0A", "#C8956C", "#F5E6D3", "#2D2D2D"],
+        "font_style": "手写风字体+简约衬线，传递精品咖啡文化感",
+        "mood": "醇厚、专业、产地溯源",
+        "brand_tone": "精品单品豆，从产地到杯子的品质承诺"
+      },
+      "common_mistakes": [
+        "产地图使用网络下载图片被买家识破信任度崩塌",
+        "冲泡图光线昏暗使咖啡颜色发黑不诱人",
+        "抖音小店封面裁切位置不对导致重要信息被截掉",
+        "包装袋是主图唯一元素，缺乏产品故事和氛围感"
+      ]
+    },
+    {
+      "product": "折叠键盘",
+      "platform": "Amazon",
+      "image_set": [
+        {
+          "type": "size_infographic",
+          "description": "折叠状态与展开状态尺寸对比标注图",
+          "ai_prompt": "Technical product infographic of foldable Bluetooth keyboard, left side showing folded compact size with dimension annotations (length x width x height), right side showing fully unfolded state with full-size key layout, gray gradient background, clean sans-serif measurements, engineering diagram aesthetic",
+          "dimensions": "1000x1000",
+          "key_elements": ["折叠/展开双状态", "具体毫米标注", "对比钱包或手机尺寸参照物", "展开后按键清晰可读"]
+        },
+        {
+          "type": "compatibility_chart",
+          "description": "设备兼容性图：iOS/Android/Windows/macOS图标+连接数量",
+          "ai_prompt": "Clean compatibility infographic for Bluetooth keyboard, showing device ecosystem icons (iPhone, iPad, Android phone, MacBook, Windows laptop, tablet) connected by dotted lines to central keyboard product image, pastel color-coded by OS platform, white background, tech product commercial style",
+          "dimensions": "1000x1000",
+          "key_elements": ["设备图标官方风格", "多设备同时连接数量标注", "各系统图标比例正确", "连线关系清晰"]
+        }
+      ],
+      "style_guide": {
+        "color_palette": ["#FFFFFF", "#F0F0F0", "#0A84FF", "#1D1D1F"],
+        "font_style": "Apple风格无衬线SF Pro风格，极简主义",
+        "mood": "精密工程、便携科技",
+        "brand_tone": "商务差旅者的生产力工具"
+      },
+      "common_mistakes": [
+        "尺寸标注图只标折叠状态不标展开状态，买家担心太小不实用",
+        "兼容性图标使用非官方图标素材引发版权风险",
+        "按键字符展示图太小，买家看不清是否有数字行",
+        "缺乏与竞品对比的键位布局图，错失差异化机会"
+      ]
+    },
+    {
+      "product": "婴儿睡袋",
+      "platform": "小红书",
+      "image_set": [
+        {
+          "type": "安全认证展示",
+          "description": "OEKO-TEX/GB18401认证徽章+检测报告局部图",
+          "ai_prompt": "Trust and safety infographic for baby sleep bag, showing OEKO-TEX certification badge prominently, clean test certificate document partially visible, soft pastel background (baby pink and mint), gentle typography, reassuring health-focused design, minimal flat lay with the sleep bag folded neatly",
+          "dimensions": "1080x1440",
+          "key_elements": ["认证标志高辨识度", "检测机构名称清晰", "配色柔和传递安全感", "不放过多文字"]
+        },
+        {
+          "type": "面料层次图解",
+          "description": "3层面料结构剖面图：外层棉/中层填充/内层亲肤",
+          "ai_prompt": "Cross-section diagram illustration of baby sleeping bag fabric layers, three distinct layers shown in exploded view with labeling: outer cotton shell, middle thermal fill layer, inner soft fleece lining, pastel color-coded layers, clean vector illustration style, white background, parenting product safety communication",
+          "dimensions": "1080x1440",
+          "key_elements": ["剖面图展示层次感", "每层材质标注", "克重/温度区间标注", "非专业家长也能看懂"]
+        }
+      ],
+      "style_guide": {
+        "color_palette": ["#FFF0F5", "#B5EAD7", "#C7CEEA", "#FFFFFF"],
+        "font_style": "圆润可爱字体，避免锐利棱角感，增加信任感",
+        "mood": "温柔、安全、专业育儿",
+        "brand_tone": "妈妈自用推荐，宝宝安睡一整夜"
+      },
+      "common_mistakes": [
+        "认证徽章小到看不清，买家信任感无法建立",
+        "面料图解用专业术语堆砌，普通妈妈看不懂",
+        "睡袋只拍平铺图，看不到宝宝穿上后的效果",
+        "小红书封面文字超过3行导致信息密度过高"
+      ]
+    },
+    {
+      "product": "户外露营灯",
+      "platform": "Amazon",
+      "image_set": [
+        {
+          "type": "lifestyle_forest",
+          "description": "森林夜晚帐篷旁挂灯场景，营造温暖氛围",
+          "ai_prompt": "Night camping lifestyle photography, LED lantern hanging from tent entrance casting warm golden light, dark forest background with stars visible, couple sitting by fire in distance, tent glowing from within, long exposure photography style, magical outdoor atmosphere, Sony 24mm wide angle style",
+          "dimensions": "1000x1000",
+          "key_elements": ["夜晚环境突出发光效果", "帐篷使用场景真实", "暖光色温传递舒适感", "背景星空增加情怀感"]
+        },
+        {
+          "type": "lifestyle_beach",
+          "description": "海边沙滩夜晚派对场景，展示IPX5防水防沙",
+          "ai_prompt": "Beach night party scene with portable LED camping lantern on sand, ocean waves in background, people around chatting and laughing, lantern withstanding light ocean spray, warm ambient lighting mixed with cool moonlight, lifestyle photography, fun outdoor social vibe",
+          "dimensions": "1000x1000",
+          "key_elements": ["防水场景演示", "社交聚会氛围", "与森林场景形成环境多样性对比"]
+        },
+        {
+          "type": "lifestyle_emergency",
+          "description": "室内停电紧急照明场景，展示家庭备灾功能",
+          "ai_prompt": "Indoor emergency lighting scenario, family gathered in living room during power outage, LED camping lantern providing warm illumination, faces lit by lantern light, calm reassuring mood, practical preparedness photography, authentic home environment",
+          "dimensions": "1000x1000",
+          "key_elements": ["居家备灾场景扩大受众", "情感联结（家庭安全感）", "亮度对比突出产品性能"]
+        }
+      ],
+      "style_guide": {
+        "color_palette": ["#0D1B2A", "#F4A261", "#E76F51", "#FFFFFF"],
+        "font_style": "探险风格粗体，部分标注用手写风格",
+        "mood": "探险、自由、户外生活方式",
+        "brand_tone": "不只是露营灯，是每次户外记忆的伴侣"
+      },
+      "common_mistakes": [
+        "所有生活场景图全是白天拍摄，无法展示灯光效果",
+        "只展示单一场景（只有森林），错失多使用场景买家",
+        "灯光亮度在照片中被自动曝光补偿导致看起来很暗淡",
+        "没有展示充电方式（USB-C/太阳能）导致买家担忧使用便利性",
+        "生活场景模特穿着和场景配置太过专业，普通买家无法代入"
+      ]
+    }
+  ],
+  "principles": [
+    {
+      "id": 1,
+      "title": "主图决定点击率，其他图决定转化率",
+      "detail": "主图的唯一任务是让买家在搜索结果中点进来。点进来之后才是infographic/lifestyle图的工作。两者目标不同，优化方向也不同。主图测试CTR，其他图测试CVR，分开跑A/B。"
+    },
+    {
+      "id": 2,
+      "title": "AI生成图最大风险是虚假陈述",
+      "detail": "用AI生成的产品图，颜色/尺寸/细节必须与真实产品严格一致，否则差评率会暴增。建议：AI图用于氛围/生活场景，产品本体用真实拍摄或精修实物图。混用时要在产品细节上做二次修正。"
+    },
+    {
+      "id": 3,
+      "title": "平台规范不是建议，是硬门槛",
+      "detail": "Amazon主图加文字=被下架。小红书封面比例不对=首图被截断。不同平台规范差异大，建模之前先确认目标平台的技术规格和内容规范，避免返工。建立一份平台规范速查表，每次上图前对照检查。"
+    },
+    {
+      "id": 4,
+      "title": "场景图要让买家看到'我的生活'",
+      "detail": "最好的生活场景图不是展示产品，而是展示买家渴望拥有的生活状态。咖啡豆的场景图卖的是'精致早晨仪式感'，不是'一包豆子'。AI prompt里要主动设计情感和生活状态，不只是描述产品外观。"
+    },
+    {
+      "id": 5,
+      "title": "信任建立要视觉化，不能靠文字说",
+      "detail": "认证、测试、数据、对比——所有信任背书都要转化成可视化图形，而不是在子弹点里写一行字。买家在移动端快速滑动，视觉锚点比文字快10倍传递信息。认证徽章要大到清晰可辨，检测数据要以图表形式呈现。"
+    },
+    {
+      "id": 6,
+      "title": "Midjourney/DALL-E prompt公式：主体+环境+光线+风格+技术参数",
+      "detail": "格式：[产品描述] + [使用环境/背景] + [光线类型：golden hour/studio strobe/soft natural] + [摄影风格：editorial/commercial/documentary] + [技术参数：焦段/景深/构图]。每个维度填越具体，生成图越稳定，返工次数越少。"
+    },
+    {
+      "id": 7,
+      "title": "图片套组要讲一个完整的购买决策故事",
+      "detail": "理想的图片顺序遵循买家决策路径：①这是什么（主图）→ ②能解决我什么问题（痛点/场景）→ ③具体怎么好（卖点infographic）→ ④凭什么相信你（对比/认证）→ ⑤我用起来是什么感觉（生活场景）→ ⑥我还有什么顾虑（尺寸/包装/售后）。缺哪一步，转化都会有损耗。"
+    }
+  ]
+}
