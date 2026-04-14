@@ -209,6 +209,166 @@
         "recommendation": "切入$45-60可离线使用的实体编程玩具（无需App依赖），针对6-10岁，获Scratch/IEEE背书。避免做配套App的高维护成本路线。圣诞前3个月上架。",
         "confidence": "中（市场增长确定，但合规成本高+圣诞库存赌注大，需要有渠道经验的操盘手）"
       }
+    },
+    {
+      "category": "车载香薰/扩香器（Amazon US + TikTok Shop）",
+      "analysis": {
+        "market_size": "全球车载香氛市场$4.2B，北美占35%，TikTok Shop车品品类年增速80%+",
+        "search_trend": "Amazon'car diffuser'月搜索55万+，'car air freshener vent'月搜索90万+；TikTok #cardiffuser视频播放量12亿+",
+        "competition": {
+          "top_brands": ["FEBREZE（大众日化端$8-15）", "PURGGO（竹炭中端$25-35）", "各类白牌车载扩香器"],
+          "price_distribution": "$8-15（挂件/贴片低端）、$18-35（出风口扩香器主力）、$35-65（USB雾化高端）",
+          "concentration": "CR5低于30%，白牌为主，新品突围空间大"
+        },
+        "profit_estimate": {
+          "cost_usd": "$4-9（含精油耗材首发包）",
+          "selling_price_usd": "$22-38",
+          "amazon_fees": "FBA约$3.5/件，15%佣金约$3-6，广告约$4-7",
+          "net_margin": "约35-45%",
+          "note": "精油耗材复购率高，设计精油订阅月包可将LTV提升2-3倍；物流轻小，头程成本优"
+        },
+        "risks": [
+          {"level": "P0", "risk": "精油成分需符合IFRA国际香料协会安全标准；含酒精成分的香精在Amazon有易燃品限制"},
+          {"level": "P1", "risk": "出风口夹具兼容性差评是主要退货原因，需覆盖主流车型测试"},
+          {"level": "P2", "risk": "香味偏好主观性强，退货率约10-15%，建议主打无香（扩香）或主流香型（薰衣草/柑橘）"}
+        ],
+        "go_to_market": {
+          "differentiation": "哑光金属质感出风口夹扩香器，附赠3支精油小样（薰衣草/清晨森林/柑橘），主打'车内空气净化+香氛'双场景",
+          "target_segment": "25-45岁通勤族/网约车司机，女性用户占60%，注重车内环境品质",
+          "channel_strategy": "TikTok Shop做'开箱+试香'短视频引流，Amazon做搜索流量承接；达人合作CPM成本低"
+        },
+        "recommendation": "切入$24-32出风口雾化款（带LED氛围灯），标配3支精油，走高颜值路线。耗材订阅设计进产品路线图，前期让利机器换耗材复购。TikTok达人测评是低成本冷启动最优解。",
+        "confidence": "高（毛利结构好，耗材复购强，TikTok内容天然适配，合规门槛低，是优质入门品类）"
+      }
+    },
+    {
+      "category": "露营折叠椅（Amazon + 独立站）",
+      "analysis": {
+        "market_size": "全球户外休闲家具市场$18B，露营装备2025年增速约12%，北美+西欧是核心市场",
+        "search_trend": "Amazon'camping chair'月搜索120万+，'lightweight backpacking chair'月搜索25万+（长尾高溢价）；REI/Backcountry等独立站搜索量同步增长",
+        "competition": {
+          "top_brands": ["Helinox（轻量高端$150-250）", "ALPS Mountaineering（中端$50-120）", "Coleman（大众$25-60）", "中国品牌Marchway/KingCamp"],
+          "price_distribution": "$25-50（大众折叠椅）、$50-100（中端功能款）、$100+（超轻量登山专用）",
+          "concentration": "中端市场分散，CR5低于35%，超轻量段Helinox垄断但价格高"
+        },
+        "profit_estimate": {
+          "cost_usd": "$18-35（含铝合金管材+牛津布+收纳袋）",
+          "selling_price_usd": "$55-95",
+          "amazon_fees": "FBA约$8/件（体积较大），15%佣金约$8-14，广告约$8-12",
+          "net_margin": "约22-32%，独立站渠道净利可达35-40%",
+          "note": "体积重量是FBA成本核心变量，需精确计算体积重；独立站利润更优但流量成本高"
+        },
+        "risks": [
+          {"level": "P0", "risk": "承重测试必须标注并通过ASTM F1858或EN 581测试，超重断裂产品召回风险极高"},
+          {"level": "P1", "risk": "季节性明显（3-9月旺季），冬季库存积压压力大；FBA长期仓储费在淡季显著增加"},
+          {"level": "P1", "risk": "FBA体积重量计费，大件商品物流成本敏感，超重款利润快速压缩"},
+          {"level": "P2", "risk": "伪造评论在户外品类Amazon打击力度大，不能依赖刷单起量"}
+        ],
+        "go_to_market": {
+          "differentiation": "1.5kg超轻铝合金框架+可调高度扶手+杯架，主打'登山者的第一把露营椅'，附收纳背袋",
+          "target_segment": "28-45岁户外爱好者，经常徒步/露营，愿意为轻量化多付$20-30",
+          "channel_strategy": "Amazon主站做评测内容攻SEO长尾词；Instagram/YouTube户外KOL合作；独立站Shopify做品牌长期沉淀"
+        },
+        "recommendation": "切入$65-85超轻量款（重量控制在1.2kg以内），差异化点：可调节靠背角度+收纳体积小于3L。承重测试报告必须上传Amazon后台。独立站品牌化是长期方向，Amazon做量。",
+        "confidence": "中（市场增长确定，但物流成本高+季节性强，需要精细化供应链管理，不适合零经验玩家）"
+      }
+    },
+    {
+      "category": "宝宝辅食工具套装（Amazon + 小红书）",
+      "analysis": {
+        "market_size": "全球婴幼儿辅食工具市场$2.8B，中国母婴辅食器具市场约¥35亿，年增速15%",
+        "search_trend": "Amazon'baby food maker'月搜索35万+，'baby food storage containers'月搜索18万+；小红书'宝宝辅食'话题播放量超60亿，是母婴内容最大流量入口之一",
+        "competition": {
+          "top_brands": ["BÉABA（法国高端$80-150）", "NUK（中高端$30-80）", "Beaba/Infantino（中端）", "国内小熊电器/新贝"],
+          "price_distribution": "¥30-80（基础研磨碗套装）、¥80-200（研磨+蒸煮+存储全套）、¥200+（破壁/蒸煮一体机）",
+          "concentration": "电动辅食机CR5约45%，手动工具套装分散，白牌空间大"
+        },
+        "profit_estimate": {
+          "cost_usd": "$8-18（含硅胶研磨碗+不锈钢剪刀+冻格+储存盒套装）",
+          "selling_price_usd": "$32-55",
+          "amazon_fees": "FBA约$4.5/件，15%佣金约$5-8，广告约$6-10",
+          "net_margin": "约28-38%",
+          "note": "套装销售ASP高于单品，退货率低（母婴用品父母决策理性，退货约5-8%）；国内小红书渠道毛利更高"
+        },
+        "risks": [
+          {"level": "P0", "risk": "食品接触安全是P0，硅胶需符合FDA 21 CFR或EU 10/2011，不锈钢需304/316级别；必须有SGS/Intertek第三方报告"},
+          {"level": "P0", "risk": "婴儿用品声称'BPA free/无双酚A'必须有检测报告支撑，不能仅靠供应商声明"},
+          {"level": "P1", "risk": "小红书达人推广成本上升，头部博主带货费$2000-8000/条，需测算ROI"},
+          {"level": "P2", "risk": "套装SKU多，质检成本高，单个配件质量问题影响整套评分"}
+        ],
+        "go_to_market": {
+          "differentiation": "6件套（研磨碗+硅胶勺+不锈钢剪+冻格+储存盒+收纳袋），全套通过FDA+LFGB认证，附辅食添加月龄指南",
+          "target_segment": "0-3岁宝宝父母（25-35岁，一二线城市，教育程度高，愿为安全溢价）",
+          "channel_strategy": "小红书妈妈类KOC（1万-10万粉，ROI更优）做种草；Amazon攻'baby food set'/'weaning tools'关键词；国内抖音做直播闭环"
+        },
+        "recommendation": "切入$38-48全套认证款（6件套），以'全套通过FDA+LFGB'为核心卖点，附月龄辅食食谱PDF提升复购粘性。小红书选垂直母婴KOC（非头部），CPE更优。食品接触认证必须在产品上市前完成，是不可妥协的底线。",
+        "confidence": "中高（刚需品类，安全认证是护城河，内容营销场景强；主要风险是认证成本和小红书达人费用控制）"
+      }
+    },
+    {
+      "category": "筋膜枪（Amazon US/EU，$40-$150价格带）",
+      "analysis": {
+        "market_size": "全球筋膜枪市场2025年约$1.8B，美国市场占40%+，疫情后居家健身带动增速放缓至8%/年但基数大",
+        "search_trend": "Amazon'massage gun'月搜索200万+，'mini massage gun'月搜索45万+（轻量化趋势明显）；'quiet massage gun'月搜索30万+（噪音是差评主来源）",
+        "competition": {
+          "top_brands": ["Theragun（$199-599，品牌强势）", "Hypervolt/Hyperice（$129-329）", "Bob and Brad（YouTube网红品牌$50-90）", "大量中国白牌$35-80"],
+          "price_distribution": "$35-65（白牌低端）、$65-120（中端功能款，战场最激烈）、$120+（品牌溢价段）",
+          "concentration": "Theragun/Hypervolt CR约25%，中端白牌混战，但Bob and Brad证明内容品牌可突围"
+        },
+        "profit_estimate": {
+          "cost_usd": "$18-35（含马达+电池+6个按摩头+收纳包）",
+          "selling_price_usd": "$55-95",
+          "amazon_fees": "FBA约$7/件，15%佣金约$8-14，广告约$12-18（竞争激烈广告贵）",
+          "net_margin": "约18-28%，广告成本是利润杀手",
+          "note": "电池产品FBA空运受限，需提前规划海运头程；退货率约8-12%，主要是噪音投诉"
+        },
+        "risks": [
+          {"level": "P0", "risk": "锂电池产品必须符合UN 38.3运输测试，Amazon FBA对电池产品有特殊申报要求，违规会封号"},
+          {"level": "P0", "risk": "Theragun专利保护范围广（振动频率/头部设计），需要专利律师评估，避免侵权"},
+          {"level": "P1", "risk": "噪音是核心差评来源，40dB以下才能打'quiet'卖点；需要实验室测试数据支撑"},
+          {"level": "P1", "risk": "中端广告竞价$2.5-4.5/点击，ROI需精细测算，广告费可能吃掉大部分利润"},
+          {"level": "P2", "risk": "市场趋于成熟，纯功能堆砌无法突围，需要内容品牌化才有溢价空间"}
+        ],
+        "go_to_market": {
+          "differentiation": "超静音迷你款（重量<500g，噪音<38dB，续航6小时），主打'差旅/办公室不打扰他人'场景，区别于健身房大力款",
+          "target_segment": "30-50岁白领/久坐族/轻度运动人群，非专业运动员，注重便携和静音",
+          "channel_strategy": "Amazon主战场做SEO+'quiet'长尾词；YouTube科技/健康测评频道合作；避免只打'best massage gun'等高竞争词"
+        },
+        "recommendation": "切入$65-85超静音迷你款，差异化点：<38dB实测+500g轻量+配备专属差旅收纳包。必须提前做专利检索，锂电池UN38.3测试是上架前置条件。广告预算充足（前3个月至少$15K）才能做中端竞争。",
+        "confidence": "中（市场大但竞争激烈，广告成本高，专利风险需专业评估；适合有跨境经验+供应链的操盘手，新手慎入）"
+      }
+    },
+    {
+      "category": "AI智能台灯（学生护眼 + 智能调光，国内+跨境双线）",
+      "analysis": {
+        "market_size": "全球智能台灯市场$3.5B，中国学生护眼台灯市场约¥80亿，AI功能溢价推动均价年增15%",
+        "search_trend": "淘宝'护眼台灯'月搜索280万+，'智能台灯'月搜索90万+；Amazon'smart desk lamp'月搜索70万+，'eye care lamp for studying'月搜索25万+",
+        "competition": {
+          "top_brands": ["明基BenQ（¥500-1500，专业护眼）", "小米（¥100-300，性价比）", "飞利浦（¥200-600，品牌信任）", "Govee（海外智能灯带/台灯$30-80）"],
+          "price_distribution": "¥99-200（入门LED台灯）、¥200-500（智能调光主力）、¥500-1500（专业护眼/护眼认证高端）",
+          "concentration": "国内CR5约40%，海外智能台灯分散，Govee切生态但护眼场景未覆盖"
+        },
+        "profit_estimate": {
+          "cost": "¥80-160（含LED灯珠+调光模块+APP控制芯片）",
+          "selling_price": "¥299-599（国内）/ $45-85（跨境）",
+          "gross_margin": "50-65%",
+          "note": "AI功能（人体感应自动调光/学习时长统计）溢价¥100-200，但需App维护成本；认证（3C+国际CE/FCC）是必要成本"
+        },
+        "risks": [
+          {"level": "P0", "risk": "国内销售必须通过3C认证（CCC），跨境欧洲需CE/ROHS，美国需FCC+UL；未认证上架属违规"},
+          {"level": "P0", "risk": "护眼声称必须有专业机构检测（如中国照明学会/SGS眩光/蓝光检测报告），不能仅靠宣传"},
+          {"level": "P1", "risk": "App维护是持续成本，iOS/Android双端适配+服务器费用¥5-15万/年；App质量差会导致差评连锁"},
+          {"level": "P1", "risk": "小米/飞利浦品牌信任壁垒高，纯白牌在¥300+段转化率低，需要内容背书或KOL测评"},
+          {"level": "P2", "risk": "AI功能同质化加速，2025年'人体感应+定时提醒'已成标配，差异化窗口期缩短"}
+        ],
+        "go_to_market": {
+          "differentiation": "学生专属模式：番茄钟学习提醒（25分钟学习+5分钟休息自动调暗）+作业拍照补光模式+蓝光过滤实测报告，打'AI学习助手'概念而非'只是台灯'",
+          "target_segment": "6-18岁学生家长（决策者），一二线城市，月收入¥1.5万+，对护眼和学习效率焦虑",
+          "channel_strategy": "小红书做'护眼测评+学习效率'内容种草；抖音做家长育儿类达人合作；跨境走Amazon学生宿舍场景关键词"
+        },
+        "recommendation": "切入¥349-499中高端学生护眼款，核心卖点：中国照明学会A级护眼认证+番茄钟专属模式+防蓝光实测报告。避免做纯智能灯氛围灯（Govee已占据），聚焦'学习护眼'垂直场景。App功能精简（3个核心功能），不堆砌。",
+        "confidence": "中（需求真实且增长，但认证成本高+App维护成本需纳入，小米品牌压制使得¥200以下段无利可图；¥350+带认证+内容有机会）"
+      }
     }
   ],
   "output_rules": [

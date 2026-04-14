@@ -233,6 +233,500 @@
           "尺寸图表做到极致：按犬种/体重精准推荐，减少退货率"
         ]
       }
+    },
+    {
+      "input": "分析母婴用品竞品 — Graco vs UPPAbaby婴儿推车 (Amazon美国市场，$200-$1000价格带)",
+      "output": {
+        "positioning": {
+          "graco": {
+            "price_band": "$150-350，主力款$200-280",
+            "target": "预算有限的新手父母，25-35岁，注重安全认证和实用功能",
+            "core_usp": "美国市场占有率第一，JPMA安全认证背书，性价比明显",
+            "brand_narrative": "超过60年婴儿安全领域积累，入门首选"
+          },
+          "uppababy": {
+            "price_band": "$500-1100，主力Vista V2 $899",
+            "target": "中高收入家庭，28-40岁，注重设计感和可扩展性（二胎家庭）",
+            "core_usp": "可扩展双人座架构+高端设计+极简操作，Instagram爸妈必备",
+            "brand_narrative": "不只是工具，是亲子生活方式的表达"
+          }
+        },
+        "visual_strategy": {
+          "graco": {
+            "main_image": "白底+产品正面+儿童模特乘坐展示，强调折叠便捷性",
+            "listing_structure": "安全认证徽章→功能参数对比→折叠步骤图解→配件扩展图",
+            "a_plus": "婴儿安全承诺+产品线全家福（系列兼容性）"
+          },
+          "uppababy": {
+            "main_image": "生活场景图为主，城市街道/公园背景，强调颜色和生活美感",
+            "listing_structure": "生活场景→细节工艺图→配件系统展示→颜色选项",
+            "a_plus": "产品设计理念故事+可扩展配件全矩阵+用户真实场景UGC"
+          }
+        },
+        "traffic_structure": {
+          "graco": {
+            "organic": "约55%，'baby stroller'/'jogging stroller'品类词稳居首页",
+            "ppc": "约25%，主投竞品词和品类词",
+            "social": "约10%，妈妈群体YouTube评测",
+            "other": "约10%，Buy Buy Baby等母婴零售渠道导流"
+          },
+          "uppababy": {
+            "organic": "约35%，品牌词流量占主导",
+            "influencer": "约40%，Instagram亲子博主+育儿播客赞助，ROAS约4.2",
+            "ppc": "约15%",
+            "dtc": "约10%，官网直销配独家颜色限定款"
+          }
+        },
+        "review_analysis": {
+          "graco_positive": ["价格实惠拿到手不心疼", "折叠机构单手操作方便", "坐垫可拆洗", "附件配件便宜好买"],
+          "graco_negative": ["轮子在不平路面明显颠簸", "推行阻力比高端款大", "外观设计过时", "塑料感强"],
+          "uppababy_positive": ["过路面几乎无振动", "单手折叠丝滑", "Vista可加第二个座位无需换车", "配色颜值高"],
+          "uppababy_negative": ["价格$900+很难下手", "折叠后体积仍较大", "备用配件价格高昂", "座椅布料难清洁"],
+          "opportunity": "$350-550中间价位严重空白，Graco不上探，UPPAbaby不下探，是挑战者最佳切入区间"
+        },
+        "pricing_strategy": {
+          "graco": "主力款长期保持$200-280，Prime Day折扣约15-20%，捆绑汽车安全座椅套装提升客单价",
+          "uppababy": "官网定价刚性，极少打折维护品牌溢价，通过颜色限定款制造稀缺，配件交叉销售ARPU高"
+        },
+        "supply_chain_signals": {
+          "graco": "在Amazon有FBA仓储，Prime隔日达覆盖主要SKU，退货率约8%（主要因尺寸期望差异）",
+          "uppababy": "官网+授权零售商双渠道，不走Amazon FBA，通过线下体验店建立高端感，库存周转约60天"
+        },
+        "opportunities": [
+          "$350-550价格段：轮子避震+颜值对标UPPAbaby，价格对标Graco高端款，是最大市场空白",
+          "城市通勤场景：地铁+公交兼容的超轻折叠款（<7kg），两大品牌均未重点覆盖",
+          "亚裔父母本土化：针对亚裔父母的场景内容+中英双语说明+亚洲城市街道尺寸适配",
+          "租赁/订阅模式：UPPAbaby使用周期仅2-3年，月租$49-79的订阅模式有市场，降低初始门槛"
+        ],
+        "recommended_actions": [
+          "切入$380-520价格段，主打'轮子避震媲美UPPAbaby，价格只要一半'的对比叙事",
+          "主图必须有城市街道生活场景，不能只有白底图，学UPPAbaby的情感营销",
+          "开发亚裔妈妈达人投放计划，TikTok+Instagram Reels，重点场景：带娃逛街/公共交通",
+          "推出官网直销版独家颜色，制造Amazon渠道无法买到的稀缺感"
+        ]
+      }
+    },
+    {
+      "input": "分析家居收纳竞品 — MUJI vs The Container Store vs 宜家收纳系列 (跨平台，Amazon+官网+线下)",
+      "output": {
+        "positioning": {
+          "muji": {
+            "price_band": "$5-80，主力收纳单品$10-35",
+            "target": "极简主义消费者，25-40岁，注重美学一致性，愿意为整体视觉统一付溢价",
+            "core_usp": "无品牌感设计哲学（无印良品），米白+透明+原木的视觉系统",
+            "brand_narrative": "收纳不是功能，是生活哲学的外化"
+          },
+          "the_container_store": {
+            "price_band": "$8-200，主力款$15-60",
+            "target": "收纳解决方案需求者，30-55岁，注重系统化和实用功能，高收入家庭",
+            "core_usp": "专业收纳顾问服务+全品类覆盖+Elfa定制系统",
+            "brand_narrative": "收纳专家，不只卖产品而是卖整套解决方案"
+          },
+          "ikea": {
+            "price_band": "$3-150，主力KALLAX/SKUBB系列$15-80",
+            "target": "性价比导向，18-45岁，新搬家/装修群体，学生和年轻家庭",
+            "core_usp": "极致性价比+自组装文化+全屋收纳系统兼容性",
+            "brand_narrative": "让更多人拥有设计感生活，不需要高收入"
+          }
+        },
+        "visual_strategy": {
+          "muji": {
+            "main_image": "留白大量空白的产品摄影，浅木色或米白背景，强调材质质感",
+            "listing_structure": "产品纹理特写→尺寸图→组合搭配场景→整体收纳效果图",
+            "a_plus": "日本工艺理念+产品尺寸系列兼容性展示"
+          },
+          "container_store": {
+            "main_image": "整洁收纳完成效果图（before/after对比风格），突出解决方案感",
+            "listing_structure": "整体场景图→单品特写→内部空间图→系列搭配矩阵",
+            "a_plus": "Elfa系统定制化展示+专业收纳顾问推荐语"
+          },
+          "ikea": {
+            "main_image": "实际家居场景嵌入图，强调家装融合感，模拟真实房间环境",
+            "listing_structure": "场景图→多色选项展示→折叠步骤→尺寸适配建议",
+            "a_plus": "系列产品互联互通展示+真实用户布置案例"
+          }
+        },
+        "traffic_structure": {
+          "muji": {
+            "organic": "约40%，品牌词流量强，'muji organizer'/'muji storage'",
+            "social": "约35%，Pinterest/Instagram极简生活博主大规模自发传播",
+            "ppc": "约15%",
+            "dtc": "约10%，官网独家新品"
+          },
+          "container_store": {
+            "organic": "约30%，品类词如'closet organizer system'",
+            "store_traffic": "约35%，线下门店是核心转化点，店内专业顾问是护城河",
+            "ppc": "约20%",
+            "email": "约15%，会员体系邮件营销ROI高"
+          },
+          "ikea": {
+            "organic": "约45%，SKU数量庞大形成长尾词覆盖",
+            "store_traffic": "约30%，线下场景化展示是最强转化工具",
+            "ppc": "约15%",
+            "social": "约10%，家居博主大量使用KALLAX二次创作内容"
+          }
+        },
+        "review_analysis": {
+          "muji_positive": ["外观简洁好看", "与家居风格融合度高", "材质手感好", "尺寸系列兼容"],
+          "muji_negative": ["价格偏高性价比一般", "美国实体店少购买不便", "部分产品强度不够"],
+          "container_store_positive": ["系统化解决方案省心", "顾问服务专业", "Elfa定制系统耐用"],
+          "container_store_negative": ["价格高昂", "专业术语多不够直觉", "门店分布有限"],
+          "ikea_positive": ["价格实惠", "设计不错", "系列兼容性好", "全国门店易购"],
+          "ikea_negative": ["自组装耗时", "颗粒板耐久性有限", "热门款经常断货"],
+          "opportunity": "Amazon平台上$20-50的'MUJI风格高性价比'收纳产品存在明显空白，三者都未在Amazon有强势存在"
+        },
+        "pricing_strategy": {
+          "muji": "官方定价刚性，折扣罕见，通过系列搭配提升客单价，单次购买均值$45-65",
+          "container_store": "常规促销20-30% off，年度大促6月，Elfa系统可高达40% off，会员首年折扣留存",
+          "ikea": "全年低价策略，节日季特定产品促销，捆绑家居装饰套餐提升客单"
+        },
+        "supply_chain_signals": {
+          "muji": "日本原产/中国生产，Amazon第三方卖家补货，断货率约15%，热门款常缺货2-4周",
+          "container_store": "美国本土采购为主，线下实体库存充足，Amazon渠道SKU有限仅约200款",
+          "ikea": "全球供应链，主要SKU全年有货，门店体验是护城河，线上购买体验弱"
+        },
+        "opportunities": [
+          "Amazon渠道真空：三大品牌Amazon存在感均弱，'极简收纳'品类的Amazon首页几乎是中国白牌",
+          "MUJI平替定位：$15-40价位的极简米白系收纳，中国工厂成本优势明显，设计学MUJI但便宜50%",
+          "模块化系统：推出尺寸严格标准化的系列，可任意拼搭，类似乐高逻辑，制造复购黏性",
+          "内容营销：Pinterest/Instagram的极简家居整理内容有极高有机传播率，投入产出比高"
+        ],
+        "recommended_actions": [
+          "产品设计参考MUJI美学（米白/透明/原木），成本控制在MUJI的40%，售价定在60%",
+          "主攻Amazon'drawer organizer'/'closet organizer'等品类词，前6个月集中评论积累",
+          "开发Pinterest内容矩阵，重点做'整理前后对比'内容，Pinterest对收纳品类自然引流极强",
+          "推出'starter kit'组合（3-5件套），降低决策门槛，同时提升客单价至$45-65"
+        ]
+      }
+    },
+    {
+      "input": "分析运动鞋竞品 — HOKA vs On Running (Amazon + DTC，$120-$180价格带)",
+      "output": {
+        "positioning": {
+          "hoka": {
+            "price_band": "$120-175，主力Clifton 9 $145，Bondi 8 $165",
+            "target": "跑步爱好者+全天站立工作者（护士/餐饮从业者），30-55岁，注重减震保护",
+            "core_usp": "超厚中底（Max Cushion）技术，关节友好型跑鞋",
+            "brand_narrative": "极端减震，让跑步更久更舒适，运动医学背书"
+          },
+          "on_running": {
+            "price_band": "$130-180，主力Cloudmonster $160，Cloud 5 $140",
+            "target": "都市精英跑者+时尚运动人群，25-40岁，注重颜值和科技感",
+            "core_usp": "CloudTec气垫技术+瑞士设计+轻量化",
+            "brand_narrative": "来自瑞士的跑鞋革命，功能与美学的完美统一"
+          }
+        },
+        "visual_strategy": {
+          "hoka": {
+            "main_image": "户外跑道/山地场景，强调厚底视觉冲击，鞋侧45度角突显中底厚度",
+            "listing_structure": "产品侧面图→底部减震结构特写→场景跑步图→尺寸适配图",
+            "a_plus": "中底材料技术解析+运动医学背书+用户跑量里程分享"
+          },
+          "on_running": {
+            "main_image": "极简白背景+产品45度角，突显CloudTec蜂巢结构的科技美感",
+            "listing_structure": "产品图→CloudTec结构特写→侧面轮廓→生活场景图",
+            "a_plus": "瑞士设计故事+Roger Federer代言+赛事成绩数据"
+          }
+        },
+        "traffic_structure": {
+          "hoka": {
+            "organic": "约40%，'best running shoes for nurses'/'max cushion running shoes'高排名",
+            "ppc": "约25%",
+            "social": "约20%，Reddit跑步社区+TikTok护士推荐视频自然传播",
+            "medical_community": "约15%，物理治疗师/足病医生推荐形成专业背书流量"
+          },
+          "on_running": {
+            "organic": "约30%，品牌词强，'on cloud shoes'搜索量高",
+            "influencer": "约35%，Instagram运动时尚博主+Roger Federer效应",
+            "ppc": "约20%",
+            "dtc": "约15%，官网独家限定配色"
+          }
+        },
+        "review_analysis": {
+          "hoka_positive": ["穿一整天脚不累", "膝盖关节明显减压", "护士/服务业用户强烈推荐", "宽楦型号选择多"],
+          "hoka_negative": ["外观笨重不够时髦", "耐久性约500-600km后减震下降明显", "价格不便宜", "配色偏老气"],
+          "on_running_positive": ["外形好看可以日常穿", "轻量化明显", "CloudTec踩踏感独特", "配色时尚"],
+          "on_running_negative": ["售价偏高", "CloudTec凹槽积泥", "宽脚不友好（偏窄楦）", "耐久性约400-500km"],
+          "opportunity": "两者均不覆盖$100-120价格段，且HOKA外观老气是最大差评，On Running宽脚型号缺失"
+        },
+        "pricing_strategy": {
+          "hoka": "Amazon定价与官网一致，极少折扣（约10% off），黑五大促最低8折，旗舰款年度更新制造换购需求",
+          "on_running": "官网价格刚性维护品牌定位，Amazon有时出现授权经销商低价，官网独家限定配色溢价$20-30"
+        },
+        "supply_chain_signals": {
+          "hoka": "FBA全美覆盖，Prime发货，热门款（Clifton/Bondi）全年有货，限定配色上架1-2周售罄",
+          "on_running": "欧洲生产，FBA仓储，热门配色断货频繁，官网备货优先于Amazon渠道"
+        },
+        "opportunities": [
+          "外观升级版HOKA：减震性能媲美HOKA但设计时尚，打'医护人员的好看跑鞋'细分",
+          "$100-120价格段：两大品牌均不下探，中国品牌可切入高性价比跑者市场",
+          "宽楦专属产品线：On Running宽脚差评是机会，宽楦+时尚设计+$130定价有空间",
+          "跑步里程追踪内容营销：记录500km换鞋周期的内容在Reddit跑步社区高互动"
+        ],
+        "recommended_actions": [
+          "主打'护士跑鞋'细分，TikTok医护博主投放，HOKA在这个场景有溢价但外观老气",
+          "产品设计请参考On Running极简美学，但底部减震厚度参考HOKA，两者优点合并",
+          "上架时优先积累'verified purchase'评论，跑步类目评论质量（里程/感受细节）比数量更重要",
+          "开发宽楦（2E/4E）版本，单独ASIN区分，针对E楦用户这是决策首要因素"
+        ]
+      }
+    },
+    {
+      "input": "分析个护电器竞品 — Dyson Airwrap vs Shark FlexStyle (Amazon + 官网，$250-$600价格带)",
+      "output": {
+        "positioning": {
+          "dyson_airwrap": {
+            "price_band": "$499-600，主力Complete版$599",
+            "target": "中高收入女性，25-45岁，注重发质保护+专业沙龙效果，愿意一次性投资",
+            "core_usp": "Coanda气流技术，无极端高热卷发，减少发损同时达到沙龙级效果",
+            "brand_narrative": "工程师思维做美发工具，技术创新改变护发逻辑"
+          },
+          "shark_flexstyle": {
+            "price_band": "$249-300，主力Multi-Styler版$279",
+            "target": "预算有限但想要类Airwrap效果的消费者，22-40岁，性价比优先",
+            "core_usp": "多功能配件套装+Dyson一半价格，'平价Airwrap'定位明确",
+            "brand_narrative": "专业美发效果不需要$600，Shark给你同样体验"
+          }
+        },
+        "visual_strategy": {
+          "dyson": {
+            "main_image": "哑光黑金配色产品图，多配件平铺展示，强调套装完整性和高端质感",
+            "listing_structure": "套装全家福→Coanda技术动图→使用前后发质对比→配件功能说明",
+            "a_plus": "技术原理动画+专业发型师推荐+发质科学研究数据"
+          },
+          "shark": {
+            "main_image": "主打与Dyson的配件数量对比，价格标签明显，性价比视觉传达",
+            "listing_structure": "配件对比图→使用效果图→价格优势突出→真实用户效果UGC",
+            "a_plus": "与Dyson功能对标说明（隐晦）+用户发型前后效果展示矩阵"
+          }
+        },
+        "traffic_structure": {
+          "dyson": {
+            "organic": "约35%，'dyson airwrap'品牌词月搜索量超过600K",
+            "influencer": "约40%，美发博主YouTube深度测评+TikTok发型教程，自然流量极强",
+            "ppc": "约15%",
+            "dtc": "约10%，官网首发限定配色"
+          },
+          "shark": {
+            "organic": "约30%，大量投放'dyson airwrap alternative'等对标词",
+            "ppc": "约35%，大规模购买竞品词广告",
+            "social": "约25%，TikTok'affordable airwrap dupe'话题有机流量",
+            "amazon_deals": "约10%，Lightning Deal和Prime Day大促是销量峰值"
+          }
+        },
+        "review_analysis": {
+          "dyson_positive": ["发损真的少了", "卷发持久到第二天", "造型丰富一机多用", "质感高级手感好"],
+          "dyson_negative": ["$600价格太贵", "配件数量多但实际常用2-3个", "学习曲线高", "电机噪音仍偏大"],
+          "shark_positive": ["价格只要Dyson一半", "配件更多", "效果8分接近Dyson10分", "上手容易"],
+          "shark_negative": ["长期使用发损多于Dyson", "电机持久性有疑问（1年后有投诉）", "配件组装偶尔松动"],
+          "opportunity": "$180-240价格段仍有空白，且两者均未做亚洲发质（粗硬直发）专属配件和参数"
+        },
+        "pricing_strategy": {
+          "dyson": "官网定价刚性$499-599，极少促销（黑五最多8折），通过颜色限定款制造稀缺，二手市场保值率高",
+          "shark": "Amazon定价$249-299，Prime Day可达5折$139，高频促销策略，以价格差距为核心卖点"
+        },
+        "supply_chain_signals": {
+          "dyson": "英国设计/亚洲制造，官网配货优先，Amazon断货频繁（尤其限定色），等待期2-4周常见",
+          "shark": "美国市场FBA仓储充足，全年有货，促销期2-3天内发货，退货率约12%（高于品类均值）"
+        },
+        "opportunities": [
+          "亚洲发质专属：粗直发需要更高温度和不同气流角度，Dyson/Shark均未针对亚洲发质优化",
+          "$180-240价格段：Shark不下探，Dyson更不会，中国品牌有空间做'3档温控+低发损'入门款",
+          "教程内容生态：Dyson成功很大程度靠YouTube/TikTok教程生态，做产品同时要做内容矩阵",
+          "配件兼容性差异化：推出与Dyson接口兼容的第三方配件，用配件市场测试消费者水温"
+        ],
+        "recommended_actions": [
+          "产品开发：针对亚洲发质（粗/直/多）优化气流温度，这是Dyson从未认真做的细分",
+          "定价$189-219，主打'发损控制技术vs Shark FlexStyle'对比评测内容",
+          "YouTube测评博主是核心流量，优先签约10-50万粉丝的精准美发博主，比百万博主转化率高",
+          "Amazon listing必须出现'dyson airwrap alternative'关键词变体，直接截获对标搜索流量"
+        ]
+      }
+    },
+    {
+      "input": "分析清洁机器人竞品 — Roborock vs Ecovacs vs iRobot Roomba (Amazon全球，$200-$1000价格带)",
+      "output": {
+        "positioning": {
+          "roborock": {
+            "price_band": "$250-900，主力S7MaxV Ultra $899，Q5+ $449",
+            "target": "科技爱好者家庭，28-45岁，注重技术参数和APP智能化程度",
+            "core_usp": "激光导航精度+VibraRise拖地技术，扫拖一体做到中高端市场天花板",
+            "brand_narrative": "来自小米生态链，用工程师思维颠覆家庭清洁"
+          },
+          "ecovacs": {
+            "price_band": "$200-800，主力DEEBOT X1 OMNI $800，T10 Plus $599",
+            "target": "注重全自动化便捷性的忙碌家庭，30-50岁，愿意为少打理付溢价",
+            "core_usp": "OZMO拖地+AIVI视觉识别+全自动集尘站，强调'买了就不用管'",
+            "brand_narrative": "智能家居的眼睛，懂你家的AI管家"
+          },
+          "irobot_roomba": {
+            "price_band": "$250-800，主力j7+ $649，Combo j5+ $799",
+            "target": "对科技接受度中等的主流消费者，35-60岁，注重品牌可信度和售后服务",
+            "core_usp": "20年品牌积累+PrecisionVision障碍物识别+iRobot OS生态",
+            "brand_narrative": "扫地机器人的发明者，最值得信赖的品牌"
+          }
+        },
+        "visual_strategy": {
+          "roborock": {
+            "main_image": "产品正面+底盘图+配件平铺三连展示，突显技术感",
+            "listing_structure": "产品图→地图规划截图→拖地抬升技术特写→自动集尘站演示",
+            "a_plus": "激光导航精度数据+与竞品参数对比表+APP功能截图矩阵"
+          },
+          "ecovacs": {
+            "main_image": "家庭生活场景，机器人在客厅工作，强调'生活中的存在感'",
+            "listing_structure": "生活场景图→AIVI识别演示→集尘站全流程图→APP控制界面",
+            "a_plus": "AI障碍物识别案例图（狗屎/鞋子/袜子）+全屋地图规划展示"
+          },
+          "irobot": {
+            "main_image": "白底产品图为主，品牌logo显著，强调品牌认知度",
+            "listing_structure": "产品图→PrecisionVision演示→App界面→配件图",
+            "a_plus": "品牌历史时间轴+技术专利展示+用户证言"
+          }
+        },
+        "traffic_structure": {
+          "roborock": {
+            "organic": "约45%，'robot vacuum mop combo'/'laser robot vacuum'品类词强势",
+            "ppc": "约25%",
+            "social": "约20%，YouTube科技评测（MKBHD/The Wirecutter级别）",
+            "tech_media": "约10%，科技媒体'最佳扫地机器人'榜单常年入选"
+          },
+          "ecovacs": {
+            "organic": "约35%",
+            "ppc": "约30%，大量投放竞品词和场景词",
+            "influencer": "约20%，家居博主和妈妈博主为主",
+            "other": "约15%，Best Buy等家电零售渠道"
+          },
+          "irobot": {
+            "organic": "约50%，品牌词流量强但下滑中（2024年亚马逊收购失败后品牌受影响）",
+            "ppc": "约25%",
+            "retail": "约15%，Costco/Best Buy线下销售",
+            "social": "约10%"
+          }
+        },
+        "review_analysis": {
+          "roborock_positive": ["地图精准度高", "拖地效果明显好于竞品", "APP功能强大可定制", "性价比高于Roomba"],
+          "roborock_negative": ["售后支持响应慢（美国市场）", "部分用户反映APP偶发连接断开", "集尘站噪音较大"],
+          "ecovacs_positive": ["AIVI识别宠物粪便准确率高", "集尘站全自动清洁", "中档价位功能全面"],
+          "ecovacs_negative": ["导航偶发卡死需人工干预", "拖地布清洁频率高于Roborock", "客服服务评价参差"],
+          "irobot_positive": ["品牌信赖度高", "PrecisionVision障碍物识别最稳定", "售后服务好"],
+          "irobot_negative": ["同等价位功能不如Roborock/Ecovacs", "订阅耗材费用高", "2024年品牌危机影响信任"],
+          "opportunity": "iRobot品牌危机后$400-600价位段出现空白，Roborock在美国售后弱是可以攻击的点"
+        },
+        "pricing_strategy": {
+          "roborock": "梯度定价清晰，每6个月更新旗舰款，老款同步降价$50-100清库存，Prime Day主力促销品类",
+          "ecovacs": "同等策略，$599-799旗舰款年度折扣约25-30%，耗材订阅（集尘袋/拖地布）提供稳定复购",
+          "irobot": "2024年被亚马逊收购失败后削减SKU，价格带收窄，Prime会员订阅耗材月均$15-25"
+        },
+        "supply_chain_signals": {
+          "roborock": "中国深圳研发制造，FBA全球仓储，旗舰款发布后3-6个月稳定有货，耗材复购率约40%",
+          "ecovacs": "中国苏州制造，美国FBA仓储，促销期库存充足，集尘袋等耗材有稳定订阅收入",
+          "irobot": "美国品牌，中国生产，2024年员工裁减30%后供应链紧张，部分SKU交货期延长"
+        },
+        "opportunities": [
+          "iRobot衰落的份额争夺：原Roomba用户品牌忠诚度下降，$400-600价位的替换购买决策窗口",
+          "美国本土化售后：Roborock美国售后慢是最大差评，建立本土客服+上门维修团队是壁垒",
+          "宠物家庭专属：专门针对养宠家庭的扫宠毛优化，宠物市场是清洁机器人增长最快细分",
+          "耗材订阅模式：集尘袋/边刷/拖地布的订阅盒子，$12-18/月，真正的稳定现金流"
+        ],
+        "recommended_actions": [
+          "切入$350-500价格段，技术参数对标Roborock，但主打'美国本土客服+48小时响应'服务差异化",
+          "宠物专属SKU：主图用金毛/哈士奇场景，review关键词针对'pet hair'/'pet dander'优化",
+          "开发耗材订阅项目，上市第一年以低价获客，通过耗材订阅提升LTV",
+          "针对iRobot老用户投放广告，关键词'roomba alternative'+'roomba replacement'，承接迁移需求"
+        ]
+      }
+    },
+    {
+      "input": "分析保健品竞品 — AG1 vs Ritual vs Nature Made每日综合维生素 (Amazon + DTC订阅模式，$30-$100/月)",
+      "output": {
+        "positioning": {
+          "ag1": {
+            "price_band": "$79/月订阅（约$2.63/天），79g粉剂30天量",
+            "target": "高收入健康优化者，28-45岁，注重'一勺搞定所有营养'的便捷性，愿意为品质付溢价",
+            "core_usp": "75种成分综合营养粉，替代多瓶补剂的全家桶解决方案",
+            "brand_narrative": "每天一勺，投资你的基础健康，硅谷生产力人群背书"
+          },
+          "ritual": {
+            "price_band": "$33-35/月订阅，60粒胶囊30天量",
+            "target": "注重成分透明度的女性消费者，25-40岁，关注可持续/素食友好",
+            "core_usp": "成分透明可溯源（列出每种成分来源国），延迟释放技术减少胃部不适",
+            "brand_narrative": "你值得知道你吃了什么，成分透明是基本权利"
+          },
+          "nature_made": {
+            "price_band": "$15-25/瓶（90-120粒），2-3个月供应量",
+            "target": "主流消费者，35-65岁，注重性价比和品牌认知度，医生/药剂师推荐",
+            "core_usp": "USP认证（第三方质量验证），Walmart/Costco主流渠道，价格平实",
+            "brand_narrative": "科学配方，药剂师首选，60年积累"
+          }
+        },
+        "visual_strategy": {
+          "ag1": {
+            "main_image": "高质感产品照，哑光绿色罐+运动场景，传达活力和高端感",
+            "listing_structure": "产品图→75成分成分表→运动/工作场景→用户前后对比（能量/专注力）",
+            "a_plus": "成分来源故事+Andrew Huberman等科学网红推荐+30天体验承诺"
+          },
+          "ritual": {
+            "main_image": "极简白底，透明胶囊展示内部成分颗粒，突显'看得见的透明'",
+            "listing_structure": "产品图→成分溯源地图（全球产地）→延迟释放技术图解→订阅灵活性说明",
+            "a_plus": "成分来源国地图+第三方验证报告+用户评价聚类"
+          },
+          "nature_made": {
+            "main_image": "橙色标准瓶，USP认证徽章显著，白底专业感",
+            "listing_structure": "产品图→USP认证说明→成分表→适用人群说明",
+            "a_plus": "科学配方背景+药剂师推荐引言+产品线对比（按年龄/性别分类）"
+          }
+        },
+        "traffic_structure": {
+          "ag1": {
+            "dtc": "约65%，官网订阅为主要渠道，不在Amazon卖",
+            "podcast": "约25%，大量科学/健康播客赞助（Huberman Lab/Tim Ferriss等），CPA约$65",
+            "influencer": "约10%，YouTube健身博主+biohacker社区"
+          },
+          "ritual": {
+            "dtc": "约50%，官网订阅",
+            "organic": "约20%，'clean vitamins'/'traceable vitamins'品类词",
+            "social": "约20%，Instagram女性健康博主",
+            "amazon": "约10%，Amazon渠道作为辅助"
+          },
+          "nature_made": {
+            "organic": "约40%，Amazon'multivitamin'品类词强势",
+            "retail": "约35%，Walmart/Costco/CVS线下渠道",
+            "ppc": "约15%",
+            "medical": "约10%，医生/药剂师推荐"
+          }
+        },
+        "review_analysis": {
+          "ag1_positive": ["能量和专注力提升感明显", "一罐替代5-6瓶补剂", "味道可以接受（果蔬味）", "客服响应快"],
+          "ag1_negative": ["$79/月价格让人心疼", "不在Amazon不够方便", "部分人肠胃适应期不适", "成分剂量部分偏低"],
+          "ritual_positive": ["成分透明度好评", "胶囊不腥不臭", "薄荷味胶囊体验好", "灵活暂停订阅"],
+          "ritual_negative": ["$33/月性价比一般", "成分种类较少（9-12种）", "效果感知不明显"],
+          "nature_made_positive": ["价格实惠", "USP认证信赖度高", "购买方便到处有售", "长期服用无副作用"],
+          "nature_made_negative": ["大片难吞", "成分剂量保守", "无法体感效果", "包装普通"],
+          "opportunity": "Amazon上$25-45/月价格段的'成分透明+高剂量'综合维生素严重空白，介于Ritual和AG1之间"
+        },
+        "pricing_strategy": {
+          "ag1": "仅订阅$79/月，首月买一送一折扣，年付$549（省$400），无单次购买选项，锁定高LTV",
+          "ritual": "月付$33，年付$297（节省约10%），首月$5优惠获客，随时暂停/取消留存策略",
+          "nature_made": "Amazon单次购$15-25，无订阅模式，Prime+Save订阅最低15% off，Costco大包装性价比最高"
+        },
+        "supply_chain_signals": {
+          "ag1": "自有GMP认证工厂，原料溯源严格（25个国家），全球DTC直邮，订阅用户月留存率约82%",
+          "ritual": "合同制造商，透明供应链是核心卖点，订阅留存率约75%，12个月用户LTV约$380",
+          "nature_made": "H. Lundbeck A/S旗下，大规模生产，成本控制极强，Amazon库存充足全年无断货"
+        },
+        "opportunities": [
+          "Amazon版AG1平替：$35-45/月的综合营养粉，成分接近AG1但可在Amazon购买，打'方便购买'差异",
+          "成分透明+高剂量：Ritual透明度好但剂量保守，AG1剂量强但不透明，两者优点合并",
+          "中国用户本土化：针对中国消费者的成分选择（枸杞/冬虫夏草提取物等），融合中西营养学",
+          "初次体验盒：$19的7天体验装降低订阅门槛，AG1和Ritual均没有合适的入门产品"
+        ],
+        "recommended_actions": [
+          "定价$39-45/月，Amazon + DTC双渠道，主打'AG1的效果，Ritual的透明，一半的价格'",
+          "播客赞助策略：健身/效率/生物黑客播客赞助，CPA约$40-55，比Instagram influencer更精准",
+          "开发$19的7天体验装作为获客产品，转化为月订阅，降低首次购买心理门槛",
+          "成分透明卡：每批次附带QR码指向成分溯源页面，直接击打Nature Made的不透明和AG1的神秘感"
+        ]
+      }
     }
   ]
 }
