@@ -12,6 +12,8 @@ import selectionExamples from '@/data/references/selection-examples.json';
 import operationsExamples from '@/data/references/operations-examples.json';
 import leadsExamples from '@/data/references/leads-examples.json';
 import ipComplianceExamples from '@/data/references/ip-compliance-examples.json';
+import videoExamples from '@/data/references/video-examples.json';
+import imagesExamples from '@/data/references/images-examples.json';
 
 const referenceMap: Record<string, unknown> = {
   translate: translateExamples,
@@ -26,6 +28,9 @@ const referenceMap: Record<string, unknown> = {
   operations: operationsExamples,
   leads: leadsExamples,
   'ip-compliance': ipComplianceExamples,
+  'ocr-translate': translateExamples,
+  video: videoExamples,
+  images: imagesExamples,
 };
 
 // Industry benchmarks (lazy-loaded)

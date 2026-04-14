@@ -1,0 +1,392 @@
+{
+  "module": "video",
+  "description": "短视频脚本与结构参考案例 — 多平台+多品类",
+  "examples": [
+    {
+      "id": "video_001",
+      "platform": "Amazon",
+      "product": "蓝牙耳机",
+      "duration": "15秒",
+      "format": "开箱+功能展示",
+      "script": {
+        "hook": "【0-3s】手从精美包装盒中取出耳机，特写光泽质感，配音：'Sound that finds you.'",
+        "body": "【3-10s】三连镜头：运动中佩戴（防汗溅），通勤场景（主动降噪键特写），视频通话（麦克风收音清晰）",
+        "demo": "【10-13s】手机屏幕连接动画：2秒自动配对，全屏显示'Connected'",
+        "cta": "【13-15s】产品正面全景+价格标签动画，文字：'Add to Cart ↑'"
+      },
+      "visual_notes": [
+        "镜头1: 微距拍摄耳机金属网格，侧光强调质感（0-2s）",
+        "镜头2: 运动员跑步特写，耳机在耳，汗水未使其脱落（3-5s）",
+        "镜头3: 地铁场景俯拍，佩戴者安静阅读，周围嘈杂模糊化处理（6-8s）",
+        "镜头4: 手指点击耳机降噪按钮，音浪可视化波纹特效（9-11s）",
+        "镜头5: 白底平铺产品全景，价格贴纸飞入动画（12-15s）"
+      ],
+      "music_style": "现代电子轻音乐，中等BPM（100-110），无人声，节奏与镜头切换同步",
+      "text_overlay": [
+        "ANC Active Noise Cancelling",
+        "30hr Battery Life",
+        "IPX5 Waterproof",
+        "★★★★★ 4.8/5 (12,000+ Reviews)"
+      ],
+      "kpi_benchmarks": {
+        "view_rate": "点击播放率 > 65%（Amazon站内平均50%）",
+        "completion_rate": "完播率 > 80%（15秒视频基准）",
+        "click_rate": "点击加购率 > 3.5%",
+        "note": "A+视频位置，目标转化率提升18-25%"
+      }
+    },
+    {
+      "id": "video_002",
+      "platform": "TikTok Shop US",
+      "product": "便携搅拌杯",
+      "duration": "30秒",
+      "format": "创意Hook+演示+CTA",
+      "script": {
+        "hook": "【0-3s】直接对镜头说：'POV: You're about to make the SMOOTHEST protein shake of your life'，手持空杯晃动",
+        "body": "【3-18s】实操演示：倒入蛋白粉→加冰块→盖盖→按下充电按钮→10秒后打开盖，丝滑奶昔特写流淌",
+        "demo": "【18-25s】对比镜头：左边手摇杯（结块满满），右边搅拌杯（丝滑无颗粒），大拇指手势",
+        "cta": "【25-30s】'Link in bio or tap the bag 🛒 Ships same day!'，产品旋转展示+价格标签"
+      },
+      "visual_notes": [
+        "镜头1: 创作者手持杯子对着镜头，自拍角度，厨房背景（0-3s）",
+        "镜头2: 俯拍倒粉+加冰，特效：每加一个材料出现食材卡片（3-10s）",
+        "镜头3: 按钮特写，蓝灯闪烁，计时10秒倒计时动画叠加（10-18s）",
+        "镜头4: 左右分屏对比，慢镜头奶昔流动（18-25s）",
+        "镜头5: 创作者喝一口，夸张满意表情，贴纸：'Already 50K+ sold!'（25-30s）"
+      ],
+      "music_style": "TikTok流行BGM，轻快活泼，BPM 120-130，推荐当前热门榜单音乐",
+      "text_overlay": [
+        "POV: No more clumpy protein shakes",
+        "USB Rechargeable ⚡",
+        "Works in 10 seconds",
+        "vs ❌ vs ✅",
+        "Shop Now 👇"
+      ],
+      "kpi_benchmarks": {
+        "view_rate": "完播率 > 45%（TikTok 30秒基准40%）",
+        "completion_rate": "分享率 > 2%（TikTok购物视频基准）",
+        "click_rate": "商品页跳转率 > 5%",
+        "note": "Hook前3秒决定70%留存，对比演示段最易触发分享"
+      }
+    },
+    {
+      "id": "video_003",
+      "platform": "抖音",
+      "product": "防晒霜",
+      "duration": "60秒",
+      "format": "成分科普+使用对比",
+      "script": {
+        "hook": "【0-3s】'你在用的防晒，可能根本没用' — 对镜头直说，制造悬念",
+        "body": "【3-35s】科普段：手写板展示UV-A/UV-B区别→展示产品SPF50+PA++++成分卡→实验室风格：黑光灯下对比有防晒和无防晒的皮肤",
+        "demo": "【35-50s】真实使用演示：早晨护肤最后一步→涂抹无白膜特写→户外一天后皮肤对比（晒后不红）",
+        "cta": "【50-60s】'评论区扣1，送你防晒指南' + 产品链接浮窗，主播口播：'今天直播间有优惠'"
+      },
+      "visual_notes": [
+        "镜头1: 博主近景，背景白色实验室风格（0-3s）",
+        "镜头2: 平铺成分表，手指指向关键成分，字幕动画高亮（3-15s）",
+        "镜头3: 黑光灯实验，白色荧光=UV暴露对比（15-25s）",
+        "镜头4: 手臂涂抹，无白膜无油腻特写（25-35s）",
+        "镜头5: 出行前后皮肤对比，色彩校正强调差异（35-50s）",
+        "镜头6: 产品平铺+价格浮窗+互动引导（50-60s）"
+      ],
+      "music_style": "轻柔BGM，偏科普类知识博主风格，BPM 80-90，不抢人声",
+      "text_overlay": [
+        "UV-A 晒黑 | UV-B 晒伤",
+        "SPF50+ PA++++ 双重防护",
+        "实测：8小时户外无补涂",
+        "0白膜 0油腻 通勤党必备",
+        "🔗 橱窗同款链接"
+      ],
+      "kpi_benchmarks": {
+        "view_rate": "完播率 > 35%（60秒长视频抖音基准）",
+        "completion_rate": "互动率（点赞+评论+分享）> 8%",
+        "click_rate": "橱窗点击率 > 4%",
+        "note": "评论引导互动能显著提升系统推荐权重，科普内容更易触发收藏"
+      }
+    },
+    {
+      "id": "video_004",
+      "platform": "小红书",
+      "product": "收纳神器（多格收纳盒）",
+      "duration": "45秒",
+      "format": "Before/After Transformation",
+      "script": {
+        "hook": "【0-4s】混乱抽屉特写，文字：'我的抽屉乱了2年' — 真实场景引发共鸣",
+        "body": "【4-25s】收纳过程快剪：取出所有物品→分类放入收纳格→每格贴标签，背景音'噗噗'入格音效",
+        "demo": "【25-38s】完成后缓慢拉镜：抽屉整洁全貌，每格物品清晰可见，配音：'2小时，抽屉新生了'",
+        "cta": "【38-45s】产品细节特写：材质/尺寸可调节/可叠加，文字：'型号在笔记里，姐妹自取~'"
+      },
+      "visual_notes": [
+        "镜头1: 手持相机拍摄乱糟糟的抽屉，真实感>完美感（0-4s）",
+        "镜头2: 延时摄影收纳过程，1倍速关键动作+4倍速过渡（4-20s）",
+        "镜头3: 满足感特写：手指在收纳格间滑过（20-25s）",
+        "镜头4: 缓慢从右往左扫过整洁抽屉，构图对称（25-38s）",
+        "镜头5: 产品单独平铺，白色背景，尺寸标注（38-45s）"
+      ],
+      "music_style": "轻松可爱的日系钢琴曲，治愈风，BPM 90-100，与收纳节奏契合",
+      "text_overlay": [
+        "前 vs 后 🙈→🌟",
+        "可调节隔板 适配任意抽屉",
+        "樱花粉/莫兰迪绿/纯白 3色",
+        "收纳达人同款 ✅",
+        "链接🔗在评论区"
+      ],
+      "kpi_benchmarks": {
+        "view_rate": "互动率（收藏+点赞）> 15%（小红书种草基准）",
+        "completion_rate": "完播率 > 55%",
+        "click_rate": "评论区链接点击率 > 6%",
+        "note": "小红书强收藏属性，before/after格式收藏率比单纯展示高2-3倍"
+      }
+    },
+    {
+      "id": "video_005",
+      "platform": "Shopee",
+      "product": "手机壳（四角加强防摔款）",
+      "duration": "20秒",
+      "format": "产品展示+防摔测试",
+      "script": {
+        "hook": "【0-3s】手机从高处落下慢镜头，手机壳缓冲落地，屏幕完好无损，文字：'Drop test passed ✔'",
+        "body": "【3-12s】展示手机壳四个方向：四角气囊特写→背面材质质感→精准开孔对齐摄像头→透明款展示手机原色",
+        "demo": "【12-17s】安装演示：10秒内快速卡入，'咔哒'音效，装入口袋，不增加厚度演示",
+        "cta": "【17-20s】多款颜色排列，文字：'Fits iPhone 13-15 series，Free shipping today only！'"
+      },
+      "visual_notes": [
+        "镜头1: 高速摄影（120fps）手机跌落，气囊吸收冲击可视化（0-3s）",
+        "镜头2: 360度旋转展示，侧光强调气囊结构（3-8s）",
+        "镜头3: 摄像头孔精准对齐微距，强调工艺（8-12s）",
+        "镜头4: 手机卡入声效配合特效，卡扣处放大动画（12-17s）",
+        "镜头5: 颜色矩阵平铺，产品标签飞入（17-20s）"
+      ],
+      "music_style": "电子感科技BGM，简洁有力，BPM 110-120，与测试动作同步",
+      "text_overlay": [
+        "Military Grade Drop Protection",
+        "4-Corner Airbag Cushion",
+        "Precise Camera Cutout",
+        "12 Colors Available",
+        "Ships from local warehouse ⚡"
+      ],
+      "kpi_benchmarks": {
+        "view_rate": "完播率 > 70%（20秒短视频Shopee基准）",
+        "completion_rate": "加购率 > 4%",
+        "click_rate": "商品页访问率 > 8%",
+        "note": "防摔测试是手机壳品类最高转化钩子，慢镜头+音效组合提升可信度"
+      }
+    },
+    {
+      "id": "video_006",
+      "platform": "YouTube Shorts",
+      "product": "空气炸锅",
+      "duration": "60秒",
+      "format": "食谱式教程展示",
+      "script": {
+        "hook": "【0-3s】成品薯条特写，金黄酥脆，创作者咬一口，夸张表情，字幕：'Crispiest fries. Zero oil.'",
+        "body": "【3-40s】Food-style拍摄：土豆切条→均匀放入炸篮→设置200℃/15min→定时器快进→摇篮式翻面→再次合入",
+        "demo": "【40-52s】成品出炉慢镜头，色泽金黄，蒸汽升腾，与普通烤箱炸薯条颜色对比",
+        "cta": "【52-60s】产品参数卡片：5.5L容量/8种预设程序/可视窗，文字：'Recipe in description 👇'"
+      },
+      "visual_notes": [
+        "镜头1: 微距成品，景深虚化，高饱和暖色调（0-3s）",
+        "镜头2: 俯拍切薯条，ASMR刀声，食材颜色饱和处理（3-12s）",
+        "镜头3: 炸篮放入炸锅动画，可视窗内食物变化延时（12-30s）",
+        "镜头4: 成品与对照组并排，自然光无滤镜（40-52s）",
+        "镜头5: 产品白底展示，各功能部件标注（52-60s）"
+      ],
+      "music_style": "轻松厨房氛围BGM，木吉他或爵士钢琴，BPM 95-105，配合食材ASMR音效",
+      "text_overlay": [
+        "0 Oil Needed",
+        "200°C / 15 min",
+        "8 Preset Programs 🍟🍗🥦🍰",
+        "5.5L = Feeds 4 people",
+        "Full recipe 👇"
+      ],
+      "kpi_benchmarks": {
+        "view_rate": "完播率 > 40%（YouTube Shorts基准）",
+        "completion_rate": "点赞率 > 5%",
+        "click_rate": "描述栏链接点击率 > 2%",
+        "note": "Shorts内容适合加入Series，同一产品做5个不同食谱，系统推荐会联动"
+      }
+    },
+    {
+      "id": "video_007",
+      "platform": "Instagram Reels",
+      "product": "运动水壶（双层保温大容量）",
+      "duration": "30秒",
+      "format": "生活方式+产品植入",
+      "script": {
+        "hook": "【0-3s】清晨户外跑步，阳光从背后打光，创作者从腰包取出水壶喝水，无对白，纯视觉叙事",
+        "body": "【3-20s】一天使用场景剪辑：健身房深蹲旁边→咖啡馆工作桌旁→瑜伽垫上休息间隙→傍晚夕阳海边",
+        "demo": "【20-26s】特写：冰块8小时后仍有冰渣（保冷测试），开盖无漏水倒置展示",
+        "cta": "【26-30s】产品颜色墙（5种马卡龙色），文字：'Shop link in bio 🔗 Code: MOVE20 for 20% off'"
+      },
+      "visual_notes": [
+        "镜头1: 黄金时刻逆光跑步，电影感构图（0-3s）",
+        "镜头2: 多场景快切，每个场景2-3秒，一致的暖色调滤镜（3-20s）",
+        "镜头3: 水壶跟随运动，有机感手持镜头（无稳定器处理）",
+        "镜头4: 冰块保冷测试，温度计特写，数据真实可信（20-26s）",
+        "镜头5: 产品排列，颜色渐变美观（26-30s）"
+      ],
+      "music_style": "流行轻电子+钢琴，Instagram热门BGM，BPM 115，与剪辑节奏踩点",
+      "text_overlay": [
+        "Your hydration, everywhere",
+        "64oz / 1.9L",
+        "Keeps cold 24h ❄️ | Keeps hot 12h 🔥",
+        "BPA Free | Leak-proof ✅",
+        "Use code MOVE20 🎁"
+      ],
+      "kpi_benchmarks": {
+        "view_rate": "完播率 > 50%（Instagram Reels基准）",
+        "completion_rate": "主页访问率 > 3%",
+        "click_rate": "bio链接点击率 > 2.5%",
+        "note": "生活方式类内容适合KOL/UGC风格，比硬广转化率高40%；折扣码方便追踪ROI"
+      }
+    },
+    {
+      "id": "video_008",
+      "platform": "TikTok SEA",
+      "product": "美白面膜",
+      "duration": "45秒",
+      "format": "成效展示+本地化教程（英语+本地字幕）",
+      "script": {
+        "hook": "【0-3s】创作者用英语直说：'This mask gave me glass skin in 2 weeks'，特写焕亮肌肤",
+        "body": "【3-25s】使用教程：清洁脸部→取适量面膜→均匀涂抹→等待15分钟（加速动画）→清洗→即时亮度对比",
+        "demo": "【25-38s】成分卡介绍：烟酰胺3%/VC衍生物/玻尿酸，印尼/泰语字幕说明各成分功效",
+        "cta": "【38-45s】2周前后对比照片（真实用户素材），字幕：'Try it free — DM us for samples' + TikTok Shop链接"
+      },
+      "visual_notes": [
+        "镜头1: 自然光近景，无过度美颜，真实肤感（0-3s）",
+        "镜头2: 浴室环境教程拍摄，手持风格增加真实感（3-20s）",
+        "镜头3: 成分图卡，彩色插图风格，双语字幕覆盖（20-35s）",
+        "镜头4: 前后对比，相同光线/角度/无滤镜，增加可信度（35-40s）",
+        "镜头5: 产品包装特写+TikTok Shop贴纸飞入（40-45s）"
+      ],
+      "music_style": "东南亚流行BGM，轻快女声或乐器，BPM 105-115，本地化音乐提升亲近感",
+      "text_overlay": [
+        "Niacinamide 3% • Vitamin C • Hyaluronic Acid",
+        "Kulit cerah dalam 2 minggu (印尼: 2周亮肤)",
+        "ผิวกระจ่างใส (泰语: 明亮肌肤)",
+        "Real user results — no filter",
+        "DM 'MASK' for free sample 🎁"
+      ],
+      "kpi_benchmarks": {
+        "view_rate": "完播率 > 42%（TikTok SEA美妆基准）",
+        "completion_rate": "私信互动率 > 1.5%",
+        "click_rate": "TikTok Shop跳转率 > 4%",
+        "note": "SEA市场双语字幕+本地音乐可提升互动率30%+；免费样品DM引流是SEA常用转化漏斗"
+      }
+    },
+    {
+      "id": "video_009",
+      "platform": "抖音",
+      "product": "零食大礼包",
+      "duration": "15秒",
+      "format": "悬念Hook — 直播引流",
+      "script": {
+        "hook": "【0-4s】手持一个密封大箱子，'里面装了价值300块的零食，猜猜今晚直播我们卖多少钱？'",
+        "body": "【4-10s】箱子逐渐打开，一层一层零食露出，每露出一种零食名称飘出文字气泡，永远不完全打开",
+        "demo": "【10-13s】展示其中5款高辨识度零食一闪而过（辣条/薯片/软糖/坚果/饼干），制造期待",
+        "cta": "【13-15s】'今晚8点直播间，先到先得，只有100份' — 硬切，不解答悬念"
+      },
+      "visual_notes": [
+        "镜头1: 手持大礼盒，近景，创作者表情神秘（0-4s）",
+        "镜头2: 俯拍慢慢打开的箱子，每一层产品名气泡文字（4-10s）",
+        "镜头3: 快切零食特写，每帧0.5秒，制造视觉轰炸（10-13s）",
+        "镜头4: 创作者看向镜头，直播日历贴片+倒计时（13-15s）"
+      ],
+      "music_style": "悬念感递进BGM，加入鼓点节奏，BPM 130+，最后一秒静音制造冲击感",
+      "text_overlay": [
+        "价值¥300+",
+        "里面有啥👀？",
+        "辣条 ✦ 网红薯片 ✦ 日本软糖 ✦ ...",
+        "🔴 今晚8点直播 100份限量",
+        "点关注不迷路"
+      ],
+      "kpi_benchmarks": {
+        "view_rate": "完播率 > 75%（15秒悬念视频抖音基准）",
+        "completion_rate": "关注转化率 > 3%",
+        "click_rate": "直播预约率 > 2%",
+        "note": "悬念不解答是核心：评论区'猜猜是什么'互动量大，算法判定高质量内容推荐直播间"
+      }
+    },
+    {
+      "id": "video_010",
+      "platform": "Amazon",
+      "product": "宠物用品自动喂食器",
+      "duration": "90秒",
+      "format": "A+ 品牌故事视频",
+      "script": {
+        "hook": "【0-8s】品牌故事开场：'Every pet deserves to be fed on time, even when you can't be there' — 养宠人士加班回家，宠物趴在空碗旁",
+        "body": "【8-45s】产品功能逐一展示：手机APP远程投食→语音录制呼唤猫咪→智能分量控制（防肥胖模式）→双路电源防断电→大容量储粮仓（7L）→高清摄像头实时查看",
+        "demo": "【45-70s】真实使用场景：宠物主人出差→手机点击投食→猫咪听到主人声音跑来→吃饭特写→主人手机看到猫咪吃饭微笑",
+        "cta": "【70-90s】技术参数卡片+认证标志（CE/FCC/ROHS）+品牌承诺：'30-Day Risk-Free Trial | 18-Month Warranty' + 'Shop Our Store' 按钮"
+      },
+      "visual_notes": [
+        "镜头1: 电影感色调，公寓夜景+空碗，情感共鸣建立（0-8s）",
+        "镜头2: APP界面录屏+产品实拍分屏，图文并茂（8-30s）",
+        "镜头3: 产品拆解动画，每个功能部件高亮标注（30-45s）",
+        "镜头4: 情感叙事高光段，慢动作宠物进食，暖黄色调（45-65s）",
+        "镜头5: 主人笑容+手机屏幕，情感收尾（65-70s）",
+        "镜头6: 白底产品+参数+证书，专业感收尾（70-90s）"
+      ],
+      "music_style": "温馨弦乐+钢琴，情感型叙事配乐，BPM 80，在产品功能段适度提升节奏",
+      "text_overlay": [
+        "Feed your pet, anywhere in the world",
+        "6 Scheduled Meals Per Day",
+        "7L Capacity — Up to 3 Weeks Supply",
+        "HD Camera with Night Vision 📹",
+        "Dual Power: Plug + 3 × D Battery Backup",
+        "CE / FCC / RoHS Certified",
+        "18-Month Warranty | 30-Day Returns"
+      ],
+      "kpi_benchmarks": {
+        "view_rate": "A+视频完播率 > 50%（90秒长视频基准）",
+        "completion_rate": "品牌店铺访问率 > 8%",
+        "click_rate": "加购率提升目标 > 22%（vs无视频A+页面）",
+        "note": "品牌故事视频是A+页面转化率最高的模块，情感共鸣+功能验证双轨并行，宠物品类尤其有效"
+      }
+    }
+  ],
+  "principles": [
+    {
+      "id": "p01",
+      "title": "3秒Hook决定70%留存",
+      "content": "前3秒必须触发一个明确情绪：好奇（悬念）/ 惊喜（意外）/ 共鸣（'我也这样'）/ 欲望（成品即hook）。禁止用品牌Logo或产品名称开场，用户不欠你注意力。",
+      "platforms": ["全平台通用"]
+    },
+    {
+      "id": "p02",
+      "title": "平台节奏校准：不同算法偏好不同完播率",
+      "content": "TikTok/抖音：完播率>算法权重第一指标，≤15秒视频完播率目标>70%；Instagram Reels：保存率+分享率权重更高，内容要有收藏价值；Amazon/Shopee：加购率是唯一KPI，所有内容服务于'我要买这个'的决策；YouTube Shorts：系列化内容联动推荐，单视频转化弱，靠系列积累。",
+      "platforms": ["TikTok", "抖音", "Instagram", "Amazon", "Shopee", "YouTube"]
+    },
+    {
+      "id": "p03",
+      "title": "演示优于描述，数据优于形容词",
+      "content": "禁用：'超级好用'/'品质卓越'/'性价比极高'。替换为：'10秒出结果'/'8小时保冷实测'/'12000+评分4.8星'。能拍出来的不要说出来，能量化的不要模糊化。",
+      "platforms": ["全平台通用"]
+    },
+    {
+      "id": "p04",
+      "title": "本地化不是翻译，是重建叙事",
+      "content": "SEA市场：同一视频需要针对ID/TH/MY/VN分别制作本地语言字幕+本地流行BGM。欧美市场：UGC风格（手持、真实、非完美）比精良广告片转化率高35%。中国平台：评论引导互动（扣1、猜猜看）是算法加权杠杆，英文视频禁止直接搬运。",
+      "platforms": ["TikTok SEA", "抖音", "小红书", "Amazon US"]
+    },
+    {
+      "id": "p05",
+      "title": "CTA设计：匹配平台购买路径",
+      "content": "Amazon：CTA = 屏幕内加购按钮+产品页直接可见，勿引导离站；TikTok Shop：'Tap the bag'/'Link in bio'二选一，避免路径混乱；抖音直播引流：不解答悬念=最强CTA，让好奇心驱动关注+进直播间；小红书：评论区引流比账号主页链接更高转化，推荐'评论区见'话术。",
+      "platforms": ["Amazon", "TikTok Shop", "抖音", "小红书"]
+    },
+    {
+      "id": "p06",
+      "title": "音乐选择是转化率隐形变量",
+      "content": "平台热门榜单BGM（TikTok/抖音）可让视频获得2-5倍自然推荐加权。情感类产品（宠物/母婴/美妆）用暖色系弦乐，功能类产品（工具/电子/运动）用电子/科技感BGM。ASMR音效（切菜声/咔哒声/流水声）在美食/收纳/开箱品类能提升完播率15-20%。",
+      "platforms": ["全平台通用"]
+    },
+    {
+      "id": "p07",
+      "title": "A/B测试框架：系统提升转化的最短路径",
+      "content": "每次测试只改一个变量：Hook（前3秒文案）→ CTA位置 → 产品展示顺序 → BGM风格。测试周期最低48小时，至少500次展示后才有统计意义。高表现视频的Hook拿来做下一版的基础，不要从零开始。品类稳定后，每月至少跑2组A/B，持续迭代。",
+      "platforms": ["全平台通用"]
+    }
+  ]
+}
