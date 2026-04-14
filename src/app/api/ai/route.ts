@@ -59,7 +59,7 @@ ${registeredMarks.map(mark => `
 - 注意拼写变体（如AirPod→AirPods）同样可能触发风险
 - 建议改用通用产品描述（如"wireless earbuds"而非"AirPods-like"）
 
-⚠️ 重要声明：本检测基于有限参考数据库（当前覆盖约15个高频品牌），存在漏检可能，检测结果仅供初步参考，不构成任何法律意见。所有商标相关决策请咨询持证商标律师。
+⚠️ 重要声明：本检测基于参考数据库（当前覆盖500+品牌/19大品类），存在漏检可能，检测结果仅供初步参考，不构成任何法律意见。所有商标相关决策请咨询持证商标律师。
 `;
 
     return { context, queryResult: data };
@@ -101,76 +101,186 @@ export async function POST(request: NextRequest) {
     }
   }
 
+  // Per-module temperature: lower for deterministic tasks, higher for creative
+  const MODULE_TEMPERATURE: Record<string, number> = {
+    translate: 0.3,
+    'ocr-translate': 0.3,
+    'ip-compliance': 0.3,
+    'customer-service': 0.5,
+    reviews: 0.5,
+    competitor: 0.6,
+    selection: 0.6,
+    operations: 0.6,
+    leads: 0.6,
+    copywriting: 0.8,
+    content: 0.8,
+    livestream: 0.8,
+    outreach: 0.7,
+    video: 0.8,
+    images: 0.8,
+  };
+
+  const temperature = moduleId ? (MODULE_TEMPERATURE[moduleId] ?? 0.7) : 0.7;
+  const useStream = request.headers.get('accept') === 'text/event-stream';
+
   try {
     // IP合规模块：先查商标
     let trademarkContext = '';
-    let trademarkQueryResult;
+    let trademarkQueryResult: TrademarkQueryResult | undefined;
     if (moduleId === 'ip-compliance') {
       const result = await getTrademarkContext(input);
       trademarkContext = result.context;
       trademarkQueryResult = result.queryResult;
     }
 
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 30000);
+    const systemContent = prompt + (moduleId ? getReferenceContext(moduleId, input) : '') + trademarkContext;
+    const requestBody = {
+      model,
+      messages: [
+        { role: 'system', content: systemContent },
+        { role: 'user', content: input },
+      ],
+      temperature,
+      max_tokens: 4096,
+      stream: useStream,
+    };
 
-    const response = await fetch(endpoint, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${apiKey}`,
-      },
-      body: JSON.stringify({
-        model,
-        messages: [
-          { role: 'system', content: prompt + (moduleId ? getReferenceContext(moduleId, input) : '') + trademarkContext },
-          { role: 'user', content: input },
-        ],
-        temperature: 0.7,
-        max_tokens: 4096,
-      }),
-      signal: controller.signal,
-    });
+    // Retry logic: up to 2 retries with exponential backoff
+    const MAX_RETRIES = 2;
+    let lastError: Error | null = null;
 
-    clearTimeout(timeout);
+    for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
+      try {
+        if (attempt > 0) {
+          await new Promise(r => setTimeout(r, 1000 * Math.pow(2, attempt - 1)));
+        }
 
-    if (!response.ok) {
-      const error = await response.text();
-      // Fallback to cached response on API error
-      const cached = moduleId ? getCachedResponse(moduleId) : null;
-      if (cached) {
-        return NextResponse.json({
-          content: cached + '\n\n---\n*⚡ 预缓存响应（AI服务暂时不可用）*',
-          usage: { promptTokens: 0, completionTokens: 0 },
-          cached: true,
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 30000);
+
+        const response = await fetch(endpoint, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${apiKey}`,
+          },
+          body: JSON.stringify(requestBody),
+          signal: controller.signal,
         });
+
+        clearTimeout(timeout);
+
+        if (!response.ok) {
+          const errText = await response.text();
+          // Don't retry on 4xx (client errors)
+          if (response.status >= 400 && response.status < 500) {
+            throw new Error(`AI API错误 (${response.status}): ${errText}`);
+          }
+          lastError = new Error(`AI API错误 (${response.status}): ${errText}`);
+          continue; // retry on 5xx
+        }
+
+        // SSE streaming response
+        if (useStream && response.body) {
+          const encoder = new TextEncoder();
+          const decoder = new TextDecoder();
+          let fullContent = '';
+
+          const stream = new ReadableStream({
+            async start(ctrl) {
+              const reader = response.body!.getReader();
+              try {
+                while (true) {
+                  const { done, value } = await reader.read();
+                  if (done) break;
+
+                  const chunk = decoder.decode(value, { stream: true });
+                  const lines = chunk.split('\n');
+
+                  for (const line of lines) {
+                    if (!line.startsWith('data: ')) continue;
+                    const data = line.slice(6);
+                    if (data === '[DONE]') continue;
+
+                    try {
+                      const parsed = JSON.parse(data);
+                      const delta = parsed.choices?.[0]?.delta?.content || '';
+                      if (delta) {
+                        fullContent += delta;
+                        ctrl.enqueue(encoder.encode(`data: ${JSON.stringify({ delta, content: fullContent })}\n\n`));
+                      }
+                    } catch { /* skip malformed chunks */ }
+                  }
+                }
+                // Send final event with usage
+                ctrl.enqueue(encoder.encode(`data: ${JSON.stringify({ done: true, content: fullContent, trademarkQuery: trademarkQueryResult })}\n\n`));
+                ctrl.close();
+              } catch (err) {
+                ctrl.error(err);
+              }
+
+              // Log usage (estimated from content length)
+              const estimatedTokens = Math.ceil(fullContent.length / 2);
+              if (moduleId) logUsageEntry(moduleId, estimatedTokens, undefined, tenantId, request.headers.get('x-username') || undefined);
+            },
+          });
+
+          return new Response(stream, {
+            headers: {
+              'Content-Type': 'text/event-stream',
+              'Cache-Control': 'no-cache',
+              'Connection': 'keep-alive',
+            },
+          });
+        }
+
+        // Non-streaming response
+        const data = await response.json();
+        const totalTokens = (data.usage?.prompt_tokens || 0) + (data.usage?.completion_tokens || 0);
+        if (moduleId) logUsageEntry(moduleId, totalTokens, undefined, tenantId, request.headers.get('x-username') || undefined);
+        return NextResponse.json({
+          content: data.choices[0].message.content,
+          usage: {
+            promptTokens: data.usage?.prompt_tokens || 0,
+            completionTokens: data.usage?.completion_tokens || 0,
+          },
+          trademarkQuery: trademarkQueryResult,
+        });
+      } catch (err) {
+        lastError = err instanceof Error ? err : new Error(String(err));
+        if (err instanceof Error && err.name === 'AbortError') {
+          lastError = new Error('请求超时(30s)');
+        }
+        // Don't retry on abort
+        if (err instanceof Error && err.name === 'AbortError') break;
+        continue;
       }
-      return NextResponse.json({ error: `AI API错误: ${error}` }, { status: 500 });
     }
 
-    const data = await response.json();
-    const totalTokens = (data.usage?.prompt_tokens || 0) + (data.usage?.completion_tokens || 0);
-    if (moduleId) logUsageEntry(moduleId, totalTokens, undefined, tenantId, request.headers.get('x-username') || undefined);
-    return NextResponse.json({
-      content: data.choices[0].message.content,
-      usage: {
-        promptTokens: data.usage?.prompt_tokens || 0,
-        completionTokens: data.usage?.completion_tokens || 0,
-      },
-      trademarkQuery: trademarkQueryResult,
-    });
-  } catch (error) {
-    // Fallback to cached response on timeout/network error
+    // All retries exhausted — fallback to cache
     const cached = moduleId ? getCachedResponse(moduleId) : null;
     if (cached) {
       return NextResponse.json({
-        content: cached + '\n\n---\n*⚡ 预缓存响应（AI服务超时）*',
+        content: cached + '\n\n---\n*⚡ 预缓存响应（AI服务暂时不可用）*',
         usage: { promptTokens: 0, completionTokens: 0 },
         cached: true,
       });
     }
     return NextResponse.json(
-      { error: `请求失败: ${error instanceof Error ? error.message : '未知错误'}` },
+      { error: lastError?.message || '请求失败', retryable: true },
+      { status: 500 }
+    );
+  } catch (error) {
+    const cached = moduleId ? getCachedResponse(moduleId) : null;
+    if (cached) {
+      return NextResponse.json({
+        content: cached + '\n\n---\n*⚡ 预缓存响应（AI服务异常）*',
+        usage: { promptTokens: 0, completionTokens: 0 },
+        cached: true,
+      });
+    }
+    return NextResponse.json(
+      { error: `请求失败: ${error instanceof Error ? error.message : '未知错误'}`, retryable: true },
       { status: 500 }
     );
   }

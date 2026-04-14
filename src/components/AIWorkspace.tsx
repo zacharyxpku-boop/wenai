@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import ReactMarkdown from 'react-markdown';
 import ResultFeedback from './ResultFeedback';
 import ExpertReview from './ExpertReview';
@@ -61,6 +61,8 @@ export default function AIWorkspace({
     foundCount: number;
   } | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const abortRef = useRef<AbortController | null>(null);
+  const [lastSubmitArgs, setLastSubmitArgs] = useState<{ prompt: string; input: string; params: Record<string, string> } | null>(null);
 
   useEffect(() => {
     const stored = localStorage.getItem(`wenai_history_${moduleId}`);
@@ -82,23 +84,41 @@ export default function AIWorkspace({
     localStorage.setItem(`wenai_history_${moduleId}`, JSON.stringify(updated));
   };
 
-  const handleSubmit = async () => {
-    if (!input.trim()) return;
+  const handleCancel = useCallback(() => {
+    abortRef.current?.abort();
+    abortRef.current = null;
+    setLoading(false);
+  }, []);
+
+  const handleSubmit = async (retryArgs?: { prompt: string; input: string; params: Record<string, string> }) => {
+    const currentInput = retryArgs?.input || input;
+    const currentParams = retryArgs?.params || params;
+    if (!currentInput.trim()) return;
+
     setLoading(true);
     setError('');
     setResult('');
 
-    try {
-      let prompt = modulePrompt;
-      const allParams = { ...params, input };
-      for (const [key, value] of Object.entries(allParams)) {
-        prompt = prompt.replaceAll(`{${key}}`, value);
-      }
+    let prompt = retryArgs?.prompt || modulePrompt;
+    const allParams = { ...currentParams, input: currentInput };
+    for (const [key, value] of Object.entries(allParams)) {
+      prompt = prompt.replaceAll(`{${key}}`, value);
+    }
 
+    setLastSubmitArgs({ prompt, input: currentInput, params: currentParams });
+
+    const controller = new AbortController();
+    abortRef.current = controller;
+
+    try {
       const response = await fetch('/api/ai', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ moduleId, prompt, input, params }),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'text/event-stream',
+        },
+        body: JSON.stringify({ moduleId, prompt, input: currentInput, params: currentParams }),
+        signal: controller.signal,
       });
 
       if (!response.ok) {
@@ -109,13 +129,44 @@ export default function AIWorkspace({
         throw new Error(data.error || '请求失败');
       }
 
-      const data = await response.json();
-      setResult(data.content);
-      setTrademarkQuery(data.trademarkQuery || null);
-      saveToHistory(input, data.content, params);
+      if (response.body) {
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder();
+        let finalContent = '';
+        let finalTrademarkQuery = null;
+
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+
+          const chunk = decoder.decode(value, { stream: true });
+          const lines = chunk.split('\n');
+
+          for (const line of lines) {
+            if (!line.startsWith('data: ')) continue;
+            const raw = line.slice(6);
+            try {
+              const parsed = JSON.parse(raw);
+              if (parsed.done) {
+                finalContent = parsed.content || finalContent;
+                finalTrademarkQuery = parsed.trademarkQuery || null;
+              } else if (parsed.content) {
+                finalContent = parsed.content;
+                setResult(parsed.content);
+              }
+            } catch { /* skip malformed */ }
+          }
+        }
+
+        setResult(finalContent);
+        setTrademarkQuery(finalTrademarkQuery);
+        if (finalContent) saveToHistory(currentInput, finalContent, currentParams);
+      }
     } catch (err) {
+      if (err instanceof DOMException && err.name === 'AbortError') return;
       setError(err instanceof Error ? err.message : '未知错误');
     } finally {
+      abortRef.current = null;
       setLoading(false);
     }
   };
@@ -469,7 +520,7 @@ export default function AIWorkspace({
               {input.length === 0 ? '⌨️ Ctrl+Enter 提交' : '准备就绪'}
             </span>
             <button
-              onClick={handleSubmit}
+              onClick={() => handleSubmit()}
               disabled={loading || !input.trim()}
               className="px-5 py-2.5 bg-accent text-bg-root rounded-md font-semibold text-[12px] hover:bg-accent-hover hover:shadow-[0_4px_12px_rgba(200,151,90,0.3)] disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-200 font-[family-name:var(--font-outfit)] active:scale-95"
             >
@@ -527,17 +578,27 @@ export default function AIWorkspace({
           <div className="flex-1 min-h-[180px] bg-bg-surface border border-border-subtle rounded-md p-4 overflow-y-auto relative">
             {error && (
               <div className="text-[11px] font-mono text-error p-3.5 bg-error/5 border border-error/25 rounded-md mb-3 animate-fade-up">
-                <div className="flex items-center gap-2 mb-1">
-                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                    <circle cx="6" cy="6" r="5" stroke="currentColor" strokeWidth="1.5"/>
-                    <path d="M6 3v3M6 8v.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-                  </svg>
-                  <span className="font-semibold">错误</span>
+                <div className="flex items-center justify-between mb-1">
+                  <div className="flex items-center gap-2">
+                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                      <circle cx="6" cy="6" r="5" stroke="currentColor" strokeWidth="1.5"/>
+                      <path d="M6 3v3M6 8v.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+                    </svg>
+                    <span className="font-semibold">错误</span>
+                  </div>
+                  {lastSubmitArgs && (
+                    <button
+                      onClick={() => handleSubmit(lastSubmitArgs)}
+                      className="px-2 py-0.5 text-[10px] font-mono text-accent border border-accent/30 rounded hover:bg-accent/10 transition-colors"
+                    >
+                      重试
+                    </button>
+                  )}
                 </div>
                 {error}
               </div>
             )}
-            {loading && (
+            {loading && !result && (
               <div className="flex flex-col items-center gap-4 text-text-tertiary py-16 justify-center animate-fade-up">
                 <div className="relative">
                   <svg className="w-8 h-8 animate-spin-smooth text-accent" viewBox="0 0 16 16" fill="none">
@@ -552,11 +613,30 @@ export default function AIWorkspace({
                   <p className="text-[12px] font-mono text-text-primary font-semibold mb-1">AI 处理中</p>
                   <p className="text-[9px] font-mono text-text-tertiary">正在生成专业结果...</p>
                 </div>
+                <button
+                  onClick={handleCancel}
+                  className="mt-2 px-3 py-1 text-[11px] font-mono text-text-tertiary border border-border-subtle rounded hover:bg-bg-raised hover:text-text-secondary transition-colors"
+                >
+                  取消
+                </button>
               </div>
             )}
             {result && (
-              <div className="prose prose-invert prose-sm max-w-none text-[13px] text-text-secondary leading-[1.8] [&_table]:border-collapse [&_th]:border [&_th]:border-border-subtle [&_th]:px-2 [&_th]:py-1 [&_th]:bg-bg-raised [&_th]:text-[11px] [&_th]:font-mono [&_td]:border [&_td]:border-border-subtle [&_td]:px-2 [&_td]:py-1 [&_td]:text-[12px] [&_strong]:text-text-primary [&_h2]:text-[14px] [&_h2]:text-text-primary [&_h2]:font-semibold [&_h2]:mt-4 [&_h2]:mb-2 [&_h3]:text-[13px] [&_h3]:text-text-primary [&_h3]:mt-3 [&_h3]:mb-1 [&_ul]:pl-4 [&_ol]:pl-4 [&_li]:mb-1 [&_code]:bg-bg-raised [&_code]:px-1 [&_code]:rounded [&_code]:text-[11px] [&_code]:font-mono">
-                <ReactMarkdown>{result}</ReactMarkdown>
+              <div>
+                <div className="prose prose-invert prose-sm max-w-none text-[13px] text-text-secondary leading-[1.8] [&_table]:border-collapse [&_th]:border [&_th]:border-border-subtle [&_th]:px-2 [&_th]:py-1 [&_th]:bg-bg-raised [&_th]:text-[11px] [&_th]:font-mono [&_td]:border [&_td]:border-border-subtle [&_td]:px-2 [&_td]:py-1 [&_td]:text-[12px] [&_strong]:text-text-primary [&_h2]:text-[14px] [&_h2]:text-text-primary [&_h2]:font-semibold [&_h2]:mt-4 [&_h2]:mb-2 [&_h3]:text-[13px] [&_h3]:text-text-primary [&_h3]:mt-3 [&_h3]:mb-1 [&_ul]:pl-4 [&_ol]:pl-4 [&_li]:mb-1 [&_code]:bg-bg-raised [&_code]:px-1 [&_code]:rounded [&_code]:text-[11px] [&_code]:font-mono">
+                  <ReactMarkdown>{result}</ReactMarkdown>
+                  {loading && <span className="inline-block w-1.5 h-4 bg-accent animate-pulse ml-0.5 align-text-bottom" />}
+                </div>
+                {loading && (
+                  <div className="mt-3 flex justify-end">
+                    <button
+                      onClick={handleCancel}
+                      className="px-3 py-1 text-[11px] font-mono text-text-tertiary border border-border-subtle rounded hover:bg-bg-raised hover:text-text-secondary transition-colors"
+                    >
+                      停止生成
+                    </button>
+                  </div>
+                )}
               </div>
             )}
             {!result && !loading && !error && (
