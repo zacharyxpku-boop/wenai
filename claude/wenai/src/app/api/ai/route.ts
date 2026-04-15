@@ -119,6 +119,9 @@ export async function POST(request: NextRequest) {
     outreach: 0.7,
     video: 0.8,
     images: 0.8,
+    'private-domain': 0.7,
+    'data-insights': 0.4,
+    'ad-optimizer': 0.4,
   };
 
   const temperature = moduleId ? (MODULE_TEMPERATURE[moduleId] ?? 0.7) : 0.7;

@@ -451,6 +451,130 @@ Wireless Earbuds with Charging Case, Bluetooth 5.3 in-Ear Headphones, Touch Cont
 - 🇺🇸 美国：FCC Part 15 认证 ✓ | UL安全认证 待确认
 - 🇪🇺 欧盟：CE RED指令 ✓ | RoHS ✓ | WEEE注册号 待确认
 - 🇬🇧 英国：UKCA标志 待申请（脱欧后不再接受CE）`,
+
+  'private-domain': `## 私域运营自动化 · 弃单挽回序列（US市场）
+
+**场景：** Abandoned Cart · 客单价 $28-35 · 目标市场 US
+
+### 7天序列总览
+
+| Day | 渠道 | 时机 | Subject/首句 | 核心钩子 |
+|-----|------|------|-------------|---------|
+| D0 +1h | Email | 弃单后1小时 | Did something go wrong at checkout? | 纯提醒+客服兜底 |
+| D0 +4h | Email | 弃单后4小时 | Your cart is waiting — free US shipping inside | 包邮钩子 |
+| D1 | SMS | 次日10am | Hey [Name], your HOMELODY bins are almost gone — 15% off if you finish today | 库存焦虑+折扣 |
+| D3 | Email | 第3天上午 | Real customers, real kitchens — see why 2,300+ chose us | 社会证明UGC |
+| D5 | Email | 第5天 | Last call: 20% off expires tonight | 最终折扣+deadline |
+| D7 | WhatsApp | 第7天 | One question — what stopped you? | 调研挽回 |
+
+### D0 +4h 邮件全文
+
+**Subject:** Your cart is waiting — free US shipping inside 📦
+
+Hi [First Name],
+
+Noticed you left the 6-piece Stackable Storage Bins in your cart. Two things you should know:
+
+✅ **Free US shipping** — automatically applied at checkout
+✅ **90-day returns** — if it doesn't fit your space, send it back
+
+[Complete My Order →]
+
+P.S. 2,300+ reviews, 4.8★ average. Most-loved by people who hate clutter (like us).
+
+---
+
+### A/B 测试建议
+- Subject A: "Did something go wrong?" (好奇型)
+- Subject B: "Your cart is waiting — free shipping inside" (利益型)
+- 预期：B 打开率高 15-20%，A 回复率高
+
+### 合规提示
+- CAN-SPAM: 邮件底部必须含 unsubscribe + 物理地址
+- TCPA: SMS 必须有明确opt-in记录，含STOP退订
+- GDPR (如投EU): 需单独consent，不能沿用购物流程授权`,
+
+  'data-insights': `## 数据洞察报告
+
+**业务背景：** 家居收纳品类 · 月GMV $45k · 近4周环比下滑18%
+
+### 健康度评分：62/100 ⚠️
+
+| 维度 | 得分 | 状态 |
+|------|------|------|
+| 流量 | 70 | 🟡 稳定但质量下降 |
+| 转化 | 55 | 🔴 明显恶化 |
+| 客单价 | 68 | 🟡 略降 |
+| 复购 | 75 | 🟢 健康 |
+
+### Top 3 关键发现
+
+**1. 主图CTR从3.2%掉到2.1%（证据：广告后台4周趋势）**
+- 假设：新品图换成极简风格后丢失对比度
+- 影响：每天少引入~200点击，占整体流量下滑60%
+- 行动：本周内A/B测试老版主图 vs 新版，按数据决定回滚
+
+**2. 加购→支付转化率从28%掉到19%**
+- 假设：运费规则4周前改为$6.99起，用户在结账页流失
+- 影响：单此一项月损约$8.2k
+- 行动：恢复$35免邮或改为商品内含运费
+
+**3. 差评集中在"盖子密封不严"（12条/近30天）**
+- 假设：新批次PP原料硬度偏低
+- 影响：退货率从2.1%升至4.8%
+- 行动：联系工厂核查批次，召回未发货库存
+
+### 7天行动清单
+
+| Day | 任务 | 负责 | 验收 |
+|-----|------|------|------|
+| D1 | 主图A/B上架 | 运营 | 老版/新版各50%流量 |
+| D2 | 运费规则改回 | 运营 | 结账页显示免邮 |
+| D3 | 工厂批次核查 | 采购 | 拿到QC报告 |
+| D5 | 差评主动私信挽回 | 客服 | 12条100%触达 |
+| D7 | 数据复盘 | 运营 | 转化恢复≥25% |`,
+
+  'ad-optimizer': `## 投流诊断报告 · TikTok Ads
+
+**目标：** 降低CPA至$12以内 · 当前CPA $21.5
+
+### 账户健康度：58/100 🔴
+
+### 6维度诊断
+
+| 维度 | 问题 | 严重度 |
+|------|------|--------|
+| 账户结构 | 5个广告组混投多品类 | 🔴 高 |
+| 预算分配 | 70%预算压在CPA最高的广告组 | 🔴 高 |
+| 素材 | 4条素材中2条CTR<0.8% | 🟡 中 |
+| 受众 | 兴趣定向过宽(1000万+) | 🟡 中 |
+| 出价 | 最高出价模式导致尾部无效曝光 | 🔴 高 |
+| 落地页 | 移动端加载3.8s，弃单率高 | 🟡 中 |
+
+### 立即止损（今天执行）
+
+1. **关停广告组 AG-003（CPA $38，预算$150/天）** → 每天立省$150
+2. **暂停低CTR素材 Video_02 和 Video_04** → 预算回流到Video_01(CTR 2.1%)
+3. **出价模式切换** 最高出价 → 成本上限$12 → 杜绝尾部浪费
+
+**预期：3天内CPA下降至$15，7天内达到$12目标**
+
+### 7天优化路线
+
+| Day | 动作 | 验收指标 |
+|-----|------|---------|
+| D1 | 止损3动作 | CPA≤$16 |
+| D2 | 按品类拆分广告组（1品1组） | 结构清晰 |
+| D3 | 上线3条新素材（UGC风） | 至少1条CTR≥1.5% |
+| D4 | 受众收窄到精准兴趣(<300万) | 频次<3 |
+| D5 | 落地页加载优化 | <2s |
+| D6 | 复盘+放量 | ROAS≥2.5 |
+| D7 | 稳定跑量 | CPA≤$12 |
+
+### 素材迭代方向
+- 前3秒强钩子："This $30 bin replaced my $200 closet organizer"
+- 第4-8秒产品对比实拍（乱→整）
+- 第9-15秒CTA+限时折扣`,
 };
 
 /**
