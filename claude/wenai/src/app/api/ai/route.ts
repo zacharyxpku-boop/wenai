@@ -115,6 +115,7 @@ export async function POST(request: NextRequest) {
     copywriting: 0.8,
     content: 0.8,
     livestream: 0.8,
+    positioning: 0.85,
     outreach: 0.7,
     video: 0.8,
     images: 0.8,

@@ -5,7 +5,7 @@
   "enabledModules": [
     "translate", "outreach", "reviews", "video",
     "ocr-translate",
-    "copywriting", "content", "images", "livestream",
+    "copywriting", "content", "images", "livestream", "positioning",
     "competitor", "selection", "operations",
     "customer-service", "leads", "ip-compliance"
   ],
