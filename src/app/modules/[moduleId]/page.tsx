@@ -16,8 +16,12 @@ const moduleFields: Record<string, { key: string; label: string; placeholder: st
   ],
   livestream: [
     { key: 'product', label: '产品信息', placeholder: '产品名称、价格、卖点...' },
-    { key: 'platform', label: '直播平台', placeholder: '抖音 / 淘宝直播 / 快手...' },
+    { key: 'platform', label: '直播平台', placeholder: 'TikTok Shop US / Shopee SG / 抖音...' },
     { key: 'audience', label: '目标人群', placeholder: '25-35岁女性 / 家庭主妇...' },
+  ],
+  positioning: [
+    { key: 'platform', label: '目标平台', placeholder: 'TikTok Shop / Shopee Live / Amazon Live...' },
+    { key: 'resources', label: '当前资源', placeholder: '供应链/预算/团队规模/已有账号...' },
   ],
   'customer-service': [
     { key: 'shopInfo', label: '店铺信息', placeholder: '店铺类型、主营品类、退换政策...' },
@@ -35,6 +39,7 @@ const modulePlaceholders: Record<string, string> = {
   content: '请输入产品信息（名称、卖点、目标人群、使用场景）...',
   images: '请输入商品信息（名称、品类、风格定位、参考竞品）...',
   livestream: '请输入额外的直播需求说明...',
+  positioning: '请输入商品/品牌信息（品类、核心卖点、品牌故事、价格带）...',
   competitor: '请输入竞品信息（链接、名称、价格、或任何已知信息）...',
   selection: '请输入品类方向或选品需求...',
   operations: '请输入店铺/产品现状（品类、日均销量、客单价、当前问题）...',

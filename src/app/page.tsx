@@ -366,6 +366,28 @@ export default function Dashboard() {
           </div>
         );
       })}
+
+      <div className="mt-10 p-5 border border-border-subtle rounded-md bg-bg-surface">
+        <div className="flex items-start gap-4">
+          <div className="w-10 h-10 border border-accent/30 rounded-md flex items-center justify-center flex-shrink-0 text-accent">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+              <path d="M4 6h16M4 12h16M4 18h10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+            </svg>
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="text-[12px] font-mono text-text-primary font-semibold mb-1">免费资源 · TikTok Shop 零成本直播间搭建指南</div>
+            <div className="text-[11px] font-mono text-text-tertiary mb-2">手机直播 7 件套清单、三点布光法、开播前检查表,跨境卖家 0 到 1 起步文档。</div>
+            <a
+              href="/guides/tiktok-live-studio-setup.md"
+              target="_blank"
+              rel="noopener"
+              className="inline-block text-[11px] font-mono text-accent hover:text-accent-hover underline-offset-2 hover:underline"
+            >
+              下载指南 →
+            </a>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
