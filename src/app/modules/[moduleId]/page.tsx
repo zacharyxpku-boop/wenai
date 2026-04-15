@@ -26,6 +26,18 @@ const moduleFields: Record<string, { key: string; label: string; placeholder: st
   'customer-service': [
     { key: 'shopInfo', label: '店铺信息', placeholder: '店铺类型、主营品类、退换政策...' },
   ],
+  'private-domain': [
+    { key: 'scenario', label: '场景类型', placeholder: 'Welcome / Abandoned Cart / Post-Purchase / Winback / VIP' },
+    { key: 'market', label: '目标市场', placeholder: 'US / SEA / EU / JP...' },
+    { key: 'product', label: '产品信息', placeholder: '产品名称、客单价、复购周期...' },
+  ],
+  'data-insights': [
+    { key: 'context', label: '业务背景', placeholder: '品类、阶段、当前问题、分析目标...' },
+  ],
+  'ad-optimizer': [
+    { key: 'platform', label: '投放平台', placeholder: 'TikTok Ads / Meta / Google Ads / Amazon Ads' },
+    { key: 'goal', label: '业务目标', placeholder: '降低CPA / 提升ROAS / 扩量 / 新品冷启...' },
+  ],
 };
 
 const csvEnabledModules = new Set(['translate', 'copywriting', 'outreach', 'reviews']);
@@ -45,6 +57,9 @@ const modulePlaceholders: Record<string, string> = {
   operations: '请输入店铺/产品现状（品类、日均销量、客单价、当前问题）...',
   'customer-service': '请输入客户咨询内容...',
   leads: '请描述目标客户画像（行业、规模、地区、预算）...',
+  'private-domain': '补充说明（老客标签、已发过的内容、品牌Tone）...',
+  'data-insights': '请粘贴数据（CSV/表格/截图文字）或描述现状指标...',
+  'ad-optimizer': '请粘贴广告报表数据或描述账户现状（花费、CTR、CPA、ROAS...）',
 };
 
 interface PageProps {
