@@ -1,11 +1,36 @@
 export default function PrivacyPage() {
   return (
     <div className="max-w-3xl mx-auto py-12 px-6">
-      <h1 className="text-xl font-bold text-text-primary font-[family-name:var(--font-outfit)] mb-8">
+      <h1 className="text-xl font-bold text-text-primary font-[family-name:var(--font-outfit)] mb-5">
         隐私政策
       </h1>
+
+      {/* Hard pledge banner — 内测期明确兜底 */}
+      <div className="mb-8 p-5 border-l-2 border-accent bg-bg-surface rounded-r-md">
+        <div className="text-[11px] font-mono text-accent uppercase tracking-wider mb-3">
+          内测期数据承诺
+        </div>
+        <ul className="space-y-2 text-[13px] text-text-primary font-semibold">
+          <li className="flex gap-2.5">
+            <span className="text-accent">✓</span>
+            <span>你输入的商品信息/评论/竞品数据 <span className="text-accent">不落库</span> — 处理完即丢</span>
+          </li>
+          <li className="flex gap-2.5">
+            <span className="text-accent">✓</span>
+            <span>你的数据 <span className="text-accent">不训练模型</span> — 第三方协议已审查确认</span>
+          </li>
+          <li className="flex gap-2.5">
+            <span className="text-accent">✓</span>
+            <span>关闭浏览器即 <span className="text-accent">清除</span> — 我们只保留调用次数统计（无内容）</span>
+          </li>
+        </ul>
+        <p className="mt-3 pt-3 border-t border-border-subtle text-[11px] text-text-tertiary">
+          如有疑问，加微信 <span className="font-mono text-accent">zachary.x.pku@gmail.com</span> 找作者本人确认。
+        </p>
+      </div>
+
       <div className="prose prose-invert prose-sm max-w-none text-text-secondary text-[13px] leading-relaxed space-y-6 [&_h2]:text-text-primary [&_h2]:text-[15px] [&_h2]:font-semibold [&_h2]:mt-8 [&_h2]:mb-3">
-        <p className="text-[11px] font-mono text-text-tertiary">最后更新：2026年4月13日</p>
+        <p className="text-[11px] font-mono text-text-tertiary">最后更新：2026年4月17日（内测版）</p>
 
         <h2>1. 信息收集</h2>
         <p>本平台收集以下类型的信息：</p>
