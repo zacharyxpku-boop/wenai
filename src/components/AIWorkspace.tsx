@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import ReactMarkdown from 'react-markdown';
 import ResultFeedback from './ResultFeedback';
+import BetaFeedback from './BetaFeedback';
 import ExpertReview from './ExpertReview';
 
 interface HistoryItem {
@@ -706,6 +707,7 @@ export default function AIWorkspace({
               </div>
               <ExpertReview moduleId={moduleId} resultText={result} />
               <ResultFeedback moduleId={moduleId} resultText={result} />
+              <BetaFeedback moduleId={moduleId} input={input} />
             </>
           )}
         </div>

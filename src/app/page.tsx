@@ -40,6 +40,33 @@ const MODULE_ROI: Record<string, { minutesSaved: number; label: string }> = {
 };
 const HOURLY_COST_RMB = 35; // 代运营公司普通员工时薪
 
+const QUICK_START_CARDS = [
+  {
+    id: 'translate',
+    title: '批量翻译 listing',
+    hook: '粘贴 10 条商品信息，一次出 5 语言',
+    demo: '家居收纳 → 英/日/韩/西/德',
+    time: '≈ 30 秒',
+    accent: '#c8975a',
+  },
+  {
+    id: 'reviews',
+    title: '差评挖痛点',
+    hook: '贴评论，出结构化卖点/痛点报告',
+    demo: '20 条 Amazon 评论 → 4 维度分析',
+    time: '≈ 45 秒',
+    accent: '#6ea8d7',
+  },
+  {
+    id: 'outreach',
+    title: '达人外联邮件',
+    hook: '给达人名 + 产品，出 3 版本冷启邮件',
+    demo: '英文 / 西语 / 葡语多版本',
+    time: '≈ 20 秒',
+    accent: '#9b8ec4',
+  },
+];
+
 export default function Dashboard() {
   const enabledIds = new Set(clientConfig.enabledModules);
   const categories = modulesConfig.categories;
@@ -56,6 +83,7 @@ export default function Dashboard() {
   const demoProducts = (clientConfig as Record<string, unknown>).demoProducts as { name: string; category: string; price: string; features: string }[] | undefined;
 
   const [stats, setStats] = useState<UsageStats | null>(null);
+  const [showAllModules, setShowAllModules] = useState(false);
 
   useEffect(() => {
     fetch('/api/usage')
@@ -327,8 +355,62 @@ export default function Dashboard() {
         </div>
       )}
 
+      {/* Quick Start · 3 cards for first-touch beta users */}
+      <div className="mb-7 animate-fade-up stagger-3">
+        <div className="flex items-center gap-2 mb-3">
+          <div className="w-1 h-1 rounded-full bg-accent flex-shrink-0" />
+          <span className="label-mono flex-shrink-0">30 秒上手</span>
+          <span className="text-[10px] font-mono text-text-tertiary/60 truncate">
+            第一次用？先从这三件事开始
+          </span>
+          <div className="flex-1 h-px bg-border-subtle" />
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+          {QUICK_START_CARDS.map(card => (
+            <a
+              key={card.id}
+              href={`/modules/${card.id}`}
+              className="group bg-bg-surface border border-border-subtle rounded-md p-5 hover:border-accent/40 hover:bg-bg-raised hover:-translate-y-0.5 hover:shadow-[0_8px_24px_rgba(200,151,90,0.1)] transition-all duration-200"
+              style={{ borderLeftColor: card.accent, borderLeftWidth: '2px' }}
+            >
+              <div className="flex items-baseline justify-between mb-2">
+                <span className="text-[14px] font-semibold text-text-primary group-hover:text-accent transition-colors font-[family-name:var(--font-outfit)]">
+                  {card.title}
+                </span>
+                <span className="text-[9px] font-mono text-text-tertiary uppercase tabular-nums">
+                  {card.time}
+                </span>
+              </div>
+              <p className="text-[11px] text-text-secondary leading-relaxed mb-2.5">
+                {card.hook}
+              </p>
+              <div className="pt-2.5 border-t border-border-subtle/50 flex items-center justify-between">
+                <span className="text-[9px] font-mono text-text-tertiary">
+                  例：{card.demo}
+                </span>
+                <span className="text-[10px] font-mono text-accent opacity-0 group-hover:opacity-100 transition-opacity">
+                  开始 →
+                </span>
+              </div>
+            </a>
+          ))}
+        </div>
+      </div>
+
+      {/* Toggle to reveal all 19 modules */}
+      {!showAllModules && (
+        <div className="mb-7 animate-fade-up stagger-4">
+          <button
+            onClick={() => setShowAllModules(true)}
+            className="w-full py-3 border border-dashed border-border-default rounded-md text-[12px] font-mono text-text-tertiary hover:text-accent hover:border-accent/40 hover:bg-bg-surface transition-all"
+          >
+            展开全部 {enabledCount} 个模块 · 执行/内容/情报/服务 ↓
+          </button>
+        </div>
+      )}
+
       {/* Module grid by category */}
-      {categories.map((cat, catIndex) => {
+      {showAllModules && categories.map((cat, catIndex) => {
         const catModules = modulesConfig.modules.filter(
           m => m.category === cat.id && enabledIds.has(m.id)
         );

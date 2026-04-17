@@ -77,6 +77,12 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: '请求格式错误' }, { status: 400 });
   }
 
+  // 仅 demo 路径显式启用缓存回退，真实内测用户看到的永远是真 AI 结果或真实错误
+  const url = new URL(request.url);
+  const isDemoMode = url.searchParams.get('demo') === '1'
+    || request.cookies.get('wenai_session')?.value?.includes('demo')
+    || request.headers.get('x-demo-mode') === '1';
+
   const apiKey = process.env.AI_API_KEY;
   const model = process.env.AI_MODEL || 'qwen-plus';
   const endpoint = process.env.AI_ENDPOINT || 'https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions';
@@ -261,27 +267,31 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // All retries exhausted — fallback to cache
-    const cached = moduleId ? getCachedResponse(moduleId) : null;
-    if (cached) {
-      return NextResponse.json({
-        content: cached + '\n\n---\n*⚡ 预缓存响应（AI服务暂时不可用）*',
-        usage: { promptTokens: 0, completionTokens: 0 },
-        cached: true,
-      });
+    // All retries exhausted — 只在 demo 模式回退缓存，真实用户看到真实错误
+    if (isDemoMode) {
+      const cached = moduleId ? getCachedResponse(moduleId) : null;
+      if (cached) {
+        return NextResponse.json({
+          content: cached + '\n\n---\n*⚡ 预缓存响应（AI服务暂时不可用）*',
+          usage: { promptTokens: 0, completionTokens: 0 },
+          cached: true,
+        });
+      }
     }
     return NextResponse.json(
-      { error: lastError?.message || '请求失败', retryable: true },
-      { status: 500 }
+      { error: lastError?.message || 'AI 服务繁忙，请稍后重试', retryable: true },
+      { status: 503 }
     );
   } catch (error) {
-    const cached = moduleId ? getCachedResponse(moduleId) : null;
-    if (cached) {
-      return NextResponse.json({
-        content: cached + '\n\n---\n*⚡ 预缓存响应（AI服务异常）*',
-        usage: { promptTokens: 0, completionTokens: 0 },
-        cached: true,
-      });
+    if (isDemoMode) {
+      const cached = moduleId ? getCachedResponse(moduleId) : null;
+      if (cached) {
+        return NextResponse.json({
+          content: cached + '\n\n---\n*⚡ 预缓存响应（AI服务异常）*',
+          usage: { promptTokens: 0, completionTokens: 0 },
+          cached: true,
+        });
+      }
     }
     return NextResponse.json(
       { error: `请求失败: ${error instanceof Error ? error.message : '未知错误'}`, retryable: true },
