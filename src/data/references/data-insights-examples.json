@@ -1,0 +1,82 @@
+{
+  "module": "data-insights",
+  "description": "电商数据分析范例 — 诊断→假设→行动的结构化输出",
+  "sources": ["Industry benchmarks 2024", "Shopify/Amazon seller case studies"],
+  "framework_tags": ["漏斗分析", "RFM", "同期群", "归因", "异常检测"],
+  "examples": [
+    {
+      "context": "Shopify独立站，家居品类，月GMV $45k，近4周下滑18%",
+      "health_score": 62,
+      "top_findings": [
+        {
+          "finding": "主图CTR从3.2%掉到2.1%",
+          "evidence": "Meta广告后台近4周趋势，新主图上线日=CTR断崖日",
+          "hypothesis": "极简风格丢失产品识别度",
+          "impact": "每日-200点击，占整体流量下滑60%",
+          "action": "A/B测试回滚老主图"
+        },
+        {
+          "finding": "加购→支付转化28%→19%",
+          "evidence": "GA4结账漏斗，4周前运费规则变更",
+          "hypothesis": "$6.99起运费在结账页流失",
+          "impact": "月损$8.2k",
+          "action": "恢复$35免邮"
+        },
+        {
+          "finding": "差评集中'盖子密封不严'(12条/30天)",
+          "evidence": "Shopify评论导出+1★2★占比从8%→22%",
+          "hypothesis": "新批次PP原料硬度偏低",
+          "impact": "退货率2.1%→4.8%",
+          "action": "核查批次+召回库存"
+        }
+      ],
+      "action_plan_7d": "D1主图A/B / D2运费回滚 / D3工厂核查 / D5差评私信挽回 / D7复盘",
+      "tags": ["独立站", "家居", "3连跌", "归因清晰"]
+    },
+    {
+      "context": "Amazon美国站，Apparel类目，新品上架30天表现差",
+      "health_score": 38,
+      "top_findings": [
+        {
+          "finding": "Session 4k但CVR仅1.2%（类目均值8.5%）",
+          "evidence": "Brand Analytics + 类目benchmark",
+          "hypothesis": "A+详情页缺尺码表、买家无法下决定",
+          "impact": "假设CVR拉到类目均值的60%=5.1%，GMV可翻4倍",
+          "action": "补尺码表+模特不同体型展示+退换政策前置"
+        }
+      ],
+      "anomalies": [
+        "BSR 48h内从#8000→#25000，无差评但自然流量断崖=算法降权",
+        "TOS 邮件显示未触发，但广告CPC翻倍=账号质量分下降"
+      ],
+      "opportunity_matrix": [
+        {"priority": "P0", "item": "Listing优化", "effort": "2天", "impact": "CVR+3pt"},
+        {"priority": "P1", "item": "PPC结构重建", "effort": "3天", "impact": "ACoS-15pt"},
+        {"priority": "P2", "item": "Vine计划", "effort": "1天提交", "impact": "评论+20条"}
+      ],
+      "tags": ["Amazon", "新品冷启", "CVR偏低"]
+    },
+    {
+      "context": "TikTok Shop东南亚，美妆，客单价低复购高",
+      "health_score": 71,
+      "rfm_insight": {
+        "R(Recency)": "60%用户30天内回购，健康",
+        "F(Frequency)": "平均月2.3次，高频赛道合理",
+        "M(Monetary)": "客单$8.5偏低，缺升单设计"
+      },
+      "top_findings": [
+        {
+          "finding": "CPA $4.2但LTV $32，ROAS优秀但增长受限于预算",
+          "hypothesis": "广告系统学习已饱和，需扩素材池",
+          "action": "本周上线8条新UGC素材，SBB优化预算分配"
+        },
+        {
+          "finding": "复购用户从不被营销触达(没私域)",
+          "impact": "30%流失可挽回",
+          "action": "加WhatsApp订阅入口+弃单触达"
+        }
+      ],
+      "tags": ["TikTok Shop", "东南亚", "高频赛道"]
+    }
+  ]
+}

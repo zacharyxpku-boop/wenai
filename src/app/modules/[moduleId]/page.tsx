@@ -9,6 +9,10 @@ const moduleFields: Record<string, { key: string; label: string; placeholder: st
   translate: [
     { key: 'targetLang', label: '目标语言', placeholder: '英语 / English' },
   ],
+  content: [
+    { key: 'mode', label: '生成模式', placeholder: 'single（深度单篇） / matrix（3平台×3角度批量矩阵）' },
+    { key: 'platforms', label: '目标平台', placeholder: '小红书+TikTok / 全平台 / 仅Instagram...' },
+  ],
   outreach: [
     { key: 'influencer', label: '达人信息', placeholder: '达人名称、平台、粉丝量...' },
     { key: 'product', label: '产品信息', placeholder: '产品名称、卖点...' },
