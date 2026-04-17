@@ -1,0 +1,76 @@
+{
+  "module": "private-domain",
+  "description": "跨境私域运营序列 — Email/SMS/WhatsApp 多渠道参考",
+  "sources": ["Klaviyo benchmarks 2024", "Shopify Plus sequences", "Manual curation"],
+  "scenario_categories": [
+    "welcome", "abandoned_cart", "post_purchase", "winback", "vip", "browse_abandon", "replenishment"
+  ],
+  "examples": [
+    {
+      "scenario": "welcome",
+      "market": "US",
+      "channel": "Email",
+      "day": "D0",
+      "subject": "Welcome to HOMELODY — here's 10% off 👋",
+      "body_excerpt": "Hi [First Name],\n\nSmart move — you just joined 120,000+ home-organization obsessed people.\n\nAs promised: **10% off your first order** with code WELCOME10 (expires in 48h).\n\nWhile you browse, here's what our customers love most:\n✅ Stackable Storage Bins (6-pack) — $32.99\n✅ Kitchen Drawer Organizers — $24.99\n\n[Shop now →]",
+      "kpi": "Open 55-65% / CTR 12-18% / Revenue per send $1.80+",
+      "tags": ["欢迎序列", "48h时限", "首单折扣"]
+    },
+    {
+      "scenario": "abandoned_cart",
+      "market": "US",
+      "channel": "SMS",
+      "day": "D1",
+      "subject": "Hey [Name], your cart's almost gone — 15% off if you finish today 🛒",
+      "body_excerpt": "Text only. Must include STOP opt-out per TCPA.",
+      "kpi": "CTR 25%+ / Conversion 8-12%",
+      "tags": ["弃单", "SMS", "TCPA合规"]
+    },
+    {
+      "scenario": "post_purchase",
+      "market": "SEA",
+      "channel": "WhatsApp",
+      "day": "D3",
+      "subject": "[Delivery update] Your order #12345 is out for delivery 📦",
+      "body_excerpt": "Hi [Name],\n\nYour HOMELODY order is arriving today between 2-5pm.\n\nQuick tip for our Stackable Bins: stack heaviest at bottom for max stability.\n\nReply 'HELP' if anything goes wrong.",
+      "kpi": "Open 90%+ (WhatsApp) / Reply rate 15-20%",
+      "tags": ["售后", "WhatsApp", "预警式服务"]
+    },
+    {
+      "scenario": "winback",
+      "market": "US",
+      "channel": "Email",
+      "day": "D90",
+      "subject": "We miss you. Here's 25% off to come back",
+      "body_excerpt": "Hi [First Name],\n\nIt's been 90 days since your last order. We took a look and think you'll love what's new:\n\n[New product grid]\n\nCome back with **25% off** — code MISSYOU25. Valid 7 days.\n\n(If you're done with us, hit unsubscribe. We won't chase.)",
+      "kpi": "Open 28-35% / Winback rate 3-5%",
+      "tags": ["沉默挽回", "大折扣", "低频"]
+    },
+    {
+      "scenario": "vip",
+      "market": "EU",
+      "channel": "Email",
+      "day": "Monthly",
+      "subject": "VIP-only: Early access to Spring collection (24h head start)",
+      "body_excerpt": "Hi [Name],\n\nBecause you're in our Top 5% customers, you get the new Spring drop 24 hours before everyone else.\n\n[Exclusive collection link]\n\nNo code needed — just shop. Your VIP 15% discount is already applied at checkout.",
+      "kpi": "Open 50%+ / Conversion 15-20% / LTV+40%",
+      "tags": ["VIP专属", "优先购", "不给折扣码直接生效"]
+    },
+    {
+      "scenario": "replenishment",
+      "market": "JP",
+      "channel": "LINE",
+      "day": "D60",
+      "subject": "[そろそろ補充のタイミング] お気に入りの商品",
+      "body_excerpt": "〇〇様、\n\nご購入から2ヶ月が経ちました。前回ご購入の保冷ボトル、そろそろ補充のタイミングです。\n\n今なら同商品リピート注文で10%OFF（〜4/30まで）。",
+      "kpi": "Open 40%+ / Repurchase rate 25-30%",
+      "tags": ["补货提醒", "日本市场", "LINE渠道"]
+    }
+  ],
+  "compliance_notes": {
+    "US_EMAIL": "CAN-SPAM: 底部含 physical address + unsubscribe link",
+    "US_SMS": "TCPA: 显式 opt-in 记录 + STOP 退订 + HELP 帮助",
+    "EU": "GDPR: 不能沿用购物 consent，需单独打勾订阅",
+    "SEA": "WhatsApp Business Template 需预审批，首发必须 template"
+  }
+}

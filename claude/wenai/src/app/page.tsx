@@ -32,6 +32,11 @@ const MODULE_ROI: Record<string, { minutesSaved: number; label: string }> = {
   'customer-service': { minutesSaved: 15, label: '客服' },
   leads: { minutesSaved: 40, label: '获客' },
   video: { minutesSaved: 30, label: '视频' },
+  'ocr-translate': { minutesSaved: 30, label: '图片OCR翻译' },
+  positioning: { minutesSaved: 180, label: '直播间定位' },
+  'private-domain': { minutesSaved: 90, label: '私域序列' },
+  'data-insights': { minutesSaved: 120, label: '数据洞察' },
+  'ad-optimizer': { minutesSaved: 90, label: '投流诊断' },
 };
 const HOURLY_COST_RMB = 35; // 代运营公司普通员工时薪
 

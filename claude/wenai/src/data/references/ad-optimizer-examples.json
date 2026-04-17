@@ -1,0 +1,85 @@
+{
+  "module": "ad-optimizer",
+  "description": "跨境投流诊断案例 — TikTok Ads / Meta / Google / Amazon Ads",
+  "sources": ["Meta Ads Library patterns", "TikTok Creative Center", "平台benchmark 2024"],
+  "diagnostic_dimensions": [
+    "structure", "budget", "creative", "audience", "bidding", "landing_page"
+  ],
+  "examples": [
+    {
+      "platform": "TikTok Ads",
+      "goal": "降低CPA至$12（当前$21.5）",
+      "health_score": 58,
+      "diagnosis": [
+        {"dim": "structure", "issue": "5广告组混投多品类", "severity": "高"},
+        {"dim": "budget", "issue": "70%预算压在CPA最高组", "severity": "高"},
+        {"dim": "creative", "issue": "4条素材2条CTR<0.8%", "severity": "中"},
+        {"dim": "audience", "issue": "兴趣定向1000万+过宽", "severity": "中"},
+        {"dim": "bidding", "issue": "最高出价模式导致尾部浪费", "severity": "高"},
+        {"dim": "landing_page", "issue": "移动端加载3.8s", "severity": "中"}
+      ],
+      "stop_loss_actions": [
+        "关停AG-003（CPA $38，预算$150/天）→ 每日省$150",
+        "暂停Video_02/Video_04（低CTR素材）",
+        "切换成本上限$12出价"
+      ],
+      "7d_roadmap": "D1止损 / D2拆品类 / D3上3条UGC / D4收窄受众 / D5页面提速 / D6复盘 / D7放量",
+      "creative_iteration": [
+        "前3秒强钩子：'This $30 bin replaced my $200 organizer'",
+        "4-8秒产品对比实拍（乱→整）",
+        "9-15秒CTA+限时折扣"
+      ],
+      "tags": ["TikTok", "降CPA", "预算重分配"]
+    },
+    {
+      "platform": "Meta Ads (Facebook/Instagram)",
+      "goal": "扩量 ROAS>2.5",
+      "health_score": 72,
+      "diagnosis": [
+        {"dim": "structure", "issue": "CBO未使用，单组预算浪费", "severity": "中"},
+        {"dim": "audience", "issue": "Lookalike 1%已饱和", "severity": "高"},
+        {"dim": "creative", "issue": "最强素材疲劳频次5.8", "severity": "高"}
+      ],
+      "scale_playbook": [
+        "CBO活动架构，单系列预算>$300/天",
+        "Lookalike扩至2-3%",
+        "每周至少3条新素材进入广告组",
+        "Advantage+ Shopping Campaign并行测试"
+      ],
+      "tags": ["Meta", "扩量", "CBO"]
+    },
+    {
+      "platform": "Google Ads",
+      "goal": "Shopping+Search组合降低ACoS",
+      "health_score": 65,
+      "diagnosis": [
+        {"dim": "structure", "issue": "Shopping单系列跑所有SKU，高利润品稀释", "severity": "高"},
+        {"dim": "bidding", "issue": "Target ROAS设置过于激进导致limited", "severity": "中"},
+        {"dim": "creative", "issue": "RSA未用pin固定核心卖点", "severity": "低"}
+      ],
+      "actions": [
+        "Shopping按利润率分3档系列（高/中/低）",
+        "Target ROAS降低20%让机器放量学习",
+        "Search关键词加品牌+竞品+长尾三组"
+      ],
+      "tags": ["Google", "Shopping分层", "TROAS"]
+    },
+    {
+      "platform": "Amazon Ads (PPC)",
+      "goal": "新品30天内达到类目前50",
+      "health_score": 48,
+      "diagnosis": [
+        {"dim": "structure", "issue": "SP/SB/SD未分工，全打SP", "severity": "高"},
+        {"dim": "bidding", "issue": "Dynamic Bid Up and Down导致失控", "severity": "中"},
+        {"dim": "creative", "issue": "SB没有视频广告", "severity": "中"}
+      ],
+      "launch_strategy": [
+        "Week1 Auto Campaign跑关键词 + 手动出价保守起步",
+        "Week2 挑出ACoS<30%关键词转手动Exact",
+        "Week3 加入SB Video占据搜索结果顶部",
+        "Week4 SD Retargeting追访问未购用户"
+      ],
+      "tags": ["Amazon PPC", "新品冷启", "SP/SB/SD分工"]
+    }
+  ]
+}

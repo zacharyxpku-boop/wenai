@@ -14,6 +14,9 @@ import leadsExamples from '@/data/references/leads-examples.json';
 import ipComplianceExamples from '@/data/references/ip-compliance-examples.json';
 import videoExamples from '@/data/references/video-examples.json';
 import imagesExamples from '@/data/references/images-examples.json';
+import privateDomainExamples from '@/data/references/private-domain-examples.json';
+import dataInsightsExamples from '@/data/references/data-insights-examples.json';
+import adOptimizerExamples from '@/data/references/ad-optimizer-examples.json';
 
 const referenceMap: Record<string, unknown> = {
   translate: translateExamples,
@@ -31,6 +34,9 @@ const referenceMap: Record<string, unknown> = {
   'ocr-translate': translateExamples,
   video: videoExamples,
   images: imagesExamples,
+  'private-domain': privateDomainExamples,
+  'data-insights': dataInsightsExamples,
+  'ad-optimizer': adOptimizerExamples,
 };
 
 // Industry benchmarks (lazy-loaded)
