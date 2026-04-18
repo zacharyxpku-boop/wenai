@@ -292,6 +292,28 @@ ${inf.email ? `- 邮箱：${inf.email}` : ''}
     abortRef.current = true;
   };
 
+  // 单条重试失败达人
+  const handleRetryOne = async (rowId: string) => {
+    const row = rows.find(r => r.id === rowId);
+    if (!row || running) return;
+    try {
+      const check = await fetch('/api/ratelimit/check', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ kind: 'pipeline:influencer-outbound' }),
+      });
+      if (!check.ok) {
+        const d = await check.json().catch(() => ({}));
+        alert(`配额不足无法重试\n${d.resetAtText || ''}`);
+        return;
+      }
+    } catch {}
+
+    setRows(rs => rs.map(r => r.id === rowId ? { ...r, status: 'running', error: undefined } : r));
+    const result = await runOne(row);
+    setRows(rs => rs.map(r => r.id === rowId ? result : r));
+  };
+
   const handleExport = () => {
     const wb = XLSX.utils.book_new();
 
@@ -615,15 +637,27 @@ PantryPerfection | YouTube | 85K | 家居生活 vlog | contact@pantryperfection.
                     <span className="text-[10px] text-text-tertiary font-mono">{r.followers}</span>
                     <span className="text-[10px] text-text-secondary truncate hidden md:inline">{r.niche}</span>
                   </div>
-                  <div className="flex-shrink-0 w-20 text-right">
+                  <div className="flex-shrink-0 flex items-center gap-1.5 justify-end">
                     {r.status === 'pending' && <span className="text-[9px] font-mono text-text-tertiary/60">待处理</span>}
                     {r.status === 'running' && (
-                      <span className="text-[9px] font-mono text-accent flex items-center justify-end gap-1">
+                      <span className="text-[9px] font-mono text-accent flex items-center gap-1">
                         <span className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />进行中
                       </span>
                     )}
                     {r.status === 'done' && <span className="text-[9px] font-mono text-success">✓ 完成</span>}
-                    {r.status === 'error' && <span className="text-[9px] font-mono text-error">✗ 失败</span>}
+                    {r.status === 'error' && (
+                      <>
+                        <span className="text-[9px] font-mono text-error">✗ 失败</span>
+                        <button
+                          onClick={(e) => { e.stopPropagation(); handleRetryOne(r.id); }}
+                          disabled={running}
+                          className="text-[9px] font-mono text-accent hover:underline disabled:opacity-40"
+                          title="重试这条"
+                        >
+                          ↻
+                        </button>
+                      </>
+                    )}
                   </div>
                   <span className="text-[9px] font-mono text-text-tertiary">{r.expanded ? '▲' : '▼'}</span>
                 </div>

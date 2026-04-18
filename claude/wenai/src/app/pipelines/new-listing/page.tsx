@@ -324,6 +324,29 @@ ${states['ip-compliance'].result || '(空)'}
     }));
   };
 
+  // 单条重试 · 给批量失败的 SKU 重跑 (不再走整个配额预占)
+  const handleRetryOne = async (rowId: string) => {
+    const row = batchRows.find(r => r.id === rowId);
+    if (!row || batchRunning) return;
+    // 预占 1 次配额
+    try {
+      const check = await fetch('/api/ratelimit/check', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ kind: 'pipeline:new-listing' }),
+      });
+      if (!check.ok) {
+        const d = await check.json().catch(() => ({}));
+        alert(`配额不足无法重试\n${d.resetAtText || ''}`);
+        return;
+      }
+    } catch {}
+
+    setBatchRows(rows => rows.map(r => r.id === rowId ? { ...r, status: 'running', error: undefined } : r));
+    const result = await runOneBatchRow(row);
+    setBatchRows(rows => rows.map(r => r.id === rowId ? result : r));
+  };
+
   const runOneBatchRow = async (row: BatchRow): Promise<BatchRow> => {
     const results: Record<StepId, string> = { translate: '', copywriting: '', 'ip-compliance': '' };
 
@@ -698,16 +721,28 @@ ${states['ip-compliance'].result || '(空)'}
                       <div className="text-text-primary truncate">{row.skuPreview}</div>
                       {row.error && <div className="text-[9px] text-error font-mono mt-0.5">{row.error}</div>}
                     </div>
-                    <div className="flex-shrink-0 w-16 text-right">
+                    <div className="flex-shrink-0 flex items-center gap-1.5">
                       {row.status === 'pending' && <span className="text-[9px] font-mono text-text-tertiary/60">待处理</span>}
                       {row.status === 'running' && (
-                        <span className="text-[9px] font-mono text-accent flex items-center justify-end gap-1">
+                        <span className="text-[9px] font-mono text-accent flex items-center gap-1">
                           <span className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />
                           进行中
                         </span>
                       )}
                       {row.status === 'done' && <span className="text-[9px] font-mono text-success">✓ 完成</span>}
-                      {row.status === 'error' && <span className="text-[9px] font-mono text-error">✗ 失败</span>}
+                      {row.status === 'error' && (
+                        <>
+                          <span className="text-[9px] font-mono text-error">✗ 失败</span>
+                          <button
+                            onClick={() => handleRetryOne(row.id)}
+                            disabled={batchRunning}
+                            className="text-[9px] font-mono text-accent hover:underline disabled:opacity-40"
+                            title="重试这一条"
+                          >
+                            ↻ 重试
+                          </button>
+                        </>
+                      )}
                     </div>
                   </div>
                 ))}
