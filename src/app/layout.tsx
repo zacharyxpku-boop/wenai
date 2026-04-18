@@ -20,9 +20,26 @@ const ibmPlexMono = IBM_Plex_Mono({
   weight: ["400", "500"],
 });
 
+export const viewport = {
+  themeColor: '#c8975a',
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+};
+
 export const metadata: Metadata = {
   title: "Wenai · 跨境新品上新流水线",
   description: "选 1 个品类 → 贴 1 条 SKU → 同时跑翻译 / 文案 / 合规 → 一键打包。五大品类专属调教。",
+  manifest: '/manifest.webmanifest',
+  applicationName: 'Wenai',
+  appleWebApp: {
+    capable: true,
+    title: 'Wenai',
+    statusBarStyle: 'black-translucent',
+  },
+  formatDetection: {
+    telephone: false,
+  },
   openGraph: {
     title: "Wenai · 跨境新品上新流水线",
     description: "30 秒跑完一个新品的翻译 + 文案 + 合规 · 品类专属调教",
