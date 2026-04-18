@@ -97,8 +97,20 @@ export default async function SharePage({ params }: { params: Promise<{ id: stri
         </div>
       </div>
 
+      {/* Pipeline 03 图片 TTL 警告 */}
+      {data.source === 'pipeline-03' && (
+        <div className="mb-5 px-4 py-3 border border-accent/40 bg-accent/5 rounded-md flex items-start gap-3">
+          <span className="text-accent text-[14px] flex-shrink-0">⏳</span>
+          <div className="flex-1 text-[11px] text-text-secondary leading-relaxed">
+            <strong className="text-accent">图片 24 小时有效</strong> ·
+            wanx 返回的图 URL 是临时签名,超时会 404。
+            如看到图已失效,联系生成者重新跑即可。长期交付建议下载原图存档。
+          </div>
+        </div>
+      )}
+
       {/* 内容 */}
-      <article className="prose prose-invert prose-sm max-w-none text-[13px] leading-[1.8] text-text-secondary [&_table]:border-collapse [&_th]:border [&_th]:border-border-subtle [&_th]:px-2 [&_th]:py-1 [&_th]:bg-bg-raised [&_th]:text-[11px] [&_td]:border [&_td]:border-border-subtle [&_td]:px-2 [&_td]:py-1 [&_td]:text-[12px] [&_strong]:text-text-primary [&_h2]:text-[16px] [&_h2]:text-text-primary [&_h2]:font-semibold [&_h2]:mt-6 [&_h2]:mb-2 [&_h3]:text-[14px] [&_h3]:text-text-primary [&_h3]:mt-4 [&_h3]:mb-1.5 [&_ul]:pl-5 [&_ol]:pl-5 [&_li]:mb-1 [&_code]:bg-bg-raised [&_code]:px-1 [&_code]:rounded [&_code]:text-[11px] [&_code]:font-mono">
+      <article className="prose prose-invert prose-sm max-w-none text-[13px] leading-[1.8] text-text-secondary [&_table]:border-collapse [&_th]:border [&_th]:border-border-subtle [&_th]:px-2 [&_th]:py-1 [&_th]:bg-bg-raised [&_th]:text-[11px] [&_td]:border [&_td]:border-border-subtle [&_td]:px-2 [&_td]:py-1 [&_td]:text-[12px] [&_strong]:text-text-primary [&_h2]:text-[16px] [&_h2]:text-text-primary [&_h2]:font-semibold [&_h2]:mt-6 [&_h2]:mb-2 [&_h3]:text-[14px] [&_h3]:text-text-primary [&_h3]:mt-4 [&_h3]:mb-1.5 [&_ul]:pl-5 [&_ol]:pl-5 [&_li]:mb-1 [&_code]:bg-bg-raised [&_code]:px-1 [&_code]:rounded [&_code]:text-[11px] [&_code]:font-mono [&_img]:rounded-md [&_img]:border [&_img]:border-border-subtle [&_img]:my-3">
         <ReactMarkdown>{data.content}</ReactMarkdown>
       </article>
 
