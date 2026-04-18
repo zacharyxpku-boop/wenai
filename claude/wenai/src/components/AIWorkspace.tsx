@@ -695,6 +695,35 @@ export default function AIWorkspace({
             )}
           </div>
 
+          {result && !loading && (
+            <div className="mt-3 flex flex-wrap items-center gap-1.5 animate-fade-up">
+              <span className="text-[10px] font-mono text-text-tertiary mr-1">一键改写 →</span>
+              {[
+                { label: '更简短', instruction: '把以上结果压缩到一半长度，保留核心信息，删除冗余修饰。' },
+                { label: '更正式', instruction: '把以上结果改成更正式、更商务的语气，适合 B 端客户沟通。' },
+                { label: '更口语化', instruction: '把以上结果改成更口语、更亲切的表达，像朋友聊天一样。' },
+                { label: '换个角度', instruction: '用完全不同的切入角度重写以上内容，观点和素材都换一批。' },
+                { label: '加具体数据', instruction: '给以上结果补充更多具体数字/百分比/案例对比，增强说服力。' },
+              ].map(preset => (
+                <button
+                  key={preset.label}
+                  onClick={() => {
+                    const refinePrompt = `以下是之前生成的内容：\n\n${result}\n\n${preset.instruction}`;
+                    setInput(refinePrompt);
+                    setTimeout(() => handleSubmit({
+                      prompt: modulePrompt,
+                      input: refinePrompt,
+                      params,
+                    }), 50);
+                  }}
+                  className="text-[10px] font-mono text-text-secondary hover:text-accent px-2 py-1 border border-border-subtle rounded hover:border-accent/40 hover:bg-accent/5 transition-all"
+                >
+                  {preset.label}
+                </button>
+              ))}
+            </div>
+          )}
+
           {result && (
             <>
               {/* USPTO商标查询状态指示器（仅ip-compliance模块） */}
