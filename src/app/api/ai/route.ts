@@ -3,6 +3,7 @@ import { getReferenceContext } from '@/lib/references';
 import { logUsageEntry } from '@/lib/usage';
 import { checkRateLimit } from '@/lib/ratelimit';
 import { verifyToken, getCookieName } from '@/lib/auth';
+import { getCategoryPrefix } from '@/lib/category-prompts';
 import { extractBrandKeywords, queryTrademark } from '@/app/api/trademark/route';
 import { getCachedResponse } from '@/lib/demo-cache';
 
@@ -71,9 +72,9 @@ ${registeredMarks.map(mark => `
 }
 
 export async function POST(request: NextRequest) {
-  let prompt: string, input: string, moduleId: string | undefined;
+  let prompt: string, input: string, moduleId: string | undefined, category: string | undefined;
   try {
-    ({ prompt, input, moduleId } = await request.json());
+    ({ prompt, input, moduleId, category } = await request.json());
   } catch {
     return NextResponse.json({ error: '请求格式错误' }, { status: 400 });
   }
@@ -153,7 +154,9 @@ export async function POST(request: NextRequest) {
       trademarkQueryResult = result.queryResult;
     }
 
-    const systemContent = prompt + (moduleId ? getReferenceContext(moduleId, input) : '') + trademarkContext;
+    // 品类专属前缀 — 差异化核心（见 category-prompts.ts）
+    const categoryPrefix = category ? `\n\n${getCategoryPrefix(category)}\n\n` : '';
+    const systemContent = prompt + categoryPrefix + (moduleId ? getReferenceContext(moduleId, input) : '') + trademarkContext;
     const requestBody = {
       model,
       messages: [
