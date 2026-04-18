@@ -468,20 +468,27 @@ export default function Dashboard() {
             </span>
           </a>
 
-          <div className="border border-dashed border-border-default rounded-md p-4 bg-bg-surface/50 opacity-75">
+          <a
+            href="/pipelines/product-image"
+            className="group block border border-border-subtle bg-bg-surface rounded-md p-4 hover:border-accent/40 hover:-translate-y-0.5 hover:shadow-[0_6px_20px_rgba(200,151,90,0.1)] transition-all"
+            style={{ borderLeftWidth: '2px', borderLeftColor: '#e94560' }}
+          >
             <div className="flex items-center gap-2 mb-1.5">
-              <span className="px-1.5 py-0.5 bg-bg-raised text-text-tertiary text-[9px] font-mono uppercase rounded">
+              <span className="px-1.5 py-0.5 bg-accent/10 text-accent text-[9px] font-mono uppercase rounded">
                 PIPELINE · 03
               </span>
-              <span className="text-[9px] font-mono text-text-tertiary">Phase 5</span>
+              <span className="text-[9px] font-mono text-error">ALPHA · 对标 HotClaw</span>
             </div>
-            <div className="text-[14px] font-semibold text-text-secondary mb-1 font-[family-name:var(--font-outfit)]">
+            <div className="text-[14px] font-semibold text-text-primary mb-1 group-hover:text-accent transition-colors font-[family-name:var(--font-outfit)]">
               🖼️ AI 电商主图生成
             </div>
-            <p className="text-[11px] text-text-tertiary leading-relaxed">
-              场景融合 · 5 张图组合 · 五大品类预设。等 Pipeline 01/02 信号足够启动。
+            <p className="text-[11px] text-text-secondary leading-relaxed mb-2">
+              15 个场景预设 · 1 SKU 出 5 图组合 · 商标词前置过滤。前端就绪，待接入 Flux key
             </p>
-          </div>
+            <span className="text-[10px] font-mono text-accent opacity-0 group-hover:opacity-100 transition-opacity">
+              进入流水线 →
+            </span>
+          </a>
         </div>
       </div>
 
@@ -602,6 +609,26 @@ export default function Dashboard() {
             </a>
           </div>
         </div>
+      </div>
+
+      {/* 案例入口条 · 分享给老板的弹药 */}
+      <div className="mt-6 mb-3 flex items-center justify-between py-3 px-4 border border-border-subtle rounded-md bg-bg-surface/50">
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 border border-success/30 rounded-md flex items-center justify-center text-success text-[14px]">
+            📊
+          </div>
+          <div>
+            <div className="text-[12px] font-semibold text-text-primary">
+              3 个真实案例 · 家居 / 汽摩 / 数码
+            </div>
+            <div className="text-[10px] font-mono text-text-tertiary">
+              Before / After 对比 · 主管访谈 · 分享给老板看
+            </div>
+          </div>
+        </div>
+        <a href="/cases" className="text-[11px] font-mono text-accent hover:underline">
+          看案例 →
+        </a>
       </div>
 
       {/* Pricing 入口条 */}
