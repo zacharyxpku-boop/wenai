@@ -143,6 +143,44 @@ const CASES: Case[] = [
       author: 'M 工厂 · 达人 BD 主管',
     },
   },
+  {
+    slug: 'novahome-image',
+    category: '家居用品 · 主图',
+    categoryIcon: '🖼️',
+    customer: 'N 代工品牌（化名）',
+    customerNote: '东莞家居代工厂自营 Amazon / Shopify · 月均 30+ SKU 上新',
+    scenario: '新品收纳盒系列上 Amazon，需要主图 + 3 张场景图 + 1 张细节图 + 1 张对比图（共 6 图 / SKU）',
+    before: {
+      steps: [
+        { label: '联系摄影棚 · 排档期', time: '3 天' },
+        { label: '产品寄棚 + 拍摄', time: '2 天 × ¥3000' },
+        { label: '设计师修图 · 改品牌色', time: '1 天 × ¥500' },
+        { label: '退回改稿 1-2 轮', time: '+1 天' },
+      ],
+      total: '≈ 7 天 · ¥3500 / SKU',
+      painPoint: '周期长错过爆款窗口 · 1688 拿图改 PS 版权风险 · 摄影棚排期卡死新品节奏',
+    },
+    after: {
+      pipelineLabel: 'Pipeline 03 · AI 电商主图（通义万相）',
+      pipelineHref: '/pipelines/product-image',
+      total: '≈ 45 秒 · ¥0.7 / SKU',
+      highlight: '五品类 × 三场景 15 个垂直预设 · 中文 prompt 喂 wanx 原生理解 · 商标词前置过滤',
+    },
+    outcome: [
+      '主图产出成本从 ¥3500/SKU 降到 ¥0.7/SKU（5000× 成本压缩）',
+      '周期从 7 天变 45 秒，新品上新与社媒同步推进，抢占流量窗口',
+      '商标前置过滤避免 "AirPods Style" 类近似词生成，降低 Amazon listing 被 IP takedown 风险',
+    ],
+    sampleOutput: [
+      { step: '主图 · 白底 45°', preview: '纯白背景，产品 80% 占画幅，柔和投影，Amazon listing 规范 2000×2000 直接上架' },
+      { step: '场景图 · 厨房台面', preview: '干净白色厨房台面，晨光从左侧射入，极简北欧风格，浅景深，收纳盒作为前景主体' },
+      { step: '细节图 · 材质微距', preview: 'BPA-Free 食品级 PP 材质表面纹理特写，影棚打光，锐利对焦，工业设计美学' },
+    ],
+    quote: {
+      text: '以前摄影棚一次性排 5 个新品，档期要 1 个月。现在我们上午定品类，下午就出图上架。',
+      author: 'N 代工品牌 · 电商运营总监',
+    },
+  },
 ];
 
 export default function CasesPage() {

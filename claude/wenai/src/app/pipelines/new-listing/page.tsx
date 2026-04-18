@@ -912,6 +912,12 @@ ${states['ip-compliance'].result || '(空)'}
           </span>
         </a>
       </div>
+
+      {/* 引导看别人怎么用 */}
+      <div className="mt-4 flex items-center justify-between px-3 py-2 text-[10px] font-mono text-text-tertiary border border-border-subtle/60 rounded-md bg-bg-surface/30">
+        <span>H 代运营 80min → 45sec 的真实对比案例</span>
+        <a href="/cases#homelody" className="text-accent hover:underline">看 Before/After →</a>
+      </div>
       </>}
     </div>
   );
