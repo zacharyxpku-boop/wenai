@@ -310,20 +310,6 @@ ${states['ip-compliance'].result || '(空)'}
     const parsed = parseBatchInput(batchInput);
     if (parsed.length === 0) return alert('请粘贴至少 1 条 SKU（多条用三连字符 --- 分隔）');
 
-    // Pipeline 级配额预占（批量每条也要一次）
-    try {
-      const check = await fetch('/api/ratelimit/check', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ kind: 'pipeline:new-listing' }),
-      });
-      if (!check.ok) {
-        const data = await check.json().catch(() => ({}));
-        alert(`Pipeline 配额已达上限\n${data.resetAtText || ''}\n升级 Team 扩容到 500/天`);
-        return;
-      }
-    } catch {}
-
     batchAbortRef.current = false;
     setBatchRunning(true);
     setBatchProgress({ current: 0, total: parsed.length });
@@ -337,13 +323,26 @@ ${states['ip-compliance'].result || '(空)'}
     }));
     setBatchRows(initialRows);
 
-    const done: BatchRow[] = [];
     for (let i = 0; i < initialRows.length; i++) {
       if (batchAbortRef.current) break;
       const row = initialRows[i];
+
+      // 每条 SKU 独立预占 1 次 Pipeline 配额（修复之前只扣 1 次的 bug）
+      try {
+        const check = await fetch('/api/ratelimit/check', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ kind: 'pipeline:new-listing' }),
+        });
+        if (!check.ok) {
+          const data = await check.json().catch(() => ({}));
+          alert(`第 ${i + 1} 条 SKU 前触发配额上限\n已完成 ${i} 条\n${data.resetAtText ? '将于 ' + data.resetAtText + ' 重置' : ''}\n升级 Team 可扩到 500 次/天`);
+          break;
+        }
+      } catch {}
+
       setBatchRows(rows => rows.map(r => r.id === row.id ? { ...r, status: 'running' } : r));
       const result = await runOneBatchRow(row);
-      done.push(result);
       setBatchRows(rows => rows.map(r => r.id === row.id ? result : r));
       setBatchProgress({ current: i + 1, total: initialRows.length });
     }

@@ -1,33 +1,67 @@
-# wenai · 跨境新品上新流水线
+# wenai · 跨境代运营流水线 OS
 
-**Slogan**：贴 1 条 SKU · 同时跑完 翻译 + 文案 + 合规 · 一键打包 Markdown。
+**核心主张**：代运营日均重复劳动，用 3 条 Pipeline 吃掉。不做大平台，做流水线。
 
-五大品类专属调教（家居 / 汽摩 / 数码 / 工具 / 生活百货），比通用 AI 懂 FCC、懂 BPA-Free、懂 CAT III。
+五大品类（家居 / 汽摩 / 数码 / 工具 / 生活百货）各有专属 prompt 调教，比通用 GPT 懂 FCC、懂 BPA-Free、懂 CAT III、懂 LFGB。
 
-19 个单点工具（翻译/评论/外联/文案/直播/私域...）全部保留在 Toolbox 折叠区，单用也行。
+**Live**: https://wenai-one.vercel.app  · **Invite-only**: `/invite?code=xxx`  · **案例**：`/cases`
 
-**决策依据**：`.planning/DECISION.md`（v1 三旗舰）· `.planning/DECISION-v2.md`（v2 单 Pipeline）· `.planning/COMPETITIVE-HOTCLAW.md`（对标 HotClaw）
-
-**Live Beta**: https://wenai-one.vercel.app  
-**Invite-only**: `/invite?code=xxx`（邀请码在 `src/app/api/auth/invite/route.ts`）
+**决策链留痕**（.planning/）：
+- `DECISION.md` — v1 三旗舰分层
+- `DECISION-v2.md` — v2 单 Pipeline（翻译不做旗舰的论证）
+- `COMPETITIVE-HOTCLAW.md` — HotClaw 真实战况 + 5 个更狠的差异化
+- `PHASE3-BILLING.md` — 付费链路决策
 
 ---
 
-## 旗舰三件套
+## 3 条 Pipeline
 
-| 模块 | 一句话价值 | 典型场景 |
-|---|---|---|
-| 🏆 批量翻译 | 10 条 listing 一次出 5 语言 | 日均节省 45 分钟 |
-| 🏆 评论结构化 | 20 条评论 → 4 维度报告 | 选品 / 优化 / 差评挽回 |
-| 🏆 达人冷邮 | 3 版本冷启邮件 A/B | 回复率 ×10 |
+| # | Pipeline | 输入 | 输出 | 成熟度 |
+|---|---|---|---|---|
+| 01 | 新品上新 | 1 条 SKU + 品类 | 翻译 + 文案 + 合规 三栏并行 + Excel/Markdown | 稳定 · 含批量 ≤ 20 条 |
+| 02 | 达人批量冷启 | ≤ 10 位达人名单（\| 分隔） | 每位独立个性化邮件 + Excel 直喂 Gmail Mail Merge | 稳定 |
+| 03 | AI 电商主图 | SKU + 场景预设（15 选 1） | 5 张图组合（主/场景/细节/使用/对比） | Alpha · 待接 FAL / Replicate key |
 
-## 配套工具
+### Pipeline 01 亮点
+- 五品类 prompt 前缀自动注入（代码见 `src/lib/category-prompts.ts`）
+- 单 SKU 和批量模式 tab 切换
+- Excel 4 工作表输出（概览 + 翻译 + 文案 + 合规）
+- Pipeline 级配额独立计数（每条 SKU 扣 1 次，不与 Toolbox 共享）
 
-侵权防控 · 商品文案 · OCR翻译
+### Pipeline 02 亮点
+- 根据粉丝量自动选调性（<50K 共情 / 50-200K 主动 / >200K 数据）
+- 根据平台调语气（TikTok 活泼 / YouTube 深度 / Instagram 视觉）
+- 严格 `Subject: xxx\n\n<Body>` 格式约束，Excel 导出字段干净
 
-## 其他观察模块（默认折叠）
+### Pipeline 03 亮点（vs HotClaw 差异化）
+- 15 个垂直场景预设（HotClaw 通用模板）
+- 1 SKU → 5 图组合（HotClaw 单图）
+- 商标词前置过滤（AirPods/Apple/Anker 等自动替换 `[brand]`）
+- Amazon / Shopee / Lazada / Instagram 标准尺寸显性展示
 
-文案 / 种草 / 主图 / 直播全案 / 直播定位 / 竞品 / 选品 / 运营 / 销售转化 / 获客 / 视频 / 私域 / 数据 / 投流
+---
+
+## Toolbox · 19 单点工具
+
+Pipeline 是编排，Toolbox 是零件。两者共存：
+- 执行层：批量翻译 · 媒介外联 · 评论分析 · 视频剪辑 · 图片OCR翻译
+- 内容工厂：商品文案 · 种草内容 · 主图生成 · 直播全案 · 直播定位
+- 情报层：竞品拆解 · 选品辅助 · 运营策略 · 侵权防控 · 数据洞察 · 投流优化
+- 服务层：销售转化Agent · 精准获客 · 私域运营自动化
+
+单独用模块时配额独立（如 `translate: 100 次/天`）与 Pipeline 互不干扰。
+
+---
+
+## 定价（2026-04）
+
+| 档 | 价 | Pipeline 配额 | Toolbox 配额 | 特征 |
+|---|---|---|---|---|
+| Free | ¥0 · 7 天 | 10 次/天 | 50 次/天 单模块 | 邀请码激活 |
+| Team | ¥499/月 | 500 次/天 | — | 5 席 · Excel 导出 · 邮件客服 |
+| Enterprise | 面议 | 无限 | — | 本地部署 · 品类深度定制 · SLA 99.9% |
+
+见 `/pricing`
 
 *按分层逻辑详见 `.planning/DECISION.md`*
 
