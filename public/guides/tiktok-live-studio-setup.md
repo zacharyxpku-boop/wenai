@@ -194,7 +194,7 @@
 - 直播间定位生成器（10 个差异化方案）
 - 商品文案、翻译、合规、客服全流程 AI
 
-访问：**wenai-demo.vercel.app**
+访问：**wenai-one.vercel.app**
 
 ---
 
