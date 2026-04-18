@@ -127,8 +127,50 @@ export default function Sidebar({ modules, categories, clientName, userRole }: S
         <span className="font-[family-name:var(--font-outfit)] font-semibold">工作台</span>
       </Link>
 
-      {/* Module navigation */}
-      <nav className="flex-1 overflow-y-auto mt-2 px-3.5 pb-4">
+      {/* Pipeline 导航区 · 首屏焦点 */}
+      <div className="mx-3.5 mt-4 pb-3 border-b border-border-subtle">
+        <div className="flex items-center gap-2 px-2.5 mb-2">
+          <div className="w-1.5 h-1.5 rounded-full bg-accent shadow-[0_0_4px_currentColor]" />
+          <p className="label-mono text-[9px] font-semibold text-accent">PIPELINES</p>
+          <div className="flex-1 h-px bg-accent/20" />
+          <span className="text-[7px] font-mono text-accent/60">3</span>
+        </div>
+        <div className="space-y-1">
+          {[
+            { href: '/pipelines/new-listing', label: '新品上新', badge: '01', tone: '旗舰' },
+            { href: '/pipelines/influencer-outbound', label: '达人冷启', badge: '02', tone: 'NEW' },
+            { href: '/pipelines/product-image', label: 'AI 主图', badge: '03', tone: 'ALPHA' },
+          ].map(p => {
+            const active = pathname === p.href;
+            return (
+              <Link
+                key={p.href}
+                href={p.href}
+                className={`flex items-center gap-2 px-2.5 py-2 rounded-md text-[12px] transition-all group ${
+                  active
+                    ? 'bg-accent/15 text-accent border border-accent/30 font-semibold'
+                    : 'text-text-secondary hover:text-text-primary hover:bg-bg-hover border border-transparent hover:border-border-subtle'
+                }`}
+              >
+                <span className="text-[9px] font-mono text-accent/70 tabular-nums w-4">{p.badge}</span>
+                <span className="flex-1 font-[family-name:var(--font-outfit)]">{p.label}</span>
+                <span className={`text-[8px] font-mono uppercase tracking-wider ${
+                  p.tone === 'ALPHA' ? 'text-error/80' : p.tone === 'NEW' ? 'text-success/80' : 'text-accent/70'
+                }`}>{p.tone}</span>
+              </Link>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Module navigation · Toolbox 单点工具 */}
+      <nav className="flex-1 overflow-y-auto mt-3 px-3.5 pb-4">
+        <div className="flex items-center gap-2 px-2.5 mb-2">
+          <span className="text-[9px]">🧰</span>
+          <p className="label-mono text-[9px] font-semibold text-text-tertiary">TOOLBOX · 单点工具</p>
+          <div className="flex-1 h-px bg-border-subtle/50" />
+          <span className="text-[7px] font-mono text-text-tertiary/60">{modules.length}</span>
+        </div>
         {categories.map(cat => {
           const catModules = modules.filter(m => m.category === cat.id);
           if (catModules.length === 0) return null;
