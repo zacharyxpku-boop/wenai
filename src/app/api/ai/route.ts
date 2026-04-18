@@ -90,11 +90,23 @@ export async function POST(request: NextRequest) {
   const endpoint = process.env.AI_ENDPOINT || 'https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions';
 
   if (!apiKey) {
-    return NextResponse.json({
-      content: generateDemoResponse(input),
-      usage: { promptTokens: 0, completionTokens: 0 },
-      demo: true,
-    });
+    // 仅 ?demo=1 或 demo session 才允许返回 demo 内容
+    // 正常 beta 用户必须看到明确错误,让管理员有信号去配 key
+    if (isDemoMode) {
+      return NextResponse.json({
+        content: generateDemoResponse(input),
+        usage: { promptTokens: 0, completionTokens: 0 },
+        demo: true,
+      });
+    }
+    return NextResponse.json(
+      {
+        error: 'AI 服务未配置 (AI_API_KEY 缺失)。请联系管理员或查看 /status',
+        code: 'AI_API_KEY_MISSING',
+        hint: 'env var: AI_API_KEY',
+      },
+      { status: 503 }
+    );
   }
 
   // 速率限制检查 — 优先按 JWT 用户名隔离，避免所有 beta 用户共享配额

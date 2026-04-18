@@ -1,16 +1,50 @@
 # wenai · 跨境代运营流水线 OS
 
-**核心主张**：代运营日均重复劳动，用 3 条 Pipeline 吃掉。不做大平台，做流水线。
+> 代运营日均重复劳动，用 3 条 Pipeline 吃掉。不做大平台，做流水线。
 
-五大品类（家居 / 汽摩 / 数码 / 工具 / 生活百货）各有专属 prompt 调教，比通用 GPT 懂 FCC、懂 BPA-Free、懂 CAT III、懂 LFGB。
+[![Next.js](https://img.shields.io/badge/Next.js-16-black?logo=next.js)](https://nextjs.org)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Tailwind](https://img.shields.io/badge/Tailwind-4-38B2AC?logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
+[![Vercel](https://img.shields.io/badge/Vercel-000?logo=vercel)](https://wenai-one.vercel.app)
+[![License](https://img.shields.io/badge/License-proprietary-red)](#license)
 
-**Live**: https://wenai-one.vercel.app  · **Invite-only**: `/invite?code=xxx`  · **案例**：`/cases`
+五大品类（家居 / 汽摩 / 数码 / 工具 / 生活百货）各有专属 prompt 调教，比通用 GPT 懂 FCC、BPA-Free、CAT III、LFGB。
 
-**决策链留痕**（.planning/）：
-- `DECISION.md` — v1 三旗舰分层
-- `DECISION-v2.md` — v2 单 Pipeline（翻译不做旗舰的论证）
-- `COMPETITIVE-HOTCLAW.md` — HotClaw 真实战况 + 5 个更狠的差异化
-- `PHASE3-BILLING.md` — 付费链路决策
+## 快速体验
+
+| 入口 | URL | 说明 |
+|---|---|---|
+| 🏠 工作台 | [wenai-one.vercel.app](https://wenai-one.vercel.app) | 登录后看到 3 Pipeline + Toolbox |
+| 🎟️ Demo 邀请 | [/invite?code=demo](https://wenai-one.vercel.app/invite?code=demo) | 无需注册直接进 |
+| ⚡ 15 秒 demo | [/pipelines/new-listing?demo=1](https://wenai-one.vercel.app/pipelines/new-listing?demo=1) | 零输入看真 AI 输出 |
+| 📊 案例 | [/cases](https://wenai-one.vercel.app/cases) | 4 条 Before/After 对比 |
+| 💎 定价 | [/pricing](https://wenai-one.vercel.app/pricing) | Free / Team ¥499 / Ent |
+| 🟢 状态 | [/status](https://wenai-one.vercel.app/status) | SLA 可观测 |
+
+## 架构
+
+```
+┌─── 3 Pipeline (旗舰) ────────────────────┐
+│  01 新品上新      → 翻译 + 文案 + 合规    │
+│  02 达人冷启      → 批量个性化邮件        │
+│  03 AI 电商主图   → 5 张图组合 · 通义万相 │
+└──────────────────────────────────────────┘
+              ↓ 联动 + 分享
+┌─── 19 Toolbox (单点工具) ────────────────┐
+│  执行: 翻译/评论/外联/视频/OCR          │
+│  内容: 文案/种草/主图/直播/定位          │
+│  情报: 竞品/选品/运营/合规/数据/投流     │
+│  服务: 客服转化/获客/私域                │
+└──────────────────────────────────────────┘
+              ↓
+        公开分享 /share/<id>
+        (7 天 TTL · 自动 OG 图)
+```
+
+**决策留痕** (`.planning/`)：
+- DECISION.md → DECISION-v2.md · 战略两次收敛
+- COMPETITIVE-HOTCLAW.md · 对标 + 5 点差异化
+- PHASE3-BILLING.md · 付费链路决策
 
 ---
 
