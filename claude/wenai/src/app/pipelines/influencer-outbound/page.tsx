@@ -1,6 +1,7 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { Suspense, useEffect, useRef, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
 import ReactMarkdown from 'react-markdown';
 import * as XLSX from 'xlsx';
 
@@ -62,13 +63,37 @@ function parseInfluencerInput(text: string): Influencer[] {
   }).filter(r => r.name);
 }
 
-export default function InfluencerOutboundPage() {
+function InfluencerOutboundInner() {
+  const params = useSearchParams();
   const [product, setProduct] = useState<ProductContext>(EMPTY_PRODUCT);
   const [rawInput, setRawInput] = useState('');
   const [rows, setRows] = useState<Influencer[]>([]);
   const [running, setRunning] = useState(false);
   const [progress, setProgress] = useState({ current: 0, total: 0 });
+  const [handoff, setHandoff] = useState('');
   const abortRef = useRef(false);
+
+  // 从 Pipeline 01 带 SKU 跳过来 · 尝试从 SKU 文本智能提取品牌/产品/卖点
+  useEffect(() => {
+    const fromListing = params.get('from') === 'listing';
+    const skuFromListing = params.get('sku');
+    if (fromListing && skuFromListing) {
+      // 粗略提取：第一行假设为产品名，整段作为卖点
+      const lines = skuFromListing.split('\n').map(s => s.trim()).filter(Boolean);
+      const firstLine = lines[0] || '';
+      const rest = lines.slice(1).join(' ').trim();
+
+      setProduct({
+        brand: '', // 用户自己补（SKU 文本通常不含品牌名）
+        productName: firstLine.slice(0, 100),
+        price: '',
+        usp: rest || firstLine,
+        budget: '寄样 + 15% 佣金',
+        cta: '希望拍摄产品使用场景，至少 1 条短视频 + 1 张静态图',
+      });
+      setHandoff('已从 Pipeline 01 带入产品信息，补全品牌名 / 价格 / 预算即可');
+    }
+  }, [params]);
 
   const readyToRun = product.brand && product.productName && rows.length > 0 && !running;
 
@@ -262,6 +287,23 @@ PantryPerfection | YouTube | 85K | 家居生活 vlog | contact@pantryperfection.
 
   return (
     <div className="max-w-[1400px] mx-auto p-4 lg:p-6">
+      {/* Handoff banner · 从 Pipeline 01 带入 */}
+      {handoff && (
+        <div className="mb-4 p-3 border border-accent/40 bg-accent/10 rounded-md flex items-center gap-3">
+          <span className="text-accent text-[14px]">↳</span>
+          <div className="flex-1">
+            <div className="text-[11px] font-semibold text-accent">{handoff}</div>
+            <div className="text-[10px] font-mono text-text-tertiary mt-0.5">Pipeline 01 → 02 联动</div>
+          </div>
+          <button
+            onClick={() => { setHandoff(''); setProduct(EMPTY_PRODUCT); }}
+            className="text-[10px] font-mono text-text-tertiary hover:text-accent"
+          >
+            清空重填
+          </button>
+        </div>
+      )}
+
       {/* 三段式头 */}
       <div className="mb-6 border border-border-subtle rounded-md overflow-hidden">
         <div className="px-6 py-4 bg-gradient-to-r from-bg-surface to-bg-raised border-b border-border-subtle flex items-center justify-between">
@@ -494,5 +536,13 @@ PantryPerfection | YouTube | 85K | 家居生活 vlog | contact@pantryperfection.
         </div>
       )}
     </div>
+  );
+}
+
+export default function InfluencerOutboundPage() {
+  return (
+    <Suspense fallback={<div className="p-12 text-center text-text-tertiary font-mono text-[12px]">加载中...</div>}>
+      <InfluencerOutboundInner />
+    </Suspense>
   );
 }

@@ -139,7 +139,7 @@ export default function Sidebar({ modules, categories, clientName, userRole }: S
           {[
             { href: '/pipelines/new-listing', label: '新品上新', badge: '01', tone: '旗舰' },
             { href: '/pipelines/influencer-outbound', label: '达人冷启', badge: '02', tone: 'NEW' },
-            { href: '/pipelines/product-image', label: 'AI 主图', badge: '03', tone: 'ALPHA' },
+            { href: '/pipelines/product-image', label: 'AI 主图', badge: '03', tone: 'LIVE' },
           ].map(p => {
             const active = pathname === p.href;
             return (
@@ -155,7 +155,10 @@ export default function Sidebar({ modules, categories, clientName, userRole }: S
                 <span className="text-[9px] font-mono text-accent/70 tabular-nums w-4">{p.badge}</span>
                 <span className="flex-1 font-[family-name:var(--font-outfit)]">{p.label}</span>
                 <span className={`text-[8px] font-mono uppercase tracking-wider ${
-                  p.tone === 'ALPHA' ? 'text-error/80' : p.tone === 'NEW' ? 'text-success/80' : 'text-accent/70'
+                  p.tone === 'ALPHA' ? 'text-error/80'
+                  : p.tone === 'NEW' ? 'text-success/80'
+                  : p.tone === 'LIVE' ? 'text-success/80'
+                  : 'text-accent/70'
                 }`}>{p.tone}</span>
               </Link>
             );
