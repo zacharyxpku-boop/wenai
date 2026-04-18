@@ -181,18 +181,17 @@ export default function ProductImagePipelinePage() {
         </div>
       </div>
 
-      {/* 占位提示条 */}
-      <div className="mb-4 p-3 border border-accent/30 bg-accent/5 rounded-md">
+      {/* Provider 状态条 */}
+      <div className="mb-4 p-3 border border-success/30 bg-success/5 rounded-md">
         <div className="flex items-start gap-2">
-          <span className="text-accent text-[14px] flex-shrink-0">🧪</span>
+          <span className="text-success text-[14px] flex-shrink-0">🎨</span>
           <div>
-            <div className="text-[11px] font-semibold text-accent mb-1">
-              Alpha 阶段 · 当前图片为占位（Lorem Picsum），非真 AI 生成
+            <div className="text-[11px] font-semibold text-success mb-1">
+              已接入阿里通义万相 · 真实 AI 生图
             </div>
             <p className="text-[10px] text-text-secondary leading-relaxed">
-              UI 和 prompt 编排链路已完备。待配置 <code className="bg-bg-raised px-1">FAL_KEY</code> 或
-              <code className="bg-bg-raised px-1">REPLICATE_API_TOKEN</code> 即自动切换为真 Flux Schnell 生成。
-              本次用于产品形态验证，朋友可按真实流程体验。
+              默认使用 wanx2.1-t2i-turbo 模型，单图 ~6 秒，中文 prompt 原生支持。
+              调用失败会自动回退占位图并降级提示。后续可按需切换 Flux Schnell（<code className="bg-bg-raised px-1">FAL_KEY</code>）或 Replicate（<code className="bg-bg-raised px-1">REPLICATE_API_TOKEN</code>）。
             </p>
           </div>
         </div>
@@ -340,11 +339,15 @@ export default function ProductImagePipelinePage() {
                   <span className="absolute top-2 left-2 px-2 py-0.5 bg-bg-root/80 backdrop-blur-sm text-[10px] font-mono text-accent rounded">
                     {img.label}
                   </span>
-                  {img.provider === 'mock' && (
-                    <span className="absolute top-2 right-2 px-1.5 py-0.5 bg-error/20 text-[9px] font-mono text-error rounded">
-                      MOCK
-                    </span>
-                  )}
+                  <span className={`absolute top-2 right-2 px-1.5 py-0.5 text-[9px] font-mono rounded ${
+                    img.provider === 'wanx'
+                      ? 'bg-success/20 text-success'
+                      : img.provider === 'mock'
+                      ? 'bg-error/20 text-error'
+                      : 'bg-accent/20 text-accent'
+                  }`}>
+                    {img.provider === 'wanx' ? '通义万相' : img.provider === 'mock' ? 'MOCK' : img.provider.toUpperCase()}
+                  </span>
                 </div>
                 <div className="p-3">
                   <div className="text-[10px] font-mono text-text-tertiary mb-1 uppercase">
