@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getReferenceContext } from '@/lib/references';
 import { logUsageEntry } from '@/lib/usage';
 import { checkRateLimit } from '@/lib/ratelimit';
+import { verifyToken, getCookieName } from '@/lib/auth';
 import { extractBrandKeywords, queryTrademark } from '@/app/api/trademark/route';
 import { getCachedResponse } from '@/lib/demo-cache';
 
@@ -95,10 +96,19 @@ export async function POST(request: NextRequest) {
     });
   }
 
-  // 速率限制检查
+  // 速率限制检查 — 优先按 JWT 用户名隔离，避免所有 beta 用户共享配额
   const tenantId = request.headers.get('x-tenant-id') || 'default';
+  let rateKey: string = tenantId;
+  try {
+    const token = request.cookies.get(getCookieName())?.value;
+    if (token) {
+      const payload = await verifyToken(token);
+      if (payload?.username) rateKey = payload.username; // 例：beta_alice / beta_wzqfriend
+    }
+  } catch { /* ignore, fallback to tenant-id */ }
+
   if (moduleId) {
-    const limit = await checkRateLimit(moduleId, tenantId);
+    const limit = await checkRateLimit(moduleId, rateKey);
     if (!limit.allowed) {
       return NextResponse.json(
         { error: `今日调用次数已达上限，将于 ${new Date(limit.resetAt).toLocaleString('zh-CN')} 重置` },

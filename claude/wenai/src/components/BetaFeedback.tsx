@@ -9,6 +9,19 @@ interface Props {
 
 type Verdict = 'good' | 'bad' | 'rant' | null;
 
+/**
+ * 客户端脱敏：避免用户 inputSample 把敏感信息带到 feedback 存储
+ * 处理：邮箱、手机号、订单号（10+ 位数字）、身份证号、信用卡号
+ */
+function sanitize(text: string): string {
+  return text
+    .replace(/[\w.+-]+@[\w-]+\.[\w.-]+/g, '[EMAIL]')
+    .replace(/(?:\+?86[-\s]?)?1[3-9]\d{9}/g, '[PHONE]')
+    .replace(/\b\d{15,19}\b/g, '[LONG-NUM]')
+    .replace(/\b[1-9]\d{9,}\b/g, '[ORDER#]')
+    .replace(/\b\d{17}[\dXx]\b/g, '[ID]');
+}
+
 export default function BetaFeedback({ moduleId, input }: Props) {
   const [verdict, setVerdict] = useState<Verdict>(null);
   const [comment, setComment] = useState('');
@@ -27,8 +40,8 @@ export default function BetaFeedback({ moduleId, input }: Props) {
           data: {
             rating: v === 'good' ? 5 : v === 'bad' ? 1 : 3,
             verdict: v,
-            comment: text || '',
-            inputSample: (input || '').slice(0, 200),
+            comment: sanitize(text || ''),
+            inputSample: sanitize((input || '').slice(0, 200)),
             timestamp: new Date().toISOString(),
           },
         }),

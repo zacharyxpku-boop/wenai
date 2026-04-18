@@ -115,6 +115,41 @@ export default function AdminFeedbackPage() {
         </button>
       </div>
 
+      {/* Export all feedback as CSV */}
+      {Object.keys(summary).length > 0 && (
+        <div className="mb-4 flex justify-end">
+          <button
+            onClick={async () => {
+              const rows: string[] = ['module,verdict,rating,comment,inputSample,timestamp'];
+              for (const mid of Object.keys(summary)) {
+                const r = await fetch(`/api/feedback?type=feedback&moduleId=${mid}`).then(r => r.json());
+                for (const e of (r.entries || []) as FeedbackEntry[]) {
+                  const esc = (s: string) => `"${(s || '').replace(/"/g, '""').replace(/\n/g, ' ')}"`;
+                  rows.push([
+                    esc(moduleNameMap[mid] || mid),
+                    esc(e.verdict || ''),
+                    String(e.rating || ''),
+                    esc(e.comment || ''),
+                    esc(e.inputSample || ''),
+                    esc(e.timestamp || ''),
+                  ].join(','));
+                }
+              }
+              const blob = new Blob(['\uFEFF' + rows.join('\n')], { type: 'text/csv;charset=utf-8' });
+              const url = URL.createObjectURL(blob);
+              const a = document.createElement('a');
+              a.href = url;
+              a.download = `wenai-feedback-${new Date().toISOString().slice(0, 10)}.csv`;
+              a.click();
+              URL.revokeObjectURL(url);
+            }}
+            className="text-[11px] font-mono text-accent border border-accent/30 hover:bg-accent/10 rounded-md px-3 py-1.5"
+          >
+            导出全部 CSV
+          </button>
+        </div>
+      )}
+
       {loading ? (
         <div className="text-center py-12 text-text-tertiary font-mono text-[12px]">加载中...</div>
       ) : Object.keys(summary).length === 0 ? (
