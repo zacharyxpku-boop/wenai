@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
@@ -56,6 +56,14 @@ export default function Sidebar({ modules, categories, clientName, userRole }: S
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [prevPath, setPrevPath] = useState(pathname);
+  const [me, setMe] = useState<{ displayName?: string; daysLeft?: number; tier?: string; expiresAt?: string } | null>(null);
+
+  useEffect(() => {
+    fetch('/api/auth/me')
+      .then(r => r.ok ? r.json() : null)
+      .then(d => { if (d) setMe(d); })
+      .catch(() => {});
+  }, []);
 
   // Close mobile sidebar on navigation (avoid setState in effect pattern)
   if (prevPath !== pathname) {
@@ -219,8 +227,49 @@ export default function Sidebar({ modules, categories, clientName, userRole }: S
         })}
       </nav>
 
-      {/* Pricing · 升级入口 */}
-      <div className="px-3.5 pt-2 pb-1">
+      {/* Beta 剩余天数 + 升级入口 */}
+      <div className="px-3.5 pt-2 pb-1 space-y-1.5">
+        {/* 剩余天数卡 (仅邀请用户显示) */}
+        {me && typeof me.daysLeft === 'number' && me.daysLeft < 3650 && (
+          <div className={`px-3 py-2 rounded-md border ${
+            me.daysLeft < 0
+              ? 'border-error/40 bg-error/10'
+              : me.daysLeft <= 3
+              ? 'border-error/40 bg-error/5'
+              : me.daysLeft <= 7
+              ? 'border-accent/40 bg-accent/5'
+              : 'border-border-subtle bg-bg-surface/50'
+          }`}>
+            <div className="flex items-center justify-between mb-1">
+              <span className="text-[9px] font-mono text-text-tertiary uppercase tracking-wider">
+                {me.tier === 'team' ? 'Team' : me.tier === 'enterprise' ? 'Ent' : 'Beta'}
+              </span>
+              <span className={`text-[10px] font-mono tabular-nums font-semibold ${
+                me.daysLeft < 0 ? 'text-error'
+                : me.daysLeft <= 3 ? 'text-error'
+                : me.daysLeft <= 7 ? 'text-accent'
+                : 'text-text-secondary'
+              }`}>
+                {me.daysLeft < 0 ? '已过期' : `剩 ${me.daysLeft} 天`}
+              </span>
+            </div>
+            {me.displayName && (
+              <div className="text-[10px] text-text-secondary truncate font-[family-name:var(--font-outfit)]">
+                Hi {me.displayName}
+              </div>
+            )}
+            {me.daysLeft <= 7 && me.tier !== 'enterprise' && (
+              <Link
+                href="/pricing"
+                className="block mt-1.5 text-[10px] font-mono text-accent hover:underline"
+              >
+                {me.daysLeft < 0 ? '联系作者续期 →' : '提前升级 Team →'}
+              </Link>
+            )}
+          </div>
+        )}
+
+        {/* Pricing · 升级入口 */}
         <Link
           href="/pricing"
           className={`flex items-center gap-2.5 px-3 py-2 rounded-md text-[11px] transition-all group ${
