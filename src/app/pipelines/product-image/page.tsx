@@ -2,6 +2,7 @@
 
 import { Suspense, useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
+import JSZip from 'jszip';
 import { CATEGORIES, type CategoryId } from '@/lib/category-prompts';
 import { getScenePresets } from '@/lib/scene-presets';
 
@@ -145,6 +146,79 @@ function ProductImagePipelineInner() {
       setError(err instanceof Error ? err.message : '未知错误');
     } finally {
       setRunning(false);
+    }
+  };
+
+  // 一键打包 ZIP 下载所有图片 + 生成 README
+  const [zipping, setZipping] = useState(false);
+  const handleZipDownload = async () => {
+    if (images.length === 0) return;
+    setZipping(true);
+    try {
+      const zip = new JSZip();
+      const catLabel = CATEGORIES.find(c => c.id === category)?.label || category;
+
+      // 并行下载所有图片到 ArrayBuffer
+      const imageFiles = await Promise.all(
+        images.map(async (img, i) => {
+          try {
+            const res = await fetch(img.url);
+            if (!res.ok) return null;
+            const blob = await res.blob();
+            const ext = blob.type === 'image/png' ? 'png' : 'jpg';
+            return {
+              name: `${String(i + 1).padStart(2, '0')}-${img.type}.${ext}`,
+              blob,
+              meta: img,
+            };
+          } catch { return null; }
+        })
+      );
+
+      const successful = imageFiles.filter(Boolean) as { name: string; blob: Blob; meta: typeof images[0] }[];
+      successful.forEach(f => zip.file(f.name, f.blob));
+
+      // README.md 含所有 prompt 和元数据
+      const readme = `# wenai · AI 电商主图产出包
+
+- 生成时间: ${new Date().toLocaleString('zh-CN')}
+- 品类: ${catLabel}
+- 场景: ${scene}
+- Provider: ${successful[0]?.meta.provider || 'unknown'}
+- 图片数: ${successful.length} / 请求 ${images.length}
+
+## 商品信息
+${sku}
+
+## 图片清单
+
+${successful.map((f, i) => `### ${i + 1}. ${f.meta.label} (${f.name})
+- 尺寸: ${f.meta.width}×${f.meta.height}
+- Prompt: ${f.meta.prompt}
+`).join('\n')}
+
+## 平台尺寸建议
+- Amazon: 2000×2000 (主图需白底)
+- Shopee: 800×800
+- Lazada: 1080×1080
+- Instagram: 1080×1080
+
+---
+*by wenai · Pipeline 03 · 通义万相*
+`;
+      zip.file('README.md', readme);
+
+      const content = await zip.generateAsync({ type: 'blob', compression: 'DEFLATE' });
+      const url = URL.createObjectURL(content);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `wenai-images-${Date.now()}.zip`;
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      alert('打包失败: ' + (err instanceof Error ? err.message : 'unknown'));
+    } finally {
+      setZipping(false);
     }
   };
 
@@ -384,14 +458,22 @@ function ProductImagePipelineInner() {
       {/* 图片展示 */}
       {images.length > 0 && (
         <div className="mb-6">
-          <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
             <span className="text-[10px] font-mono text-text-tertiary uppercase tracking-wider">
               生成结果 · {images.length} 张
             </span>
             <div className="flex items-center gap-2">
-              <span className="text-[9px] font-mono text-text-tertiary">平台尺寸适配：</span>
+              <button
+                onClick={handleZipDownload}
+                disabled={zipping}
+                className="px-3 py-1.5 border border-accent/40 bg-accent/10 text-accent text-[10px] font-mono rounded hover:bg-accent/20 disabled:opacity-50"
+                title="打包所有图片 + README.md 到一个 ZIP"
+              >
+                {zipping ? '打包中...' : '⬇ 一键打包 ZIP'}
+              </button>
+              <span className="text-[9px] font-mono text-text-tertiary hidden md:inline">平台尺寸:</span>
               {Object.entries(PLATFORM_SIZES).map(([k, v]) => (
-                <span key={k} className="px-1.5 py-0.5 bg-bg-raised text-[9px] font-mono text-text-tertiary rounded">
+                <span key={k} className="px-1.5 py-0.5 bg-bg-raised text-[9px] font-mono text-text-tertiary rounded hidden md:inline">
                   {v.label} {v.size}
                 </span>
               ))}
