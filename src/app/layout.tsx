@@ -21,11 +21,11 @@ const ibmPlexMono = IBM_Plex_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Wenai · 跨境电商 AI 工作台",
-  description: "19 个 AI 模块覆盖翻译/评论/外联/竞品/投流/私域 · 让跨境电商团队少做 70% 重复劳动",
+  title: "Wenai · 翻译 / 评论 / 外联 3 件事的跨境 AI",
+  description: "让跨境代运营的重复劳动变成 3 个按钮：批量翻译、评论结构化、达人冷邮。阿里国际 250 人验证过的真刚需。",
   openGraph: {
-    title: "Wenai · 跨境电商 AI 工作台",
-    description: "19 个 AI 模块 · 7 天免费内测",
+    title: "Wenai · 跨境代运营 AI 三件套",
+    description: "翻译 / 评论 / 外联 一站搞定 · 7 天免费内测",
     url: "https://wenai-one.vercel.app",
     siteName: "wenai",
     images: [

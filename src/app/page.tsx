@@ -40,32 +40,69 @@ const MODULE_ROI: Record<string, { minutesSaved: number; label: string }> = {
 };
 const HOURLY_COST_RMB = 35; // 代运营公司普通员工时薪
 
-const QUICK_START_CARDS = [
-  {
-    id: 'translate',
-    title: '批量翻译 listing',
-    hook: '粘贴 10 条商品信息，一次出 5 语言',
-    demo: '家居收纳 → 英/日/韩/西/德',
-    time: '≈ 30 秒',
-    accent: '#c8975a',
+// ============================================================
+// 聚焦重构 · 2026-04 · 见 .planning/DECISION.md
+// 从 19 模块大平台 → 3 旗舰 + 次级 + 折叠观察
+// 回退：把 MODULE_TIERS 改回全部 'flagship' 即可恢复老首页
+// ============================================================
+
+type Tier = 'flagship' | 'support' | 'aux' | 'observe';
+
+const MODULE_TIERS: Record<string, Tier> = {
+  // 🏆 旗舰 — 阿里国际 250 人验证过的真刚需
+  translate: 'flagship',
+  reviews: 'flagship',
+  outreach: 'flagship',
+  // 🔹 次级 — 刚需但不首屏抢焦
+  'ip-compliance': 'support',
+  copywriting: 'support',
+  'ocr-translate': 'support',
+  // 🔸 辅助 — 有场景但 AI 确定性一般
+  video: 'aux',
+  'customer-service': 'aux',
+  livestream: 'aux',
+  content: 'aux',
+  'private-domain': 'aux',
+  'ad-optimizer': 'aux',
+  // 🔻 观察 — 代码保留不默认启用
+  competitor: 'observe',
+  'data-insights': 'observe',
+  images: 'observe',
+  operations: 'observe',
+  leads: 'observe',
+  positioning: 'observe',
+  selection: 'observe',
+};
+
+const FLAGSHIP_HERO: Record<string, {
+  eyebrow: string;
+  title: string;
+  body: string;
+  kpi: string;
+  cta: string;
+}> = {
+  translate: {
+    eyebrow: '旗舰 · 跨境代运营第一刚需',
+    title: '一次贴 10 条，5 语言同时出',
+    body: '阿里国际 250 人团队验证过的真实场景。把每天手工翻译 listing 的 2 小时压缩到 30 秒。英日韩西德葡，术语表自动对齐。',
+    kpi: '节省 45 分钟 / 次',
+    cta: '开始翻译 →',
   },
-  {
-    id: 'reviews',
-    title: '差评挖痛点',
-    hook: '贴评论，出结构化卖点/痛点报告',
-    demo: '20 条 Amazon 评论 → 4 维度分析',
-    time: '≈ 45 秒',
-    accent: '#6ea8d7',
+  reviews: {
+    eyebrow: '旗舰 · 卖点痛点结构化',
+    title: '贴评论出报告，看两眼就知道改哪里',
+    body: '20 条 Amazon 评论 → 4 维度结构化：优势 / 痛点 / 改进点 / 差评挽回话术。选品、优化 listing、客服挽回一套打通。',
+    kpi: '节省 60 分钟 / 次',
+    cta: '分析评论 →',
   },
-  {
-    id: 'outreach',
-    title: '达人外联邮件',
-    hook: '给达人名 + 产品，出 3 版本冷启邮件',
-    demo: '英文 / 西语 / 葡语多版本',
-    time: '≈ 20 秒',
-    accent: '#9b8ec4',
+  outreach: {
+    eyebrow: '旗舰 · 达人寄样批量启动',
+    title: '3 版本冷启邮件，拉开回复率 10 倍',
+    body: '给达人名 + 产品 + 合作方式，出安全版 / 热情版 / 数据版三封邮件。A/B 选一封发出去，回复率明显高于手写。',
+    kpi: '节省 30 分钟 / 次',
+    cta: '生成邮件 →',
   },
-];
+};
 
 export default function Dashboard() {
   const enabledIds = new Set(clientConfig.enabledModules);
@@ -363,47 +400,111 @@ export default function Dashboard() {
         </div>
       )}
 
-      {/* Quick Start · 3 cards for first-touch beta users */}
-      <div className="mb-7 animate-fade-up stagger-3">
-        <div className="flex items-center gap-2 mb-3">
-          <div className="w-1 h-1 rounded-full bg-accent flex-shrink-0" />
-          <span className="label-mono flex-shrink-0">30 秒上手</span>
-          <span className="text-[10px] font-mono text-text-tertiary/60 truncate">
-            第一次用？先从这三件事开始
-          </span>
-          <div className="flex-1 h-px bg-border-subtle" />
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-          {QUICK_START_CARDS.map(card => (
-            <a
-              key={card.id}
-              href={`/modules/${card.id}`}
-              className="group bg-bg-surface border border-border-subtle rounded-md p-5 hover:border-accent/40 hover:bg-bg-raised hover:-translate-y-0.5 hover:shadow-[0_8px_24px_rgba(200,151,90,0.1)] transition-all duration-200"
-              style={{ borderLeftColor: card.accent, borderLeftWidth: '2px' }}
-            >
-              <div className="flex items-baseline justify-between mb-2">
-                <span className="text-[14px] font-semibold text-text-primary group-hover:text-accent transition-colors font-[family-name:var(--font-outfit)]">
-                  {card.title}
+      {/* Flagship Hero — 单焦点，首屏只做 3 件事 */}
+      {(() => {
+        const flagships = modulesConfig.modules.filter(
+          m => MODULE_TIERS[m.id] === 'flagship' && enabledIds.has(m.id)
+        );
+        const [first, ...rest] = flagships;
+        if (!first) return null;
+        const firstHero = FLAGSHIP_HERO[first.id];
+        return (
+          <div className="mb-7 animate-fade-up stagger-3">
+            {/* 大 Hero */}
+            {firstHero && (
+              <a
+                href={`/modules/${first.id}`}
+                className="group block border border-accent/30 bg-gradient-to-br from-bg-surface to-bg-raised rounded-md p-6 lg:p-8 mb-3 hover:border-accent/60 hover:shadow-[0_12px_40px_rgba(200,151,90,0.15)] transition-all duration-200"
+              >
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="text-[10px] font-mono text-accent uppercase tracking-[0.15em]">
+                    {firstHero.eyebrow}
+                  </span>
+                  <div className="flex-1 h-px bg-border-subtle/60" />
+                  <span className="text-[10px] font-mono text-success tabular-nums">
+                    {firstHero.kpi}
+                  </span>
+                </div>
+                <h2 className="text-[22px] lg:text-[26px] font-bold text-text-primary mb-2 group-hover:text-accent transition-colors leading-tight font-[family-name:var(--font-outfit)]">
+                  {firstHero.title}
+                </h2>
+                <p className="text-[13px] text-text-secondary leading-relaxed mb-4 max-w-[680px]">
+                  {firstHero.body}
+                </p>
+                <span className="inline-flex items-center gap-1.5 px-3 py-2 bg-accent/10 border border-accent/30 rounded-md text-[12px] font-mono text-accent group-hover:bg-accent group-hover:text-bg-root transition-colors">
+                  {firstHero.cta}
                 </span>
-                <span className="text-[9px] font-mono text-text-tertiary uppercase tabular-nums">
-                  {card.time}
-                </span>
+              </a>
+            )}
+
+            {/* 另外 2 个旗舰 — 对称双卡 */}
+            {rest.length > 0 && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                {rest.map(mod => {
+                  const hero = FLAGSHIP_HERO[mod.id];
+                  if (!hero) return null;
+                  return (
+                    <a
+                      key={mod.id}
+                      href={`/modules/${mod.id}`}
+                      className="group block border border-border-subtle bg-bg-surface rounded-md p-5 hover:border-accent/40 hover:-translate-y-0.5 hover:shadow-[0_6px_20px_rgba(200,151,90,0.1)] transition-all duration-200"
+                    >
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-[9px] font-mono text-accent/80 uppercase tracking-wider">
+                          {hero.eyebrow.split(' · ')[1] || hero.eyebrow}
+                        </span>
+                        <span className="text-[9px] font-mono text-success tabular-nums">
+                          {hero.kpi}
+                        </span>
+                      </div>
+                      <h3 className="text-[15px] font-semibold text-text-primary mb-1.5 group-hover:text-accent transition-colors font-[family-name:var(--font-outfit)]">
+                        {hero.title}
+                      </h3>
+                      <p className="text-[11px] text-text-secondary leading-relaxed line-clamp-2 mb-3">
+                        {hero.body}
+                      </p>
+                      <span className="text-[11px] font-mono text-accent opacity-0 group-hover:opacity-100 transition-opacity">
+                        {hero.cta}
+                      </span>
+                    </a>
+                  );
+                })}
               </div>
-              <p className="text-[11px] text-text-secondary leading-relaxed mb-2.5">
-                {card.hook}
-              </p>
-              <div className="pt-2.5 border-t border-border-subtle/50 flex items-center justify-between">
-                <span className="text-[9px] font-mono text-text-tertiary">
-                  例：{card.demo}
-                </span>
-                <span className="text-[10px] font-mono text-accent opacity-0 group-hover:opacity-100 transition-opacity">
-                  开始 →
-                </span>
-              </div>
-            </a>
-          ))}
-        </div>
-      </div>
+            )}
+          </div>
+        );
+      })()}
+
+      {/* 次级工具行 · support tier */}
+      {(() => {
+        const support = modulesConfig.modules.filter(
+          m => MODULE_TIERS[m.id] === 'support' && enabledIds.has(m.id)
+        );
+        if (support.length === 0) return null;
+        return (
+          <div className="mb-6 animate-fade-up stagger-4">
+            <div className="flex items-center gap-2 mb-2.5">
+              <span className="label-mono">配套工具</span>
+              <div className="flex-1 h-px bg-border-subtle" />
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+              {support.map(mod => (
+                <a
+                  key={mod.id}
+                  href={`/modules/${mod.id}`}
+                  className="group flex items-center gap-2 px-3 py-2.5 bg-bg-surface border border-border-subtle rounded-md hover:border-accent/30 hover:bg-bg-raised transition-all"
+                >
+                  <span className="text-[12px] text-text-primary group-hover:text-accent font-[family-name:var(--font-outfit)]">
+                    {mod.name}
+                  </span>
+                  <div className="flex-1" />
+                  <span className="text-[9px] font-mono text-text-tertiary">→</span>
+                </a>
+              ))}
+            </div>
+          </div>
+        );
+      })()}
 
       {/* Beta activity feed · 社会证明 — 只在有真实数据时显示 */}
       {Object.keys(feedbackSummary).length > 0 && (
@@ -445,19 +546,20 @@ export default function Dashboard() {
         </div>
       )}
 
-      {/* Toggle to reveal all 19 modules */}
+      {/* 展开其他工具 */}
       {!showAllModules && (
-        <div className="mb-7 animate-fade-up stagger-4">
+        <div className="mb-7 animate-fade-up stagger-5">
           <button
             onClick={() => setShowAllModules(true)}
-            className="w-full py-3 border border-dashed border-border-default rounded-md text-[12px] font-mono text-text-tertiary hover:text-accent hover:border-accent/40 hover:bg-bg-surface transition-all"
+            className="w-full py-2.5 border border-dashed border-border-subtle rounded-md text-[11px] font-mono text-text-tertiary/70 hover:text-accent hover:border-accent/30 transition-all"
           >
-            展开全部 {enabledCount} 个模块 · 执行/内容/情报/服务 ↓
+            其他工具（{modulesConfig.modules.filter(m => MODULE_TIERS[m.id] === 'aux' && enabledIds.has(m.id)).length} 个辅助 +{' '}
+            {modulesConfig.modules.filter(m => MODULE_TIERS[m.id] === 'observe' && enabledIds.has(m.id)).length} 个观察中） ↓
           </button>
         </div>
       )}
 
-      {/* Module grid by category */}
+      {/* 展开后的全部模块 · 按 tier 分组 */}
       {showAllModules && categories.map((cat, catIndex) => {
         const catModules = modulesConfig.modules.filter(
           m => m.category === cat.id && enabledIds.has(m.id)
