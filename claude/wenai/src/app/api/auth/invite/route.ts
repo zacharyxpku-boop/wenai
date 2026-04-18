@@ -1,14 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createToken, getCookieName } from '@/lib/auth';
-import { getInvites } from '@/lib/invite-roster';
+import { getInvitesAsync } from '@/lib/invite-roster';
 
-// 名册已移到 @/lib/invite-roster 共享给 /api/auth/me
-// env INVITE_ROSTER JSON 覆盖默认内置朋友名册
-
-const INVITES = getInvites();
+// 名册支持三级: Redis (动态可改) / env INVITE_ROSTER / 内置默认
+// 查询每次走 async 拿到最新 Redis 数据
 
 export async function POST(req: NextRequest) {
   const { code } = await req.json().catch(() => ({ code: '' }));
+  const INVITES = await getInvitesAsync();
   const invite = INVITES[String(code || '').toLowerCase().trim()];
 
   if (!invite) {
@@ -56,6 +55,7 @@ export async function GET(req: NextRequest) {
   if (!code) {
     return NextResponse.json({ success: false, error: '缺少邀请码' }, { status: 400 });
   }
+  const INVITES = await getInvitesAsync();
   const invite = INVITES[code.toLowerCase().trim()];
   if (!invite) {
     return NextResponse.json({ success: false, error: '邀请码无效' }, { status: 404 });
