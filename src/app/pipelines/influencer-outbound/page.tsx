@@ -73,18 +73,18 @@ function InfluencerOutboundInner() {
   const [handoff, setHandoff] = useState('');
   const abortRef = useRef(false);
 
-  // 从 Pipeline 01 带 SKU 跳过来 · 尝试从 SKU 文本智能提取品牌/产品/卖点
+  // 从 Pipeline 01 带 SKU 跳过来,或 ?demo=1 直接开跑
   useEffect(() => {
     const fromListing = params.get('from') === 'listing';
     const skuFromListing = params.get('sku');
+    const isDemo = params.get('demo') === '1';
+
     if (fromListing && skuFromListing) {
-      // 粗略提取：第一行假设为产品名，整段作为卖点
       const lines = skuFromListing.split('\n').map(s => s.trim()).filter(Boolean);
       const firstLine = lines[0] || '';
       const rest = lines.slice(1).join(' ').trim();
-
       setProduct({
-        brand: '', // 用户自己补（SKU 文本通常不含品牌名）
+        brand: '',
         productName: firstLine.slice(0, 100),
         price: '',
         usp: rest || firstLine,
@@ -92,8 +92,74 @@ function InfluencerOutboundInner() {
         cta: '希望拍摄产品使用场景，至少 1 条短视频 + 1 张静态图',
       });
       setHandoff('已从 Pipeline 01 带入产品信息，补全品牌名 / 价格 / 预算即可');
+    } else if (isDemo) {
+      // Demo 路径: 灌入完整示例并自动触发 (限 3 条达人省 token)
+      setProduct(TEMPLATE_PRODUCT);
+      setRawInput(`@homestorage_sara | Instagram | 48K | 家居收纳 Reels | sara@example.com
+@kitchen.tara | Instagram | 120K | 厨房整理 | hi@tara.com
+@organize.mike | TikTok | 320K | 断舍离教程 | mike@gmail.com`);
+      setHandoff('Demo 模式 · 已灌入 HOMELODY 示例 + 3 位家居达人，自动生成个性化邮件');
+      setTimeout(() => {
+        const parsed = parseInfluencerInput(`@homestorage_sara | Instagram | 48K | 家居收纳 Reels | sara@example.com
+@kitchen.tara | Instagram | 120K | 厨房整理 | hi@tara.com
+@organize.mike | TikTok | 320K | 断舍离教程 | mike@gmail.com`);
+        void runDemoBatch(parsed, TEMPLATE_PRODUCT);
+      }, 250);
     }
-  }, [params]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // demo 专用 runBatch (绕过用户手动点启动)
+  const runDemoBatch = async (parsed: Influencer[], prod: ProductContext) => {
+    abortRef.current = false;
+    setRows(parsed);
+    setRunning(true);
+    setProgress({ current: 0, total: parsed.length });
+
+    for (let i = 0; i < parsed.length; i++) {
+      if (abortRef.current) break;
+      const row = parsed[i];
+      // demo 不查配额,直接跑 (配额检查走正常路径)
+      setRows(rs => rs.map(r => r.id === row.id ? { ...r, status: 'running' } : r));
+      const result = await runOneDemo(row, prod);
+      setRows(rs => rs.map(r => r.id === row.id ? result : r));
+      setProgress({ current: i + 1, total: parsed.length });
+    }
+    setRunning(false);
+  };
+
+  const runOneDemo = async (inf: Influencer, prod: ProductContext): Promise<Influencer> => {
+    try {
+      const body = `【达人画像】
+- 账号：${inf.name}
+- 平台：${inf.platform}
+- 粉丝量：${inf.followers}
+- 内容赛道：${inf.niche}
+
+【我方品牌】
+- 品牌：${prod.brand}
+- 产品：${prod.productName}
+- 价格：${prod.price}
+- 核心卖点：${prod.usp}
+
+【合作条件】
+- 预算：${prod.budget}
+- 目标：${prod.cta}
+
+请按输出要求为这位达人写 1 封最合适的邮件。`;
+      const res = await fetch('/api/ai', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-from-pipeline': '1' },
+        body: JSON.stringify({ prompt: PIPELINE_PROMPT, input: body, moduleId: 'outreach' }),
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json();
+      const parsed = parseEmailResponse(data.content || '');
+      return { ...inf, status: 'done', body: parsed.body, subject: parsed.subject };
+    } catch (err) {
+      return { ...inf, status: 'error', error: err instanceof Error ? err.message : '未知错误' };
+    }
+  };
 
   const readyToRun = product.brand && product.productName && rows.length > 0 && !running;
 

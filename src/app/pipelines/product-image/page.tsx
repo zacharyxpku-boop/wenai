@@ -39,19 +39,52 @@ function ProductImagePipelineInner() {
   const [sku, setSku] = useState('');
   const [handoffBanner, setHandoffBanner] = useState<string>('');
 
-  // 从 Pipeline 01 带参数跳过来
+  // 从 Pipeline 01 带参数跳过来,或 ?demo=1 自动跑
   useEffect(() => {
     const fromListing = params.get('from') === 'listing';
     const qSku = params.get('sku');
     const qCat = params.get('category');
+    const isDemo = params.get('demo') === '1';
+
     if (fromListing && qSku) {
       setSku(qSku);
       if (qCat && ['home', 'auto', 'digital', 'tool', 'living'].includes(qCat)) {
         setCategory(qCat as CategoryId);
       }
       setHandoffBanner('已从 Pipeline 01 带入 SKU,选一个场景即可直接生图');
+    } else if (isDemo) {
+      // Demo: 家居厨房场景 + 只跑 main + scene 省 60% 成本 (2 图 vs 5 图)
+      setCategory('home');
+      setScene('home-kitchen');
+      setSku('可叠加密封收纳盒套装（6件装）\nBPA-Free 食品级 PP，四侧卡扣密封\n3 种规格 (0.5L/1.2L/2.5L)，可叠放节省 40% 空间\nAmazon 4.8★ 2300+ 评论');
+      setSelectedOutputs(new Set(['main', 'scene']));
+      setHandoffBanner('Demo · HOMELODY 收纳盒 + 厨房台面场景 · 自动生 2 张图');
+      setTimeout(() => { void runDemoGen('home', 'home-kitchen', '可叠加密封收纳盒套装（6件装）BPA-Free 食品级 PP，四侧卡扣密封'); }, 250);
     }
-  }, [params]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const runDemoGen = async (cat: string, sceneId: string, skuText: string) => {
+    setRunning(true);
+    setError('');
+    setImages([]);
+    setMockNotice('');
+    try {
+      const res = await fetch('/api/image-gen', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-from-pipeline': '1' },
+        body: JSON.stringify({ category: cat, skuInfo: skuText, scenePreset: sceneId, outputs: ['main', 'scene'] }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'HTTP ' + res.status);
+      setImages(data.images || []);
+      if (data.notice) setMockNotice(data.notice);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : '未知错误');
+    } finally {
+      setRunning(false);
+    }
+  };
   const [selectedOutputs, setSelectedOutputs] = useState<Set<OutputType>>(
     new Set(['main', 'scene', 'detail', 'lifestyle', 'compare'])
   );
