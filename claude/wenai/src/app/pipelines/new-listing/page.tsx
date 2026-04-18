@@ -2,6 +2,7 @@
 
 import { useState, useRef } from 'react';
 import ReactMarkdown from 'react-markdown';
+import * as XLSX from 'xlsx';
 import { CATEGORIES, type CategoryId } from '@/lib/category-prompts';
 import modulesConfig from '@/config/modules.json';
 
@@ -37,10 +38,29 @@ const STEPS: { id: StepId; label: string; icon: string; desc: string; accent: st
   },
 ];
 
+// 批量模式每条 SKU 的处理状态
+interface BatchRow {
+  id: string;
+  skuPreview: string;
+  fullInput: string;
+  results: Record<StepId, string>;
+  status: 'pending' | 'running' | 'done' | 'error';
+  currentStep?: StepId;
+  error?: string;
+}
+
 export default function NewListingPipelinePage() {
+  const [mode, setMode] = useState<'single' | 'batch'>('single');
   const [category, setCategory] = useState<CategoryId | ''>('');
   const [skuInput, setSkuInput] = useState('');
   const [phase2Clicked, setPhase2Clicked] = useState(false);
+
+  // 批量模式状态
+  const [batchInput, setBatchInput] = useState('');
+  const [batchRows, setBatchRows] = useState<BatchRow[]>([]);
+  const [batchProgress, setBatchProgress] = useState({ current: 0, total: 0 });
+  const [batchRunning, setBatchRunning] = useState(false);
+  const batchAbortRef = useRef<boolean>(false);
 
   const [states, setStates] = useState<Record<StepId, StepState>>({
     translate: { status: 'idle', result: '' },
@@ -164,6 +184,36 @@ export default function NewListingPipelinePage() {
     Object.values(abortControllers.current).forEach(c => c?.abort());
   };
 
+  const handleExportExcel = () => {
+    const cat = CATEGORIES.find(c => c.id === category);
+    const wb = XLSX.utils.book_new();
+
+    // Sheet 1: 概览
+    const overview = [
+      ['字段', '内容'],
+      ['品类', cat?.label || ''],
+      ['生成时间', new Date().toLocaleString('zh-CN')],
+      ['原始 SKU', skuInput],
+      [],
+      ['模块', '状态', '字符数'],
+      ['多语言翻译', states.translate.status, states.translate.result.length],
+      ['商品文案', states.copywriting.status, states.copywriting.result.length],
+      ['侵权合规', states['ip-compliance'].status, states['ip-compliance'].result.length],
+    ];
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(overview), '概览');
+
+    // Sheet 2/3/4: 每步独立 sheet，分行保留结构
+    const addSheet = (name: string, content: string) => {
+      const rows = content.split('\n').map(line => [line]);
+      XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet([['内容'], ...rows]), name);
+    };
+    addSheet('翻译', states.translate.result || '(空)');
+    addSheet('文案', states.copywriting.result || '(空)');
+    addSheet('合规', states['ip-compliance'].result || '(空)');
+
+    XLSX.writeFile(wb, `wenai-new-listing-${Date.now()}.xlsx`);
+  };
+
   const handleExport = () => {
     const cat = CATEGORIES.find(c => c.id === category);
     const md = `# 新品上新 · ${cat?.label || ''} · Pipeline 产出
@@ -199,6 +249,153 @@ ${states['ip-compliance'].result || '(空)'}
     a.download = `wenai-new-listing-${Date.now()}.md`;
     a.click();
     URL.revokeObjectURL(url);
+  };
+
+  // ============================================================
+  // 批量模式 · 串行处理多个 SKU（避免并发撞 API 速率）
+  // ============================================================
+
+  const parseBatchInput = (text: string): { id: string; preview: string; full: string }[] => {
+    // 以 --- 分隔符或空行 × 2 切分
+    const blocks = text.split(/\n-{3,}\n|\n\n\n+/).map(s => s.trim()).filter(Boolean);
+    return blocks.slice(0, 20).map((block, i) => ({
+      id: `sku_${Date.now()}_${i}`,
+      preview: block.split('\n')[0].slice(0, 50),
+      full: block,
+    }));
+  };
+
+  const runOneBatchRow = async (row: BatchRow): Promise<BatchRow> => {
+    const results: Record<StepId, string> = { translate: '', copywriting: '', 'ip-compliance': '' };
+
+    for (const step of STEPS) {
+      if (batchAbortRef.current) {
+        return { ...row, results, status: 'error', error: '用户取消' };
+      }
+      const mod = modulesConfig.modules.find(m => m.id === step.id);
+      if (!mod) continue;
+
+      try {
+        const res = await fetch('/api/ai', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-from-pipeline': '1', // 批量也走 Pipeline 额度
+          },
+          body: JSON.stringify({
+            prompt: mod.prompt,
+            input: row.fullInput + (step.id === 'translate' ? '\n\n目标语言：英语 日语 韩语 西班牙语 德语' : ''),
+            moduleId: step.id,
+            category,
+          }),
+        });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
+        results[step.id] = data.content || '';
+      } catch (err) {
+        return {
+          ...row,
+          results,
+          status: 'error',
+          error: err instanceof Error ? err.message : '未知错误',
+        };
+      }
+    }
+
+    return { ...row, results, status: 'done' };
+  };
+
+  const handleBatchStart = async () => {
+    if (!category) return alert('先选品类');
+    const parsed = parseBatchInput(batchInput);
+    if (parsed.length === 0) return alert('请粘贴至少 1 条 SKU（多条用三连字符 --- 分隔）');
+
+    // Pipeline 级配额预占（批量每条也要一次）
+    try {
+      const check = await fetch('/api/ratelimit/check', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ kind: 'pipeline:new-listing' }),
+      });
+      if (!check.ok) {
+        const data = await check.json().catch(() => ({}));
+        alert(`Pipeline 配额已达上限\n${data.resetAtText || ''}\n升级 Team 扩容到 500/天`);
+        return;
+      }
+    } catch {}
+
+    batchAbortRef.current = false;
+    setBatchRunning(true);
+    setBatchProgress({ current: 0, total: parsed.length });
+
+    const initialRows: BatchRow[] = parsed.map(p => ({
+      id: p.id,
+      skuPreview: p.preview,
+      fullInput: p.full,
+      results: { translate: '', copywriting: '', 'ip-compliance': '' },
+      status: 'pending',
+    }));
+    setBatchRows(initialRows);
+
+    const done: BatchRow[] = [];
+    for (let i = 0; i < initialRows.length; i++) {
+      if (batchAbortRef.current) break;
+      const row = initialRows[i];
+      setBatchRows(rows => rows.map(r => r.id === row.id ? { ...r, status: 'running' } : r));
+      const result = await runOneBatchRow(row);
+      done.push(result);
+      setBatchRows(rows => rows.map(r => r.id === row.id ? result : r));
+      setBatchProgress({ current: i + 1, total: initialRows.length });
+    }
+
+    setBatchRunning(false);
+  };
+
+  const handleBatchStop = () => {
+    batchAbortRef.current = true;
+  };
+
+  const handleBatchExport = () => {
+    const cat = CATEGORIES.find(c => c.id === category);
+    const wb = XLSX.utils.book_new();
+
+    // Sheet 1: 概览
+    const overview: (string | number)[][] = [
+      ['wenai · 新品上新 Pipeline · 批量产出'],
+      ['品类', cat?.label || ''],
+      ['生成时间', new Date().toLocaleString('zh-CN')],
+      ['SKU 总数', batchRows.length],
+      ['成功', batchRows.filter(r => r.status === 'done').length],
+      ['失败', batchRows.filter(r => r.status === 'error').length],
+      [],
+      ['#', 'SKU 首行', '翻译长度', '文案长度', '合规长度', '状态'],
+      ...batchRows.map((r, i) => [
+        i + 1,
+        r.skuPreview,
+        r.results.translate.length,
+        r.results.copywriting.length,
+        r.results['ip-compliance'].length,
+        r.status,
+      ]),
+    ];
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(overview), '概览');
+
+    // Sheet 2/3/4: 每步汇总一张表，行 = SKU
+    const makeStepSheet = (step: StepId, title: string) => {
+      const rows: string[][] = [['#', 'SKU 首行', '原始输入', title]];
+      batchRows.forEach((r, i) => {
+        rows.push([String(i + 1), r.skuPreview, r.fullInput, r.results[step] || '']);
+      });
+      const ws = XLSX.utils.aoa_to_sheet(rows);
+      // 列宽
+      ws['!cols'] = [{ wch: 5 }, { wch: 30 }, { wch: 50 }, { wch: 80 }];
+      XLSX.utils.book_append_sheet(wb, ws, title);
+    };
+    makeStepSheet('translate', '翻译');
+    makeStepSheet('copywriting', '文案');
+    makeStepSheet('ip-compliance', '合规');
+
+    XLSX.writeFile(wb, `wenai-batch-${Date.now()}.xlsx`);
   };
 
   const handlePhase2Interest = async () => {
@@ -325,6 +522,142 @@ ${states['ip-compliance'].result || '(空)'}
         </div>
       </div>
 
+      {/* 模式切换 · 单 SKU / 批量 */}
+      <div className="flex items-center gap-1 mb-4 p-1 border border-border-subtle rounded-md bg-bg-surface w-fit">
+        <button
+          onClick={() => setMode('single')}
+          className={`px-4 py-1.5 rounded text-[11px] font-mono transition-all ${
+            mode === 'single'
+              ? 'bg-accent text-bg-root font-semibold'
+              : 'text-text-secondary hover:text-text-primary'
+          }`}
+        >
+          单 SKU · 首次推荐
+        </button>
+        <button
+          onClick={() => setMode('batch')}
+          className={`px-4 py-1.5 rounded text-[11px] font-mono transition-all flex items-center gap-1.5 ${
+            mode === 'batch'
+              ? 'bg-accent text-bg-root font-semibold'
+              : 'text-text-secondary hover:text-text-primary'
+          }`}
+        >
+          批量模式 · 最多 20 条
+          <span className="px-1.5 py-0.5 bg-bg-root/20 rounded text-[8px]">NEW</span>
+        </button>
+      </div>
+
+      {/* 批量模式 UI */}
+      {mode === 'batch' && (
+        <div className="mb-5">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
+            <div className="lg:col-span-5">
+              <label className="text-[10px] font-mono text-text-tertiary uppercase tracking-wider mb-2 block">
+                Step 1 · 品类（整批共用）
+              </label>
+              <div className="grid grid-cols-5 gap-1.5">
+                {CATEGORIES.map(cat => (
+                  <button
+                    key={cat.id}
+                    onClick={() => setCategory(cat.id)}
+                    className={`flex flex-col items-center gap-1 py-2.5 border rounded-md transition-all ${
+                      category === cat.id ? 'border-accent bg-accent/10 text-accent' : 'border-border-subtle text-text-secondary hover:border-accent/30'
+                    }`}
+                  >
+                    <span className="text-base">{cat.icon}</span>
+                    <span className="text-[9px] font-mono">{cat.label}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div className="lg:col-span-7">
+              <label className="text-[10px] font-mono text-text-tertiary uppercase tracking-wider mb-2 block">
+                Step 2 · 粘贴多条 SKU（用 <code className="bg-bg-raised px-1">---</code> 分隔）
+              </label>
+              <textarea
+                value={batchInput}
+                onChange={e => setBatchInput(e.target.value)}
+                placeholder={`SKU 1 的商品信息\n例：HOMELODY 收纳盒 BPA-Free...\n\n---\n\nSKU 2 的商品信息\n例：VICSEED 磁吸车载支架...\n\n---\n\nSKU 3 ...`}
+                rows={8}
+                className="w-full px-3 py-2.5 bg-bg-surface border border-border-default rounded-md text-[11px] text-text-primary placeholder:text-text-tertiary/60 focus:outline-none focus:border-accent/60 resize-none font-mono"
+              />
+              <div className="flex items-center justify-between mt-2 text-[9px] font-mono text-text-tertiary">
+                <span>{parseBatchInput(batchInput).length} 条 SKU 待处理 · 最多 20 条</span>
+                <span>预计耗时 ≈ {parseBatchInput(batchInput).length * 45} 秒</span>
+              </div>
+            </div>
+          </div>
+
+          {/* 批量控制区 */}
+          <div className="flex items-center justify-between mt-4 pt-4 border-t border-border-subtle">
+            <div className="text-[11px] text-text-secondary">
+              {batchProgress.total > 0 && (
+                <span className="font-mono">
+                  进度 {batchProgress.current} / {batchProgress.total}
+                </span>
+              )}
+              {batchRows.filter(r => r.status === 'done').length === batchRows.length && batchRows.length > 0 && (
+                <span className="text-success ml-3">✓ 全部完成 · 导出 Excel 交付老板</span>
+              )}
+            </div>
+            <div className="flex gap-2">
+              {batchRunning && (
+                <button onClick={handleBatchStop} className="px-3 py-2 border border-border-default text-[11px] font-mono text-text-secondary rounded-md hover:border-error/40 hover:text-error">
+                  停止
+                </button>
+              )}
+              {batchRows.some(r => r.status === 'done') && !batchRunning && (
+                <button onClick={handleBatchExport} className="px-4 py-2 border border-accent/40 bg-accent/10 text-accent text-[12px] font-mono rounded-md hover:bg-accent/20">
+                  ⬇ 导出 Excel（3 表 + 概览）
+                </button>
+              )}
+              <button
+                onClick={handleBatchStart}
+                disabled={!category || batchRunning || parseBatchInput(batchInput).length === 0}
+                className="px-5 py-2 bg-accent text-bg-root text-[12px] font-semibold rounded-md hover:bg-accent-hover disabled:opacity-40 disabled:cursor-not-allowed transition-all active:scale-95"
+              >
+                {batchRunning ? '运行中...' : '开始批量流水线 →'}
+              </button>
+            </div>
+          </div>
+
+          {/* 批量进度表 */}
+          {batchRows.length > 0 && (
+            <div className="mt-4 border border-border-subtle rounded-md overflow-hidden">
+              <div className="px-3 py-2 bg-bg-raised/50 border-b border-border-subtle flex items-center justify-between text-[10px] font-mono text-text-tertiary uppercase">
+                <span>批量执行表</span>
+                <span>{batchRows.filter(r => r.status === 'done').length} 成功 · {batchRows.filter(r => r.status === 'error').length} 失败</span>
+              </div>
+              <div className="divide-y divide-border-subtle max-h-[400px] overflow-y-auto">
+                {batchRows.map((row, i) => (
+                  <div key={row.id} className="px-3 py-2 flex items-center gap-3 text-[11px] hover:bg-bg-surface/50">
+                    <span className="text-[9px] font-mono text-text-tertiary w-6 tabular-nums">{i + 1}</span>
+                    <div className="flex-1 min-w-0">
+                      <div className="text-text-primary truncate">{row.skuPreview}</div>
+                      {row.error && <div className="text-[9px] text-error font-mono mt-0.5">{row.error}</div>}
+                    </div>
+                    <div className="flex-shrink-0 w-16 text-right">
+                      {row.status === 'pending' && <span className="text-[9px] font-mono text-text-tertiary/60">待处理</span>}
+                      {row.status === 'running' && (
+                        <span className="text-[9px] font-mono text-accent flex items-center justify-end gap-1">
+                          <span className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />
+                          进行中
+                        </span>
+                      )}
+                      {row.status === 'done' && <span className="text-[9px] font-mono text-success">✓ 完成</span>}
+                      {row.status === 'error' && <span className="text-[9px] font-mono text-error">✗ 失败</span>}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* 单 SKU 模式（默认） */}
+      {mode === 'single' && <>
+
       {/* 输入区 */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 mb-5">
         {/* 品类选择 */}
@@ -406,12 +739,21 @@ ${states['ip-compliance'].result || '(空)'}
             </button>
           )}
           {allDone && (
-            <button
-              onClick={handleExport}
-              className="px-4 py-2 border border-success/40 bg-success/10 text-success text-[12px] font-mono rounded-md hover:bg-success/20"
-            >
-              ⬇ 一键打包 Markdown
-            </button>
+            <>
+              <button
+                onClick={handleExportExcel}
+                className="px-3 py-2 border border-accent/40 bg-accent/10 text-accent text-[11px] font-mono rounded-md hover:bg-accent/20"
+                title="3 个工作表 · 老板看得懂的格式"
+              >
+                ⬇ Excel
+              </button>
+              <button
+                onClick={handleExport}
+                className="px-3 py-2 border border-success/40 bg-success/10 text-success text-[11px] font-mono rounded-md hover:bg-success/20"
+              >
+                ⬇ Markdown
+              </button>
+            </>
           )}
           <button
             onClick={handleStart}
@@ -525,6 +867,7 @@ ${states['ip-compliance'].result || '(空)'}
           )}
         </div>
       </div>
+      </>}
     </div>
   );
 }
