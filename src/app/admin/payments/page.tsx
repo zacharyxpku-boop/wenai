@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import AdminHeader from '@/components/AdminHeader';
 
 interface PaymentClaim {
   comment?: string;
@@ -109,28 +110,10 @@ export default function AdminPaymentsPage() {
 
   return (
     <div className="max-w-[1000px] mx-auto py-8 px-6">
-      <div className="mb-6 flex items-center justify-between">
-        <div>
-          <h1 className="text-lg font-semibold text-text-primary">付款声明审核</h1>
-          <p className="text-[11px] font-mono text-text-tertiary mt-1">
-            来自 /api/feedback?moduleId=payment-claim · 待处理 {pending.length} / 已处理 {done.length}
-          </p>
-        </div>
-        <div className="flex gap-2">
-          <a
-            href="/admin/feedback"
-            className="text-[11px] font-mono text-text-tertiary hover:text-accent border border-border-subtle rounded px-3 py-1.5"
-          >
-            ← 反馈面板
-          </a>
-          <button
-            onClick={() => { sessionStorage.removeItem('wenai_admin_key'); setAuthed(false); }}
-            className="text-[11px] text-text-tertiary hover:text-accent"
-          >
-            登出
-          </button>
-        </div>
-      </div>
+      <AdminHeader
+        subtitle={`付款声明 · 待处理 ${pending.length} / 已处理 ${done.length}`}
+        onLogout={() => { sessionStorage.removeItem('wenai_admin_key'); setAuthed(false); }}
+      />
 
       {loading ? (
         <div className="text-center py-12 text-text-tertiary font-mono text-[12px]">加载中...</div>
