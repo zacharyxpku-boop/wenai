@@ -18,6 +18,7 @@ const LIMITS: Record<string, number> = {
   // Pipeline 独立配额 · 1 次 Pipeline 触发 = 消耗 1 次（内部 3 路不扣单模块额）
   'pipeline:new-listing': 10,
   'pipeline:influencer-outbound': 10,
+  'pipeline:product-image': 5, // 生图单次成本高,配额更紧
   pipeline: 10,
 };
 
