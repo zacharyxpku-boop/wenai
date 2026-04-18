@@ -299,6 +299,30 @@ export default function AIWorkspace({
     setTimeout(() => setCopied(false), 1500);
   };
 
+  const handleShare = async () => {
+    // 生成一段带归属的分享文本 + 链接，鼓励被分享者来试
+    const shareText = `${result.slice(0, 300)}${result.length > 300 ? '...' : ''}
+
+— 用 wenai · 跨境电商 AI 工作台生成
+试一下：${typeof window !== 'undefined' ? window.location.origin : 'https://wenai-one.vercel.app'}/invite?code=demo`;
+
+    // 优先 Web Share API (mobile), 退回剪贴板
+    if (typeof navigator !== 'undefined' && 'share' in navigator) {
+      try {
+        await navigator.share({
+          title: `wenai · ${moduleName}`,
+          text: shareText,
+        });
+        return;
+      } catch {
+        // 用户取消/浏览器不支持，走剪贴板
+      }
+    }
+    await navigator.clipboard.writeText(shareText);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
       e.preventDefault();
@@ -572,6 +596,13 @@ export default function AIWorkspace({
                     导出
                   </button>
                 )}
+                <button
+                  onClick={handleShare}
+                  className="text-[9px] font-mono text-text-tertiary hover:text-accent px-2.5 py-1.5 border border-border-subtle rounded-md hover:border-accent/30 hover:bg-accent/5 transition-all"
+                  title="带邀请链接一起分享给朋友"
+                >
+                  分享
+                </button>
               </div>
             )}
           </div>

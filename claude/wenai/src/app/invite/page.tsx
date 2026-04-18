@@ -8,15 +8,15 @@ function InviteInner() {
   const params = useSearchParams();
   const code = params.get('code') || '';
 
-  const [status, setStatus] = useState<'pending' | 'valid' | 'invalid' | 'activating'>('pending');
-  const [info, setInfo] = useState<{ name?: string; expiresAt?: string; error?: string }>({});
+  const [status, setStatus] = useState<'pending' | 'valid' | 'invalid' | 'activating'>(
+    code ? 'pending' : 'invalid'
+  );
+  const [info, setInfo] = useState<{ name?: string; expiresAt?: string; error?: string }>(
+    code ? {} : { error: '链接缺少邀请码' }
+  );
 
   useEffect(() => {
-    if (!code) {
-      setStatus('invalid');
-      setInfo({ error: '链接缺少邀请码' });
-      return;
-    }
+    if (!code) return;
     fetch(`/api/auth/invite?code=${encodeURIComponent(code)}`)
       .then(r => r.json())
       .then(data => {
