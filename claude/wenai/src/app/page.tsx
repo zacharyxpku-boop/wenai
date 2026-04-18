@@ -730,6 +730,28 @@ export default function Dashboard() {
           查看定价 →
         </a>
       </div>
+
+      {/* Footer · 统一导航 */}
+      <footer className="mt-10 pt-6 border-t border-border-subtle">
+        <div className="flex flex-wrap items-center justify-between gap-4 mb-3">
+          <div className="flex flex-wrap gap-x-4 gap-y-2 text-[11px] font-mono">
+            <a href="/cases" className="text-text-secondary hover:text-accent">案例</a>
+            <a href="/pricing" className="text-text-secondary hover:text-accent">定价</a>
+            <a href="/status" className="text-text-secondary hover:text-accent">状态</a>
+            <a href="/changelog" className="text-text-secondary hover:text-accent">更新日志</a>
+            <a href="/privacy" className="text-text-secondary hover:text-accent">隐私</a>
+            <a href="/terms" className="text-text-secondary hover:text-accent">条款</a>
+            <a href="/legal/dpa" className="text-text-secondary hover:text-accent">DPA</a>
+          </div>
+          <div className="flex items-center gap-2 text-[10px] font-mono text-text-tertiary">
+            <span className="w-1 h-1 rounded-full bg-success animate-pulse-dot" />
+            wenai-one.vercel.app
+          </div>
+        </div>
+        <p className="text-[9px] font-mono text-text-tertiary/60">
+          © 2026 wenai · 跨境代运营流水线 OS · zachary.x.pku@gmail.com
+        </p>
+      </footer>
     </div>
   );
 }
