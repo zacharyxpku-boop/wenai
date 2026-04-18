@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import AdminHeader from '@/components/AdminHeader';
 import modulesConfig from '@/config/modules.json';
 
 interface FeedbackSummary {
@@ -112,28 +113,10 @@ export default function AdminMetricsPage() {
 
   return (
     <div className="max-w-[1100px] mx-auto py-8 px-6">
-      <div className="mb-6 flex items-center justify-between">
-        <div>
-          <h1 className="text-lg font-semibold text-text-primary">Metrics · 总览</h1>
-          <p className="text-[11px] font-mono text-text-tertiary mt-1">
-            feedback / payment / health / usage 四端聚合 · 不落库在此页汇总
-          </p>
-        </div>
-        <div className="flex gap-2">
-          <Link href="/admin/feedback" className="text-[11px] font-mono text-text-tertiary hover:text-accent border border-border-subtle rounded px-3 py-1.5">
-            反馈明细 →
-          </Link>
-          <Link href="/admin/payments" className="text-[11px] font-mono text-text-tertiary hover:text-accent border border-border-subtle rounded px-3 py-1.5">
-            付款审核 →
-          </Link>
-          <button
-            onClick={() => { sessionStorage.removeItem('wenai_admin_key'); setAuthed(false); }}
-            className="text-[11px] text-text-tertiary hover:text-accent"
-          >
-            登出
-          </button>
-        </div>
-      </div>
+      <AdminHeader
+        subtitle="feedback / payment / health / usage 四端聚合"
+        onLogout={() => { sessionStorage.removeItem('wenai_admin_key'); setAuthed(false); }}
+      />
 
       {/* KPI 卡 · 4 格 */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">

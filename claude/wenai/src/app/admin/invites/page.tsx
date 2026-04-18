@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import Link from 'next/link';
+import AdminHeader from '@/components/AdminHeader';
 
 interface Invite {
   name: string;
@@ -140,25 +140,10 @@ export default function AdminInvitesPage() {
 
   return (
     <div className="max-w-[1000px] mx-auto py-8 px-6">
-      <div className="mb-6 flex items-center justify-between">
-        <div>
-          <h1 className="text-lg font-semibold">邀请码管理</h1>
-          <p className="text-[11px] font-mono text-text-tertiary mt-1">
-            Redis (可改) + env (静态) + 内置 三级合并 · 共 {sorted.length}
-          </p>
-        </div>
-        <div className="flex gap-2">
-          <Link href="/admin/metrics" className="text-[11px] font-mono text-text-tertiary hover:text-accent border border-border-subtle rounded px-3 py-1.5">
-            ← Metrics
-          </Link>
-          <button
-            onClick={() => { sessionStorage.removeItem('wenai_admin_key'); setAuthed(false); }}
-            className="text-[11px] text-text-tertiary hover:text-accent"
-          >
-            登出
-          </button>
-        </div>
-      </div>
+      <AdminHeader
+        subtitle={`Redis + env + 内置 三级合并 · 共 ${sorted.length} 码`}
+        onLogout={() => { sessionStorage.removeItem('wenai_admin_key'); setAuthed(false); }}
+      />
 
       {/* 新增/编辑表单 */}
       <div className="mb-6 p-4 border border-border-subtle rounded-md bg-bg-surface">

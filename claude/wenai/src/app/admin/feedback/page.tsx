@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import modulesConfig from '@/config/modules.json';
+import AdminHeader from '@/components/AdminHeader';
 
 interface FeedbackEntry {
   rating: number;
@@ -100,20 +101,10 @@ export default function AdminFeedbackPage() {
 
   return (
     <div className="max-w-[1000px] mx-auto py-8 px-6">
-      <div className="mb-6 flex items-center justify-between">
-        <div>
-          <h1 className="text-lg font-semibold text-text-primary">内测反馈面板</h1>
-          <p className="text-[11px] font-mono text-text-tertiary mt-1">
-            来自 /api/feedback (Redis / File / Memory 三级存储)
-          </p>
-        </div>
-        <button
-          onClick={() => { sessionStorage.removeItem('wenai_admin_key'); setAuthed(false); }}
-          className="text-[11px] text-text-tertiary hover:text-accent"
-        >
-          登出
-        </button>
-      </div>
+      <AdminHeader
+        subtitle="来自 /api/feedback (Redis / File / Memory 三级存储)"
+        onLogout={() => { sessionStorage.removeItem('wenai_admin_key'); setAuthed(false); }}
+      />
 
       {/* Export all feedback as CSV */}
       {Object.keys(summary).length > 0 && (
