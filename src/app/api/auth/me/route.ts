@@ -17,7 +17,7 @@ export async function GET(request: NextRequest) {
   let daysLeft: number | null = null;
   let tier: string = 'free';
 
-  const invite = getInviteByUsername(username);
+  const invite = await getInviteByUsername(username);
   if (invite) {
     displayName = invite.name;
     expiresAt = invite.expiresAt;
