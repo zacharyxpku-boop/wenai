@@ -222,6 +222,51 @@ ${successful.map((f, i) => `### ${i + 1}. ${f.meta.label} (${f.name})
     }
   };
 
+  // 分享公开链接 (含图片 URL 列表 markdown)
+  const [sharing, setSharing] = useState(false);
+  const handleShare = async () => {
+    if (images.length === 0) return;
+    setSharing(true);
+    try {
+      const catLabel = CATEGORIES.find(c => c.id === category)?.label || '';
+      const md = `## AI 电商主图产出 · ${catLabel}
+
+**商品**: ${sku.split('\n')[0]}
+
+${images.map((img, i) => `### ${i + 1}. ${img.label}
+
+![${img.label}](${img.url})
+
+- 尺寸: ${img.width}×${img.height}
+- Prompt: ${img.prompt}
+`).join('\n')}
+
+---
+
+平台尺寸建议: Amazon 2000² · Shopee 800² · Lazada 1080² · Instagram 1080²`;
+
+      const title = `${catLabel} · ${sku.split('\n')[0].slice(0, 40)} · ${images.length} 张主图`;
+      const res = await fetch('/api/share', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ moduleId: 'pipeline-03', source: 'pipeline-03', title, content: md }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.id) throw new Error(data.error || '分享失败');
+      const fullUrl = `${window.location.origin}/share/${data.id}`;
+      const nav = navigator as Navigator & { share?: (data: { title: string; url: string }) => Promise<void> };
+      if (typeof nav.share === 'function') {
+        try { await nav.share({ title: 'wenai · AI 电商主图产出', url: fullUrl }); return; } catch {}
+      }
+      await nav.clipboard.writeText(fullUrl);
+      alert('链接已复制到剪贴板\n' + fullUrl + '\n\n7 天有效 · 含所有图片 + prompt');
+    } catch (err) {
+      alert('分享失败: ' + (err instanceof Error ? err.message : 'unknown'));
+    } finally {
+      setSharing(false);
+    }
+  };
+
   return (
     <div className="max-w-[1400px] mx-auto p-4 lg:p-6">
       {/* 三段式顶部 */}
@@ -470,6 +515,14 @@ ${successful.map((f, i) => `### ${i + 1}. ${f.meta.label} (${f.name})
                 title="打包所有图片 + README.md 到一个 ZIP"
               >
                 {zipping ? '打包中...' : '⬇ 一键打包 ZIP'}
+              </button>
+              <button
+                onClick={handleShare}
+                disabled={sharing}
+                className="px-3 py-1.5 border border-accent/40 bg-accent/10 text-accent text-[10px] font-mono rounded hover:bg-accent/20 disabled:opacity-50"
+                title="生成 7 天有效公开链接,发给主管看成图"
+              >
+                {sharing ? '生成中...' : '🔗 分享'}
               </button>
               <span className="text-[9px] font-mono text-text-tertiary hidden md:inline">平台尺寸:</span>
               {Object.entries(PLATFORM_SIZES).map(([k, v]) => (
