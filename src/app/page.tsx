@@ -184,7 +184,7 @@ export default function Dashboard() {
               {clientConfig.clientName} &middot; {clientConfig.industry}
             </p>
           </div>
-          <div className="flex items-center gap-6">
+          <div className="flex items-center gap-3 lg:gap-6 flex-shrink-0">
             <a
               href="/status"
               className="text-right hover:opacity-80 transition-opacity"
@@ -194,15 +194,15 @@ export default function Dashboard() {
                 <span className="w-1.5 h-1.5 rounded-full bg-success animate-pulse-dot" />
                 Live
               </p>
-              <p className="text-[11px] font-mono text-success tabular-nums">运行中</p>
+              <p className="text-[10px] lg:text-[11px] font-mono text-success tabular-nums">运行中</p>
             </a>
-            <div className="text-right">
+            <div className="text-right hidden sm:block">
               <p className="label-mono mb-1">在线员工</p>
-              <p className="text-xl font-semibold text-accent font-mono tabular-nums">{enabledCount}</p>
+              <p className="text-lg lg:text-xl font-semibold text-accent font-mono tabular-nums">{enabledCount}</p>
             </div>
-            <div className="text-right">
+            <div className="text-right hidden md:block">
               <p className="label-mono mb-1">商品库</p>
-              <p className="text-xl font-semibold text-text-primary font-mono tabular-nums">{demoProducts?.length || 0}</p>
+              <p className="text-lg lg:text-xl font-semibold text-text-primary font-mono tabular-nums">{demoProducts?.length || 0}</p>
             </div>
           </div>
         </div>
