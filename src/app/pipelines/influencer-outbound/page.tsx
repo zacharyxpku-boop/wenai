@@ -601,6 +601,12 @@ PantryPerfection | YouTube | 85K | 家居生活 vlog | contact@pantryperfection.
           </div>
         </div>
       )}
+
+      {/* 案例引导 */}
+      <div className="mt-4 flex items-center justify-between px-3 py-2 text-[10px] font-mono text-text-tertiary border border-border-subtle/60 rounded-md bg-bg-surface/30">
+        <span>M 工厂 · 回复率 4% → 11% · 8× 达人日均触达</span>
+        <a href="/cases#micro-audio" className="text-accent hover:underline">看 Before/After →</a>
+      </div>
     </div>
   );
 }

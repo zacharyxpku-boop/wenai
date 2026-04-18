@@ -441,6 +441,12 @@ function ProductImagePipelineInner() {
           </div>
         </div>
       )}
+
+      {/* 案例引导 */}
+      <div className="mt-4 flex items-center justify-between px-3 py-2 text-[10px] font-mono text-text-tertiary border border-border-subtle/60 rounded-md bg-bg-surface/30">
+        <span>N 代工 · ¥3500/SKU 摄影棚 → ¥0.7/SKU wanx · 5000× 成本压缩</span>
+        <a href="/cases#novahome-image" className="text-accent hover:underline">看 Before/After →</a>
+      </div>
     </div>
   );
 }
