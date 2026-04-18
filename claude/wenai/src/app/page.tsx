@@ -170,6 +170,17 @@ export default function Dashboard() {
             </p>
           </div>
           <div className="flex items-center gap-6">
+            <a
+              href="/status"
+              className="text-right hover:opacity-80 transition-opacity"
+              title="系统状态"
+            >
+              <p className="label-mono mb-1 flex items-center justify-end gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-success animate-pulse-dot" />
+                Live
+              </p>
+              <p className="text-[11px] font-mono text-success tabular-nums">运行中</p>
+            </a>
             <div className="text-right">
               <p className="label-mono mb-1">在线员工</p>
               <p className="text-xl font-semibold text-accent font-mono tabular-nums">{enabledCount}</p>
