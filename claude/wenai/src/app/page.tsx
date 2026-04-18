@@ -122,6 +122,21 @@ export default function Dashboard() {
   const [stats, setStats] = useState<UsageStats | null>(null);
   const [showAllModules, setShowAllModules] = useState(false);
   const [feedbackSummary, setFeedbackSummary] = useState<Record<string, { total: number; goodRatio: number }>>({});
+  const [healthWarning, setHealthWarning] = useState<{ overall: string; downServices: string[] } | null>(null);
+
+  useEffect(() => {
+    fetch('/api/health', { cache: 'no-store' })
+      .then(r => r.json())
+      .then(d => {
+        if (d.overall !== 'operational') {
+          const downServices = (d.services || [])
+            .filter((s: { status: string }) => s.status !== 'operational')
+            .map((s: { name: string }) => s.name);
+          setHealthWarning({ overall: d.overall, downServices });
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   useEffect(() => {
     fetch('/api/feedback?type=summary')
@@ -192,6 +207,33 @@ export default function Dashboard() {
           </div>
         </div>
       </div>
+
+      {/* Health 降级警告 · 仅非 operational 时显示 */}
+      {healthWarning && (
+        <div className={`mb-5 p-3 border rounded-md flex items-start gap-3 animate-fade-up ${
+          healthWarning.overall === 'down'
+            ? 'border-error/40 bg-error/10'
+            : 'border-accent/40 bg-accent/10'
+        }`}>
+          <span className="text-[14px] flex-shrink-0">
+            {healthWarning.overall === 'down' ? '🔴' : '🟡'}
+          </span>
+          <div className="flex-1 min-w-0">
+            <div className={`text-[11px] font-semibold ${
+              healthWarning.overall === 'down' ? 'text-error' : 'text-accent'
+            }`}>
+              {healthWarning.overall === 'down' ? '核心服务异常' : '部分服务降级'}
+              {healthWarning.downServices.length > 0 && ` · ${healthWarning.downServices.slice(0, 2).join(' / ')}`}
+            </div>
+            <div className="text-[10px] font-mono text-text-tertiary mt-0.5">
+              部分 Pipeline 可能不可用,稍后重试或看 /status 了解详情
+            </div>
+          </div>
+          <a href="/status" className="text-[10px] font-mono text-accent hover:underline flex-shrink-0 mt-0.5">
+            /status →
+          </a>
+        </div>
+      )}
 
       {/* Stats row */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6 animate-fade-up stagger-1">
