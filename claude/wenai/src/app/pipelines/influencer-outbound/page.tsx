@@ -3,7 +3,6 @@
 import { useRef, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import * as XLSX from 'xlsx';
-import modulesConfig from '@/config/modules.json';
 
 interface Influencer {
   id: string;
@@ -71,18 +70,40 @@ export default function InfluencerOutboundPage() {
   const [progress, setProgress] = useState({ current: 0, total: 0 });
   const abortRef = useRef(false);
 
-  const outreachModule = modulesConfig.modules.find(m => m.id === 'outreach');
   const readyToRun = product.brand && product.productName && rows.length > 0 && !running;
 
+  // Pipeline 02 专用 prompt · 不复用通用 outreach 模块（后者输出 3 封混排，不利于 Mail Merge）
+  // 本 Pipeline 每位达人只出 1 封最优版本，硬约束 Subject/Body 两段格式
+  const PIPELINE_PROMPT = `你是跨境电商达人 BD 顾问，擅长写高回复率的冷启邮件。
+
+输出要求（严格）：
+1. 只输出 1 封最适合该达人的邮件（不是 3 版）
+2. 格式必须严格遵循：
+   第一行：Subject: <不超过 70 字，英文；含对方频道内容线索 + 具体吸引点>
+   空一行
+   第二行起：邮件正文（英文，150-250 词，第一段必须提到对方频道/视频的具体内容证明真的看过）
+3. 结尾附一行 "Suggested CTA: <具体动作>"，如 "Suggested CTA: DM me your shipping address for a free unit"
+
+判断策略（根据达人画像选最优调性）：
+- 粉丝 < 50K → 共情版（平等协作感，提 commission + free sample）
+- 粉丝 50K-200K → 主动版（品牌价值观匹配，提 creative freedom + 固定 fee）
+- 粉丝 > 200K → 数据版（品牌背书 / 媒体资产，提 campaign context + performance bonus）
+- TikTok 偏活泼 / YouTube 偏深度 / Instagram 偏视觉
+
+禁忌：
+- 不要出现 "Dear Creator"、"Dear Influencer" 这种机械称呼
+- 不要编造对方没有的视频内容，只基于提供的 niche 合理推测
+- 不要用 "wide audience", "huge reach", "great content" 这类空洞词`;
+
   const buildInput = (inf: Influencer): string => {
-    return `【达人信息】
-- 名字/账号：${inf.name}
+    return `【达人画像】
+- 账号：${inf.name}
 - 平台：${inf.platform}
 - 粉丝量：${inf.followers || '未提供'}
 - 内容赛道：${inf.niche || '未提供'}
 ${inf.email ? `- 邮箱：${inf.email}` : ''}
 
-【品牌信息】
+【我方品牌】
 - 品牌：${product.brand}
 - 产品：${product.productName}
 - 价格：${product.price}
@@ -92,16 +113,27 @@ ${inf.email ? `- 邮箱：${inf.email}` : ''}
 - 预算：${product.budget}
 - 目标：${product.cta}
 
-请基于达人的赛道和粉丝量，生成 3 个版本的冷启邮件（安全版 / 主动转化版 / 共情数据版），每封含 Subject 和 Body，主动称呼对方的频道特点。`;
+请按输出要求为这位达人写 1 封最合适的邮件。`;
   };
 
-  const extractSubject = (md: string): string => {
-    const match = md.match(/(?:Subject|主题)[:：]\s*(.+)/i);
-    return match ? match[1].trim().slice(0, 120) : '';
+  // 严格解析：第一行 Subject / 空行 / 之后 Body
+  const parseEmailResponse = (raw: string): { subject: string; body: string } => {
+    const cleaned = raw.trim();
+    const firstLineMatch = cleaned.match(/^[\s]*Subject[:：]\s*(.+?)(?:\n|$)/i);
+    if (firstLineMatch) {
+      const subject = firstLineMatch[1].trim().slice(0, 120);
+      const body = cleaned.substring(firstLineMatch[0].length).trim();
+      return { subject, body };
+    }
+    // 回退：第一行作为 subject
+    const lines = cleaned.split('\n').filter(Boolean);
+    return {
+      subject: lines[0]?.slice(0, 120) || `Collaboration | ${product.brand}`,
+      body: lines.slice(1).join('\n').trim() || cleaned,
+    };
   };
 
   const runOne = async (inf: Influencer): Promise<Influencer> => {
-    if (!outreachModule) return { ...inf, status: 'error', error: '外联模块未配置' };
     try {
       const res = await fetch('/api/ai', {
         method: 'POST',
@@ -110,19 +142,20 @@ ${inf.email ? `- 邮箱：${inf.email}` : ''}
           'x-from-pipeline': '1',
         },
         body: JSON.stringify({
-          prompt: outreachModule.prompt,
+          prompt: PIPELINE_PROMPT,
           input: buildInput(inf),
-          moduleId: 'outreach',
+          moduleId: 'outreach', // 保留用于统计，但 prompt 已被 Pipeline 专用覆盖
         }),
       });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = await res.json();
-      const body = data.content || '';
+      const raw = data.content || '';
+      const parsed = parseEmailResponse(raw);
       return {
         ...inf,
         status: 'done' as const,
-        body,
-        subject: extractSubject(body) || `Collaboration Opportunity | ${product.brand} × ${inf.name}`,
+        body: parsed.body,
+        subject: parsed.subject,
       };
     } catch (err) {
       return { ...inf, status: 'error' as const, error: err instanceof Error ? err.message : '未知错误' };
