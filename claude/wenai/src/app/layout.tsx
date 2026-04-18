@@ -21,8 +21,30 @@ const ibmPlexMono = IBM_Plex_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Wenai · AI E-Commerce Workforce",
-  description: "Enterprise-grade AI employee system for cross-border e-commerce",
+  title: "Wenai · 跨境电商 AI 工作台",
+  description: "19 个 AI 模块覆盖翻译/评论/外联/竞品/投流/私域 · 让跨境电商团队少做 70% 重复劳动",
+  openGraph: {
+    title: "Wenai · 跨境电商 AI 工作台",
+    description: "19 个 AI 模块 · 7 天免费内测",
+    url: "https://wenai-one.vercel.app",
+    siteName: "wenai",
+    images: [
+      {
+        url: "/api/og",
+        width: 1200,
+        height: 630,
+        alt: "wenai · 跨境电商 AI 工作台",
+      },
+    ],
+    locale: "zh_CN",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Wenai · 跨境电商 AI 工作台",
+    description: "19 个 AI 模块 · 7 天免费内测",
+    images: ["/api/og"],
+  },
 };
 
 interface TenantConfig {
