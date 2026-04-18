@@ -443,35 +443,43 @@ export default function Dashboard() {
         </a>
       </div>
 
-      {/* Pipeline 02 · Coming Soon 占位 */}
+      {/* Pipeline 02 · 达人批量冷启（已实装） · Pipeline 03 占位 */}
       <div className="mb-6 animate-fade-up stagger-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-          <div className="border border-dashed border-border-default rounded-md p-4 bg-bg-surface/50 opacity-75">
+          <a
+            href="/pipelines/influencer-outbound"
+            className="group block border border-border-subtle bg-bg-surface rounded-md p-4 hover:border-accent/40 hover:-translate-y-0.5 hover:shadow-[0_6px_20px_rgba(200,151,90,0.1)] transition-all"
+            style={{ borderLeftWidth: '2px', borderLeftColor: '#9b8ec4' }}
+          >
             <div className="flex items-center gap-2 mb-1.5">
-              <span className="px-1.5 py-0.5 bg-bg-raised text-text-tertiary text-[9px] font-mono uppercase rounded">
+              <span className="px-1.5 py-0.5 bg-accent/10 text-accent text-[9px] font-mono uppercase rounded">
                 PIPELINE · 02
               </span>
-              <span className="text-[9px] font-mono text-text-tertiary">Coming Soon</span>
+              <span className="text-[9px] font-mono text-success">NEW · 已上线</span>
             </div>
-            <div className="text-[14px] font-semibold text-text-secondary mb-1 font-[family-name:var(--font-outfit)]">
-              🖼️ AI 电商主图生成
+            <div className="text-[14px] font-semibold text-text-primary mb-1 group-hover:text-accent transition-colors font-[family-name:var(--font-outfit)]">
+              📮 达人批量冷启
             </div>
-            <p className="text-[11px] text-text-tertiary leading-relaxed">
-              场景融合 · 5 张图组合 · 五大品类预设。等 Pipeline 01 内测信号启动。
+            <p className="text-[11px] text-text-secondary leading-relaxed mb-2">
+              贴达人名单 · 批量生成个性化邮件 · Excel 直接喂 Gmail Mail Merge
             </p>
-          </div>
+            <span className="text-[10px] font-mono text-accent opacity-0 group-hover:opacity-100 transition-opacity">
+              进入流水线 →
+            </span>
+          </a>
+
           <div className="border border-dashed border-border-default rounded-md p-4 bg-bg-surface/50 opacity-75">
             <div className="flex items-center gap-2 mb-1.5">
               <span className="px-1.5 py-0.5 bg-bg-raised text-text-tertiary text-[9px] font-mono uppercase rounded">
                 PIPELINE · 03
               </span>
-              <span className="text-[9px] font-mono text-text-tertiary">Coming Soon</span>
+              <span className="text-[9px] font-mono text-text-tertiary">Phase 5</span>
             </div>
             <div className="text-[14px] font-semibold text-text-secondary mb-1 font-[family-name:var(--font-outfit)]">
-              📮 达人批量冷启
+              🖼️ AI 电商主图生成
             </div>
             <p className="text-[11px] text-text-tertiary leading-relaxed">
-              贴达人名单 · 批量个性化邮件 · CSV 导出 Gmail 批发。
+              场景融合 · 5 张图组合 · 五大品类预设。等 Pipeline 01/02 信号足够启动。
             </p>
           </div>
         </div>
