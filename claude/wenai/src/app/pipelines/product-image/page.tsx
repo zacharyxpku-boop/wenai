@@ -537,6 +537,18 @@ ${images.map((img, i) => `### ${i + 1}. ${img.label}
       {/* 图片展示 */}
       {images.length > 0 && (
         <div className="mb-6">
+          {/* 24h TTL 硬提示 · 避免分享后图 404 翻车 */}
+          {images.some(i => i.provider === 'wanx') && (
+            <div className="mb-3 px-3 py-2 border border-accent/40 bg-accent/5 rounded-md flex items-start gap-2">
+              <span className="text-accent text-[13px] flex-shrink-0">⏳</span>
+              <div className="flex-1">
+                <div className="text-[11px] font-semibold text-accent">wanx 图片 URL 24 小时内有效</div>
+                <div className="text-[10px] font-mono text-text-tertiary mt-0.5">
+                  要交付/存档请立即点 <strong>⬇ ZIP</strong> 下载到本地。分享链接超过 24h 图会变 404,需要时重新生成即可。
+                </div>
+              </div>
+            </div>
+          )}
           <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
             <span className="text-[10px] font-mono text-text-tertiary uppercase tracking-wider">
               生成结果 · {images.length} 张
