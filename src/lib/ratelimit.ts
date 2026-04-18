@@ -15,6 +15,9 @@ const LIMITS: Record<string, number> = {
   copywriting: 80,
   outreach: 60,
   'ip-compliance': 60,
+  // Pipeline 独立配额 · 1 次 Pipeline 触发 = 消耗 1 次（内部 3 路不扣单模块额）
+  'pipeline:new-listing': 10,
+  pipeline: 10,
 };
 
 // --- Upstash Redis backend ---

@@ -70,7 +70,11 @@ export default function NewListingPipelinePage() {
     try {
       const res = await fetch('/api/ai', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Accept': 'text/event-stream' },
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'text/event-stream',
+          'x-from-pipeline': '1', // 跳过 per-module 限额，走 Pipeline 级配额
+        },
         signal: controller.signal,
         body: JSON.stringify({
           prompt: mod.prompt,
@@ -136,7 +140,22 @@ export default function NewListingPipelinePage() {
     }
   };
 
-  const handleStart = () => {
+  const handleStart = async () => {
+    // 先预占 Pipeline 级配额，不够不启动
+    try {
+      const check = await fetch('/api/ratelimit/check', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ kind: 'pipeline:new-listing' }),
+      });
+      if (!check.ok) {
+        const data = await check.json().catch(() => ({}));
+        alert(`Pipeline 配额已达上限\n${data.resetAtText ? '将于 ' + data.resetAtText + ' 重置' : ''}\n升级 Team 版可扩到 50 次/天`);
+        return;
+      }
+    } catch {
+      // 配额接口不可用不 block Pipeline，让 /api/ai 后端自己决定
+    }
     // 并行触发 3 步
     STEPS.forEach(s => runStep(s.id));
   };
