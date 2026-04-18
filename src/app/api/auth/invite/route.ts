@@ -1,17 +1,36 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createToken, getCookieName } from '@/lib/auth';
 
-// 内测邀请名册。仅用 invite code 映射到名字 + 有效期。
-// 不做 DB，代码里硬编码即可 — 量级 <20 人。
-const INVITES: Record<string, { name: string; expiresAt: string; tenantId: string }> = {
-  // 示例：alice / bob 是占位符，真实发给朋友前替换
+// 内测邀请名册。优先读 env var INVITE_ROSTER (JSON 格式)，否则用默认硬编码名册。
+// 改名字：Vercel dashboard → env var INVITE_ROSTER 改一行即可，不用 push 代码。
+//
+// env 格式示例：
+//   INVITE_ROSTER={"alice":{"name":"Alice","expiresAt":"2026-04-30"},"bob":{...}}
+
+type Invite = { name: string; expiresAt: string; tenantId?: string };
+
+const DEFAULT_INVITES: Record<string, Invite> = {
   alice: { name: 'Alice', expiresAt: '2026-04-30', tenantId: 'default' },
   bob: { name: 'Bob', expiresAt: '2026-04-30', tenantId: 'default' },
   charlie: { name: 'Charlie', expiresAt: '2026-04-30', tenantId: 'default' },
   demo: { name: '体验用户', expiresAt: '2099-12-31', tenantId: 'default' },
-  // wzq 朋友的代运营公司对接人
   wzqfriend: { name: '跨境代运营朋友', expiresAt: '2026-05-15', tenantId: 'default' },
 };
+
+function getInvites(): Record<string, Invite> {
+  const fromEnv = process.env.INVITE_ROSTER;
+  if (!fromEnv) return DEFAULT_INVITES;
+  try {
+    const parsed = JSON.parse(fromEnv) as Record<string, Invite>;
+    // 合并：env 覆盖默认
+    return { ...DEFAULT_INVITES, ...parsed };
+  } catch (e) {
+    console.warn('[INVITE] INVITE_ROSTER JSON 解析失败，使用默认名册', e);
+    return DEFAULT_INVITES;
+  }
+}
+
+const INVITES = getInvites();
 
 export async function POST(req: NextRequest) {
   const { code } = await req.json().catch(() => ({ code: '' }));
@@ -34,7 +53,7 @@ export async function POST(req: NextRequest) {
 
   const token = await createToken({
     username: `beta_${code}`,
-    tenantId: invite.tenantId,
+    tenantId: invite.tenantId || 'default',
     role: 'viewer',
   });
 

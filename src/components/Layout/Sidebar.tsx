@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
@@ -55,11 +55,13 @@ const catColors: Record<string, string> = {
 export default function Sidebar({ modules, categories, clientName, userRole }: SidebarProps) {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [prevPath, setPrevPath] = useState(pathname);
 
-  // Close mobile sidebar on navigation
-  useEffect(() => {
-    setMobileOpen(false);
-  }, [pathname]);
+  // Close mobile sidebar on navigation (avoid setState in effect pattern)
+  if (prevPath !== pathname) {
+    setPrevPath(pathname);
+    if (mobileOpen) setMobileOpen(false);
+  }
 
   return (
     <>
