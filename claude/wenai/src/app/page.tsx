@@ -595,6 +595,29 @@ export default function Dashboard() {
           </div>
         </div>
       </div>
+
+      {/* Pricing 入口条 */}
+      <div className="mt-6 flex items-center justify-between py-3 px-4 border border-border-subtle rounded-md bg-bg-surface/50">
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 border border-accent/30 rounded-md flex items-center justify-center text-accent text-[14px]">
+            💎
+          </div>
+          <div>
+            <div className="text-[12px] font-semibold text-text-primary">
+              内测免费 7 天 · 升级 Team ¥499/月 · Enterprise 面议
+            </div>
+            <div className="text-[10px] font-mono text-text-tertiary">
+              锚点客户首选 Team · 千人规模定制联系作者
+            </div>
+          </div>
+        </div>
+        <a
+          href="/pricing"
+          className="text-[11px] font-mono text-accent hover:underline"
+        >
+          查看定价 →
+        </a>
+      </div>
     </div>
   );
 }

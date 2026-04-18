@@ -174,6 +174,22 @@ export default function Sidebar({ modules, categories, clientName, userRole }: S
         })}
       </nav>
 
+      {/* Pricing · 升级入口 */}
+      <div className="px-3.5 pt-2 pb-1">
+        <Link
+          href="/pricing"
+          className={`flex items-center gap-2.5 px-3 py-2 rounded-md text-[11px] transition-all group ${
+            pathname === '/pricing'
+              ? 'bg-accent/10 text-accent border border-accent/30'
+              : 'text-text-tertiary hover:text-accent border border-transparent hover:border-accent/20 hover:bg-accent/5'
+          }`}
+        >
+          <span className="text-[12px]">💎</span>
+          <span className="font-[family-name:var(--font-outfit)] font-semibold">升级</span>
+          <span className="ml-auto text-[9px] font-mono opacity-60">Team · ¥499/月</span>
+        </Link>
+      </div>
+
       {/* Settings — admin only */}
       <div className="px-3.5 py-3.5 border-t border-border-default bg-bg-surface/50">
         {userRole === 'admin' && (

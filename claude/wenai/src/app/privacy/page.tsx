@@ -75,23 +75,91 @@ export default function PrivacyPage() {
         </ul>
 
         <h2>6. 您的权利</h2>
-        <p>根据《个人信息保护法》，您享有以下权利：</p>
+        <p>根据《个人信息保护法》、GDPR（若适用）及其他可适用法律，您享有以下权利：</p>
         <ul className="list-disc pl-5 space-y-1">
-          <li>查询、更正您的账户信息</li>
-          <li>要求删除您的使用数据</li>
-          <li>撤回对数据处理的同意</li>
-          <li>获取数据处理活动的说明</li>
+          <li>查询（Access）您的账户信息及使用数据</li>
+          <li>更正（Rectify）不准确的个人信息</li>
+          <li>删除（Erasure）您的使用数据</li>
+          <li>导出（Portability）您的数据（结构化 JSON 格式）</li>
+          <li>撤回（Withdraw）对数据处理的同意</li>
+          <li>投诉（Complaint）至所在地数据保护机构</li>
         </ul>
-        <p>行使上述权利，请联系：privacy@wenai.ai</p>
+        <p>行使上述权利，邮件至：<code>zachary.x.pku@gmail.com</code>，主题注明 &ldquo;数据权利请求 · [请求类型]&rdquo;，我们在 14 天内响应。</p>
 
-        <h2>7. Cookie使用</h2>
-        <p>本平台仅使用必要的功能性Cookie（会话令牌），不使用任何追踪Cookie或第三方分析工具。</p>
+        <h2>7. 子处理者清单（Subprocessors）</h2>
+        <p>我们使用以下第三方服务来提供 wenai。每个子处理者均已审查其数据处理协议：</p>
+        <div className="overflow-x-auto my-4">
+          <table className="w-full text-[12px]">
+            <thead>
+              <tr className="border-b border-border-default">
+                <th className="text-left py-2 pr-3 font-mono text-text-tertiary text-[10px] uppercase">供应商</th>
+                <th className="text-left py-2 pr-3 font-mono text-text-tertiary text-[10px] uppercase">用途</th>
+                <th className="text-left py-2 pr-3 font-mono text-text-tertiary text-[10px] uppercase">所在国</th>
+                <th className="text-left py-2 font-mono text-text-tertiary text-[10px] uppercase">DPA</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-border-subtle">
+              <tr>
+                <td className="py-2 pr-3 font-semibold">阿里云 DashScope</td>
+                <td className="py-2 pr-3">AI 模型推理（通义千问 Qwen）</td>
+                <td className="py-2 pr-3">中国</td>
+                <td className="py-2"><a href="https://help.aliyun.com/legal" className="text-accent underline">查看</a></td>
+              </tr>
+              <tr>
+                <td className="py-2 pr-3 font-semibold">DeepSeek</td>
+                <td className="py-2 pr-3">AI 模型推理（备选）</td>
+                <td className="py-2 pr-3">中国</td>
+                <td className="py-2"><a href="https://deepseek.com" className="text-accent underline">查看</a></td>
+              </tr>
+              <tr>
+                <td className="py-2 pr-3 font-semibold">Vercel</td>
+                <td className="py-2 pr-3">应用托管与边缘执行</td>
+                <td className="py-2 pr-3">美国</td>
+                <td className="py-2"><a href="https://vercel.com/legal/dpa" className="text-accent underline">查看</a></td>
+              </tr>
+              <tr>
+                <td className="py-2 pr-3 font-semibold">Upstash Redis</td>
+                <td className="py-2 pr-3">速率限制与反馈存储</td>
+                <td className="py-2 pr-3">美国</td>
+                <td className="py-2"><a href="https://upstash.com/trust" className="text-accent underline">查看</a></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p className="text-[11px] text-text-tertiary">
+          我们新增或替换子处理者时，会在 14 天内更新本表。Enterprise 客户可订阅子处理者变更邮件通知。
+        </p>
 
-        <h2>8. 政策变更</h2>
-        <p>本政策如有重大变更，我们将在平台内通知。继续使用即视为接受变更后的政策。</p>
+        <h2>8. 跨境数据传输</h2>
+        <p>当前默认部署在 Vercel（美国节点）。您的输入数据在处理过程中可能经过：</p>
+        <ul className="list-disc pl-5 space-y-1">
+          <li>Vercel 边缘节点（美国）— 应用层处理</li>
+          <li>阿里云 DashScope（中国）— AI 推理</li>
+          <li>Upstash Redis（美国）— 使用统计缓存</li>
+        </ul>
+        <p>
+          输入内容不做持久化存储，仅在处理过程中经过上述节点。
+          <strong>Enterprise 客户</strong>可选择本地部署或私有云方案，所有数据处理均发生在客户方指定的内网 / 私有云内，不跨境。
+        </p>
+
+        <h2>9. Cookie 使用</h2>
+        <p>本平台仅使用必要的功能性 Cookie：</p>
+        <ul className="list-disc pl-5 space-y-1">
+          <li><code>wenai-session</code>：会话令牌（HttpOnly、Secure），7 天有效期</li>
+        </ul>
+        <p>不使用追踪 Cookie、不使用第三方分析工具（Google Analytics / Mixpanel / Hotjar 等均未接入）。</p>
+
+        <h2>10. 儿童隐私</h2>
+        <p>wenai 为面向企业用户的 B2B SaaS，不面向 18 岁以下未成年人。我们不会故意收集未成年人的个人信息。</p>
+
+        <h2>11. 政策变更</h2>
+        <p>本政策如有重大变更（含子处理者清单扩展、数据保留周期调整、跨境传输范围变化等），我们将至少提前 14 天通过站内公告及注册邮箱通知。继续使用即视为接受变更。</p>
+
+        <h2>12. DPA（数据处理协议）</h2>
+        <p>Team 与 Enterprise 订阅支持签署标准数据处理协议（DPA），遵循 GDPR 第 28 条。请邮件 <code>zachary.x.pku@gmail.com</code> 索取 DPA 模板。</p>
 
         <h2>联系方式</h2>
-        <p>数据保护相关问题：privacy@wenai.ai</p>
+        <p>数据保护相关问题：<code>zachary.x.pku@gmail.com</code>（主题：数据保护 / DPA / 子处理者变更订阅）</p>
       </div>
     </div>
   );

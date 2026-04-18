@@ -108,7 +108,10 @@ export async function POST(request: NextRequest) {
     }
   } catch { /* ignore, fallback to tenant-id */ }
 
-  if (moduleId) {
+  // Pipeline 触发的请求已在 Pipeline 级别预占配额，跳过 per-module 限额
+  const fromPipeline = request.headers.get('x-from-pipeline') === '1';
+
+  if (moduleId && !fromPipeline) {
     const limit = await checkRateLimit(moduleId, rateKey);
     if (!limit.allowed) {
       return NextResponse.json(
