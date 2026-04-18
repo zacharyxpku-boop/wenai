@@ -300,25 +300,36 @@ export default function AIWorkspace({
   };
 
   const handleShare = async () => {
-    // 生成一段带归属的分享文本 + 链接，鼓励被分享者来试
-    const shareText = `${result.slice(0, 300)}${result.length > 300 ? '...' : ''}
+    const origin = typeof window !== 'undefined' ? window.location.origin : 'https://wenai-one.vercel.app';
+    // 摘要取前 300 字（去 markdown 标记），给分享文案
+    const excerpt = result.replace(/[#*`>|\-\n]+/g, ' ').replace(/\s+/g, ' ').slice(0, 280);
+    const shareText = `${excerpt}${result.length > 280 ? '...' : ''}
 
-— 用 wenai · 跨境电商 AI 工作台生成
-试一下：${typeof window !== 'undefined' ? window.location.origin : 'https://wenai-one.vercel.app'}/invite?code=demo`;
+— 用 wenai · ${moduleName.split(' · ')[0]}生成
+试一下：${origin}/invite?code=demo`;
 
-    // 优先 Web Share API (mobile), 退回剪贴板
+    // 生成动态分享卡 URL（别人转发时微信/Twitter 抓这个图）
+    const shareImageUrl = `${origin}/api/og?${new URLSearchParams({
+      title: moduleName.split(' · ')[0] + ' · AI 生成',
+      excerpt: excerpt.slice(0, 120),
+      module: moduleName.split(' · ')[0],
+    }).toString()}`;
+
+    // 优先 Web Share API (mobile)
     if (typeof navigator !== 'undefined' && 'share' in navigator) {
       try {
         await navigator.share({
           title: `wenai · ${moduleName}`,
           text: shareText,
+          url: `${origin}/invite?code=demo`,
         });
         return;
       } catch {
         // 用户取消/浏览器不支持，走剪贴板
       }
     }
-    await navigator.clipboard.writeText(shareText);
+    // 桌面端：文本 + 分享图 URL 一起复制
+    await navigator.clipboard.writeText(`${shareText}\n\n分享图：${shareImageUrl}`);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };

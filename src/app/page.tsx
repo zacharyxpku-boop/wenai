@@ -84,6 +84,14 @@ export default function Dashboard() {
 
   const [stats, setStats] = useState<UsageStats | null>(null);
   const [showAllModules, setShowAllModules] = useState(false);
+  const [feedbackSummary, setFeedbackSummary] = useState<Record<string, { total: number; goodRatio: number }>>({});
+
+  useEffect(() => {
+    fetch('/api/feedback?type=summary')
+      .then(r => r.json())
+      .then(d => { if (d.summary) setFeedbackSummary(d.summary); })
+      .catch(() => {});
+  }, []);
 
   useEffect(() => {
     fetch('/api/usage')
@@ -396,6 +404,46 @@ export default function Dashboard() {
           ))}
         </div>
       </div>
+
+      {/* Beta activity feed · 社会证明 — 只在有真实数据时显示 */}
+      {Object.keys(feedbackSummary).length > 0 && (
+        <div className="mb-6 animate-fade-up stagger-3">
+          <div className="flex items-center gap-2 mb-2.5">
+            <div className="w-1 h-1 rounded-full bg-success animate-pulse-dot" />
+            <span className="label-mono">内测朋友评价</span>
+            <div className="flex-1 h-px bg-border-subtle" />
+            <span className="text-[9px] font-mono text-text-tertiary">
+              共 {Object.values(feedbackSummary).reduce((s, v) => s + v.total, 0)} 条
+            </span>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5">
+            {Object.entries(feedbackSummary)
+              .sort((a, b) => b[1].total - a[1].total)
+              .slice(0, 4)
+              .map(([mid, data]) => {
+                const mod = modulesConfig.modules.find(m => m.id === mid);
+                if (!mod) return null;
+                return (
+                  <div key={mid} className="bg-bg-surface border border-border-subtle rounded-md p-3">
+                    <div className="flex items-baseline justify-between mb-1.5">
+                      <span className="text-[12px] font-semibold text-text-primary truncate">{mod.name}</span>
+                      <span className="text-[10px] font-mono text-text-tertiary tabular-nums">{data.total}</span>
+                    </div>
+                    <div className="h-1 bg-bg-raised rounded-full overflow-hidden mb-1.5">
+                      <div
+                        className="h-full bg-success/60 rounded-full"
+                        style={{ width: `${data.goodRatio}%` }}
+                      />
+                    </div>
+                    <div className="text-[9px] font-mono text-text-tertiary">
+                      {data.goodRatio}% 好评
+                    </div>
+                  </div>
+                );
+              })}
+          </div>
+        </div>
+      )}
 
       {/* Toggle to reveal all 19 modules */}
       {!showAllModules && (
