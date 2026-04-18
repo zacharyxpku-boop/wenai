@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { CATEGORIES, type CategoryId } from '@/lib/category-prompts';
 import { getScenePresets } from '@/lib/scene-presets';
 
@@ -31,10 +32,26 @@ const PLATFORM_SIZES: Record<string, { label: string; size: string }> = {
   instagram: { label: 'Instagram', size: '1080 × 1080' },
 };
 
-export default function ProductImagePipelinePage() {
+function ProductImagePipelineInner() {
+  const params = useSearchParams();
   const [category, setCategory] = useState<CategoryId | ''>('');
   const [scene, setScene] = useState('');
   const [sku, setSku] = useState('');
+  const [handoffBanner, setHandoffBanner] = useState<string>('');
+
+  // 从 Pipeline 01 带参数跳过来
+  useEffect(() => {
+    const fromListing = params.get('from') === 'listing';
+    const qSku = params.get('sku');
+    const qCat = params.get('category');
+    if (fromListing && qSku) {
+      setSku(qSku);
+      if (qCat && ['home', 'auto', 'digital', 'tool', 'living'].includes(qCat)) {
+        setCategory(qCat as CategoryId);
+      }
+      setHandoffBanner('已从 Pipeline 01 带入 SKU,选一个场景即可直接生图');
+    }
+  }, [params]);
   const [selectedOutputs, setSelectedOutputs] = useState<Set<OutputType>>(
     new Set(['main', 'scene', 'detail', 'lifestyle', 'compare'])
   );
@@ -180,6 +197,23 @@ export default function ProductImagePipelinePage() {
           </div>
         </div>
       </div>
+
+      {/* 联动 handoff banner */}
+      {handoffBanner && (
+        <div className="mb-4 p-3 border border-accent/40 bg-accent/10 rounded-md flex items-center gap-3">
+          <span className="text-accent text-[14px]">↳</span>
+          <div className="flex-1">
+            <div className="text-[11px] font-semibold text-accent">{handoffBanner}</div>
+            <div className="text-[10px] font-mono text-text-tertiary mt-0.5">Pipeline 01 → 03 联动</div>
+          </div>
+          <button
+            onClick={() => { setHandoffBanner(''); setSku(''); setCategory(''); setScene(''); }}
+            className="text-[10px] font-mono text-text-tertiary hover:text-accent"
+          >
+            清空
+          </button>
+        </div>
+      )}
 
       {/* Provider 状态条 */}
       <div className="mb-4 p-3 border border-success/30 bg-success/5 rounded-md">
@@ -375,5 +409,13 @@ export default function ProductImagePipelinePage() {
         </div>
       )}
     </div>
+  );
+}
+
+export default function ProductImagePipelinePage() {
+  return (
+    <Suspense fallback={<div className="p-12 text-center text-text-tertiary font-mono text-[12px]">加载中...</div>}>
+      <ProductImagePipelineInner />
+    </Suspense>
   );
 }
