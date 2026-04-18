@@ -471,9 +471,17 @@ export default function Dashboard() {
             <p className="text-[11px] text-text-secondary leading-relaxed mb-2">
               贴达人名单 · 批量生成个性化邮件 · Excel 直接喂 Gmail Mail Merge
             </p>
-            <span className="text-[10px] font-mono text-accent opacity-0 group-hover:opacity-100 transition-opacity">
-              进入流水线 →
-            </span>
+            <div className="flex items-center justify-between gap-2">
+              <span className="text-[10px] font-mono text-accent opacity-0 group-hover:opacity-100 transition-opacity">
+                进入流水线 →
+              </span>
+              <span
+                onClick={(e) => { e.preventDefault(); e.stopPropagation(); window.location.href = '/pipelines/influencer-outbound?demo=1'; }}
+                className="text-[9px] font-mono text-success border border-success/30 rounded px-1.5 py-0.5 hover:bg-success/10 cursor-pointer"
+              >
+                ⚡ demo
+              </span>
+            </div>
           </a>
 
           <a
@@ -493,9 +501,17 @@ export default function Dashboard() {
             <p className="text-[11px] text-text-secondary leading-relaxed mb-2">
               15 场景预设 · 1 SKU 出 5 图 · 中文 prompt 原生 · 商标词前置过滤
             </p>
-            <span className="text-[10px] font-mono text-accent opacity-0 group-hover:opacity-100 transition-opacity">
-              进入流水线 →
-            </span>
+            <div className="flex items-center justify-between gap-2">
+              <span className="text-[10px] font-mono text-accent opacity-0 group-hover:opacity-100 transition-opacity">
+                进入流水线 →
+              </span>
+              <span
+                onClick={(e) => { e.preventDefault(); e.stopPropagation(); window.location.href = '/pipelines/product-image?demo=1'; }}
+                className="text-[9px] font-mono text-success border border-success/30 rounded px-1.5 py-0.5 hover:bg-success/10 cursor-pointer"
+              >
+                ⚡ demo
+              </span>
+            </div>
           </a>
         </div>
       </div>
