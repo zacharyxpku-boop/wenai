@@ -5,15 +5,17 @@ import { verifyToken, getCookieName } from '@/lib/auth';
 /**
  * AI 电商主图生成 · Pipeline 03 后端
  *
- * 当前实现：Mock 模式（返回 Unsplash placeholder + 每图说明），
- *          便于前端体验流畅，等下列任一 env var 配置后自动切换为真生成：
- *   FAL_KEY                  → 走 fal.ai Flux Schnell
- *   REPLICATE_API_TOKEN      → 走 Replicate black-forest-labs/flux-schnell
+ * 生图提供商优先级：
+ *   1. 阿里通义万相 wanx (默认, 复用 AI_API_KEY · 无需额外配置) ← 当前激活
+ *   2. FAL_KEY                  → 走 fal.ai Flux Schnell (预留)
+ *   3. REPLICATE_API_TOKEN      → 走 Replicate (预留)
+ *   4. Mock (Picsum 占位, 最后回退)
  *
  * 差异化对标 HotClaw：
  * - 品类专属场景预设（5 类 × 3 预设）
  * - 1 SKU → 5 图组合（主图/场景/细节/使用/对比）
  * - 合规前置（商标词在生成 prompt 前被移除）
+ * - 阿里万相中文 prompt 原生支持（HotClaw 用英文 Flux 不如本地化）
  */
 
 interface ImageRequest {
@@ -67,6 +69,123 @@ function sanitizePrompt(text: string): string {
   return text.replace(BLOCKED_WORDS, '[brand]');
 }
 
+// ============================================================
+// 阿里通义万相 (wanx) 生图辅助
+// ============================================================
+
+const WANX_SUBMIT_URL = 'https://dashscope.aliyuncs.com/api/v1/services/aigc/text2image/image-synthesis';
+const WANX_TASK_URL = 'https://dashscope.aliyuncs.com/api/v1/tasks';
+const WANX_MODEL = process.env.WANX_MODEL || 'wanx2.1-t2i-turbo'; // turbo 版 ~6s/图
+
+async function submitWanxTask(apiKey: string, prompt: string): Promise<string | null> {
+  const res = await fetch(WANX_SUBMIT_URL, {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${apiKey}`,
+      'Content-Type': 'application/json',
+      'X-DashScope-Async': 'enable',
+    },
+    body: JSON.stringify({
+      model: WANX_MODEL,
+      input: { prompt },
+      parameters: {
+        size: '1024*1024',
+        n: 1,
+      },
+    }),
+  });
+  if (!res.ok) {
+    const errText = await res.text().catch(() => '');
+    throw new Error(`wanx submit HTTP ${res.status}: ${errText.slice(0, 200)}`);
+  }
+  const data = await res.json();
+  return data?.output?.task_id || null;
+}
+
+interface WanxTaskResult {
+  status: 'PENDING' | 'RUNNING' | 'SUCCEEDED' | 'FAILED';
+  url?: string;
+  error?: string;
+}
+
+async function pollWanxTask(apiKey: string, taskId: string, maxMs = 45000): Promise<WanxTaskResult> {
+  const start = Date.now();
+  while (Date.now() - start < maxMs) {
+    await new Promise(r => setTimeout(r, 2500));
+    const res = await fetch(`${WANX_TASK_URL}/${taskId}`, {
+      headers: { 'Authorization': `Bearer ${apiKey}` },
+    });
+    if (!res.ok) continue;
+    const data = await res.json();
+    const status = data?.output?.task_status;
+    if (status === 'SUCCEEDED') {
+      const url = data?.output?.results?.[0]?.url;
+      if (url) return { status: 'SUCCEEDED', url };
+      return { status: 'FAILED', error: 'no url in result' };
+    }
+    if (status === 'FAILED') {
+      return { status: 'FAILED', error: data?.output?.message || 'task failed' };
+    }
+  }
+  return { status: 'FAILED', error: 'timeout' };
+}
+
+interface GenViaWanxArgs {
+  apiKey: string;
+  outputs: Array<'main' | 'scene' | 'detail' | 'lifestyle' | 'compare'>;
+  category?: string;
+  scenePrompt: string;
+  skuInfo: string;
+}
+
+async function generateViaWanx(args: GenViaWanxArgs): Promise<Array<{
+  type: string; label: string; prompt: string; url: string;
+  width: number; height: number; provider: string;
+}>> {
+  // 1. 为每个 output 构造 prompt
+  const promptJobs = args.outputs.map(type => {
+    const meta = OUTPUT_DESCRIPTIONS[type];
+    const fullPrompt = `${meta.prompt}${args.scenePrompt ? ', ' + args.scenePrompt : ''}. Product: ${args.skuInfo.slice(0, 180)}`;
+    return { type, label: meta.label, prompt: fullPrompt };
+  });
+
+  // 2. 并行提交所有 task（wanx 一次 submit 不阻塞）
+  const taskIds: Array<{ type: string; label: string; prompt: string; taskId: string | null }> = [];
+  await Promise.all(
+    promptJobs.map(async job => {
+      try {
+        const id = await submitWanxTask(args.apiKey, job.prompt);
+        taskIds.push({ ...job, taskId: id });
+      } catch (err) {
+        console.warn('[wanx] submit failed for', job.type, err);
+        taskIds.push({ ...job, taskId: null });
+      }
+    })
+  );
+
+  // 3. 并行轮询所有 task（45s 内完成，否则该图失败）
+  const results = await Promise.all(
+    taskIds.map(async job => {
+      if (!job.taskId) return null;
+      const poll = await pollWanxTask(args.apiKey, job.taskId);
+      if (poll.status === 'SUCCEEDED' && poll.url) {
+        return {
+          type: job.type,
+          label: job.label,
+          prompt: job.prompt,
+          url: poll.url,
+          width: 1024,
+          height: 1024,
+          provider: 'wanx',
+        };
+      }
+      return null;
+    })
+  );
+
+  return results.filter(Boolean) as ReturnType<typeof generateViaWanx> extends Promise<infer T> ? T : never;
+}
+
 export async function POST(request: NextRequest) {
   let body: ImageRequest;
   try {
@@ -104,25 +223,37 @@ export async function POST(request: NextRequest) {
     : '';
 
   // ========================================
-  // 分支 1：Real image generation (FAL / Replicate)
+  // 分支 1：阿里通义万相 wanx（默认，复用 AI_API_KEY）
   // ========================================
-  const falKey = process.env.FAL_KEY;
-  const replicateToken = process.env.REPLICATE_API_TOKEN;
+  const dashscopeKey = process.env.AI_API_KEY;
+  const wanxDisabled = process.env.WANX_DISABLED === '1';
 
-  if (falKey || replicateToken) {
-    // 暂未实现真调用 — 预留接口。到 key 配置时在此处接
-    // 每个 output 调一次 /fal/run 或 /replicate/predictions，await 所有
-    // 返回 { images: [{ url, label, prompt }] }
-    return NextResponse.json({
-      mock: false,
-      pending: true,
-      message: '真实生图接口已就绪但未实装。用户配置 FAL_KEY / REPLICATE_API_TOKEN 后在 route.ts 开启',
-      images: [],
-    });
+  if (dashscopeKey && !wanxDisabled) {
+    try {
+      const wanxImages = await generateViaWanx({
+        apiKey: dashscopeKey,
+        outputs,
+        category: body.category,
+        scenePrompt,
+        skuInfo: cleanSku,
+      });
+      if (wanxImages.length > 0) {
+        return NextResponse.json({
+          mock: false,
+          provider: 'wanx',
+          images: wanxImages,
+          scenePromptUsed: scenePrompt,
+          categoryUsed: body.category,
+        });
+      }
+    } catch (err) {
+      console.warn('[image-gen] wanx failed, falling back to mock:', err);
+      // 继续走 mock 分支
+    }
   }
 
   // ========================================
-  // 分支 2：Mock 模式（当前默认，用于 UI 体验流畅）
+  // 分支 2：Mock 模式（fallback）
   // ========================================
   const mockImages = outputs.map(type => {
     const meta = OUTPUT_DESCRIPTIONS[type];
