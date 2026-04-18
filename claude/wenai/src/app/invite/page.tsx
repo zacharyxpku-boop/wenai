@@ -85,19 +85,19 @@ function InviteInner() {
             <div className="space-y-2 text-[12px] text-text-secondary mb-6">
               <div className="flex items-start gap-2">
                 <span className="text-accent flex-shrink-0">·</span>
-                <span>19 个 AI 模块全部开放使用</span>
+                <span>聚焦 <strong className="text-text-primary">3 件事</strong>：批量翻译 listing / 评论结构化 / 达人冷启邮件</span>
               </div>
               <div className="flex items-start gap-2">
                 <span className="text-accent flex-shrink-0">·</span>
-                <span>每日 50 次调用配额，足够跑 3-5 个真实项目</span>
+                <span>每日 50 次调用配额 · 独立到邀请码，不会被别人占用</span>
               </div>
               <div className="flex items-start gap-2">
                 <span className="text-accent flex-shrink-0">·</span>
-                <span>输入数据不落库、不训练模型（<a href="/privacy" className="text-accent underline">查看承诺</a>）</span>
+                <span>输入不落库、不训练模型（<a href="/privacy" className="text-accent underline">看承诺</a>）</span>
               </div>
               <div className="flex items-start gap-2">
                 <span className="text-accent flex-shrink-0">·</span>
-                <span>每个结果页底部有反馈按钮，欢迎吐槽</span>
+                <span>结果下方有 5 个一键改写按钮 · 作者看每一条吐槽</span>
               </div>
             </div>
 
