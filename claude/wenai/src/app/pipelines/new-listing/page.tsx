@@ -273,6 +273,43 @@ ${states['ip-compliance'].result || '(空)'}
     URL.revokeObjectURL(url);
   };
 
+  // 分享到公开只读链接(给老板看)
+  const [sharing, setSharing] = useState(false);
+  const handleShare = async () => {
+    setSharing(true);
+    try {
+      const cat = CATEGORIES.find(c => c.id === category);
+      const md = `## 多语言翻译\n\n${states.translate.result}\n\n---\n\n## 商品文案\n\n${states.copywriting.result}\n\n---\n\n## 侵权合规扫描\n\n${states['ip-compliance'].result}`;
+      const title = `${cat?.label || ''} · ${skuInput.split('\n')[0].slice(0, 50)}`;
+      const res = await fetch('/api/share', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          moduleId: 'pipeline-01',
+          source: 'pipeline-01',
+          title,
+          content: md,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.id) throw new Error(data.error || '分享失败');
+      const fullUrl = `${window.location.origin}/share/${data.id}`;
+      const nav = navigator as Navigator & { share?: (data: { title: string; url: string }) => Promise<void> };
+      if (typeof nav !== 'undefined' && typeof nav.share === 'function') {
+        try {
+          await nav.share({ title: 'wenai · 跨境新品 Pipeline 产出', url: fullUrl });
+          return;
+        } catch { /* fallback to clipboard */ }
+      }
+      await nav.clipboard.writeText(fullUrl);
+      alert('链接已复制到剪贴板\n' + fullUrl + '\n\n7 天有效,可直接发给老板');
+    } catch (err) {
+      alert('分享失败: ' + (err instanceof Error ? err.message : 'unknown'));
+    } finally {
+      setSharing(false);
+    }
+  };
+
   // ============================================================
   // 批量模式 · 串行处理多个 SKU（避免并发撞 API 速率）
   // ============================================================
@@ -777,6 +814,14 @@ ${states['ip-compliance'].result || '(空)'}
                 className="px-3 py-2 border border-success/40 bg-success/10 text-success text-[11px] font-mono rounded-md hover:bg-success/20"
               >
                 ⬇ Markdown
+              </button>
+              <button
+                onClick={handleShare}
+                disabled={sharing}
+                className="px-3 py-2 border border-accent/40 bg-accent/10 text-accent text-[11px] font-mono rounded-md hover:bg-accent/20 disabled:opacity-50"
+                title="生成 7 天有效公开链接,发给老板/同事看"
+              >
+                {sharing ? '生成中...' : '🔗 分享给老板'}
               </button>
             </>
           )}
