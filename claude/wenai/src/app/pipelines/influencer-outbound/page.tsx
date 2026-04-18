@@ -341,6 +341,54 @@ ${inf.email ? `- 邮箱：${inf.email}` : ''}
     setProduct(TEMPLATE_PRODUCT);
   };
 
+  // 分享到公开只读链接
+  const [sharing, setSharing] = useState(false);
+  const handleShare = async () => {
+    const doneRows = rows.filter(r => r.status === 'done');
+    if (doneRows.length === 0) return;
+    setSharing(true);
+    try {
+      const md = `## 达人外联批量产出 · ${product.brand || product.productName}
+
+- 产品: ${product.productName} (${product.price})
+- 卖点: ${product.usp}
+- 预算: ${product.budget}
+- 合作目标: ${product.cta}
+
+---
+
+${doneRows.map((r, i) => `### ${i + 1}. ${r.name} · ${r.platform} · ${r.followers}
+
+赛道：${r.niche}
+${r.email ? `邮箱：${r.email}` : ''}
+
+**Subject:** ${r.subject || ''}
+
+${r.body || ''}
+`).join('\n---\n\n')}`;
+
+      const title = `${product.brand || product.productName} × ${doneRows.length} 位达人冷启邮件`;
+      const res = await fetch('/api/share', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ moduleId: 'pipeline-02', source: 'pipeline-02', title, content: md }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.id) throw new Error(data.error || '分享失败');
+      const fullUrl = `${window.location.origin}/share/${data.id}`;
+      const nav = navigator as Navigator & { share?: (data: { title: string; url: string }) => Promise<void> };
+      if (typeof nav.share === 'function') {
+        try { await nav.share({ title: 'wenai · 达人冷启邮件批量产出', url: fullUrl }); return; } catch {}
+      }
+      await nav.clipboard.writeText(fullUrl);
+      alert('链接已复制到剪贴板\n' + fullUrl + '\n\n7 天有效,可发给主管看成果');
+    } catch (err) {
+      alert('分享失败: ' + (err instanceof Error ? err.message : 'unknown'));
+    } finally {
+      setSharing(false);
+    }
+  };
+
   const handleSampleInfluencers = () => {
     setRawInput(`@homestorage_sara | Instagram | 48K | 家居收纳 Reels | sara@example.com
 @kitchen.tara | Instagram | 120K | 厨房整理 | hi@tara.com
@@ -523,9 +571,19 @@ PantryPerfection | YouTube | 85K | 家居生活 vlog | contact@pantryperfection.
         <div className="flex gap-2">
           {running && <button onClick={handleStop} className="px-3 py-2 border border-border-default text-[11px] font-mono text-text-secondary rounded-md hover:border-error/40 hover:text-error">停止</button>}
           {doneCount > 0 && !running && (
-            <button onClick={handleExport} className="px-4 py-2 border border-accent/40 bg-accent/10 text-accent text-[12px] font-mono rounded-md hover:bg-accent/20">
-              ⬇ Excel（Mail Merge 格式）
-            </button>
+            <>
+              <button onClick={handleExport} className="px-4 py-2 border border-accent/40 bg-accent/10 text-accent text-[12px] font-mono rounded-md hover:bg-accent/20">
+                ⬇ Excel（Mail Merge）
+              </button>
+              <button
+                onClick={handleShare}
+                disabled={sharing}
+                className="px-3 py-2 border border-accent/40 bg-accent/10 text-accent text-[11px] font-mono rounded-md hover:bg-accent/20 disabled:opacity-50"
+                title="生成 7 天有效公开链接发主管"
+              >
+                {sharing ? '生成中...' : '🔗 分享主管'}
+              </button>
+            </>
           )}
           <button
             onClick={handleStart}
