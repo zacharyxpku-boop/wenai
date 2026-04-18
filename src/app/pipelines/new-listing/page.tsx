@@ -53,6 +53,7 @@ export default function NewListingPipelinePage() {
   const [mode, setMode] = useState<'single' | 'batch'>('single');
   const [category, setCategory] = useState<CategoryId | ''>('');
   const [skuInput, setSkuInput] = useState('');
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [phase2Clicked, setPhase2Clicked] = useState(false);
 
   // 批量模式状态
@@ -397,26 +398,9 @@ ${states['ip-compliance'].result || '(空)'}
     XLSX.writeFile(wb, `wenai-batch-${Date.now()}.xlsx`);
   };
 
-  const handlePhase2Interest = async () => {
-    if (phase2Clicked) return;
-    setPhase2Clicked(true);
-    try {
-      await fetch('/api/feedback', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          type: 'feedback',
-          moduleId: 'phase2-image-gen',
-          data: {
-            rating: 5,
-            verdict: 'good',
-            comment: '我想先用 AI 主图生成（Phase 2 兴趣表达）',
-            timestamp: new Date().toISOString(),
-          },
-        }),
-      });
-    } catch {}
-  };
+  // Pipeline 03 已上线,原兴趣记录函数保留供 phase2Clicked state 引用合法性
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const _handlePhase2Interest = () => { setPhase2Clicked(true); };
 
   return (
     <div className="max-w-[1400px] mx-auto p-4 lg:p-6">
@@ -834,37 +818,31 @@ ${states['ip-compliance'].result || '(空)'}
           );
         })}
 
-        {/* Phase 2 占位栏 · AI 电商主图 */}
-        <div
-          onClick={handlePhase2Interest}
-          className={`border-2 border-dashed rounded-md flex flex-col items-center justify-center p-4 cursor-pointer transition-all ${
-            phase2Clicked
-              ? 'border-success/40 bg-success/5'
-              : 'border-border-default hover:border-accent/40 hover:bg-accent/5'
-          }`}
+        {/* Pipeline 03 联动卡 · 把当前 SKU 一键带到生图 */}
+        <a
+          href={skuInput.trim().length >= 10 && category
+            ? `/pipelines/product-image?from=listing&category=${encodeURIComponent(category)}&sku=${encodeURIComponent(skuInput.slice(0, 500))}`
+            : '/pipelines/product-image'
+          }
+          className="border-2 border-dashed border-accent/40 bg-accent/5 rounded-md flex flex-col items-center justify-center p-4 cursor-pointer transition-all hover:border-accent/70 hover:bg-accent/10"
           style={{ minHeight: '320px' }}
         >
-          <div className="text-2xl mb-2 opacity-60">🖼️</div>
+          <div className="text-2xl mb-2">🖼️</div>
           <div className="text-[11px] font-semibold text-text-primary mb-1">
             AI 电商主图
           </div>
-          <div className="text-[9px] font-mono text-text-tertiary mb-3 uppercase tracking-wider">
-            Phase 2 · Coming Soon
+          <div className="text-[9px] font-mono text-accent mb-3 uppercase tracking-wider">
+            Pipeline · 03 · 通义万相
           </div>
           <div className="text-[10px] text-text-secondary text-center leading-relaxed mb-3 max-w-[160px]">
-            场景融合 · 批量产出<br />
-            5 张图（主图 / 场景 / 细节 / 使用 / 对比）
+            {skuInput.trim().length >= 10
+              ? '当前 SKU 一键带过去，直接选场景生 5 图'
+              : '场景融合 · 5 张图（主/场景/细节/使用/对比）'}
           </div>
-          {phase2Clicked ? (
-            <span className="text-[10px] font-mono text-success">
-              ✓ 需求已记录
-            </span>
-          ) : (
-            <span className="text-[10px] font-mono text-accent">
-              我想先用这个 →
-            </span>
-          )}
-        </div>
+          <span className="text-[10px] font-mono text-accent">
+            {skuInput.trim().length >= 10 ? '带 SKU 生图 →' : '进 Pipeline 03 →'}
+          </span>
+        </a>
       </div>
       </>}
     </div>

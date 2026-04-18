@@ -25,41 +25,41 @@ interface ImageRequest {
   outputs?: Array<'main' | 'scene' | 'detail' | 'lifestyle' | 'compare'>;
 }
 
-// Scene presets per category
+// Scene presets per category · 中文 prompt 喂 wanx 效果优于英文
 const SCENE_PROMPTS: Record<string, Record<string, string>> = {
   home: {
-    'home-kitchen': 'on clean white kitchen countertop, morning light from left, minimal Scandinavian style, shallow depth of field',
-    'home-pantry': 'organized pantry shelf, neat labels, warm ambient light, Pinterest aesthetic',
-    'home-living': 'on walnut coffee table next to succulent and coffee mug, natural daylight',
+    'home-kitchen': '干净白色厨房台面，晨光从左侧射入，极简北欧风格，浅景深',
+    'home-pantry': '整齐的食品储藏货架，标签清晰，暖色环境光，Pinterest 美学',
+    'home-living': '胡桃木茶几上，旁边配多肉植物和咖啡杯，自然日光',
   },
   auto: {
-    'auto-dashboard': 'mounted on dashboard of modern sedan, sunset through windshield, cinematic composition',
-    'auto-steering': 'centered above steering wheel, leather interior, moody rim light',
-    'auto-detail': 'close-up macro shot showing mounting mechanism, shallow DoF, tech product photography style',
+    'auto-dashboard': '安装在现代轿车仪表台上，挡风玻璃外夕阳余晖，电影感构图',
+    'auto-steering': '方向盘正上方居中摆放，真皮内饰，轮廓光营造氛围',
+    'auto-detail': '特写微距拍摄安装机构细节，浅景深，科技产品摄影风格',
   },
   digital: {
-    'digital-desk': 'on minimal desk with MacBook and notebook, morning window light, editorial style',
-    'digital-outdoor': 'clipped to backpack strap, hiking trail bokeh background, golden hour',
-    'digital-detail': 'studio product shot on seamless gradient backdrop, key light from 45 degrees',
+    'digital-desk': '极简办公桌上，旁配笔记本电脑和笔记本，晨光透过窗户，编辑摄影风格',
+    'digital-outdoor': '夹在徒步背包肩带上，户外徒步小径背景虚化，黄金时刻',
+    'digital-detail': '影棚产品拍摄，无缝渐变背景，45 度角主光',
   },
   tool: {
-    'tool-workshop': 'on workshop bench with sawdust and wood scraps, warm tungsten light, craftsman aesthetic',
-    'tool-hand': 'hand holding the tool in use, soft focus background, documentary photography',
-    'tool-kit': 'laid out with accessories in organized flat lay, top-down view, studio lighting',
+    'tool-workshop': '工匠工作台上，周围散落木屑和木块，温暖钨丝灯光，匠人美学',
+    'tool-hand': '人手持工具使用瞬间，背景柔焦，纪实摄影风格',
+    'tool-kit': '配件井然排开，俯视平铺构图，影棚灯光',
   },
   living: {
-    'living-bathroom': 'on marble bathroom counter, soft morning light, hotel aesthetic',
-    'living-kitchen': 'on kitchen island with fresh ingredients, natural light, food magazine style',
-    'living-outdoor': 'on picnic blanket with snacks, grass background, lifestyle photography',
+    'living-bathroom': '大理石浴室台面上，柔和晨光，酒店般精致感',
+    'living-kitchen': '厨房岛台上，旁配新鲜食材，自然光，美食杂志风格',
+    'living-outdoor': '户外野餐布上，旁配零食，草地背景，生活方式摄影',
   },
 };
 
 const OUTPUT_DESCRIPTIONS = {
-  main: { label: '主图', prompt: 'pure white background, centered product shot, 45-degree angle, product fills 80% of frame, soft shadow, Amazon listing style' },
-  scene: { label: '场景图', prompt: 'in real usage environment (see scene preset), natural context, lifestyle shot' },
-  detail: { label: '细节图', prompt: 'macro close-up showing material texture and craftsmanship, studio lighting, razor-sharp focus' },
-  lifestyle: { label: '使用图', prompt: 'hands-on usage moment, person interacting naturally, warm tones, candid moment' },
-  compare: { label: '对比图', prompt: 'side-by-side with competitor or old version, clean diagram overlay, infographic style' },
+  main: { label: '主图', prompt: '纯白背景电商主图，居中产品，45 度俯视，产品占画面 80%，柔和投影，Amazon listing 规范，超清细节' },
+  scene: { label: '场景图', prompt: '真实使用环境中的产品，自然场景，lifestyle 摄影风格，讲故事感' },
+  detail: { label: '细节图', prompt: '产品材质工艺微距特写，影棚打光，锐利对焦，工业设计美学' },
+  lifestyle: { label: '使用图', prompt: '人手互动使用瞬间，温暖色调，自然抓拍，真实感' },
+  compare: { label: '对比图', prompt: '产品与竞品或旧款并列对比，干净示意图叠加，信息图风格' },
 };
 
 // Brand word filter — 避免生成 Apple 类商标近似图
@@ -142,10 +142,12 @@ async function generateViaWanx(args: GenViaWanxArgs): Promise<Array<{
   type: string; label: string; prompt: string; url: string;
   width: number; height: number; provider: string;
 }>> {
-  // 1. 为每个 output 构造 prompt
+  // 1. 为每个 output 构造 prompt (中文优先,wanx 更擅长)
   const promptJobs = args.outputs.map(type => {
     const meta = OUTPUT_DESCRIPTIONS[type];
-    const fullPrompt = `${meta.prompt}${args.scenePrompt ? ', ' + args.scenePrompt : ''}. Product: ${args.skuInfo.slice(0, 180)}`;
+    // 主图不注入场景（白底就是白底），其他图注入场景
+    const scene = type === 'main' ? '' : (args.scenePrompt ? '，' + args.scenePrompt : '');
+    const fullPrompt = `${meta.prompt}${scene}。产品信息：${args.skuInfo.slice(0, 200)}`;
     return { type, label: meta.label, prompt: fullPrompt };
   });
 
