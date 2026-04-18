@@ -477,13 +477,13 @@ export default function Dashboard() {
               <span className="px-1.5 py-0.5 bg-accent/10 text-accent text-[9px] font-mono uppercase rounded">
                 PIPELINE · 03
               </span>
-              <span className="text-[9px] font-mono text-error">ALPHA · 对标 HotClaw</span>
+              <span className="text-[9px] font-mono text-success">LIVE · 通义万相</span>
             </div>
             <div className="text-[14px] font-semibold text-text-primary mb-1 group-hover:text-accent transition-colors font-[family-name:var(--font-outfit)]">
               🖼️ AI 电商主图生成
             </div>
             <p className="text-[11px] text-text-secondary leading-relaxed mb-2">
-              15 个场景预设 · 1 SKU 出 5 图组合 · 商标词前置过滤。前端就绪，待接入 Flux key
+              15 场景预设 · 1 SKU 出 5 图 · 中文 prompt 原生 · 商标词前置过滤
             </p>
             <span className="text-[10px] font-mono text-accent opacity-0 group-hover:opacity-100 transition-opacity">
               进入流水线 →

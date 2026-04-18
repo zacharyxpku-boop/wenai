@@ -748,8 +748,8 @@ ${states['ip-compliance'].result || '(空)'}
         </div>
       </div>
 
-      {/* 四栏结果区（第 4 栏 Phase 2 占位） */}
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-3">
+      {/* 结果区 · 3 栏 AI 结果 + 2 栏下游 Pipeline 联动 */}
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-3">
         {STEPS.map(step => {
           const s = states[step.id];
           return (
@@ -841,6 +841,32 @@ ${states['ip-compliance'].result || '(空)'}
           </div>
           <span className="text-[10px] font-mono text-accent">
             {skuInput.trim().length >= 10 ? '带 SKU 生图 →' : '进 Pipeline 03 →'}
+          </span>
+        </a>
+
+        {/* Pipeline 02 联动卡 · 为这个新品找达人推广 */}
+        <a
+          href={skuInput.trim().length >= 10
+            ? `/pipelines/influencer-outbound?from=listing&sku=${encodeURIComponent(skuInput.slice(0, 500))}`
+            : '/pipelines/influencer-outbound'
+          }
+          className="border-2 border-dashed border-success/40 bg-success/5 rounded-md flex flex-col items-center justify-center p-4 cursor-pointer transition-all hover:border-success/70 hover:bg-success/10"
+          style={{ minHeight: '320px' }}
+        >
+          <div className="text-2xl mb-2">📮</div>
+          <div className="text-[11px] font-semibold text-text-primary mb-1">
+            达人批量冷启
+          </div>
+          <div className="text-[9px] font-mono text-success mb-3 uppercase tracking-wider">
+            Pipeline · 02
+          </div>
+          <div className="text-[10px] text-text-secondary text-center leading-relaxed mb-3 max-w-[160px]">
+            {skuInput.trim().length >= 10
+              ? '为这个新品找达人推广，品牌信息自动预填'
+              : '贴达人名单 · 个性化邮件 · Excel 喂 Gmail YAMM'}
+          </div>
+          <span className="text-[10px] font-mono text-success">
+            {skuInput.trim().length >= 10 ? '为新品找达人 →' : '进 Pipeline 02 →'}
           </span>
         </a>
       </div>
