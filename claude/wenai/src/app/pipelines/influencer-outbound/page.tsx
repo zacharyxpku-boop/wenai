@@ -166,19 +166,6 @@ ${inf.email ? `- 邮箱：${inf.email}` : ''}
     const parsed = parseInfluencerInput(rawInput);
     if (parsed.length === 0) return alert('至少贴 1 条达人（每行一条，字段用 | 分隔）');
 
-    try {
-      const check = await fetch('/api/ratelimit/check', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ kind: 'pipeline:influencer-outbound' }),
-      });
-      if (!check.ok) {
-        const data = await check.json().catch(() => ({}));
-        alert(`Pipeline 配额已达上限\n${data.resetAtText || ''}\n升级 Team 扩容至 500/天`);
-        return;
-      }
-    } catch {}
-
     abortRef.current = false;
     setRows(parsed);
     setRunning(true);
@@ -187,6 +174,21 @@ ${inf.email ? `- 邮箱：${inf.email}` : ''}
     for (let i = 0; i < parsed.length; i++) {
       if (abortRef.current) break;
       const row = parsed[i];
+
+      // 每位达人独立预占 1 次配额
+      try {
+        const check = await fetch('/api/ratelimit/check', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ kind: 'pipeline:influencer-outbound' }),
+        });
+        if (!check.ok) {
+          const data = await check.json().catch(() => ({}));
+          alert(`第 ${i + 1} 位达人前触发配额上限\n已完成 ${i} 条\n${data.resetAtText ? '将于 ' + data.resetAtText + ' 重置' : ''}\n升级 Team 至 500/天`);
+          break;
+        }
+      } catch {}
+
       setRows(rs => rs.map(r => r.id === row.id ? { ...r, status: 'running' } : r));
       const result = await runOne(row);
       setRows(rs => rs.map(r => r.id === row.id ? result : r));
