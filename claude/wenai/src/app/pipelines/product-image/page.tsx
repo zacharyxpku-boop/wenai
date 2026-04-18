@@ -103,6 +103,40 @@ function ProductImagePipelineInner() {
     setSelectedOutputs(next);
   };
 
+  // 单张图重生 · 对 selectedOutputs 中未 return 的类型补生
+  const [retrying, setRetrying] = useState<Set<OutputType>>(new Set());
+  const retryOne = async (type: OutputType) => {
+    if (!category || !scene) return;
+    if (retrying.has(type)) return;
+    setRetrying(prev => new Set(prev).add(type));
+    try {
+      const res = await fetch('/api/image-gen', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-from-pipeline': '1' },
+        body: JSON.stringify({ category, skuInfo: sku, scenePreset: scene, outputs: [type] }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'HTTP ' + res.status);
+      const newImages = (data.images || []) as GenImage[];
+      if (newImages.length > 0) {
+        // 替换已有或追加
+        setImages(prev => {
+          const without = prev.filter(img => img.type !== type);
+          return [...without, ...newImages];
+        });
+      }
+    } catch (err) {
+      alert('重试失败: ' + (err instanceof Error ? err.message : 'unknown'));
+    } finally {
+      setRetrying(prev => { const n = new Set(prev); n.delete(type); return n; });
+    }
+  };
+
+  // 计算有哪些选中的输出类型没有在结果里 = 失败/待重生
+  const failedTypes: OutputType[] = Array.from(selectedOutputs).filter(
+    t => !images.some(img => img.type === t)
+  );
+
   const handleGenerate = async () => {
     if (!category) return alert('选品类');
     if (sku.trim().length < 10) return alert('贴商品信息（至少 10 字）');
@@ -574,6 +608,31 @@ ${images.map((img, i) => `### ${i + 1}. ${img.label}
               </div>
             ))}
           </div>
+
+          {/* 失败/未生成的类型 · 单张重试 */}
+          {failedTypes.length > 0 && !running && (
+            <div className="mt-4 p-3 border border-error/30 bg-error/5 rounded-md">
+              <div className="text-[11px] font-semibold text-error mb-2">
+                {failedTypes.length} 张图未成功 · 可单独重生
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {failedTypes.map(t => {
+                  const label = ALL_OUTPUTS.find(o => o.type === t)?.label || t;
+                  const isRetrying = retrying.has(t);
+                  return (
+                    <button
+                      key={t}
+                      onClick={() => retryOne(t)}
+                      disabled={isRetrying}
+                      className="px-3 py-1.5 text-[11px] font-mono text-error border border-error/40 rounded hover:bg-error/10 disabled:opacity-50"
+                    >
+                      {isRetrying ? `${label} 重生中...` : `↻ 重生 ${label}`}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
         </div>
       )}
 
