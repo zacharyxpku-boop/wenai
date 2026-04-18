@@ -437,9 +437,17 @@ export default function Dashboard() {
             ))}
           </div>
 
-          <span className="inline-flex items-center gap-1.5 px-4 py-2 bg-accent text-bg-root text-[12px] font-semibold rounded-md group-hover:bg-accent-hover transition-colors">
-            进入流水线 →
-          </span>
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="inline-flex items-center gap-1.5 px-4 py-2 bg-accent text-bg-root text-[12px] font-semibold rounded-md group-hover:bg-accent-hover transition-colors">
+              进入流水线 →
+            </span>
+            <span
+              onClick={(e) => { e.preventDefault(); e.stopPropagation(); window.location.href = '/pipelines/new-listing?demo=1'; }}
+              className="inline-flex items-center gap-1.5 px-3 py-2 border border-success/40 bg-success/5 text-success text-[11px] font-mono rounded-md hover:bg-success/15 transition-colors cursor-pointer"
+            >
+              ⚡ 15 秒 demo · 无需输入
+            </span>
+          </div>
         </a>
       </div>
 

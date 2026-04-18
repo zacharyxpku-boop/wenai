@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { Suspense, useEffect, useRef, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
 import ReactMarkdown from 'react-markdown';
 import * as XLSX from 'xlsx';
 import { CATEGORIES, type CategoryId } from '@/lib/category-prompts';
@@ -49,7 +50,8 @@ interface BatchRow {
   error?: string;
 }
 
-export default function NewListingPipelinePage() {
+function NewListingPipelineInner() {
+  const params = useSearchParams();
   const [mode, setMode] = useState<'single' | 'batch'>('single');
   const [category, setCategory] = useState<CategoryId | ''>('');
   const [skuInput, setSkuInput] = useState('');
@@ -69,6 +71,7 @@ export default function NewListingPipelinePage() {
     'ip-compliance': { status: 'idle', result: '' },
   });
 
+  const [demoBanner, setDemoBanner] = useState(false);
   const abortControllers = useRef<Record<StepId, AbortController | null>>({
     translate: null,
     copywriting: null,
@@ -78,6 +81,24 @@ export default function NewListingPipelinePage() {
   const isRunning = Object.values(states).some(s => s.status === 'running');
   const allDone = Object.values(states).every(s => s.status === 'done');
   const canStart = category && skuInput.trim().length > 10 && !isRunning;
+
+  // 新手 demo 路径 · /?demo=1 自动灌入示例 SKU + 自动触发
+  useEffect(() => {
+    if (params.get('demo') === '1') {
+      const homeCategory = CATEGORIES.find(c => c.id === 'home');
+      if (homeCategory) {
+        setCategory('home');
+        setSkuInput(homeCategory.exampleSku);
+        setDemoBanner(true);
+        // 等 state 提交再触发
+        setTimeout(() => {
+          // 不依赖 canStart（因为 state 还没刷新），直接跑 3 步
+          STEPS.forEach(s => runStep(s.id));
+        }, 200);
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const runStep = async (stepId: StepId) => {
     const mod = modulesConfig.modules.find(m => m.id === stepId);
@@ -505,6 +526,27 @@ ${states['ip-compliance'].result || '(空)'}
         </div>
       </div>
 
+      {/* Demo 引导 banner · /?demo=1 一键跑 */}
+      {demoBanner && (
+        <div className="mb-4 p-3 border border-success/40 bg-success/10 rounded-md flex items-center gap-3">
+          <span className="text-success text-[14px]">⚡</span>
+          <div className="flex-1">
+            <div className="text-[11px] font-semibold text-success">
+              Demo 模式 · 已自动灌入 HOMELODY 收纳盒示例，正在跑 3 步流水线
+            </div>
+            <div className="text-[10px] font-mono text-text-tertiary mt-0.5">
+              下面三栏会实时流式输出 · 30-45 秒出齐
+            </div>
+          </div>
+          <button
+            onClick={() => setDemoBanner(false)}
+            className="text-[10px] font-mono text-text-tertiary hover:text-success"
+          >
+            知道了
+          </button>
+        </div>
+      )}
+
       {/* 模式切换 · 单 SKU / 批量 */}
       <div className="flex items-center gap-1 mb-4 p-1 border border-border-subtle rounded-md bg-bg-surface w-fit">
         <button
@@ -872,5 +914,13 @@ ${states['ip-compliance'].result || '(空)'}
       </div>
       </>}
     </div>
+  );
+}
+
+export default function NewListingPipelinePage() {
+  return (
+    <Suspense fallback={<div className="p-12 text-center text-text-tertiary font-mono text-[12px]">加载中...</div>}>
+      <NewListingPipelineInner />
+    </Suspense>
   );
 }
