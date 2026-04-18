@@ -85,19 +85,19 @@ function InviteInner() {
             <div className="space-y-2 text-[12px] text-text-secondary mb-6">
               <div className="flex items-start gap-2">
                 <span className="text-accent flex-shrink-0">·</span>
-                <span>聚焦 <strong className="text-text-primary">3 件事</strong>：批量翻译 listing / 评论结构化 / 达人冷启邮件</span>
+                <span><strong className="text-text-primary">Pipeline 01 · 新品上新流水线</strong>：翻译+文案+合规 一次跑完</span>
               </div>
               <div className="flex items-start gap-2">
                 <span className="text-accent flex-shrink-0">·</span>
-                <span>每日 50 次调用配额 · 独立到邀请码，不会被别人占用</span>
+                <span>五大品类专属调教（家居 / 汽摩 / 数码 / 工具 / 生活百货）</span>
               </div>
               <div className="flex items-start gap-2">
                 <span className="text-accent flex-shrink-0">·</span>
-                <span>输入不落库、不训练模型（<a href="/privacy" className="text-accent underline">看承诺</a>）</span>
+                <span>每日 50 次调用独立到邀请码 · 不会被别人占用</span>
               </div>
               <div className="flex items-start gap-2">
                 <span className="text-accent flex-shrink-0">·</span>
-                <span>结果下方有 5 个一键改写按钮 · 作者看每一条吐槽</span>
+                <span>输入不落库（<a href="/privacy" className="text-accent underline">看承诺</a>）· 作者看每一条吐槽</span>
               </div>
             </div>
 

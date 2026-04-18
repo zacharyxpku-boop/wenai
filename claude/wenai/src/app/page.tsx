@@ -400,111 +400,82 @@ export default function Dashboard() {
         </div>
       )}
 
-      {/* Flagship Hero — 单焦点，首屏只做 3 件事 */}
-      {(() => {
-        const flagships = modulesConfig.modules.filter(
-          m => MODULE_TIERS[m.id] === 'flagship' && enabledIds.has(m.id)
-        );
-        const [first, ...rest] = flagships;
-        if (!first) return null;
-        const firstHero = FLAGSHIP_HERO[first.id];
-        return (
-          <div className="mb-7 animate-fade-up stagger-3">
-            {/* 大 Hero */}
-            {firstHero && (
-              <a
-                href={`/modules/${first.id}`}
-                className="group block border border-accent/30 bg-gradient-to-br from-bg-surface to-bg-raised rounded-md p-6 lg:p-8 mb-3 hover:border-accent/60 hover:shadow-[0_12px_40px_rgba(200,151,90,0.15)] transition-all duration-200"
-              >
-                <div className="flex items-center gap-2 mb-2">
-                  <span className="text-[10px] font-mono text-accent uppercase tracking-[0.15em]">
-                    {firstHero.eyebrow}
-                  </span>
-                  <div className="flex-1 h-px bg-border-subtle/60" />
-                  <span className="text-[10px] font-mono text-success tabular-nums">
-                    {firstHero.kpi}
-                  </span>
-                </div>
-                <h2 className="text-[22px] lg:text-[26px] font-bold text-text-primary mb-2 group-hover:text-accent transition-colors leading-tight font-[family-name:var(--font-outfit)]">
-                  {firstHero.title}
-                </h2>
-                <p className="text-[13px] text-text-secondary leading-relaxed mb-4 max-w-[680px]">
-                  {firstHero.body}
-                </p>
-                <span className="inline-flex items-center gap-1.5 px-3 py-2 bg-accent/10 border border-accent/30 rounded-md text-[12px] font-mono text-accent group-hover:bg-accent group-hover:text-bg-root transition-colors">
-                  {firstHero.cta}
+      {/* Pipeline Hero · 新品上新流水线（旗舰唯一入口） */}
+      <div className="mb-6 animate-fade-up stagger-3">
+        <a
+          href="/pipelines/new-listing"
+          className="group block border border-accent/40 bg-gradient-to-br from-bg-surface via-bg-raised to-bg-surface rounded-md p-6 lg:p-8 hover:border-accent/70 hover:shadow-[0_16px_48px_rgba(200,151,90,0.18)] transition-all duration-200"
+          style={{ borderLeftWidth: '3px', borderLeftColor: '#c8975a' }}
+        >
+          <div className="flex items-center gap-2 mb-3">
+            <span className="px-2 py-0.5 bg-accent/10 text-accent text-[9px] font-mono uppercase tracking-[0.15em] rounded">
+              PIPELINE · 01
+            </span>
+            <span className="text-[10px] font-mono text-text-tertiary">新品上新流水线</span>
+            <div className="flex-1 h-px bg-border-subtle/60" />
+            <span className="text-[10px] font-mono text-success tabular-nums">节省 30 分钟 / SKU</span>
+          </div>
+
+          <h2 className="text-[22px] lg:text-[28px] font-bold text-text-primary mb-2.5 group-hover:text-accent transition-colors leading-tight font-[family-name:var(--font-outfit)]">
+            贴 1 条 SKU，同时跑完 翻译 · 文案 · 合规
+          </h2>
+          <p className="text-[13px] text-text-secondary leading-relaxed mb-4 max-w-[760px]">
+            选 5 大品类中的 1 个（家居 / 汽摩 / 数码 / 工具 / 生活百货）→ 贴商品信息 → 并行跑三件事 → 一键打包 Markdown。
+            <span className="text-text-primary"> 品类专属 prompt 调教</span>，不像通用 AI 什么都写不对。
+          </p>
+
+          {/* 迷你工作流步骤 */}
+          <div className="flex flex-wrap items-center gap-2 mb-4">
+            {['选品类', '贴 SKU', '并行 3 路', '打包下载'].map((s, i) => (
+              <div key={i} className="flex items-center gap-1.5">
+                <span className="w-5 h-5 rounded-full border border-accent/40 flex items-center justify-center text-[9px] font-mono text-accent tabular-nums">
+                  {i + 1}
                 </span>
-              </a>
-            )}
-
-            {/* 另外 2 个旗舰 — 对称双卡 */}
-            {rest.length > 0 && (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                {rest.map(mod => {
-                  const hero = FLAGSHIP_HERO[mod.id];
-                  if (!hero) return null;
-                  return (
-                    <a
-                      key={mod.id}
-                      href={`/modules/${mod.id}`}
-                      className="group block border border-border-subtle bg-bg-surface rounded-md p-5 hover:border-accent/40 hover:-translate-y-0.5 hover:shadow-[0_6px_20px_rgba(200,151,90,0.1)] transition-all duration-200"
-                    >
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="text-[9px] font-mono text-accent/80 uppercase tracking-wider">
-                          {hero.eyebrow.split(' · ')[1] || hero.eyebrow}
-                        </span>
-                        <span className="text-[9px] font-mono text-success tabular-nums">
-                          {hero.kpi}
-                        </span>
-                      </div>
-                      <h3 className="text-[15px] font-semibold text-text-primary mb-1.5 group-hover:text-accent transition-colors font-[family-name:var(--font-outfit)]">
-                        {hero.title}
-                      </h3>
-                      <p className="text-[11px] text-text-secondary leading-relaxed line-clamp-2 mb-3">
-                        {hero.body}
-                      </p>
-                      <span className="text-[11px] font-mono text-accent opacity-0 group-hover:opacity-100 transition-opacity">
-                        {hero.cta}
-                      </span>
-                    </a>
-                  );
-                })}
+                <span className="text-[11px] text-text-secondary">{s}</span>
+                {i < 3 && <span className="text-[10px] text-accent/40 ml-1">→</span>}
               </div>
-            )}
+            ))}
           </div>
-        );
-      })()}
 
-      {/* 次级工具行 · support tier */}
-      {(() => {
-        const support = modulesConfig.modules.filter(
-          m => MODULE_TIERS[m.id] === 'support' && enabledIds.has(m.id)
-        );
-        if (support.length === 0) return null;
-        return (
-          <div className="mb-6 animate-fade-up stagger-4">
-            <div className="flex items-center gap-2 mb-2.5">
-              <span className="label-mono">配套工具</span>
-              <div className="flex-1 h-px bg-border-subtle" />
+          <span className="inline-flex items-center gap-1.5 px-4 py-2 bg-accent text-bg-root text-[12px] font-semibold rounded-md group-hover:bg-accent-hover transition-colors">
+            进入流水线 →
+          </span>
+        </a>
+      </div>
+
+      {/* Pipeline 02 · Coming Soon 占位 */}
+      <div className="mb-6 animate-fade-up stagger-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <div className="border border-dashed border-border-default rounded-md p-4 bg-bg-surface/50 opacity-75">
+            <div className="flex items-center gap-2 mb-1.5">
+              <span className="px-1.5 py-0.5 bg-bg-raised text-text-tertiary text-[9px] font-mono uppercase rounded">
+                PIPELINE · 02
+              </span>
+              <span className="text-[9px] font-mono text-text-tertiary">Coming Soon</span>
             </div>
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-              {support.map(mod => (
-                <a
-                  key={mod.id}
-                  href={`/modules/${mod.id}`}
-                  className="group flex items-center gap-2 px-3 py-2.5 bg-bg-surface border border-border-subtle rounded-md hover:border-accent/30 hover:bg-bg-raised transition-all"
-                >
-                  <span className="text-[12px] text-text-primary group-hover:text-accent font-[family-name:var(--font-outfit)]">
-                    {mod.name}
-                  </span>
-                  <div className="flex-1" />
-                  <span className="text-[9px] font-mono text-text-tertiary">→</span>
-                </a>
-              ))}
+            <div className="text-[14px] font-semibold text-text-secondary mb-1 font-[family-name:var(--font-outfit)]">
+              🖼️ AI 电商主图生成
             </div>
+            <p className="text-[11px] text-text-tertiary leading-relaxed">
+              场景融合 · 5 张图组合 · 五大品类预设。等 Pipeline 01 内测信号启动。
+            </p>
           </div>
-        );
-      })()}
+          <div className="border border-dashed border-border-default rounded-md p-4 bg-bg-surface/50 opacity-75">
+            <div className="flex items-center gap-2 mb-1.5">
+              <span className="px-1.5 py-0.5 bg-bg-raised text-text-tertiary text-[9px] font-mono uppercase rounded">
+                PIPELINE · 03
+              </span>
+              <span className="text-[9px] font-mono text-text-tertiary">Coming Soon</span>
+            </div>
+            <div className="text-[14px] font-semibold text-text-secondary mb-1 font-[family-name:var(--font-outfit)]">
+              📮 达人批量冷启
+            </div>
+            <p className="text-[11px] text-text-tertiary leading-relaxed">
+              贴达人名单 · 批量个性化邮件 · CSV 导出 Gmail 批发。
+            </p>
+          </div>
+        </div>
+      </div>
 
       {/* Beta activity feed · 社会证明 — 只在有真实数据时显示 */}
       {Object.keys(feedbackSummary).length > 0 && (
@@ -546,15 +517,14 @@ export default function Dashboard() {
         </div>
       )}
 
-      {/* 展开其他工具 */}
+      {/* Toolbox 入口 */}
       {!showAllModules && (
         <div className="mb-7 animate-fade-up stagger-5">
           <button
             onClick={() => setShowAllModules(true)}
             className="w-full py-2.5 border border-dashed border-border-subtle rounded-md text-[11px] font-mono text-text-tertiary/70 hover:text-accent hover:border-accent/30 transition-all"
           >
-            其他工具（{modulesConfig.modules.filter(m => MODULE_TIERS[m.id] === 'aux' && enabledIds.has(m.id)).length} 个辅助 +{' '}
-            {modulesConfig.modules.filter(m => MODULE_TIERS[m.id] === 'observe' && enabledIds.has(m.id)).length} 个观察中） ↓
+            🧰 Toolbox · 单点工具 {enabledCount} 个（翻译/评论/外联/文案/直播/私域...） ↓
           </button>
         </div>
       )}

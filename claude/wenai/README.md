@@ -1,10 +1,12 @@
-# wenai · 跨境代运营 AI 三件套
+# wenai · 跨境新品上新流水线
 
-**Slogan**：让跨境代运营的重复劳动变成 3 个按钮：**批量翻译 · 评论结构化 · 达人冷邮**。
+**Slogan**：贴 1 条 SKU · 同时跑完 翻译 + 文案 + 合规 · 一键打包 Markdown。
 
-阿里国际 250 人团队 8 个月验证过的真刚需。不做"大平台"，只把这 3 件事做到极致。
+五大品类专属调教（家居 / 汽摩 / 数码 / 工具 / 生活百货），比通用 AI 懂 FCC、懂 BPA-Free、懂 CAT III。
 
-其他 16 个模块（文案 / 竞品 / 投流 / 私域 / 直播 ...）保留代码入口，展开可用，但首屏只聚焦旗舰三件。详见 `.planning/DECISION.md`。
+19 个单点工具（翻译/评论/外联/文案/直播/私域...）全部保留在 Toolbox 折叠区，单用也行。
+
+**决策依据**：`.planning/DECISION.md`（v1 三旗舰）· `.planning/DECISION-v2.md`（v2 单 Pipeline）· `.planning/COMPETITIVE-HOTCLAW.md`（对标 HotClaw）
 
 **Live Beta**: https://wenai-one.vercel.app  
 **Invite-only**: `/invite?code=xxx`（邀请码在 `src/app/api/auth/invite/route.ts`）
