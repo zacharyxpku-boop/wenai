@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import ModuleCard from '@/components/ModuleCard';
+import OnboardingTour from '@/components/OnboardingTour';
 import modulesConfig from '@/config/modules.json';
 import clientConfig from '@/config/client.json';
 
@@ -754,6 +755,8 @@ export default function Dashboard() {
           © 2026 wenai · 跨境代运营流水线 OS · zachary.x.pku@gmail.com
         </p>
       </footer>
+
+      <OnboardingTour />
     </div>
   );
 }

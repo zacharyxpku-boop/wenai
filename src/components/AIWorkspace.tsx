@@ -52,6 +52,7 @@ export default function AIWorkspace({
   const [error, setError] = useState('');
   const [history, setHistory] = useState<HistoryItem[]>([]);
   const [showHistory, setShowHistory] = useState(false);
+  const [historyFilter, setHistoryFilter] = useState('');
   const [csvData, setCsvData] = useState<string[][]>([]);
   const [csvResults, setCsvResults] = useState<{ input: string; output: string }[]>([]);
   const [csvProcessing, setCsvProcessing] = useState(false);
@@ -406,17 +407,39 @@ export default function AIWorkspace({
 
       {/* History panel */}
       {showHistory && (
-        <div className="mb-3.5 bg-bg-surface border border-border-subtle rounded-md p-3 max-h-48 overflow-y-auto animate-fade-up">
+        <div className="mb-3.5 bg-bg-surface border border-border-subtle rounded-md p-3 max-h-56 overflow-y-auto animate-fade-up">
           {history.length === 0 ? (
             <div className="flex items-center justify-center py-4">
               <p className="text-text-tertiary text-[11px] font-mono">暂无历史记录</p>
             </div>
           ) : (
             <div className="space-y-0.5">
-              {history.map(item => (
+              {/* 搜索过滤 · 仅 >5 条时显示,避免冗余 */}
+              {history.length > 5 && (
+                <div className="mb-2">
+                  <input
+                    type="text"
+                    value={historyFilter}
+                    onChange={e => setHistoryFilter(e.target.value)}
+                    placeholder="搜索历史 · 匹配输入或产出..."
+                    className="w-full px-2 py-1.5 bg-bg-raised border border-border-default rounded text-[11px] text-text-primary placeholder:text-text-tertiary/50 focus:outline-none focus:border-accent/40"
+                  />
+                  {historyFilter && (
+                    <div className="text-[9px] font-mono text-text-tertiary mt-1">
+                      {history.filter(i => (i.input + i.result).toLowerCase().includes(historyFilter.toLowerCase())).length} / {history.length} 条匹配
+                    </div>
+                  )}
+                </div>
+              )}
+              {history
+                .filter(item =>
+                  !historyFilter ||
+                  (item.input + item.result).toLowerCase().includes(historyFilter.toLowerCase())
+                )
+                .map(item => (
                 <button
                   key={item.id}
-                  onClick={() => { setInput(item.input); setResult(item.result); setShowHistory(false); }}
+                  onClick={() => { setInput(item.input); setResult(item.result); setShowHistory(false); setHistoryFilter(''); }}
                   className="w-full text-left px-2.5 py-2 rounded-md hover:bg-bg-hover transition-all group"
                 >
                   <div className="flex items-center justify-between gap-2">
@@ -429,6 +452,11 @@ export default function AIWorkspace({
                   </div>
                 </button>
               ))}
+              {historyFilter && history.filter(i => (i.input + i.result).toLowerCase().includes(historyFilter.toLowerCase())).length === 0 && (
+                <div className="py-3 text-center text-[10px] font-mono text-text-tertiary">
+                  无匹配 · 清空搜索看全部
+                </div>
+              )}
               <div className="pt-2 mt-1 border-t border-border-subtle">
                 <button
                   onClick={() => { setHistory([]); localStorage.removeItem(`wenai_history_${moduleId}`); }}
