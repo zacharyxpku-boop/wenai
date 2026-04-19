@@ -739,6 +739,7 @@ export default function Dashboard() {
             <a href="/pricing" className="text-text-secondary hover:text-accent">定价</a>
             <a href="/status" className="text-text-secondary hover:text-accent">状态</a>
             <a href="/changelog" className="text-text-secondary hover:text-accent">更新日志</a>
+            <a href="/roadmap" className="text-text-secondary hover:text-accent">路线图</a>
             <a href="/privacy" className="text-text-secondary hover:text-accent">隐私</a>
             <a href="/terms" className="text-text-secondary hover:text-accent">条款</a>
             <a href="/legal/dpa" className="text-text-secondary hover:text-accent">DPA</a>
