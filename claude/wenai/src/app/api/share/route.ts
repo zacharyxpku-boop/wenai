@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Redis } from '@upstash/redis';
+import { checkRateLimit } from '@/lib/ratelimit';
+import { verifyToken, getCookieName } from '@/lib/auth';
 
 /**
  * 结果分享 · 朋友跑完 Pipeline 点分享 → 得到公开 /share/<id>
@@ -47,15 +49,32 @@ export async function POST(request: NextRequest) {
   if (!body.content || body.content.length < 20) {
     return NextResponse.json({ error: '内容过短' }, { status: 400 });
   }
-  if (body.content.length > 50000) {
-    return NextResponse.json({ error: '内容过长 (>50K)' }, { status: 413 });
+  if (body.content.length > 30000) {
+    return NextResponse.json({ error: '内容过长 (>30K · 约 10000 中文字)' }, { status: 413 });
+  }
+
+  // Per-user rate limit · 防滥用 30 次/天
+  let rateKey = 'anon';
+  try {
+    const token = request.cookies.get(getCookieName())?.value;
+    if (token) {
+      const payload = await verifyToken(token);
+      if (payload?.username) rateKey = payload.username;
+    }
+  } catch {}
+  const limit = await checkRateLimit('share', rateKey);
+  if (!limit.allowed) {
+    return NextResponse.json(
+      { error: `分享链接每日 30 次上限已达 · ${new Date(limit.resetAt).toLocaleString('zh-CN')} 重置` },
+      { status: 429 }
+    );
   }
 
   const id = genId();
   const payload = {
     moduleId: body.moduleId || 'unknown',
     title: (body.title || '').slice(0, 120),
-    content: body.content.slice(0, 50000),
+    content: body.content.slice(0, 30000),
     source: body.source || 'module',
     createdAt: new Date().toISOString(),
   };

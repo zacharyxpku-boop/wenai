@@ -683,6 +683,26 @@ ${states['ip-compliance'].result || '(空)'}
                 <span>{parseBatchInput(batchInput).length} 条 SKU 待处理 · 最多 20 条</span>
                 <span>预计耗时 ≈ {parseBatchInput(batchInput).length * 45} 秒</span>
               </div>
+
+              {/* 实时预览 · 避免分隔符贴错 */}
+              {parseBatchInput(batchInput).length > 0 && (
+                <div className="mt-2 p-2 border border-border-subtle rounded bg-bg-surface/50 max-h-32 overflow-y-auto">
+                  <div className="text-[9px] font-mono text-text-tertiary mb-1 uppercase tracking-wider">识别结果预览</div>
+                  <div className="space-y-0.5">
+                    {parseBatchInput(batchInput).map((p, i) => (
+                      <div key={p.id} className="flex items-start gap-2 text-[10px]">
+                        <span className="text-text-tertiary font-mono w-4 flex-shrink-0 tabular-nums">{i + 1}</span>
+                        <span className="text-text-secondary truncate">{p.preview}</span>
+                      </div>
+                    ))}
+                  </div>
+                  {parseBatchInput(batchInput).length === 1 && batchInput.includes('\n\n') && !batchInput.includes('---') && (
+                    <div className="mt-1.5 pt-1.5 border-t border-border-subtle/50 text-[9px] text-accent">
+                      ⓘ 只识别出 1 条 · 多条 SKU 需用 <code className="bg-bg-raised px-0.5">---</code> 三连字符分隔
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           </div>
 
