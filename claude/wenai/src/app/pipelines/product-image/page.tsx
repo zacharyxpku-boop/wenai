@@ -321,9 +321,12 @@ ${images.map((img, i) => `### ${i + 1}. ${img.label}
             <span className="px-2 py-0.5 bg-accent/10 text-accent text-[9px] font-mono rounded">
               对标 HotClaw
             </span>
-            <button className="text-[10px] font-mono text-text-tertiary border border-dashed border-border-default rounded-md px-3 py-1.5 hover:text-accent hover:border-accent/40">
+            <a href="/docs#pipeline-03" className="text-[10px] font-mono text-text-tertiary border border-border-subtle rounded-md px-3 py-1.5 hover:text-accent hover:border-accent/40">
+              📚 手册
+            </a>
+            <a href="/enterprise" className="text-[10px] font-mono text-text-tertiary border border-dashed border-border-default rounded-md px-3 py-1.5 hover:text-accent hover:border-accent/40">
               支持企业级定制 →
-            </button>
+            </a>
           </div>
         </div>
 
