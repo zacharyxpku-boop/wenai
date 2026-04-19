@@ -478,6 +478,22 @@ export default function Dashboard() {
             <span className="text-text-primary"> 品类专属 prompt 调教</span>，不像通用 AI 什么都写不对。
           </p>
 
+          {/* 硬数字对比 chip · 说服新访客 */}
+          <div className="flex flex-wrap gap-2 mb-4">
+            <span className="inline-flex items-center gap-1.5 px-2 py-1 border border-error/30 bg-error/5 rounded text-[10px]">
+              <span className="font-mono text-error">手工</span>
+              <span className="text-text-secondary tabular-nums">80 分钟 · ¥3500/SKU</span>
+            </span>
+            <span className="text-text-tertiary text-[11px] self-center">→</span>
+            <span className="inline-flex items-center gap-1.5 px-2 py-1 border border-success/40 bg-success/10 rounded text-[10px]">
+              <span className="font-mono text-success">wenai</span>
+              <span className="text-text-primary font-semibold tabular-nums">45 秒 · ≈ ¥0.02/SKU</span>
+            </span>
+            <span className="inline-flex items-center gap-1 px-2 py-1 bg-accent/10 border border-accent/30 rounded text-[10px] font-mono text-accent">
+              107× 压缩 · 数据见 <a href="/cases#homelody" className="underline">#homelody</a>
+            </span>
+          </div>
+
           {/* 迷你工作流步骤 */}
           <div className="flex flex-wrap items-center gap-2 mb-4">
             {['选品类', '贴 SKU', '并行 3 路', '打包下载'].map((s, i) => (
@@ -525,6 +541,12 @@ export default function Dashboard() {
             <p className="text-[11px] text-text-secondary leading-relaxed mb-2">
               贴达人名单 · 批量生成个性化邮件 · Excel 直接喂 Gmail Mail Merge
             </p>
+            <div className="flex items-center gap-1.5 mb-2 text-[9px] font-mono">
+              <span className="text-text-tertiary">200min/10人</span>
+              <span className="text-text-tertiary/50">→</span>
+              <span className="text-success font-semibold">3min/10人</span>
+              <span className="text-accent/80 tabular-nums">· 回复率 4%→11%</span>
+            </div>
             <div className="flex items-center justify-between gap-2">
               <span className="text-[10px] font-mono text-accent opacity-0 group-hover:opacity-100 transition-opacity">
                 进入流水线 →
@@ -555,6 +577,12 @@ export default function Dashboard() {
             <p className="text-[11px] text-text-secondary leading-relaxed mb-2">
               15 场景预设 · 1 SKU 出 5 图 · 中文 prompt 原生 · 商标词前置过滤
             </p>
+            <div className="flex items-center gap-1.5 mb-2 text-[9px] font-mono">
+              <span className="text-text-tertiary">¥3500/SKU 棚</span>
+              <span className="text-text-tertiary/50">→</span>
+              <span className="text-success font-semibold">¥0.7/SKU</span>
+              <span className="text-accent/80 tabular-nums">· 5000× 压缩</span>
+            </div>
             <div className="flex items-center justify-between gap-2">
               <span className="text-[10px] font-mono text-accent opacity-0 group-hover:opacity-100 transition-opacity">
                 进入流水线 →
