@@ -92,7 +92,7 @@ const PLANS: Plan[] = [
       { text: 'DPA + 跨境数据处理合规' },
     ],
     cta: '预约 Demo',
-    ctaHref: '/invite?code=sales',
+    ctaHref: '/enterprise',
   },
 ];
 
