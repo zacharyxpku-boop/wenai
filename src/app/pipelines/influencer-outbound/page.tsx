@@ -4,6 +4,7 @@ import { Suspense, useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import ReactMarkdown from 'react-markdown';
 import * as XLSX from 'xlsx';
+import { exportFilename } from '@/lib/export-filename';
 
 interface Influencer {
   id: string;
@@ -356,7 +357,7 @@ ${inf.email ? `- 邮箱：${inf.email}` : ''}
     ];
     XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(meta), '品牌信息');
 
-    XLSX.writeFile(wb, `wenai-outbound-${Date.now()}.xlsx`);
+    XLSX.writeFile(wb, exportFilename('达人冷启', `${product.brand || '品牌'}-${rows.length}位`, 'xlsx'));
   };
 
   const handleCopyTemplate = () => {

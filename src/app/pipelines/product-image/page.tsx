@@ -5,6 +5,7 @@ import { useSearchParams } from 'next/navigation';
 import JSZip from 'jszip';
 import { CATEGORIES, type CategoryId } from '@/lib/category-prompts';
 import { getScenePresets } from '@/lib/scene-presets';
+import { exportFilename } from '@/lib/export-filename';
 
 type OutputType = 'main' | 'scene' | 'detail' | 'lifestyle' | 'compare';
 
@@ -246,7 +247,8 @@ ${successful.map((f, i) => `### ${i + 1}. ${f.meta.label} (${f.name})
       const url = URL.createObjectURL(content);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `wenai-images-${Date.now()}.zip`;
+      const skuFirstLine = (sku.split('\n')[0] || '').slice(0, 15);
+      a.download = exportFilename('主图', `${catLabel}-${skuFirstLine}`, 'zip');
       a.click();
       URL.revokeObjectURL(url);
     } catch (err) {
@@ -611,7 +613,7 @@ ${images.map((img, i) => `### ${i + 1}. ${img.label}
                     <span className="text-[9px] font-mono text-text-tertiary">{img.width}×{img.height}</span>
                     <a
                       href={img.url}
-                      download={`wenai-${img.type}-${Date.now()}.jpg`}
+                      download={exportFilename('主图', `${img.label}`, 'jpg')}
                       target="_blank"
                       rel="noopener"
                       className="text-[10px] font-mono text-accent hover:underline"

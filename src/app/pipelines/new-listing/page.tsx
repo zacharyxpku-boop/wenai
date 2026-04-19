@@ -5,6 +5,7 @@ import { useSearchParams } from 'next/navigation';
 import ReactMarkdown from 'react-markdown';
 import * as XLSX from 'xlsx';
 import { CATEGORIES, type CategoryId } from '@/lib/category-prompts';
+import { exportFilename } from '@/lib/export-filename';
 import modulesConfig from '@/config/modules.json';
 
 type StepId = 'translate' | 'copywriting' | 'ip-compliance';
@@ -233,7 +234,9 @@ function NewListingPipelineInner() {
     addSheet('文案', states.copywriting.result || '(空)');
     addSheet('合规', states['ip-compliance'].result || '(空)');
 
-    XLSX.writeFile(wb, `wenai-new-listing-${Date.now()}.xlsx`);
+    const catLabel = CATEGORIES.find(c => c.id === category)?.label || '';
+    const firstLine = skuInput.split('\n')[0] || '';
+    XLSX.writeFile(wb, exportFilename('新品上新', `${catLabel}-${firstLine}`, 'xlsx'));
   };
 
   const handleExport = () => {
@@ -268,7 +271,8 @@ ${states['ip-compliance'].result || '(空)'}
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `wenai-new-listing-${Date.now()}.md`;
+    const firstLine = skuInput.split('\n')[0] || '';
+    a.download = exportFilename('新品上新', `${cat?.label || ''}-${firstLine}`, 'md');
     a.click();
     URL.revokeObjectURL(url);
   };
@@ -476,7 +480,7 @@ ${states['ip-compliance'].result || '(空)'}
     makeStepSheet('copywriting', '文案');
     makeStepSheet('ip-compliance', '合规');
 
-    XLSX.writeFile(wb, `wenai-batch-${Date.now()}.xlsx`);
+    XLSX.writeFile(wb, exportFilename('新品批量', `${cat?.label || ''}-${batchRows.length}条`, 'xlsx'));
   };
 
   // Pipeline 03 已上线,原兴趣记录函数保留供 phase2Clicked state 引用合法性
