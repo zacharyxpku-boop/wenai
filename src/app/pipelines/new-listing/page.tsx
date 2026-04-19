@@ -500,12 +500,21 @@ ${states['ip-compliance'].result || '(空)'}
               选品类 · 贴 1 条 SKU · 并行跑三件事 · 一键打包
             </p>
           </div>
-          <button
-            className="text-[10px] font-mono text-text-tertiary border border-dashed border-border-default rounded-md px-3 py-1.5 hover:text-accent hover:border-accent/40"
-            title="内测期免费定制。联系作者"
-          >
-            支持企业级定制 →
-          </button>
+          <div className="flex gap-2">
+            <a
+              href="/docs#pipeline-01"
+              className="text-[10px] font-mono text-text-tertiary border border-border-subtle rounded-md px-3 py-1.5 hover:text-accent hover:border-accent/40"
+              title="查此 Pipeline 使用手册"
+            >
+              📚 手册
+            </a>
+            <a
+              href="/enterprise"
+              className="text-[10px] font-mono text-text-tertiary border border-dashed border-border-default rounded-md px-3 py-1.5 hover:text-accent hover:border-accent/40"
+            >
+              支持企业级定制 →
+            </a>
+          </div>
         </div>
 
         {/* 三段式内容 */}

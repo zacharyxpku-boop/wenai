@@ -454,9 +454,14 @@ PantryPerfection | YouTube | 85K | 家居生活 vlog | contact@pantryperfection.
               贴一批达人 · 生成个性化邮件 · Excel 直接喂 Gmail Mail Merge
             </p>
           </div>
-          <button className="text-[10px] font-mono text-text-tertiary border border-dashed border-border-default rounded-md px-3 py-1.5 hover:text-accent hover:border-accent/40">
-            支持企业级定制 →
-          </button>
+          <div className="flex gap-2">
+            <a href="/docs#pipeline-02" className="text-[10px] font-mono text-text-tertiary border border-border-subtle rounded-md px-3 py-1.5 hover:text-accent hover:border-accent/40">
+              📚 手册
+            </a>
+            <a href="/enterprise" className="text-[10px] font-mono text-text-tertiary border border-dashed border-border-default rounded-md px-3 py-1.5 hover:text-accent hover:border-accent/40">
+              支持企业级定制 →
+            </a>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-0 divide-y lg:divide-y-0 lg:divide-x divide-border-subtle">
