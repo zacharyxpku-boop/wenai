@@ -477,6 +477,12 @@ ${images.map((img, i) => `### ${i + 1}. ${img.label}
         <textarea
           value={sku}
           onChange={e => setSku(e.target.value)}
+          onKeyDown={e => {
+            if (e.key === 'Enter' && (e.metaKey || e.ctrlKey) && category && scene && sku.length >= 10 && !running) {
+              e.preventDefault();
+              handleGenerate();
+            }
+          }}
           placeholder="例：可叠加密封收纳盒套装，BPA-Free 食品级 PP，四侧卡扣密封，6 件装"
           rows={4}
           className="w-full px-3 py-2.5 bg-bg-surface border border-border-default rounded-md text-[12px] resize-none focus:outline-none focus:border-accent/60"

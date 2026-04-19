@@ -806,6 +806,12 @@ ${states['ip-compliance'].result || '(空)'}
           <textarea
             value={skuInput}
             onChange={e => setSkuInput(e.target.value)}
+            onKeyDown={e => {
+              if (e.key === 'Enter' && (e.metaKey || e.ctrlKey) && canStart) {
+                e.preventDefault();
+                handleStart();
+              }
+            }}
             placeholder={
               category
                 ? CATEGORIES.find(c => c.id === category)?.exampleSku
@@ -878,7 +884,7 @@ ${states['ip-compliance'].result || '(空)'}
             disabled={!canStart}
             className="px-5 py-2 bg-accent text-bg-root text-[12px] font-semibold rounded-md hover:bg-accent-hover disabled:opacity-40 disabled:cursor-not-allowed transition-all active:scale-95"
           >
-            Step 3 · 开始流水线 →
+            Step 3 · 开始流水线 <span className="hidden lg:inline text-[9px] opacity-60 ml-1">⌘↵</span>→
           </button>
         </div>
       </div>

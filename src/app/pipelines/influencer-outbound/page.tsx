@@ -573,6 +573,12 @@ PantryPerfection | YouTube | 85K | 家居生活 vlog | contact@pantryperfection.
         <textarea
           value={rawInput}
           onChange={e => setRawInput(e.target.value)}
+          onKeyDown={e => {
+            if (e.key === 'Enter' && (e.metaKey || e.ctrlKey) && readyToRun) {
+              e.preventDefault();
+              handleStart();
+            }
+          }}
           placeholder={`格式：名字 | 平台 | 粉丝量 | 赛道 | 邮箱(可选)\n\n@homestorage_sara | Instagram | 48K | 家居收纳 | sara@example.com\n@kitchen.tara | Instagram | 120K | 厨房整理 | hi@tara.com\n@organize.mike | TikTok | 320K | 断舍离 | mike@gmail.com`}
           rows={7}
           className="w-full px-3 py-2.5 bg-bg-surface border border-border-default rounded-md text-[11px] text-text-primary placeholder:text-text-tertiary/60 focus:outline-none focus:border-accent/60 resize-none font-mono"
