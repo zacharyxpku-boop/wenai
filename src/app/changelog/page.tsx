@@ -193,13 +193,17 @@ export default function ChangelogPage() {
           每次大版本会同步到 GitHub + Vercel · 本页列的每条都对应真实 commit。
         </p>
         <div className="flex items-center justify-center gap-3 flex-wrap">
+          <Link href="/roadmap" className="text-[11px] font-mono text-accent hover:underline">
+            路线图 (未来 3 Q)
+          </Link>
+          <span className="text-text-tertiary opacity-40">·</span>
           <a
             href="https://github.com/zacharyxpku-boop/wenai"
             target="_blank"
             rel="noopener"
             className="text-[11px] font-mono text-accent hover:underline"
           >
-            GitHub repo →
+            GitHub repo
           </a>
           <span className="text-text-tertiary opacity-40">·</span>
           <Link href="/status" className="text-[11px] font-mono text-accent hover:underline">
