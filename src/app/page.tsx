@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import ModuleCard from '@/components/ModuleCard';
 import OnboardingTour from '@/components/OnboardingTour';
+import ROICalculator from '@/components/ROICalculator';
 import modulesConfig from '@/config/modules.json';
 import clientConfig from '@/config/client.json';
 
@@ -736,6 +737,9 @@ export default function Dashboard() {
           看案例 →
         </a>
       </div>
+
+      {/* ROI 计算器 */}
+      <ROICalculator />
 
       {/* Pricing 入口条 */}
       <div className="mt-6 flex items-center justify-between py-3 px-4 border border-border-subtle rounded-md bg-bg-surface/50">
