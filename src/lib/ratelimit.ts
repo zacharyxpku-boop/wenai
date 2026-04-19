@@ -20,6 +20,7 @@ const LIMITS: Record<string, number> = {
   'pipeline:influencer-outbound': 10,
   'pipeline:product-image': 5, // 生图单次成本高,配额更紧
   pipeline: 10,
+  share: 30, // 公开分享链接生成 30 次/天/用户,防灌垃圾
 };
 
 // --- Upstash Redis backend ---
