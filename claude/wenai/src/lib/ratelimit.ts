@@ -23,6 +23,7 @@ const LIMITS: Record<string, number> = {
   share: 30, // 公开分享链接生成 30 次/天/用户,防灌垃圾
   inquiry: 5, // ToB 询盘 · 同 IP 每天 5 次,防 spam
   'openai-image': 10, // gpt-image-1 单次最贵 $0.17,严控 10/d/用户
+  'intent-mining': 30, // 反向意图扩客 · 每次 ~2K token,30 次/天够测多个产品
 };
 
 // --- Upstash Redis backend ---
