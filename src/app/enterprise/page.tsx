@@ -250,17 +250,20 @@ export default function EnterprisePage() {
           访谈免费,不推销。作者本人对接 (不走销售)。结束后给你书面的"要不要做 POC"建议,你自己判断。
         </p>
         <div className="flex gap-3 justify-center flex-wrap">
-          <a
-            href="mailto:zachary.x.pku@gmail.com?subject=Wenai%20Enterprise%20%E8%AF%8A%E6%96%AD%E8%AE%BF%E8%B0%88&body=%E5%85%AC%E5%8F%B8%3A%0A%E4%B8%BB%E8%90%A5%E5%93%81%E7%B1%BB%3A%0A%E8%A7%84%E6%A8%A1%3A%0A%E5%B8%8C%E6%9C%9B%E8%A7%A3%E5%86%B3%E7%9A%84%E6%A0%B8%E5%BF%83%E7%97%9B%E7%82%B9%3A"
+          <Link
+            href="/inquire?from=enterprise"
             className="px-5 py-2.5 bg-accent text-bg-root rounded-md text-[13px] font-semibold hover:bg-accent-hover"
           >
-            📧 发邮件预约 →
+            📨 提交询盘 · 24h 内联系 →
+          </Link>
+          <a
+            href="mailto:zachary.x.pku@gmail.com?subject=Wenai%20Enterprise%20%E8%AF%8A%E6%96%AD%E8%AE%BF%E8%B0%88&body=%E5%85%AC%E5%8F%B8%3A%0A%E4%B8%BB%E8%90%A5%E5%93%81%E7%B1%BB%3A%0A%E8%A7%84%E6%A8%A1%3A%0A%E5%B8%8C%E6%9C%9B%E8%A7%A3%E5%86%B3%E7%9A%84%E6%A0%B8%E5%BF%83%E7%97%9B%E7%82%B9%3A"
+            className="px-5 py-2.5 border border-border-default text-[13px] font-mono text-text-primary hover:border-accent/40 rounded-md"
+          >
+            📧 或直接邮件
           </a>
           <Link href="/cases" className="px-5 py-2.5 border border-border-default text-[13px] font-mono text-text-primary hover:border-accent/40 rounded-md">
             先看 4 个案例
-          </Link>
-          <Link href="/roadmap" className="px-5 py-2.5 border border-border-default text-[13px] font-mono text-text-primary hover:border-accent/40 rounded-md">
-            看路线图
           </Link>
         </div>
       </section>

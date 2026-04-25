@@ -65,9 +65,24 @@ export async function GET() {
     }
   } catch {}
 
+  // 新询盘 (status === 'new')
+  let inquiriesNew = 0;
+  if (redis) {
+    try {
+      const ids = await redis.lrange('wenai:inquiries:list', 0, 199);
+      for (const id of ids) {
+        try {
+          const status = await redis.hget(`wenai:inquiry:${id}`, 'status');
+          if (!status || status === 'new') inquiriesNew++;
+        } catch {}
+      }
+    } catch {}
+  }
+
   return NextResponse.json({
     paymentsTotal: paymentTotal,
     feedback24h,
     invitesExpiringSoon,
+    inquiriesNew,
   });
 }
