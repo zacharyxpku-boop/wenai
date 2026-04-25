@@ -141,13 +141,14 @@ export default function Sidebar({ modules, categories, clientName, userRole }: S
           <div className="w-1.5 h-1.5 rounded-full bg-accent shadow-[0_0_4px_currentColor]" />
           <p className="label-mono text-[9px] font-semibold text-accent">PIPELINES</p>
           <div className="flex-1 h-px bg-accent/20" />
-          <span className="text-[7px] font-mono text-accent/60">3</span>
+          <span className="text-[7px] font-mono text-accent/60">4</span>
         </div>
         <div className="space-y-1">
           {[
+            { href: '/pipelines/ai-photoshoot', label: 'AI 影棚', badge: '★', tone: 'NEW' },
             { href: '/pipelines/new-listing', label: '新品上新', badge: '01', tone: '旗舰' },
-            { href: '/pipelines/influencer-outbound', label: '达人冷启', badge: '02', tone: 'NEW' },
-            { href: '/pipelines/product-image', label: 'AI 主图', badge: '03', tone: 'LIVE' },
+            { href: '/pipelines/influencer-outbound', label: '达人冷启', badge: '02', tone: 'LIVE' },
+            { href: '/pipelines/product-image', label: 'AI 主图 (wanx)', badge: '03', tone: 'LIVE' },
           ].map(p => {
             const active = pathname === p.href;
             return (
