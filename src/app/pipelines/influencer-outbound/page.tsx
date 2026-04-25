@@ -150,8 +150,8 @@ function InfluencerOutboundInner() {
 请按输出要求为这位达人写 1 封最合适的邮件。`;
       const res = await fetch('/api/ai', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'x-from-pipeline': '1' },
-        body: JSON.stringify({ prompt: PIPELINE_PROMPT, input: body, moduleId: 'outreach' }),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt: PIPELINE_PROMPT, input: body, moduleId: 'outreach', fromPipeline: true }),
       });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = await res.json();
@@ -229,14 +229,12 @@ ${inf.email ? `- 邮箱：${inf.email}` : ''}
     try {
       const res = await fetch('/api/ai', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-from-pipeline': '1',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           prompt: PIPELINE_PROMPT,
           input: buildInput(inf),
-          moduleId: 'outreach', // 保留用于统计，但 prompt 已被 Pipeline 专用覆盖
+          moduleId: 'outreach',
+          fromPipeline: true,
         }),
       });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);

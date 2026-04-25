@@ -116,7 +116,6 @@ function NewListingPipelineInner() {
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'text/event-stream',
-          'x-from-pipeline': '1', // 跳过 per-module 限额，走 Pipeline 级配额
         },
         signal: controller.signal,
         body: JSON.stringify({
@@ -124,6 +123,7 @@ function NewListingPipelineInner() {
           input: skuInput + (stepId === 'translate' ? '\n\n目标语言：英语 日语 韩语 西班牙语 德语' : ''),
           moduleId: stepId,
           category,
+          fromPipeline: true, // 替代 x-from-pipeline header (2026-04-20)
         }),
       });
 
@@ -364,15 +364,13 @@ ${states['ip-compliance'].result || '(空)'}
       try {
         const res = await fetch('/api/ai', {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'x-from-pipeline': '1', // 批量也走 Pipeline 额度
-          },
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             prompt: mod.prompt,
             input: row.fullInput + (step.id === 'translate' ? '\n\n目标语言：英语 日语 韩语 西班牙语 德语' : ''),
             moduleId: step.id,
             category,
+            fromPipeline: true,
           }),
         });
         if (!res.ok) throw new Error(`HTTP ${res.status}`);

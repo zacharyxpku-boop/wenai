@@ -198,6 +198,28 @@ export async function POST(request: NextRequest) {
 
   const outputs = body.outputs || ['main', 'scene', 'detail', 'lifestyle', 'compare'];
 
+  // category 白名单 · 防未知值注入 · 与 /api/ai 一致策略 (2026-04-20)
+  const CAT_ALLOWED = new Set(['home', 'auto', 'digital', 'tool', 'living']);
+  if (body.category && !CAT_ALLOWED.has(body.category)) {
+    return NextResponse.json(
+      { error: `未知 category "${body.category}"`, code: 'INVALID_CATEGORY' },
+      { status: 400 }
+    );
+  }
+
+  // dryRun · 调试用,验证 prompt 构造不真调 wanx
+  if ((body as unknown as { dryRun?: boolean }).dryRun === true) {
+    return NextResponse.json({
+      dryRun: true,
+      validated: {
+        category: body.category || null,
+        scenePreset: body.scenePreset || null,
+        outputs,
+        skuLength: (body.skuInfo || '').length,
+      },
+    });
+  }
+
   // 速率限制（Pipeline 级配额）
   let rateKey = request.headers.get('x-tenant-id') || 'default';
   try {
@@ -208,7 +230,9 @@ export async function POST(request: NextRequest) {
     }
   } catch {}
 
-  const fromPipeline = request.headers.get('x-from-pipeline') === '1';
+  // body.fromPipeline 主路径 · 兼容旧 header 写法 (2026-04-20 前)
+  const fromPipeline = (body as unknown as { fromPipeline?: boolean }).fromPipeline === true
+    || request.headers.get('x-from-pipeline') === '1';
   if (!fromPipeline) {
     const limit = await checkRateLimit('pipeline:product-image', rateKey);
     if (!limit.allowed) {

@@ -74,8 +74,8 @@ function ProductImagePipelineInner() {
     try {
       const res = await fetch('/api/image-gen', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'x-from-pipeline': '1' },
-        body: JSON.stringify({ category: cat, skuInfo: skuText, scenePreset: sceneId, outputs: ['main', 'scene'] }),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ category: cat, skuInfo: skuText, scenePreset: sceneId, outputs: ['main', 'scene'], fromPipeline: true }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'HTTP ' + res.status);
@@ -113,8 +113,8 @@ function ProductImagePipelineInner() {
     try {
       const res = await fetch('/api/image-gen', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'x-from-pipeline': '1' },
-        body: JSON.stringify({ category, skuInfo: sku, scenePreset: scene, outputs: [type] }),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ category, skuInfo: sku, scenePreset: scene, outputs: [type], fromPipeline: true }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'HTTP ' + res.status);
@@ -165,12 +165,13 @@ function ProductImagePipelineInner() {
     try {
       const res = await fetch('/api/image-gen', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'x-from-pipeline': '1' },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           category,
           skuInfo: sku,
           scenePreset: scene,
           outputs: Array.from(selectedOutputs),
+          fromPipeline: true,
         }),
       });
       const data = await res.json();
