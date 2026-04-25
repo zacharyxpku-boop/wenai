@@ -3,7 +3,9 @@ import { getReferenceContext } from '@/lib/references';
 import { logUsageEntry } from '@/lib/usage';
 import { checkRateLimit } from '@/lib/ratelimit';
 import { verifyToken, getCookieName } from '@/lib/auth';
-import { getCategoryPrefix } from '@/lib/category-prompts';
+import { getCategoryPrefix, CATEGORIES } from '@/lib/category-prompts';
+
+const CATEGORY_WHITELIST: Set<string> = new Set(CATEGORIES.map(c => c.id));
 import { extractBrandKeywords, queryTrademark } from '@/app/api/trademark/route';
 import { getCachedResponse } from '@/lib/demo-cache';
 
@@ -72,11 +74,53 @@ ${registeredMarks.map(mark => `
 }
 
 export async function POST(request: NextRequest) {
-  let prompt: string, input: string, moduleId: string | undefined, category: string | undefined;
+  let prompt: string;
+  let input: string;
+  let moduleId: string | undefined;
+  let category: string | undefined;
+  let fromPipeline = false;
+  let dryRun = false;
   try {
-    ({ prompt, input, moduleId, category } = await request.json());
+    const body = await request.json();
+    prompt = body.prompt;
+    input = body.input;
+    moduleId = body.moduleId;
+    category = body.category;
+    fromPipeline = body.fromPipeline === true;
+    dryRun = body.dryRun === true;
   } catch {
     return NextResponse.json({ error: '请求格式错误' }, { status: 400 });
+  }
+
+  // 向后兼容: 旧调用用 x-from-pipeline header (2026-04-20 前) · 下轮 deprecate
+  if (!fromPipeline && request.headers.get('x-from-pipeline') === '1') {
+    fromPipeline = true;
+  }
+
+  // category 白名单校验 · 防未知值注入破坏 prompt
+  if (category && !CATEGORY_WHITELIST.has(category)) {
+    return NextResponse.json(
+      {
+        error: `未知 category "${category}" · 合法值: ${Array.from(CATEGORY_WHITELIST).join(' / ')}`,
+        code: 'INVALID_CATEGORY',
+      },
+      { status: 400 }
+    );
+  }
+
+  // dryRun · 不调真 AI,返回请求参数验证快照供调试
+  if (dryRun) {
+    return NextResponse.json({
+      dryRun: true,
+      validated: {
+        moduleId: moduleId || null,
+        category: category || null,
+        fromPipeline,
+        inputLength: (input || '').length,
+        promptLength: (prompt || '').length,
+        categoryPrefix: category ? getCategoryPrefix(category).slice(0, 100) + '...' : null,
+      },
+    });
   }
 
   // 仅 demo 路径显式启用缓存回退，真实内测用户看到的永远是真 AI 结果或真实错误
@@ -121,8 +165,7 @@ export async function POST(request: NextRequest) {
   } catch { /* ignore, fallback to tenant-id */ }
 
   // Pipeline 触发的请求已在 Pipeline 级别预占配额，跳过 per-module 限额
-  const fromPipeline = request.headers.get('x-from-pipeline') === '1';
-
+  // fromPipeline 已在 body 层读取 (含 header 向后兼容)
   if (moduleId && !fromPipeline) {
     const limit = await checkRateLimit(moduleId, rateKey);
     if (!limit.allowed) {
