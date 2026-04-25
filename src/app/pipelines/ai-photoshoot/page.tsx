@@ -18,7 +18,7 @@ import JSZip from 'jszip';
  * 配色: wenai dark + 金色 accent, 视觉参考 PhotoRoom + Pebblely + 即梦
  */
 
-type Mode = 'model-generate' | 'outfit-swap' | 'pose-change' | 'scene-change' | 'ootd-flatlay';
+type Mode = 'model-generate' | 'outfit-swap' | 'pose-change' | 'scene-change' | 'ootd-flatlay' | 'platform-style' | 'full-detail-set';
 type Quality = 'low' | 'medium' | 'high';
 type Size = '1024x1024' | '1024x1536' | '1536x1024';
 
@@ -97,6 +97,26 @@ const MODES: Record<Mode, ModeMeta> = {
     ],
     promptHint: '默认: 拆成发饰/上衣/项链/裙子/鞋/袜,纯白底 ins 风,顶部花体 OOTD 标题。',
   },
+  'platform-style': {
+    title: '平台调性',
+    icon: '🌐',
+    desc: '产品图 → 4 平台 (Amazon / 淘宝 / 拼多多 / 独立站) 调性',
+    cost: '替代美工反复改稿 ¥2-5K/月',
+    refSlots: [
+      { label: '产品图', required: true, hint: '白底/带背景都可,自动按平台审美重做' },
+    ],
+    promptHint: '默认 4 平台四宫格出图。可指定: "只要 Amazon" / "拼多多+独立站"。',
+  },
+  'full-detail-set': {
+    title: '全套详情',
+    icon: '📑',
+    desc: '产品图 → 12 张完整详情(主/45°/场景/细节/材质/使用/对比/参数/包装)',
+    cost: '替代专业商拍 ¥3-10K/SKU',
+    refSlots: [
+      { label: '产品图', required: true, hint: '一张产品图自动衍生整套详情页' },
+    ],
+    promptHint: '可补充: 卖点 / 核心参数 / 目标平台。AI 自动分配 12 个机位。',
+  },
 };
 
 // 文章实测 prompt 模板 (来自冉胖子工作流) · 用户填的 extraPrompt 会拼到尾部
@@ -138,6 +158,34 @@ const PROMPT_TEMPLATES: Record<Mode, (extra: string) => string> = {
     '顶部用英文手写花体写"OOTD",字号适中,居中。',
     '光线均匀柔和,产品质感真实,8K 超清电商平铺图。',
     extra ? `特殊要求: ${extra}` : '',
+  ].filter(Boolean).join(' '),
+
+  'platform-style': extra => [
+    '将上传的产品图按四个电商平台的视觉调性重新出图,以 2x2 四宫格呈现:',
+    '• 左上 Amazon 风格: 纯白背景,产品居中 45° 俯视,Amazon listing 规范,极简高级,柔和投影,产品占画面 80%,英文标签风。',
+    '• 右上 淘宝/天猫 风格: 精致场景图,木质或大理石质感道具,自然光,小资生活美学,高饱和但不俗气,带轻微氛围光。',
+    '• 左下 拼多多 风格: 高视觉冲击力,大字促销标签留白(顶部和底部预留促销贴位置),亮色背景,产品占画面 90%,价格冲击感强,接地气。',
+    '• 右下 独立站/Shopify 风格: 大片质感,品牌叙事感,留白多,景深虚化,生活方式摄影,高级感优先于产品本身。',
+    '四种风格差异明显,但产品本体特征(颜色/形状/材质)严格一致。每张 1024×1024 子格,8K 超清。',
+    extra ? `补充: ${extra}` : '',
+  ].filter(Boolean).join(' '),
+
+  'full-detail-set': extra => [
+    '基于上传的产品图,生成完整的电商详情页图集,12 张图分别为(以 3x4 或 4x3 网格拼合呈现,每格独立标号):',
+    '① 主图 - 纯白背景 45° 俯视,产品占 80%,Amazon 规范',
+    '② 主图 B - 正面平视,展示产品正面特征',
+    '③ 场景图 - 真实使用环境的 lifestyle 摄影',
+    '④ 细节微距 - 材质/工艺特写',
+    '⑤ 材质纹理图 - 表面纹理放大,质感凸显',
+    '⑥ 使用图 - 人手互动使用瞬间',
+    '⑦ 对比图 - 与旧款/竞品/普通版对比示意',
+    '⑧ 参数说明图 - 在产品旁边标注尺寸/重量/容量等参数(中文标注)',
+    '⑨ 规格组合图 - 多色/多规格并排展示',
+    '⑩ 包装外观 - 产品的包装盒/袋外观',
+    '⑪ 包装内含 - 拆箱后所有配件平铺',
+    '⑫ 品牌调性图 - 突出品牌质感的氛围图',
+    '产品本体特征 1:1 还原上传图,12 张图风格统一,8K 高清。',
+    extra ? `卖点和参数补充: ${extra}` : '',
   ].filter(Boolean).join(' '),
 };
 
@@ -501,6 +549,8 @@ export default function AIPhotoshootPage() {
                         'pose-change': '2000-5000',
                         'scene-change': '3000-10000',
                         'ootd-flatlay': '500-2000',
+                        'platform-style': '2000-5000',
+                        'full-detail-set': '3000-10000',
                       } as Record<Mode, string>)[mode]}
                     </div>
                   )}
@@ -572,6 +622,8 @@ export default function AIPhotoshootPage() {
                         'pose-change': '2000-5000',
                         'scene-change': '3000-10000',
                         'ootd-flatlay': '500-2000',
+                        'platform-style': '2000-5000',
+                        'full-detail-set': '3000-10000',
                       } as Record<Mode, string>)[mode]}
                     </div>
                     <div className="text-text-tertiary text-[10px] mt-0.5">需 1-3 天 · 拍完只能用一次</div>
@@ -703,6 +755,16 @@ function EmptyState({ mode }: { mode: Mode }) {
       { emoji: '💍', title: 'ins 风排版', desc: '纯白底 + OOTD 花体标题' },
       { emoji: '🎨', title: '电商单品图', desc: '每件单独立项,适合详情页' },
     ],
+    'platform-style': [
+      { emoji: '🟧', title: 'Amazon 极简', desc: '白底 45° · listing 规范' },
+      { emoji: '🟦', title: '淘宝精致', desc: '木质道具 · 自然光 · 小资美学' },
+      { emoji: '🟥', title: '拼多多冲击', desc: '高饱和 · 大字促销 · 接地气' },
+    ],
+    'full-detail-set': [
+      { emoji: '①', title: '主图组', desc: '白底 + 45° + 正面平视 3 张' },
+      { emoji: '⑥', title: '场景使用组', desc: '生活场景 + 人手互动 3 张' },
+      { emoji: '⑫', title: '参数包装组', desc: '参数标注 + 包装外观 + 拆箱内含' },
+    ],
   };
   const meta = MODES[mode];
   return (
@@ -732,7 +794,9 @@ function NextStepHint({ mode, onSwitch }: { mode: Mode; onSwitch: (m: Mode) => v
     'outfit-swap': { mode: 'pose-change', cta: '换装完成 → 去模特换姿生成 4 个角度' },
     'pose-change': { mode: 'scene-change', cta: '姿势齐了 → 去模特换景把 ta 放进不同场景' },
     'scene-change': { mode: 'ootd-flatlay', cta: '场景拍完 → 去 OOTD 拆解一套出 8 张单品图' },
-    'ootd-flatlay': null,
+    'ootd-flatlay': { mode: 'platform-style', cta: '单品出齐 → 去平台调性按 Amazon/淘宝/拼多多重做主图' },
+    'platform-style': { mode: 'full-detail-set', cta: '主图选定 → 去全套详情一键生成 12 张完整详情页' },
+    'full-detail-set': null,
   };
   const n = next[mode];
   if (!n) return null;
