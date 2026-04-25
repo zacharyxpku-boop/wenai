@@ -21,6 +21,7 @@ const LIMITS: Record<string, number> = {
   'pipeline:product-image': 5, // 生图单次成本高,配额更紧
   pipeline: 10,
   share: 30, // 公开分享链接生成 30 次/天/用户,防灌垃圾
+  inquiry: 5, // ToB 询盘 · 同 IP 每天 5 次,防 spam
 };
 
 // --- Upstash Redis backend ---

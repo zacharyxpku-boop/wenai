@@ -91,8 +91,8 @@ const PLANS: Plan[] = [
       { text: '企业微信 / 飞书 bot 集成' },
       { text: 'DPA + 跨境数据处理合规' },
     ],
-    cta: '预约 Demo',
-    ctaHref: '/enterprise',
+    cta: '提交询盘 · 24h 内联系',
+    ctaHref: '/inquire?from=pricing',
   },
 ];
 
@@ -248,12 +248,21 @@ export default function PricingPage() {
         <p className="text-[11px] font-mono text-text-tertiary mb-2">
           ━━━ 需要定制开发或规模签约 ━━━
         </p>
-        <a
-          href="mailto:zachary.x.pku@gmail.com?subject=Wenai%20Enterprise%20%E6%B4%BD%E8%B0%88"
-          className="text-[12px] font-mono text-accent hover:underline"
-        >
-          联系作者 · zachary.x.pku@gmail.com
-        </a>
+        <div className="flex items-center justify-center gap-3 flex-wrap">
+          <a
+            href="/inquire?from=pricing-footer"
+            className="text-[12px] font-mono text-accent hover:underline"
+          >
+            提交询盘 →
+          </a>
+          <span className="text-text-tertiary text-[11px]">·</span>
+          <a
+            href="mailto:zachary.x.pku@gmail.com?subject=Wenai%20Enterprise%20%E6%B4%BD%E8%B0%88"
+            className="text-[12px] font-mono text-text-secondary hover:text-accent"
+          >
+            或直接邮件
+          </a>
+        </div>
       </div>
     </div>
   );

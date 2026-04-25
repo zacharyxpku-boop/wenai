@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
-type TabKey = 'metrics' | 'feedback' | 'payments' | 'invites';
+type TabKey = 'metrics' | 'feedback' | 'payments' | 'invites' | 'inquiries';
 interface Tab {
   key: TabKey;
   href: string;
@@ -17,12 +17,14 @@ const TABS: Tab[] = [
   { key: 'feedback', href: '/admin/feedback', label: '反馈', icon: '💬' },
   { key: 'payments', href: '/admin/payments', label: '付款', icon: '💰' },
   { key: 'invites', href: '/admin/invites', label: '邀请码', icon: '🎟️' },
+  { key: 'inquiries', href: '/admin/inquiries', label: '询盘', icon: '📨' },
 ];
 
 interface Notifications {
   paymentsTotal?: number;
   feedback24h?: number;
   invitesExpiringSoon?: number;
+  inquiriesNew?: number;
 }
 
 interface Props {
@@ -53,6 +55,7 @@ export default function AdminHeader({ onLogout, subtitle }: Props) {
     }
     if (key === 'feedback') return notif.feedback24h && notif.feedback24h > 0 ? notif.feedback24h : null;
     if (key === 'invites') return notif.invitesExpiringSoon && notif.invitesExpiringSoon > 0 ? notif.invitesExpiringSoon : null;
+    if (key === 'inquiries') return notif.inquiriesNew && notif.inquiriesNew > 0 ? notif.inquiriesNew : null;
     return null;
   };
   return (
@@ -81,7 +84,7 @@ export default function AdminHeader({ onLogout, subtitle }: Props) {
         {TABS.map(t => {
           const active = pathname === t.href;
           const badge = getBadge(t.key);
-          const isUrgent = t.key === 'payments' || (t.key === 'invites' && badge);
+          const isUrgent = t.key === 'payments' || (t.key === 'invites' && badge) || (t.key === 'inquiries' && badge);
           return (
             <Link
               key={t.href}
