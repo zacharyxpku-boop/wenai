@@ -25,6 +25,7 @@ const LIMITS: Record<string, number> = {
   'openai-image': 10, // gpt-image-1 单次最贵 $0.17,严控 10/d/用户
   'intent-mining': 30, // 反向意图扩客 · 每次 ~2K token,30 次/天够测多个产品
   'video-gen': 8, // wanx i2v · 5s 视频 ~¥3.5,8 条/天/用户
+  'video-teardown': 15, // Gemini Vision 拆解 · 8MB 视频 ~$0.01-0.05,15 次/天
 };
 
 // --- Upstash Redis backend ---

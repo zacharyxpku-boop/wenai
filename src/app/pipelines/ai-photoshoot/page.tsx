@@ -3,6 +3,7 @@
 import { useRef, useState } from 'react';
 import Link from 'next/link';
 import JSZip from 'jszip';
+import { applyImageWatermark } from '@/lib/aigc';
 
 /**
  * AI 影棚 · gpt-image-1 旗舰模块 (5 模式闭环)
@@ -318,9 +319,18 @@ export default function AIPhotoshootPage() {
     }
   };
 
-  const downloadImage = (url: string, idx: number) => {
+  const downloadImage = async (url: string, idx: number) => {
+    // AIGC 合规: 下载前打可视水印 (深度合成规定 第 16 条)
+    let finalUrl = url;
+    try {
+      if (url.startsWith('data:image')) {
+        finalUrl = await applyImageWatermark(url);
+      }
+    } catch (err) {
+      console.warn('[watermark] failed, fallback to raw', err);
+    }
     const a = document.createElement('a');
-    a.href = url;
+    a.href = finalUrl;
     a.download = `wenai-${mode}-${Date.now()}-${idx}.png`;
     document.body.appendChild(a);
     a.click();
@@ -332,10 +342,34 @@ export default function AIPhotoshootPage() {
     const zip = new JSZip();
     for (const img of images) {
       if (img.url.startsWith('data:image')) {
-        const b64 = img.url.split(',')[1];
+        // 给 zip 内每张图也打水印
+        let watermarked = img.url;
+        try {
+          watermarked = await applyImageWatermark(img.url);
+        } catch {}
+        const b64 = watermarked.split(',')[1];
         zip.file(`wenai-${mode}-${img.index + 1}.png`, b64, { base64: true });
       }
     }
+    // 附 AIGC 合规说明
+    zip.file(
+      'AIGC-合规说明.txt',
+      [
+        '本压缩包内的图片均由 AI 生成 · Wenai',
+        '已自动添加右下角"AI 生成 · Wenai"水印',
+        '',
+        '依据《互联网信息服务深度合成管理规定》(2023.1 施行) 第 16-17 条:',
+        '发布到抖音/视频号/小红书/TikTok 时,需在平台勾选 AIGC 标识开关。',
+        '',
+        '抖音: 发布页 → 高级设置 → AI 生成内容 开关',
+        '视频号: 发布页底部 → 标识 AI 合成 选项',
+        '小红书: 发布页 → AI 生成内容 开关',
+        'TikTok: Post page → AI-generated content toggle',
+        '',
+        `生成时间: ${new Date().toISOString()}`,
+        `模式: ${mode}`,
+      ].join('\n'),
+    );
     const blob = await zip.generateAsync({ type: 'blob' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
