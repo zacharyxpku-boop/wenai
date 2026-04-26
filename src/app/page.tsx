@@ -455,76 +455,243 @@ export default function Dashboard() {
         </div>
       )}
 
-      {/* Pipeline Hero · 新品上新流水线（旗舰唯一入口） */}
+      {/* AI 工厂杀器 Hero · MOAT_MAP 一句话叙事 */}
       <div className="mb-6 animate-fade-up stagger-3">
-        <a
-          href="/pipelines/new-listing"
-          className="group block border border-accent/40 bg-gradient-to-br from-bg-surface via-bg-raised to-bg-surface rounded-md p-6 lg:p-8 hover:border-accent/70 hover:shadow-[0_16px_48px_rgba(200,151,90,0.18)] transition-all duration-200"
+        <div className="border border-accent/40 bg-gradient-to-br from-bg-surface via-bg-raised to-bg-surface rounded-md p-6 lg:p-8 shadow-[0_16px_48px_rgba(200,151,90,0.10)]"
           style={{ borderLeftWidth: '3px', borderLeftColor: '#c8975a' }}
         >
-          <div className="flex items-center gap-2 mb-3">
+          <div className="flex items-center gap-2 mb-3 flex-wrap">
             <span className="px-2 py-0.5 bg-accent/10 text-accent text-[9px] font-mono uppercase tracking-[0.15em] rounded">
-              PIPELINE · 01
+              AI FACTORY · v2026.4
             </span>
-            <span className="text-[10px] font-mono text-text-tertiary">新品上新流水线</span>
+            <span className="text-[10px] font-mono text-text-tertiary">跨境电商工厂级流水线</span>
             <div className="flex-1 h-px bg-border-subtle/60" />
-            <span className="text-[10px] font-mono text-success tabular-nums">节省 30 分钟 / SKU</span>
+            <a href="/MOAT_MAP" className="text-[10px] font-mono text-accent/80 hover:text-accent">查看 MOAT 文档 →</a>
           </div>
 
-          <h2 className="text-[22px] lg:text-[28px] font-bold text-text-primary mb-2.5 group-hover:text-accent transition-colors leading-tight font-[family-name:var(--font-outfit)]">
-            贴 1 条 SKU，同时跑完 翻译 · 文案 · 合规
+          <h2 className="text-[22px] lg:text-[30px] font-bold text-text-primary mb-3 leading-tight font-[family-name:var(--font-outfit)]">
+            来一次,主图 · 模特图 · 详情页 · 短视频 · 客服话术 · 询盘对接 全套交付完
           </h2>
-          <p className="text-[13px] text-text-secondary leading-relaxed mb-4 max-w-[760px]">
-            选 5 大品类中的 1 个（家居 / 汽摩 / 数码 / 工具 / 生活百货）→ 贴商品信息 → 并行跑三件事 → 一键打包 Markdown。
-            <span className="text-text-primary"> 品类专属 prompt 调教</span>，不像通用 AI 什么都写不对。
+          <p className="text-[13px] lg:text-[14px] text-text-secondary leading-relaxed mb-5 max-w-[820px]">
+            不是单点工具,是 <span className="text-accent font-semibold">商家从空白 SKU 到上架的完整流水线</span>。
+            8 个 photoshoot 模式 + 视频生成 + 爆款拆解 + 反向意图 + 19 个 toolbox,
+            <span className="text-text-primary"> 在同一个工厂里串通,不用切平台</span>。
           </p>
 
-          {/* 硬数字对比 chip · 说服新访客 */}
-          <div className="flex flex-wrap gap-2 mb-4">
-            <span className="inline-flex items-center gap-1.5 px-2 py-1 border border-error/30 bg-error/5 rounded text-[10px]">
-              <span className="font-mono text-error">手工</span>
-              <span className="text-text-secondary tabular-nums">80 分钟 · ¥3500/SKU</span>
+          {/* 成本压缩 */}
+          <div className="flex flex-wrap gap-2 mb-5">
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 border border-error/30 bg-error/5 rounded text-[10px]">
+              <span className="font-mono text-error">真人摄影 + 美工 + 文案</span>
+              <span className="text-text-secondary tabular-nums">¥3-8K / SKU · 1-3 天</span>
             </span>
-            <span className="text-text-tertiary text-[11px] self-center">→</span>
-            <span className="inline-flex items-center gap-1.5 px-2 py-1 border border-success/40 bg-success/10 rounded text-[10px]">
+            <span className="text-text-tertiary text-[12px] self-center">→</span>
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 border border-success/40 bg-success/10 rounded text-[10px]">
               <span className="font-mono text-success">wenai</span>
-              <span className="text-text-primary font-semibold tabular-nums">45 秒 · ≈ ¥0.02/SKU</span>
+              <span className="text-text-primary font-semibold tabular-nums">≈ ¥30-100 / SKU · 一晚</span>
             </span>
-            <span className="inline-flex items-center gap-1 px-2 py-1 bg-accent/10 border border-accent/30 rounded text-[10px] font-mono text-accent">
-              107× 压缩 · 数据见 <a href="/cases#homelody" className="underline">#homelody</a>
+            <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-accent/10 border border-accent/30 rounded text-[10px] font-mono text-accent">
+              30-100× 压缩 · 见 <a href="/MOAT_MAP" className="underline">MOAT_MAP.md</a>
             </span>
           </div>
 
-          {/* 迷你工作流步骤 */}
-          <div className="flex flex-wrap items-center gap-2 mb-4">
-            {['选品类', '贴 SKU', '并行 3 路', '打包下载'].map((s, i) => (
-              <div key={i} className="flex items-center gap-1.5">
-                <span className="w-5 h-5 rounded-full border border-accent/40 flex items-center justify-center text-[9px] font-mono text-accent tabular-nums">
-                  {i + 1}
-                </span>
-                <span className="text-[11px] text-text-secondary">{s}</span>
-                {i < 3 && <span className="text-[10px] text-accent/40 ml-1">→</span>}
-              </div>
-            ))}
+          {/* 工作流可视化 · 一条流水线 */}
+          <div className="border border-border-subtle/60 bg-bg-root/40 rounded p-4 mb-5">
+            <div className="text-[10px] font-mono text-text-tertiary uppercase tracking-wider mb-3">
+              典型工作流 · 一个 SKU 一晚走完
+            </div>
+            <div className="flex flex-wrap items-center gap-2 text-[11px]">
+              {[
+                { num: '1', name: '反向意图', href: '/pipelines/intent-mining', cn: '挖出非显然客群' },
+                { num: '2', name: '爆款拆解', href: '/pipelines/video-teardown', cn: '扔 TikTok 出分镜' },
+                { num: '3', name: 'AI 影棚', href: '/pipelines/ai-photoshoot', cn: '8 模式生静态图' },
+                { num: '4', name: 'AI 视频', href: '/pipelines/ai-video', cn: '一图变 5s 短片' },
+                { num: '5', name: '上新流水线', href: '/pipelines/new-listing', cn: '翻译+文案+合规' },
+                { num: '6', name: '询盘对接', href: '/inquire?from=hero', cn: '24h 内联系' },
+              ].map((step, i) => (
+                <div key={i} className="flex items-center gap-1.5">
+                  <a
+                    href={step.href}
+                    className="flex items-center gap-1.5 px-2 py-1 border border-border-subtle hover:border-accent/60 hover:bg-bg-surface rounded transition-colors"
+                  >
+                    <span className="w-4 h-4 rounded-full bg-accent/15 flex items-center justify-center text-[9px] font-mono text-accent tabular-nums">
+                      {step.num}
+                    </span>
+                    <span className="text-text-primary font-semibold">{step.name}</span>
+                    <span className="text-text-tertiary text-[10px] hidden lg:inline">{step.cn}</span>
+                  </a>
+                  {i < 5 && <span className="text-accent/40 text-[10px]">→</span>}
+                </div>
+              ))}
+            </div>
           </div>
 
           <div className="flex flex-wrap items-center gap-2">
-            <span className="inline-flex items-center gap-1.5 px-4 py-2 bg-accent text-bg-root text-[12px] font-semibold rounded-md group-hover:bg-accent-hover transition-colors">
-              进入流水线 →
-            </span>
-            <span
-              onClick={(e) => { e.preventDefault(); e.stopPropagation(); window.location.href = '/pipelines/new-listing?demo=1'; }}
-              className="inline-flex items-center gap-1.5 px-3 py-2 border border-success/40 bg-success/5 text-success text-[11px] font-mono rounded-md hover:bg-success/15 transition-colors cursor-pointer"
+            <a
+              href="/pipelines/ai-photoshoot"
+              className="inline-flex items-center gap-1.5 px-4 py-2 bg-accent text-bg-root text-[12px] font-semibold rounded-md hover:bg-accent-hover transition-colors"
             >
-              ⚡ 15 秒 demo · 无需输入
-            </span>
+              🎬 从 AI 影棚开始 →
+            </a>
+            <a
+              href="/pipelines/video-teardown"
+              className="inline-flex items-center gap-1.5 px-3 py-2 border border-accent/40 text-accent text-[11px] font-mono rounded-md hover:bg-accent/10"
+            >
+              🔬 拆爆款视频 (MOAT-01)
+            </a>
+            <a
+              href="/inquire?from=hero"
+              className="inline-flex items-center gap-1.5 px-3 py-2 border border-border-default text-text-primary text-[11px] font-mono rounded-md hover:border-accent/40"
+            >
+              📨 ToB 询盘
+            </a>
+            <a
+              href="/cases"
+              className="inline-flex items-center gap-1.5 px-3 py-2 text-text-tertiary text-[11px] font-mono hover:text-accent"
+            >
+              先看案例 →
+            </a>
           </div>
-        </a>
+        </div>
       </div>
 
-      {/* Pipeline 02 · 达人批量冷启（已实装） · Pipeline 03 占位 */}
+      {/* Pipelines 完整网格 · 新老 7 条横向并列 */}
       <div className="mb-6 animate-fade-up stagger-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <div className="flex items-center gap-2 mb-3">
+          <span className="label-mono text-[10px] font-semibold text-accent">PIPELINES · 7 条流水线</span>
+          <div className="flex-1 h-px bg-accent/20" />
+          <span className="text-[9px] font-mono text-text-tertiary">每条都可独立跑,也可串成上面那条工作流</span>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 mb-3">
+          {/* AI 影棚 · 旗舰新增 */}
+          <a
+            href="/pipelines/ai-photoshoot"
+            className="group block border border-accent/40 bg-bg-surface rounded-md p-4 hover:border-accent/70 hover:-translate-y-0.5 hover:shadow-[0_6px_20px_rgba(200,151,90,0.15)] transition-all"
+            style={{ borderLeftWidth: '2px', borderLeftColor: '#c8975a' }}
+          >
+            <div className="flex items-center gap-2 mb-1.5">
+              <span className="px-1.5 py-0.5 bg-accent/15 text-accent text-[9px] font-mono uppercase rounded">★ HERO</span>
+              <span className="text-[9px] font-mono text-success">8 模式</span>
+            </div>
+            <div className="text-[14px] font-semibold text-text-primary mb-1 group-hover:text-accent transition-colors font-[family-name:var(--font-outfit)]">
+              🎬 AI 影棚
+            </div>
+            <p className="text-[11px] text-text-secondary leading-relaxed mb-2">
+              模特生图 · 换装 · 换姿 · 换景 · OOTD · 平台调性 · 全套详情 · 爆款复刻
+            </p>
+            <div className="flex items-center gap-1.5 text-[9px] font-mono">
+              <span className="text-text-tertiary">¥3-8K / 组棚</span>
+              <span className="text-text-tertiary/50">→</span>
+              <span className="text-success font-semibold">¥0.3-1.2 / 张</span>
+            </div>
+          </a>
+
+          {/* 爆款视频拆解 · MOAT-01 */}
+          <a
+            href="/pipelines/video-teardown"
+            className="group block border border-border-subtle bg-bg-surface rounded-md p-4 hover:border-accent/40 hover:-translate-y-0.5 transition-all"
+            style={{ borderLeftWidth: '2px', borderLeftColor: '#9b8ec4' }}
+          >
+            <div className="flex items-center gap-2 mb-1.5">
+              <span className="px-1.5 py-0.5 bg-accent/10 text-accent text-[9px] font-mono uppercase rounded">MOAT-01</span>
+              <span className="text-[9px] font-mono text-success">独占</span>
+            </div>
+            <div className="text-[14px] font-semibold text-text-primary mb-1 group-hover:text-accent transition-colors font-[family-name:var(--font-outfit)]">
+              🔬 爆款视频拆解
+            </div>
+            <p className="text-[11px] text-text-secondary leading-relaxed mb-2">
+              扔 TikTok 链接 → Gemini 拆出钩子/节奏/CTA + 每个镜头的图像 prompt
+            </p>
+            <div className="flex items-center gap-1.5 text-[9px] font-mono">
+              <span className="text-text-tertiary">人工拆 2-3h</span>
+              <span className="text-text-tertiary/50">→</span>
+              <span className="text-success font-semibold">15-30s</span>
+            </div>
+          </a>
+
+          {/* AI 视频 i2v */}
+          <a
+            href="/pipelines/ai-video"
+            className="group block border border-border-subtle bg-bg-surface rounded-md p-4 hover:border-accent/40 hover:-translate-y-0.5 transition-all"
+            style={{ borderLeftWidth: '2px', borderLeftColor: '#5bb89a' }}
+          >
+            <div className="flex items-center gap-2 mb-1.5">
+              <span className="px-1.5 py-0.5 bg-accent/10 text-accent text-[9px] font-mono uppercase rounded">NEW</span>
+              <span className="text-[9px] font-mono text-success">wanx i2v</span>
+            </div>
+            <div className="text-[14px] font-semibold text-text-primary mb-1 group-hover:text-accent transition-colors font-[family-name:var(--font-outfit)]">
+              🎞️ AI 视频
+            </div>
+            <p className="text-[11px] text-text-secondary leading-relaxed mb-2">
+              一图变 5s 带货短片 · 模特动态展示 / 360° 旋转 / lifestyle / 自定义
+            </p>
+            <div className="flex items-center gap-1.5 text-[9px] font-mono">
+              <span className="text-text-tertiary">真人拍 ¥500-3K</span>
+              <span className="text-text-tertiary/50">→</span>
+              <span className="text-success font-semibold">¥3-7 / 条</span>
+            </div>
+          </a>
+
+          {/* 反向意图扩客 · MOAT-02 */}
+          <a
+            href="/pipelines/intent-mining"
+            className="group block border border-border-subtle bg-bg-surface rounded-md p-4 hover:border-accent/40 hover:-translate-y-0.5 transition-all"
+            style={{ borderLeftWidth: '2px', borderLeftColor: '#6ea8d7' }}
+          >
+            <div className="flex items-center gap-2 mb-1.5">
+              <span className="px-1.5 py-0.5 bg-accent/10 text-accent text-[9px] font-mono uppercase rounded">MOAT-02</span>
+              <span className="text-[9px] font-mono text-success">DeepSeek</span>
+            </div>
+            <div className="text-[14px] font-semibold text-text-primary mb-1 group-hover:text-accent transition-colors font-[family-name:var(--font-outfit)]">
+              🔍 反向意图扩客
+            </div>
+            <p className="text-[11px] text-text-secondary leading-relaxed mb-2">
+              阿里万相同款方法论:美甲师 → 电子锁 · 5-8 个非显然高潜客群
+            </p>
+            <div className="flex items-center gap-1.5 text-[9px] font-mono">
+              <span className="text-text-tertiary">运营拍脑袋</span>
+              <span className="text-text-tertiary/50">→</span>
+              <span className="text-success font-semibold">数据驱动</span>
+            </div>
+          </a>
+        </div>
+
+        {/* 老 3 条 Pipeline 第二行 (新品上新 / 达人冷启 / 主图 wanx) */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+          <a
+            href="/pipelines/new-listing"
+            className="group block border border-border-subtle bg-bg-surface rounded-md p-4 hover:border-accent/40 hover:-translate-y-0.5 hover:shadow-[0_6px_20px_rgba(200,151,90,0.1)] transition-all"
+            style={{ borderLeftWidth: '2px', borderLeftColor: '#c8975a' }}
+          >
+            <div className="flex items-center gap-2 mb-1.5">
+              <span className="px-1.5 py-0.5 bg-accent/10 text-accent text-[9px] font-mono uppercase rounded">
+                PIPELINE · 01
+              </span>
+              <span className="text-[9px] font-mono text-success">LIVE · 旗舰</span>
+            </div>
+            <div className="text-[14px] font-semibold text-text-primary mb-1 group-hover:text-accent transition-colors font-[family-name:var(--font-outfit)]">
+              📋 新品上新流水线
+            </div>
+            <p className="text-[11px] text-text-secondary leading-relaxed mb-2">
+              贴 1 条 SKU,并行跑翻译 + 文案 + 合规检索 · 5 大品类 prompt 调教
+            </p>
+            <div className="flex items-center gap-1.5 mb-2 text-[9px] font-mono">
+              <span className="text-text-tertiary">80min · ¥3500/SKU</span>
+              <span className="text-text-tertiary/50">→</span>
+              <span className="text-success font-semibold">45s · ¥0.02</span>
+            </div>
+            <div className="flex items-center justify-between gap-2">
+              <span className="text-[10px] font-mono text-accent opacity-0 group-hover:opacity-100 transition-opacity">
+                进入流水线 →
+              </span>
+              <span
+                onClick={(e) => { e.preventDefault(); e.stopPropagation(); window.location.href = '/pipelines/new-listing?demo=1'; }}
+                className="text-[9px] font-mono text-success border border-success/30 rounded px-1.5 py-0.5 hover:bg-success/10 cursor-pointer"
+              >
+                ⚡ demo
+              </span>
+            </div>
+          </a>
+
           <a
             href="/pipelines/influencer-outbound"
             className="group block border border-border-subtle bg-bg-surface rounded-md p-4 hover:border-accent/40 hover:-translate-y-0.5 hover:shadow-[0_6px_20px_rgba(200,151,90,0.1)] transition-all"
