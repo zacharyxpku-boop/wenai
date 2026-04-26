@@ -145,7 +145,7 @@ export default function Sidebar({ modules, categories, clientName, userRole }: S
         </div>
         <div className="space-y-1">
           {[
-            { href: '/pipelines/ai-photoshoot', label: 'AI 影棚 (7 模式)', badge: '★', tone: 'HOT' },
+            { href: '/pipelines/ai-photoshoot', label: 'AI 影棚 (8 模式)', badge: '★', tone: 'HOT' },
             { href: '/pipelines/intent-mining', label: '反向意图扩客', badge: '◆', tone: 'NEW' },
             { href: '/pipelines/new-listing', label: '新品上新', badge: '01', tone: '旗舰' },
             { href: '/pipelines/influencer-outbound', label: '达人冷启', badge: '02', tone: 'LIVE' },

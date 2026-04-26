@@ -18,7 +18,7 @@ import JSZip from 'jszip';
  * 配色: wenai dark + 金色 accent, 视觉参考 PhotoRoom + Pebblely + 即梦
  */
 
-type Mode = 'model-generate' | 'outfit-swap' | 'pose-change' | 'scene-change' | 'ootd-flatlay' | 'platform-style' | 'full-detail-set';
+type Mode = 'model-generate' | 'outfit-swap' | 'pose-change' | 'scene-change' | 'ootd-flatlay' | 'platform-style' | 'full-detail-set' | 'hot-clone';
 type Quality = 'low' | 'medium' | 'high';
 type Size = '1024x1024' | '1024x1536' | '1536x1024';
 
@@ -117,6 +117,17 @@ const MODES: Record<Mode, ModeMeta> = {
     ],
     promptHint: '可补充: 卖点 / 核心参数 / 目标平台。AI 自动分配 12 个机位。',
   },
+  'hot-clone': {
+    title: '爆款复刻',
+    icon: '🔥',
+    desc: '你的产品 + 竞品爆款截图 → 1:1 复刻构图/光影/排版',
+    cost: '蹭爆款流量 · 替代美工拆解 ¥1-3K/次',
+    refSlots: [
+      { label: '你的产品图', required: true, hint: '白底/带背景都行' },
+      { label: '竞品爆款图', required: true, hint: '截图淘宝/Amazon/拼多多的爆款主图' },
+    ],
+    promptHint: '默认: 完整借用图二的构图、光影、配色、排版,把图一产品换上去。可强调要不要保留竞品的促销贴/文字。',
+  },
 };
 
 // 文章实测 prompt 模板 (来自冉胖子工作流) · 用户填的 extraPrompt 会拼到尾部
@@ -186,6 +197,15 @@ const PROMPT_TEMPLATES: Record<Mode, (extra: string) => string> = {
     '⑫ 品牌调性图 - 突出品牌质感的氛围图',
     '产品本体特征 1:1 还原上传图,12 张图风格统一,8K 高清。',
     extra ? `卖点和参数补充: ${extra}` : '',
+  ].filter(Boolean).join(' '),
+
+  'hot-clone': extra => [
+    '生成一张电商主图,核心要求: 完整借用图二(竞品爆款)的画面构图、镜头角度、光影方向、色调氛围、文字排版位置、装饰元素分布,',
+    '把图一(我的产品)替换到图二原产品所在位置,产品本体特征(形状/颜色/材质)严格保留图一不变。',
+    '注意: 不要照抄竞品的品牌名、logo、促销价格数字,这些必须替换为通用占位或留空,避免侵权。',
+    '其他视觉语言(布景/道具/光线/风格)与竞品高度一致,目标是"换品不换感",蹭爆款流量。',
+    '8K 超清,电商主图规范。',
+    extra ? `特殊要求: ${extra}` : '',
   ].filter(Boolean).join(' '),
 };
 
@@ -338,7 +358,7 @@ export default function AIPhotoshootPage() {
               AI PHOTOSHOOT · gpt-image-1
             </span>
             <span className="text-[9px] font-mono text-accent/70 px-2 py-0.5 border border-accent/30 rounded-full">
-              5 模式闭环
+              8 模式闭环
             </span>
           </div>
           <h1 className="text-3xl lg:text-4xl font-bold text-text-primary mb-3 font-[family-name:var(--font-outfit)]">
@@ -551,6 +571,7 @@ export default function AIPhotoshootPage() {
                         'ootd-flatlay': '500-2000',
                         'platform-style': '2000-5000',
                         'full-detail-set': '3000-10000',
+                        'hot-clone': '1000-3000',
                       } as Record<Mode, string>)[mode]}
                     </div>
                   )}
@@ -624,6 +645,7 @@ export default function AIPhotoshootPage() {
                         'ootd-flatlay': '500-2000',
                         'platform-style': '2000-5000',
                         'full-detail-set': '3000-10000',
+                        'hot-clone': '1000-3000',
                       } as Record<Mode, string>)[mode]}
                     </div>
                     <div className="text-text-tertiary text-[10px] mt-0.5">需 1-3 天 · 拍完只能用一次</div>
@@ -765,6 +787,11 @@ function EmptyState({ mode }: { mode: Mode }) {
       { emoji: '⑥', title: '场景使用组', desc: '生活场景 + 人手互动 3 张' },
       { emoji: '⑫', title: '参数包装组', desc: '参数标注 + 包装外观 + 拆箱内含' },
     ],
+    'hot-clone': [
+      { emoji: '🔥', title: '蹭爆款流量', desc: '把竞品热销主图的构图直接换上你的货' },
+      { emoji: '🎯', title: '换品不换感', desc: '产品本体保留,光影/排版/道具沿用爆款' },
+      { emoji: '⚖️', title: '避商标雷区', desc: '自动替换竞品 logo/品牌名/促销价数字' },
+    ],
   };
   const meta = MODES[mode];
   return (
@@ -796,7 +823,8 @@ function NextStepHint({ mode, onSwitch }: { mode: Mode; onSwitch: (m: Mode) => v
     'scene-change': { mode: 'ootd-flatlay', cta: '场景拍完 → 去 OOTD 拆解一套出 8 张单品图' },
     'ootd-flatlay': { mode: 'platform-style', cta: '单品出齐 → 去平台调性按 Amazon/淘宝/拼多多重做主图' },
     'platform-style': { mode: 'full-detail-set', cta: '主图选定 → 去全套详情一键生成 12 张完整详情页' },
-    'full-detail-set': null,
+    'full-detail-set': { mode: 'hot-clone', cta: '想蹭爆款 → 去爆款复刻拿竞品爆图换上你的货' },
+    'hot-clone': null,
   };
   const n = next[mode];
   if (!n) return null;
