@@ -18,8 +18,11 @@ import { verifyToken, getCookieName } from '@/lib/auth';
  * 替代真人模特拍摄 ¥3-8K/组的核心论点 → 这条路由是商家最愿付费的入口
  */
 
-const OPENAI_GENERATIONS = 'https://api.openai.com/v1/images/generations';
-const OPENAI_EDITS = 'https://api.openai.com/v1/images/edits';
+// 走 OPENAI_BASE_URL (例: Cloudflare Worker 反代 https://wenai-openai-proxy.xxx.workers.dev)
+// 没设就走官方,适用于墙外服务器
+const OPENAI_BASE = process.env.OPENAI_BASE_URL || 'https://api.openai.com';
+const OPENAI_GENERATIONS = `${OPENAI_BASE}/v1/images/generations`;
+const OPENAI_EDITS = `${OPENAI_BASE}/v1/images/edits`;
 const MODEL = 'gpt-image-1';
 
 interface GenerateBody {
