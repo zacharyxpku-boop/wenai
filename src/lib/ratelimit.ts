@@ -24,6 +24,7 @@ const LIMITS: Record<string, number> = {
   inquiry: 5, // ToB 询盘 · 同 IP 每天 5 次,防 spam
   'openai-image': 10, // gpt-image-1 单次最贵 $0.17,严控 10/d/用户
   'intent-mining': 30, // 反向意图扩客 · 每次 ~2K token,30 次/天够测多个产品
+  'video-gen': 8, // wanx i2v · 5s 视频 ~¥3.5,8 条/天/用户
 };
 
 // --- Upstash Redis backend ---
