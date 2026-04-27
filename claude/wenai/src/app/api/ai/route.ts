@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getReferenceContext } from '@/lib/references';
 import { getUserSettings } from '@/lib/user-settings';
+import { listSkus } from '@/lib/sku-history';
 import { logUsageEntry } from '@/lib/usage';
 import { checkRateLimit } from '@/lib/ratelimit';
 import { verifyToken, getCookieName } from '@/lib/auth';
@@ -256,10 +257,16 @@ export async function POST(request: NextRequest) {
     // 商家行业上下文 (来自 /me/settings 自报) · 让推荐更贴他实际盘子
     // 决策类模块更受益, 文案类已经吃 category 不重复加
     let industryContext = '';
+    let portfolioContext = '';
     const INDUSTRY_INJECT_MODULES = new Set([
       'product-discovery', 'data-insights', 'ab-test', 'intent-mining',
       'batch-launch', 'customer-service', 'operations', 'positioning',
       'competitor', 'selection', 'leads', 'ad-optimizer',
+    ]);
+    // 选品/数据洞察/竞品/定位/运营 这 5 个最需要看商家 portfolio
+    const PORTFOLIO_INJECT_MODULES = new Set([
+      'product-discovery', 'data-insights', 'competitor',
+      'positioning', 'operations', 'selection',
     ]);
     if (moduleId && INDUSTRY_INJECT_MODULES.has(moduleId)) {
       try {
@@ -269,8 +276,34 @@ export async function POST(request: NextRequest) {
         }
       } catch { /* settings 读失败不阻塞主链路 */ }
     }
+    if (moduleId && PORTFOLIO_INJECT_MODULES.has(moduleId)) {
+      try {
+        const recentSkus = await listSkus(rateKey, 8);
+        if (recentSkus.length > 0) {
+          // 优先取已上架 + 已测款的 (有 perf 数据更有信息量), 其次按时间
+          const ranked = [...recentSkus].sort((a, b) => {
+            const aHasPerf = a.performance?.testedAt ? 1 : 0;
+            const bHasPerf = b.performance?.testedAt ? 1 : 0;
+            if (aHasPerf !== bHasPerf) return bHasPerf - aHasPerf;
+            return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime();
+          });
+          const top = ranked.slice(0, 5);
+          const lines = top.map((s, i) => {
+            const perfRaw = s.performance?.bestCtr ?? s.performance?.ctr;
+            const cpcRaw = s.performance?.cpc;
+            const perf = typeof perfRaw === 'number' ? perfRaw : null;
+            const cpc = typeof cpcRaw === 'number' ? cpcRaw : null;
+            const stats = perf !== null
+              ? ` · CTR ${perf.toFixed(1)}%${cpc !== null ? ' / CPC ¥' + cpc.toFixed(2) : ''}`
+              : '';
+            return `${i + 1}. ${s.name} (${s.category}) · ${s.status}${stats}`;
+          });
+          portfolioContext = `\n\n【商家近期 SKU portfolio · ${top.length}/${recentSkus.length}】\n${lines.join('\n')}\n\n基于这份现状给建议, 避免推荐与已有 SKU 重叠 (除非明确说复盘老品)。\n\n`;
+        }
+      } catch { /* skus 读失败不阻塞主链路 */ }
+    }
 
-    const systemContent = prompt + categoryPrefix + industryContext + (moduleId ? getReferenceContext(moduleId, input) : '') + trademarkContext;
+    const systemContent = prompt + categoryPrefix + industryContext + portfolioContext + (moduleId ? getReferenceContext(moduleId, input) : '') + trademarkContext;
     const requestBody = {
       model,
       messages: [
