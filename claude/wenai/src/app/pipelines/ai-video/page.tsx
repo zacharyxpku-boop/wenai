@@ -2,6 +2,14 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import {
+  resolvePrompt,
+  CATEGORY_LABELS,
+  STYLE_LABELS,
+  type EcomCategory,
+  type EcomScenario,
+  type EcomStyle,
+} from '@/lib/ecom-prompts';
 
 /**
  * AI 视频 · wanx2.1 i2v · 一张图 → 5s 带货短视频
@@ -96,6 +104,30 @@ export default function AIVideoPage() {
   const [resolution, setResolution] = useState<Resolution>('720P');
   const [model, setModel] = useState<Model>('wanx2.1-i2v-turbo');
 
+  // 行业模板状态
+  const [showEcomPanel, setShowEcomPanel] = useState(false);
+  const [ecomCategory, setEcomCategory] = useState<EcomCategory>('apparel');
+  const [ecomVideoScenario, setEcomVideoScenario] = useState<EcomScenario>('video-display');
+  const [ecomStyle, setEcomStyle] = useState<EcomStyle>('taobao');
+  const [productHint, setProductHint] = useState('');
+
+  const VIDEO_SCENARIOS: EcomScenario[] = ['video-display', 'video-usage', 'video-lifestyle'];
+
+  const applyEcomTemplate = () => {
+    const resolved = resolvePrompt({
+      category: ecomCategory,
+      scenario: ecomVideoScenario,
+      style: ecomStyle,
+      productHint,
+      extraDetails: extraPrompt,
+    });
+    setExtraPrompt(resolved.prompt);
+    // 视频场景映射到现有的 4 模式
+    if (ecomVideoScenario === 'video-display') setScenario('model-display');
+    else if (ecomVideoScenario === 'video-usage') setScenario('lifestyle-clip');
+    else setScenario('lifestyle-clip');
+  };
+
   const [running, setRunning] = useState(false);
   const [result, setResult] = useState<VideoResult | null>(null);
   const [error, setError] = useState('');
@@ -175,6 +207,79 @@ export default function AIVideoPage() {
             <span className="text-accent">真人拍摄+剪辑 ¥500-3K/条 → AI 一条 ¥3-7</span>。
             视频号/抖音/小红书/Reels 直接传。
           </p>
+
+          {/* 行业模板 */}
+          <div className="mt-5 border border-accent/30 bg-accent/5 rounded-lg overflow-hidden">
+            <button
+              onClick={() => setShowEcomPanel(s => !s)}
+              className="w-full px-4 py-3 flex items-center justify-between text-left hover:bg-accent/10"
+            >
+              <span className="text-[12px] font-mono text-accent uppercase tracking-wider">
+                ⚡ 行业模板 · 不会写视频 prompt 直接选
+              </span>
+              <span className="text-[14px] text-accent">{showEcomPanel ? '−' : '+'}</span>
+            </button>
+            {showEcomPanel && (
+              <div className="border-t border-accent/30 p-4 space-y-3">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                  <div>
+                    <label className="text-[10px] font-mono text-text-tertiary uppercase mb-1 block">① 品类</label>
+                    <select
+                      value={ecomCategory}
+                      onChange={e => setEcomCategory(e.target.value as EcomCategory)}
+                      className="w-full px-3 py-2 bg-bg-surface border border-border-default rounded text-[12px]"
+                    >
+                      {Object.entries(CATEGORY_LABELS).map(([k, v]) => (
+                        <option key={k} value={k}>{v}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="text-[10px] font-mono text-text-tertiary uppercase mb-1 block">② 视频类型</label>
+                    <select
+                      value={ecomVideoScenario}
+                      onChange={e => setEcomVideoScenario(e.target.value as EcomScenario)}
+                      className="w-full px-3 py-2 bg-bg-surface border border-border-default rounded text-[12px]"
+                    >
+                      <option value="video-display">展示 (转身/360°)</option>
+                      <option value="video-usage">使用瞬间 (开盖/穿戴/操作)</option>
+                      <option value="video-lifestyle">lifestyle 短片</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="text-[10px] font-mono text-text-tertiary uppercase mb-1 block">③ 投哪平台</label>
+                    <select
+                      value={ecomStyle}
+                      onChange={e => setEcomStyle(e.target.value as EcomStyle)}
+                      className="w-full px-3 py-2 bg-bg-surface border border-border-default rounded text-[12px]"
+                    >
+                      {Object.entries(STYLE_LABELS).map(([k, v]) => (
+                        <option key={k} value={k}>{v}</option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+                <input
+                  type="text"
+                  value={productHint}
+                  onChange={e => setProductHint(e.target.value)}
+                  placeholder="一句话产品描述 · 例: 粉色露肩 T 恤 / 智能蓝牙耳机"
+                  className="w-full px-3 py-2 bg-bg-surface border border-border-default rounded text-[12px]"
+                />
+                <div className="flex items-center justify-between gap-3 flex-wrap">
+                  <p className="text-[10px] font-mono text-text-tertiary">
+                    应用后,系统自动拼专业视频 prompt + 切对应模式
+                  </p>
+                  <button
+                    onClick={applyEcomTemplate}
+                    className="px-4 py-2 bg-accent text-bg-root text-[12px] font-semibold rounded hover:bg-accent-hover"
+                  >
+                    应用模板 →
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
 
           {/* Scenario tabs */}
           <div className="flex gap-2 mt-6 flex-wrap">

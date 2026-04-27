@@ -18,17 +18,32 @@ import { verifyToken, getCookieName } from '@/lib/auth';
  *   AI 影棚生模特图 → 模特换装 → 这里生成动态展示视频
  */
 
+// ============================================================
+// Provider 选择
+//   1. HAPPYHORSE_API_KEY 存在 → 走国内中转 hh 接口 (推荐, base64 直传不要公网 URL)
+//   2. 否则 AI_API_KEY 存在 → 走 DashScope 直连 wanx (要求公网 imageUrl)
+//   3. 都没有 → 503
+// ============================================================
+
+// DashScope 直连
 const I2V_SUBMIT_URL = 'https://dashscope.aliyuncs.com/api/v1/services/aigc/video-generation/video-synthesis';
 const I2V_TASK_URL = 'https://dashscope.aliyuncs.com/api/v1/tasks';
+
+// HappyHorse / Leone Cloud
+const HH_BASE = process.env.HAPPYHORSE_BASE_URL || 'https://mm-internal-cn.leonecloud.com';
+const HH_HH_CREATE = `${HH_BASE}/api/v2/open/aigc/hh`;
+const HH_HH_QUERY = (id: string) => `${HH_BASE}/api/v2/open/aigc/${id}`;
 
 interface VideoBody {
   scenario: 'model-display' | 'product-rotate' | 'lifestyle-clip' | 'custom';
   prompt: string;
-  imageUrl?: string;     // 公网可访问图片 URL (推荐)
-  imageBase64?: string;  // 或 dataURL (内部 base64,wanx i2v 实测部分支持)
-  duration?: 4 | 5;      // wanx-turbo 支持 4 或 5 秒
+  imageUrl?: string;       // 公网可访问图片 URL
+  imageBase64?: string;    // 或 dataURL (HappyHorse 模式直接拿 base64,免上传图床)
+  duration?: number;       // 3-15s (HappyHorse), 4-5s (wanx 直连)
   resolution?: '720P' | '1080P';
+  ratio?: '16:9' | '9:16' | '1:1' | '4:3' | '3:4';
   model?: 'wanx2.1-i2v-turbo' | 'wanx2.1-i2v-plus';
+  watermark?: boolean;
   fromPipeline?: boolean;
   dryRun?: boolean;
 }
@@ -105,6 +120,138 @@ async function pollTask(apiKey: string, taskId: string, maxMs = 180000): Promise
   return { ok: false, error: 'timeout (3 min)' };
 }
 
+// ============================================================
+// HappyHorse hh 接口 · 国内中转, base64 直传
+// ============================================================
+
+interface HHHTaskCreate {
+  code: number;
+  msg: string;
+  data?: { taskId: string; status: string };
+}
+interface HHHTaskQuery {
+  code: number;
+  msg: string;
+  data?: {
+    taskId: string;
+    status: 'processing' | 'success' | 'failed';
+    result?: string[];
+    errorMsg?: string;
+  };
+}
+
+function dataUrlToBase64(s: string): string | null {
+  const m = s.match(/^data:image\/[a-zA-Z+]+;base64,(.+)$/);
+  return m ? m[1] : null;
+}
+
+async function viaHappyhorseHh(args: {
+  apiKey: string;
+  prompt: string;
+  imageUrl?: string;
+  imageBase64?: string;
+  resolution: string;
+  ratio: string;
+  duration: number;
+  watermark: boolean;
+  scenario: string;
+}): Promise<NextResponse> {
+  const { apiKey, prompt, imageUrl, imageBase64, resolution, ratio, duration, watermark, scenario } = args;
+
+  const create: Record<string, unknown> = {
+    prompt,
+    resolution,
+    ratio,
+    duration,
+    watermark,
+  };
+
+  // 优先 base64 (HappyHorse 接受 base64File, 不带 data: 前缀)
+  if (imageBase64) {
+    const b64 = imageBase64.startsWith('data:') ? dataUrlToBase64(imageBase64) : imageBase64;
+    if (b64) {
+      create.genType = 'i2v';
+      create.base64File = b64;
+    }
+  } else if (imageUrl) {
+    create.genType = 'i2v';
+    create.imageUrls = [imageUrl];
+  }
+  // 否则 t2v (默认)
+
+  const r = await fetch(HH_HH_CREATE, {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify(create),
+  });
+  if (!r.ok) {
+    const txt = await r.text().catch(() => '');
+    return NextResponse.json(
+      {
+        error: `HappyHorse hh HTTP ${r.status}`,
+        detail: txt.slice(0, 600),
+        code: r.status === 401 ? 'INVALID_KEY' : 'HH_UPSTREAM',
+      },
+      { status: r.status === 401 ? 401 : 502 }
+    );
+  }
+  const created: HHHTaskCreate = await r.json();
+  if (created.code !== 0 || !created.data?.taskId) {
+    return NextResponse.json(
+      { error: `HappyHorse 创建视频任务失败: ${created.msg ?? 'unknown'}`, raw: created },
+      { status: 502 }
+    );
+  }
+  const taskId = created.data.taskId;
+
+  // 轮询 (HappyHorse 文档: 3s -> 5s -> 10s 阶梯, 视频 1-3 分钟)
+  const start = Date.now();
+  const timeoutMs = 240_000;
+  let pollDelay = 3_000;
+  let queried: HHHTaskQuery | null = null;
+  while (Date.now() - start < timeoutMs) {
+    await new Promise(rs => setTimeout(rs, pollDelay));
+    const elapsed = Date.now() - start;
+    if (elapsed > 30_000) pollDelay = 5_000;
+    if (elapsed > 120_000) pollDelay = 10_000;
+
+    const qr = await fetch(HH_HH_QUERY(taskId), {
+      headers: { Authorization: `Bearer ${apiKey}` },
+    });
+    if (!qr.ok) continue;
+    queried = await qr.json();
+    if (!queried || queried.code !== 0) continue;
+    const st = queried.data?.status;
+    if (st === 'success' || st === 'failed') break;
+  }
+
+  if (!queried?.data) {
+    return NextResponse.json({ error: 'HappyHorse hh 轮询超时', taskId }, { status: 504 });
+  }
+  if (queried.data.status === 'failed') {
+    return NextResponse.json(
+      { error: `HappyHorse hh 失败: ${queried.data.errorMsg ?? '未知'}`, taskId },
+      { status: 502 }
+    );
+  }
+  const urls = queried.data.result ?? [];
+  if (urls.length === 0) {
+    return NextResponse.json({ error: 'HappyHorse 成功但无视频 URL', taskId }, { status: 502 });
+  }
+
+  return NextResponse.json({
+    ok: true,
+    videoUrl: urls[0],
+    taskId,
+    duration,
+    resolution,
+    ratio,
+    model: 'happyhorse-hh',
+    cost: { perSecondCny: 0, totalCny: 0, note: 'HappyHorse 计费走账户' },
+    scenario,
+  });
+}
+
 export async function POST(request: NextRequest) {
   let body: VideoBody;
   try {
@@ -122,21 +269,24 @@ export async function POST(request: NextRequest) {
       { status: 400 }
     );
   }
-  if (!body.imageUrl) {
-    return NextResponse.json(
-      { error: 'imageUrl 必填 (wanx i2v 当前仅支持公网图片 URL · 请先把图传到 OSS/Cloudinary/picgo)', code: 'NO_IMAGE_URL' },
-      { status: 400 }
-    );
-  }
+  // imageUrl 或 imageBase64 二选一 (HappyHorse 模式接受 base64), 都没就走 t2v
+  const hasImage = !!(body.imageUrl || body.imageBase64);
 
-  const duration = body.duration === 4 ? 4 : 5;
+  const duration = Math.min(Math.max(body.duration ?? 5, 3), 15);
   const resolution = body.resolution === '1080P' ? '1080P' : '720P';
+  const ratio = body.ratio || '16:9';
   const model = body.model || 'wanx2.1-i2v-turbo';
+  const watermark = body.watermark !== false;
 
   if (body.dryRun) {
     return NextResponse.json({
       dryRun: true,
-      validated: { scenario: body.scenario, duration, resolution, model, promptLength: body.prompt.length, imageUrl: body.imageUrl.slice(0, 100) },
+      validated: {
+        scenario: body.scenario, duration, resolution, ratio, model,
+        promptLength: body.prompt.length,
+        hasImage,
+        imageMode: body.imageBase64 ? 'base64' : body.imageUrl ? 'url' : 't2v',
+      },
     });
   }
 
@@ -160,20 +310,45 @@ export async function POST(request: NextRequest) {
     }
   }
 
-  const apiKey = process.env.AI_API_KEY;
-  if (!apiKey) {
+  // Provider 选择: HappyHorse 优先 (国内中转 + base64 直传)
+  const happyhorseKey = process.env.HAPPYHORSE_API_KEY;
+  const dashscopeKey = process.env.AI_API_KEY;
+
+  if (happyhorseKey) {
+    return await viaHappyhorseHh({
+      apiKey: happyhorseKey,
+      prompt: body.prompt,
+      imageUrl: body.imageUrl,
+      imageBase64: body.imageBase64,
+      resolution,
+      ratio,
+      duration,
+      watermark,
+      scenario: body.scenario,
+    });
+  }
+
+  // DashScope 直连 fallback (要求公网 imageUrl)
+  if (!dashscopeKey) {
     return NextResponse.json(
-      { error: 'AI_API_KEY 未配置 (DashScope)', code: 'NO_KEY' },
+      { error: 'HAPPYHORSE_API_KEY 或 AI_API_KEY 至少配一个', code: 'NO_KEY' },
       { status: 503 }
     );
   }
+  if (!body.imageUrl) {
+    return NextResponse.json(
+      { error: 'wanx 直连模式必须提供公网 imageUrl (国内推荐配 HAPPYHORSE_API_KEY 走 base64)', code: 'NO_IMAGE_URL' },
+      { status: 400 }
+    );
+  }
+  const apiKey = dashscopeKey;
 
   try {
     const taskId = await submitTask(apiKey, {
       model,
       prompt: body.prompt,
       imageUrl: body.imageUrl,
-      duration,
+      duration: Math.min(Math.max(duration, 4), 5) as 4 | 5,
       resolution,
     });
     if (!taskId) {
