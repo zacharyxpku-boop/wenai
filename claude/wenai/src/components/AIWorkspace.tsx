@@ -5,6 +5,14 @@ import ReactMarkdown from 'react-markdown';
 import ResultFeedback from './ResultFeedback';
 import BetaFeedback from './BetaFeedback';
 import ExpertReview from './ExpertReview';
+import { IndustryHint } from './IndustryHint';
+
+// 与 /api/ai INDUSTRY_INJECT_MODULES 同步的决策模块白名单
+const INDUSTRY_INJECTABLE = new Set([
+  'product-discovery', 'data-insights', 'ab-test', 'intent-mining',
+  'batch-launch', 'customer-service', 'operations', 'positioning',
+  'competitor', 'selection', 'leads', 'ad-optimizer',
+]);
 
 interface HistoryItem {
   id: string;
@@ -342,6 +350,9 @@ export default function AIWorkspace({
     }
   };
 
+  // 决策类模块开 industry hint (与 /api/ai INDUSTRY_INJECT_MODULES 一致)
+  const showIndustryHint = INDUSTRY_INJECTABLE.has(moduleId);
+
   return (
     <div className="flex flex-col h-full animate-fade-up">
       {/* Toolbar */}
@@ -356,6 +367,9 @@ export default function AIWorkspace({
               <span className="inline-block mt-1 text-[8px] font-mono text-accent/90 bg-accent/10 px-2 py-1 rounded border border-accent/20">
                 ⚠️ 仅辅助模式
               </span>
+            )}
+            {showIndustryHint && (
+              <div className="mt-1.5"><IndustryHint /></div>
             )}
           </div>
         </div>
