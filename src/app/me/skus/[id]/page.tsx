@@ -56,6 +56,7 @@ const MODULE_META: Record<string, { txt: string; href: string; icon: string }> =
   'batch-launch': { txt: '批量上架', href: '/pipelines/batch-launch', icon: '🏭' },
   'new-listing': { txt: '上新流水线', href: '/pipelines/new-listing', icon: '📋' },
   'influencer-outbound': { txt: '达人外联', href: '/pipelines/influencer-outbound', icon: '📨' },
+  'customer-service': { txt: '销售转化客服', href: '/pipelines/customer-service', icon: '🤝' },
 };
 
 export default function SkuDetailPage() {

@@ -185,6 +185,7 @@ export async function POST(request: NextRequest) {
       'product-discovery': 5,    // 5-8 SKU 详细
       'ab-test': 5,              // 9 prompt 变体
       'data-insights': 5,        // 4-8 洞察 + SOP
+      'customer-service': 4,     // 三版回复 + 钩子 + 升单
       'intent-mining': 4,        // 5-8 客群
       copywriting: 2,
       reviews: 2,
