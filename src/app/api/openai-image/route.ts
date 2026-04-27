@@ -3,6 +3,7 @@ import { checkRateLimit } from '@/lib/ratelimit';
 import { checkCostCap, recordCostWithDetail, COST_ESTIMATE_CENTS } from '@/lib/cost-cap';
 import { resolveOrgId } from '@/lib/org-id';
 import { buildImageCacheKey, getImageCache, setImageCache } from '@/lib/image-cache';
+import { recordCacheEvent } from '@/lib/cache-stats';
 
 /**
  * OpenAI gpt-image-1 后端 · AI 影棚旗舰模块
@@ -311,6 +312,7 @@ export async function POST(request: NextRequest) {
     try {
       const cached = await getImageCache(rateKey, imgCacheHash);
       if (cached && typeof cached === 'object') {
+        recordCacheEvent(rateKey, 'image', true).catch(() => {});
         return NextResponse.json({
           ...(cached as Record<string, unknown>),
           fromCache: true,
@@ -321,6 +323,8 @@ export async function POST(request: NextRequest) {
       /* 缓存读失败不阻塞主链路 */
     }
   }
+  // 真发 → miss
+  recordCacheEvent(rateKey, 'image', false).catch(() => {});
 
   // 单 org 24h 成本闸 · 防客户/恶意用户烧爆 HappyHorse 配额
   const estCents = quality === 'high' ? COST_ESTIMATE_CENTS['image-high'] : COST_ESTIMATE_CENTS['image-medium'];

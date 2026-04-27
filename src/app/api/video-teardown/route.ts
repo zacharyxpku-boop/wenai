@@ -4,6 +4,7 @@ import { verifyToken, getCookieName } from '@/lib/auth';
 import { resolveOrgId } from '@/lib/org-id';
 import { checkCostCap, recordCostWithDetail } from '@/lib/cost-cap';
 import { hashVideoBase64, getTeardownCache, setTeardownCache } from '@/lib/teardown-cache';
+import { recordCacheEvent } from '@/lib/cache-stats';
 
 /**
  * 爆款视频拆解 · Gemini 2.5 Flash Vision · 简化版 (无 yt-dlp + 无 BullMQ)
@@ -145,6 +146,7 @@ export async function POST(request: NextRequest) {
     try {
       const cached = await getTeardownCache(orgId, contentHash);
       if (cached) {
+        recordCacheEvent(orgId, 'teardown', true).catch(() => {});
         return NextResponse.json({
           ...(typeof cached === 'object' && cached ? cached : {}),
           fromCache: true,
@@ -155,6 +157,8 @@ export async function POST(request: NextRequest) {
       // 缓存读失败不阻塞主链路
     }
   }
+  // 走到这表示要发真请求 · 算 miss
+  recordCacheEvent(orgId, 'teardown', false).catch(() => {});
 
   const cap = await checkCostCap(orgId, VIDEO_TEARDOWN_COST_CENTS);
   if (!cap.allowed) {
