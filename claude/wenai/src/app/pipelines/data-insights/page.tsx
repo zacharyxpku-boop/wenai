@@ -348,7 +348,7 @@ ${data}
             </div>
           )}
 
-          {!running && result && <Report result={result} exportMd={exportMd} />}
+          {!running && result && <Report result={result} exportMd={exportMd} channel={CHANNEL_LABELS[channel]} context={context} />}
         </main>
       </div>
 
@@ -407,7 +407,38 @@ function Tip({ emoji, title, desc }: { emoji: string; title: string; desc: strin
   );
 }
 
-function Report({ result, exportMd }: { result: DataInsightsResult; exportMd: () => void }) {
+function Report({ result, exportMd, channel, context }: { result: DataInsightsResult; exportMd: () => void; channel: string; context: string }) {
+  const [savingSku, setSavingSku] = useState(false);
+  const [savedSku, setSavedSku] = useState(false);
+
+  // 推断推荐状态: kill/launched/paused 取决于洞察类型
+  const lossCount = result.insights.filter(i => i.type === 'loss' && i.priority === 'P0').length;
+  const winCount = result.insights.filter(i => i.type === 'win').length;
+  const recommendedStatus: 'launched' | 'paused' | 'killed' =
+    lossCount >= 2 ? 'killed' : lossCount >= 1 ? 'paused' : winCount >= 2 ? 'launched' : 'paused';
+  const statusLabel = recommendedStatus === 'launched' ? '🚀 已上架(健康)' : recommendedStatus === 'paused' ? '⏸ 暂停(优化中)' : '🛑 建议 kill';
+
+  const saveToLibrary = async () => {
+    setSavingSku(true);
+    try {
+      await fetch('/api/user/sku-history', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: context.slice(0, 80) || `${channel} 数据复盘`,
+          category: '已复盘',
+          platform: channel,
+          status: recommendedStatus,
+          notes: `整体: ${result.overallVerdict}\n\n趋势: ${result.trendSummary}\n\n下一轮: ${result.nextRoundPlaybook}`,
+          modules: ['data-insights'],
+        }),
+      });
+      setSavedSku(true);
+    } catch {} finally {
+      setSavingSku(false);
+    }
+  };
+
   // 按 priority 排序: P0 > P1 > P2
   const sorted = [...result.insights].sort((a, b) => {
     const order = { P0: 0, P1: 1, P2: 2 };
@@ -417,7 +448,21 @@ function Report({ result, exportMd }: { result: DataInsightsResult; exportMd: ()
   return (
     <>
       <section className="border border-accent/30 bg-accent/5 rounded-lg p-4 space-y-2">
-        <div className="text-[10px] font-mono text-accent uppercase tracking-wider">整体判断</div>
+        <div className="flex items-center justify-between flex-wrap gap-2">
+          <div className="text-[10px] font-mono text-accent uppercase tracking-wider">整体判断</div>
+          <button
+            onClick={saveToLibrary}
+            disabled={savingSku || savedSku}
+            className={`text-[10px] font-mono px-2.5 py-1 rounded border transition-colors ${
+              savedSku
+                ? 'border-success/40 bg-success/10 text-success'
+                : 'border-accent/40 text-accent hover:bg-accent/10'
+            }`}
+            title={`基于 ${result.insights.length} 条洞察推断状态: ${statusLabel} · 一键写入 SKU 库`}
+          >
+            {savedSku ? `✓ 已写入 ${statusLabel}` : savingSku ? '保存中…' : `📦 写入 SKU 库 (${statusLabel})`}
+          </button>
+        </div>
         <p className="text-[13px] text-text-primary leading-relaxed">{result.overallVerdict}</p>
         <p className="text-[12px] text-text-secondary leading-relaxed">{result.trendSummary}</p>
       </section>

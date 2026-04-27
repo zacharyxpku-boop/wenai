@@ -346,6 +346,7 @@ export default function AIPhotoshootPage() {
     setError('');
     setImages([]);
     setCost(null);
+    setSavedSku(false);
 
     try {
       const refList = refImages.slice(0, requiredSlots).filter((x): x is string => !!x);
@@ -397,6 +398,31 @@ export default function AIPhotoshootPage() {
 
   const [sharing, setSharing] = useState(false);
   const [shareUrl, setShareUrl] = useState<string | null>(null);
+  const [savingSku, setSavingSku] = useState(false);
+  const [savedSku, setSavedSku] = useState(false);
+
+  const saveToSkuLibrary = async () => {
+    if (images.length === 0) return;
+    setSavingSku(true);
+    try {
+      const meta = MODES[mode];
+      const res = await fetch('/api/user/sku-history', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: productHint?.slice(0, 80) || `${meta.title} 产出 ${new Date().toLocaleDateString('zh-CN')}`,
+          category: '已出图',
+          status: 'photoshoot-done',
+          notes: `影棚模式: ${meta.title} · ${images.length} 张 · 产品提示: ${productHint || '(空)'}`,
+          modules: ['ai-photoshoot'],
+          performance: { imageCount: images.length },
+        }),
+      });
+      if (res.ok) setSavedSku(true);
+    } catch {} finally {
+      setSavingSku(false);
+    }
+  };
 
   const handleShare = async () => {
     if (images.length === 0) return;
@@ -874,6 +900,17 @@ export default function AIPhotoshootPage() {
                   )}
                 </div>
                 <div className="flex gap-2 flex-wrap">
+                  <button
+                    onClick={saveToSkuLibrary}
+                    disabled={savingSku || savedSku}
+                    className={`px-3 py-1.5 text-[11px] font-mono rounded transition-colors ${
+                      savedSku
+                        ? 'border border-success/40 bg-success/10 text-success'
+                        : 'border border-accent/40 text-accent hover:bg-accent/10'
+                    } disabled:opacity-50`}
+                  >
+                    {savedSku ? '✓ 已入 SKU 库' : savingSku ? '保存中...' : '📦 入 SKU 库'}
+                  </button>
                   <button
                     onClick={handleShare}
                     disabled={sharing}
