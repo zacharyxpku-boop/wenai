@@ -4,6 +4,15 @@ import { useRef, useState } from 'react';
 import Link from 'next/link';
 import JSZip from 'jszip';
 import { applyImageWatermark } from '@/lib/aigc';
+import {
+  resolvePrompt,
+  CATEGORY_LABELS,
+  SCENARIO_LABELS,
+  STYLE_LABELS,
+  type EcomCategory,
+  type EcomScenario,
+  type EcomStyle,
+} from '@/lib/ecom-prompts';
 
 /**
  * AI 影棚 · gpt-image-1 旗舰模块 (5 模式闭环)
@@ -222,6 +231,42 @@ export default function AIPhotoshootPage() {
   // 用户额外细节
   const [extraPrompt, setExtraPrompt] = useState('');
 
+  // 行业模板状态 (ecom-prompts 包办)
+  const [showEcomPanel, setShowEcomPanel] = useState(false);
+  const [ecomCategory, setEcomCategory] = useState<EcomCategory>('apparel');
+  const [ecomScenario, setEcomScenario] = useState<EcomScenario>('main-image');
+  const [ecomStyle, setEcomStyle] = useState<EcomStyle>('taobao');
+  const [productHint, setProductHint] = useState('');
+
+  // 仅展示和影棚相关的图像场景 (排除 video-* 因为本页是出图)
+  const PHOTO_SCENARIOS: EcomScenario[] = [
+    'main-image', 'detail-set', 'lifestyle', 'model-on', 'flat-lay',
+    'close-up', 'before-after', 'package-shot', 'unboxing',
+  ];
+
+  const applyEcomTemplate = () => {
+    const resolved = resolvePrompt({
+      category: ecomCategory,
+      scenario: ecomScenario,
+      style: ecomStyle,
+      productHint,
+      extraDetails: extraPrompt,
+    });
+    setExtraPrompt(resolved.prompt);
+    // 按场景调整 mode (有垫图需求的切到对应模式)
+    if (ecomScenario === 'model-on') setMode('outfit-swap');
+    else if (ecomScenario === 'before-after') setMode('hot-clone');
+    else if (ecomScenario === 'flat-lay') setMode('ootd-flatlay');
+    else if (ecomScenario === 'detail-set') setMode('full-detail-set');
+    else if (ecomScenario === 'lifestyle' || ecomScenario === 'package-shot' || ecomScenario === 'unboxing' || ecomScenario === 'close-up') setMode('platform-style');
+    else setMode('model-generate');
+    // 比例切换
+    const ratio = resolved.recommendedRatio;
+    if (ratio === '1:1') setSize('1024x1024');
+    else if (ratio === '3:4' || ratio === '9:16' || ratio === '4:5' || ratio === '2:3') setSize('1024x1536');
+    else if (ratio === '16:9' || ratio === '4:3' || ratio === '3:2' || ratio === '5:4') setSize('1536x1024');
+  };
+
   // 输出参数
   const [quality, setQuality] = useState<Quality>('medium');
   const [size, setSize] = useState<Size>('1024x1536');
@@ -402,6 +447,95 @@ export default function AIPhotoshootPage() {
             生成 AI 模特 → 模特换装 → 换姿 → 换景 → OOTD 拆解,完整闭环。
             <span className="text-accent">同一张模特图复用一整年</span>,告别真人拍摄 ¥3-8K/组成本。
           </p>
+
+          {/* 行业模板 · prompt 包办 */}
+          <div className="mt-5 border border-accent/30 bg-accent/5 rounded-lg overflow-hidden">
+            <button
+              onClick={() => setShowEcomPanel(s => !s)}
+              className="w-full px-4 py-3 flex items-center justify-between text-left hover:bg-accent/10 transition-colors"
+            >
+              <div className="flex items-center gap-2">
+                <span className="text-[12px] font-mono text-accent uppercase tracking-wider">
+                  ⚡ 行业模板 · 不会写 prompt 直接选
+                </span>
+                <span className="text-[10px] font-mono text-text-tertiary">
+                  品类 × 场景 × 平台 三选一就行
+                </span>
+              </div>
+              <span className="text-[14px] text-accent">{showEcomPanel ? '−' : '+'}</span>
+            </button>
+            {showEcomPanel && (
+              <div className="border-t border-accent/30 p-4 space-y-3">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                  <div>
+                    <label className="text-[10px] font-mono text-text-tertiary uppercase tracking-wider mb-1 block">
+                      ① 我卖什么品类
+                    </label>
+                    <select
+                      value={ecomCategory}
+                      onChange={e => setEcomCategory(e.target.value as EcomCategory)}
+                      className="w-full px-3 py-2 bg-bg-surface border border-border-default rounded text-[12px] focus:border-accent/60 outline-none"
+                    >
+                      {Object.entries(CATEGORY_LABELS).map(([k, v]) => (
+                        <option key={k} value={k}>{v}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="text-[10px] font-mono text-text-tertiary uppercase tracking-wider mb-1 block">
+                      ② 我要什么图
+                    </label>
+                    <select
+                      value={ecomScenario}
+                      onChange={e => setEcomScenario(e.target.value as EcomScenario)}
+                      className="w-full px-3 py-2 bg-bg-surface border border-border-default rounded text-[12px] focus:border-accent/60 outline-none"
+                    >
+                      {PHOTO_SCENARIOS.map(s => (
+                        <option key={s} value={s}>{SCENARIO_LABELS[s]}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="text-[10px] font-mono text-text-tertiary uppercase tracking-wider mb-1 block">
+                      ③ 投哪平台
+                    </label>
+                    <select
+                      value={ecomStyle}
+                      onChange={e => setEcomStyle(e.target.value as EcomStyle)}
+                      className="w-full px-3 py-2 bg-bg-surface border border-border-default rounded text-[12px] focus:border-accent/60 outline-none"
+                    >
+                      {Object.entries(STYLE_LABELS).map(([k, v]) => (
+                        <option key={k} value={k}>{v}</option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+                <div>
+                  <label className="text-[10px] font-mono text-text-tertiary uppercase tracking-wider mb-1 block">
+                    ④ 一句话告诉系统你的产品(可选,留空也能跑通用模板)
+                  </label>
+                  <input
+                    type="text"
+                    value={productHint}
+                    onChange={e => setProductHint(e.target.value)}
+                    placeholder="例: 粉色露肩 T 恤 / 智能蓝牙耳机黑色 / 红枣山药八珍糕 50g"
+                    className="w-full px-3 py-2 bg-bg-surface border border-border-default rounded text-[12px] focus:border-accent/60 outline-none"
+                  />
+                </div>
+                <div className="flex items-center justify-between gap-3 flex-wrap">
+                  <p className="text-[10px] font-mono text-text-tertiary leading-relaxed">
+                    点应用 → 系统自动拼出 100+ 字工业级 prompt 喂下去 + 自动切对应模式 + 自动调比例
+                  </p>
+                  <button
+                    onClick={applyEcomTemplate}
+                    className="px-4 py-2 bg-accent text-bg-root text-[12px] font-semibold rounded hover:bg-accent-hover"
+                  >
+                    应用模板 →
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
 
           {/* Mode tabs */}
           <div className="flex gap-2 mt-6 flex-wrap">
