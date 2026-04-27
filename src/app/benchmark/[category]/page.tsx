@@ -58,12 +58,20 @@ export default async function CategoryBenchmarkPage({ params }: { params: Promis
           <p className="text-[11px] text-text-secondary leading-relaxed mb-3">
             登录后, wenai 会把你 SKU 的真实数据匿名加入这个 benchmark, 同时给你看自己的精确 percentile + 加预算 / 改图 / 杀验阈值建议。
           </p>
-          <Link
-            href="/login"
-            className="inline-block text-[11px] font-mono px-4 py-2 bg-accent text-bg-root rounded hover:bg-accent-hover"
-          >
-            登录看自己的 →
-          </Link>
+          <div className="flex items-center gap-2 flex-wrap">
+            <Link
+              href="/login"
+              className="inline-block text-[11px] font-mono px-4 py-2 bg-accent text-bg-root rounded hover:bg-accent-hover"
+            >
+              登录看自己的 →
+            </Link>
+            <Link
+              href={`/inquire?from=benchmark-${encodeURIComponent(cat)}`}
+              className="inline-block text-[11px] font-mono px-4 py-2 border border-accent/40 text-accent rounded hover:bg-accent/10"
+            >
+              企业批量对接 →
+            </Link>
+          </div>
         </section>
       </div>
     </div>

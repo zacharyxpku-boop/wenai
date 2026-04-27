@@ -52,6 +52,12 @@ export default async function BenchmarkPage() {
               看你自己 SKU 排第几 →
             </Link>
             <Link
+              href="/inquire?from=benchmark-index"
+              className="text-[11px] font-mono px-3 py-1.5 border border-accent/40 text-accent rounded hover:bg-accent/10"
+            >
+              企业询盘批量对接 →
+            </Link>
+            <Link
               href="/"
               className="text-[11px] font-mono text-text-tertiary hover:text-accent"
             >

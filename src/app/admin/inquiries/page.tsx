@@ -163,6 +163,21 @@ export default function AdminInquiriesPage() {
     dropped: inquiries.filter(i => i.status === 'dropped').length,
   };
 
+  // 来源聚合 · 30 天内分布 (含转化率)
+  const cutoff30d = Date.now() - 30 * 24 * 3600 * 1000;
+  const recent = inquiries.filter(i => new Date(i.createdAt).getTime() > cutoff30d);
+  const sourceMap = new Map<string, { total: number; converted: number }>();
+  for (const i of recent) {
+    const s = i.source || 'direct';
+    const cur = sourceMap.get(s) ?? { total: 0, converted: 0 };
+    cur.total++;
+    if (i.status === 'converted') cur.converted++;
+    sourceMap.set(s, cur);
+  }
+  const sourceRows = Array.from(sourceMap.entries())
+    .map(([source, v]) => ({ source, total: v.total, converted: v.converted, rate: v.total > 0 ? v.converted / v.total : 0 }))
+    .sort((a, b) => b.total - a.total);
+
   return (
     <div className="max-w-[1100px] mx-auto py-8 px-6">
       <AdminHeader
@@ -172,6 +187,37 @@ export default function AdminInquiriesPage() {
           setAuthed(false);
         }}
       />
+
+      {/* 来源聚合 · 看 SEO/share/hero 哪条转化最高 */}
+      {sourceRows.length > 0 && (
+        <section className="mb-5 border border-border-subtle rounded-lg p-4 bg-bg-surface/30">
+          <div className="text-[10px] font-mono text-text-tertiary uppercase tracking-wider mb-2">
+            近 30 天来源分布 (n={recent.length})
+          </div>
+          <table className="w-full text-[11px]">
+            <thead className="text-[10px] font-mono text-text-tertiary border-b border-border-subtle">
+              <tr>
+                <th className="text-left py-1">source</th>
+                <th className="text-right py-1">询盘数</th>
+                <th className="text-right py-1">转化数</th>
+                <th className="text-right py-1">转化率</th>
+              </tr>
+            </thead>
+            <tbody>
+              {sourceRows.map(r => (
+                <tr key={r.source} className="border-b border-border-subtle/40">
+                  <td className="py-1 font-mono text-text-primary">{r.source}</td>
+                  <td className="py-1 text-right tabular-nums">{r.total}</td>
+                  <td className="py-1 text-right tabular-nums text-success">{r.converted}</td>
+                  <td className="py-1 text-right tabular-nums text-accent">
+                    {(r.rate * 100).toFixed(1)}%
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </section>
+      )}
 
       <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
         <div className="flex items-center gap-1.5 flex-wrap">
