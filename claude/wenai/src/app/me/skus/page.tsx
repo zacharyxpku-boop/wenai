@@ -57,6 +57,25 @@ export default function MySkusPage() {
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [bulkRunning, setBulkRunning] = useState(false);
   const [bulkOpProgress, setBulkOpProgress] = useState({ done: 0, total: 0 });
+  // 列表内关键字搜索 (前端 filter, 已 load 全量) · '/' 键聚焦
+  const [search, setSearch] = useState('');
+
+  // '/' 键聚焦搜索框 (与 ⌘K 错峰: ⌘K 跳走, / 原地搜)
+  // 输入框聚焦时不抢, 让用户能输 '/' 字符本身
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (e.key !== '/') return;
+      if (e.metaKey || e.ctrlKey || e.altKey) return;
+      const tag = (e.target as HTMLElement)?.tagName;
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+      e.preventDefault();
+      const el = document.getElementById('sku-search') as HTMLInputElement | null;
+      el?.focus();
+      el?.select();
+    };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, []);
   const [alertsCount, setAlertsCount] = useState<{ total: number; critical: number; warning: number } | null>(null);
 
   useEffect(() => {
@@ -260,7 +279,17 @@ export default function MySkusPage() {
     load();
   };
 
+  // 关键字搜索 (name / category / platform / notes 任一含)
+  const searchLower = search.trim().toLowerCase();
+  const matchSearch = (s: Sku): boolean => {
+    if (!searchLower) return true;
+    return [s.name, s.category, s.platform, s.notes]
+      .filter((x): x is string => typeof x === 'string')
+      .some(t => t.toLowerCase().includes(searchLower));
+  };
+
   const filtered = (filterStatus === 'all' ? skus : skus.filter(s => s.status === filterStatus))
+    .filter(matchSearch)
     .slice() // copy before sort
     .sort((a, b) => {
       if (sortBy === 'ctr-desc') {
@@ -357,6 +386,30 @@ export default function MySkusPage() {
             </Link>
           )}
         </div>
+      </div>
+
+      {/* 关键字搜索 (按 / 聚焦) */}
+      <div className="mb-2 relative">
+        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-text-tertiary text-[12px] font-mono pointer-events-none">
+          🔍
+        </span>
+        <input
+          id="sku-search"
+          type="text"
+          value={search}
+          onChange={e => setSearch(e.target.value)}
+          placeholder="搜 SKU 名 / 类目 / 平台 / 备注 … (按 / 聚焦)"
+          className="w-full pl-9 pr-9 py-2 bg-bg-surface border border-border-default rounded text-[12px] focus:border-accent/60 outline-none"
+        />
+        {search && (
+          <button
+            onClick={() => setSearch('')}
+            className="absolute right-2 top-1/2 -translate-y-1/2 text-text-tertiary hover:text-error text-[10px] font-mono px-1.5"
+            title="清空搜索"
+          >
+            ✗
+          </button>
+        )}
       </div>
 
       {/* 状态过滤 */}
