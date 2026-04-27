@@ -135,10 +135,16 @@ export default function Sidebar({ modules, categories, clientName, userRole }: S
         <span className="font-[family-name:var(--font-outfit)] font-semibold">工作台</span>
       </Link>
 
-      {/* ⌘K 快捷提示 */}
-      <div className="mx-3.5 mt-2 px-3 py-1.5 rounded-md border border-dashed border-border-subtle text-[10px] font-mono text-text-tertiary flex items-center gap-2">
-        <kbd className="text-[9px] px-1 py-0.5 border border-border-default rounded bg-bg-surface text-text-secondary font-mono">⌘K</kbd>
-        <span>跨 SKU/模块 跳转</span>
+      {/* 快捷键提示 */}
+      <div className="mx-3.5 mt-2 px-3 py-1.5 rounded-md border border-dashed border-border-subtle text-[10px] font-mono text-text-tertiary space-y-1">
+        <div className="flex items-center gap-2">
+          <kbd className="text-[9px] px-1 py-0.5 border border-border-default rounded bg-bg-surface text-text-secondary font-mono">⌘K</kbd>
+          <span>跨 SKU/模块 跳转</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <kbd className="text-[9px] px-1 py-0.5 border border-border-default rounded bg-bg-surface text-text-secondary font-mono">?</kbd>
+          <span>看全部快捷键</span>
+        </div>
       </div>
 
       {/* 我的 · Dashboard / SKU 库 / 信号 / 省钱 / 设置 */}
