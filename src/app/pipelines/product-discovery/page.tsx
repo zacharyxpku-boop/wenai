@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 
 /**
@@ -77,6 +77,22 @@ export default function ProductDiscoveryPage() {
   const [rawDebug, setRawDebug] = useState('');
   const [showRaw, setShowRaw] = useState(false);
 
+  // 读 SKU 库 · 飞轮变双向: 已有 SKU 当 context, AI 推相邻互补品类
+  interface UserSku { id: string; name: string; category: string; status: string; platform?: string }
+  const [mySkus, setMySkus] = useState<UserSku[]>([]);
+  const [useSkuContext, setUseSkuContext] = useState(true);
+
+  useEffect(() => {
+    fetch('/api/user/sku-history?limit=20')
+      .then(r => r.json())
+      .then(d => setMySkus((d.skus || []) as UserSku[]))
+      .catch(() => {});
+  }, []);
+
+  const skuContextLine = useSkuContext && mySkus.length > 0
+    ? `\n\n【商家已有 SKU(请避免重复推荐, 优先推互补/相邻品类)】\n${mySkus.slice(0, 10).map(s => `- ${s.name} (${s.category}, ${s.status})`).join('\n')}`
+    : '';
+
   const loadExample = (idx: number) => {
     const e = EXAMPLES[idx];
     setPlatform(e.platform);
@@ -96,7 +112,7 @@ export default function ProductDiscoveryPage() {
 - 售价区间: ¥${priceMin} - ¥${priceMax}
 - 启动预算: ¥${budget}
 - 风险偏好: ${RISK_LABELS[risk].txt} (${RISK_LABELS[risk].sub})
-- 用户备注: ${extraNote || '无'}
+- 用户备注: ${extraNote || '无'}${skuContextLine}
 
 【任务】
 推荐 5-8 个候选 SKU,每个含完整决策信息。同时列出 2-3 个"看似机会但不推荐"的方向 + 拒绝理由。
@@ -253,6 +269,43 @@ export default function ProductDiscoveryPage() {
               </button>
             ))}
           </div>
+
+          {/* SKU 库读侧 · 飞轮双向化 */}
+          {mySkus.length > 0 && (
+            <div className="mt-4 border border-cat-content/30 bg-cat-content/5 rounded-lg p-3 flex items-center justify-between gap-3 flex-wrap">
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="text-[10px] font-mono text-cat-content uppercase tracking-wider">
+                    📦 你的 SKU 库
+                  </span>
+                  <span className="text-[10px] font-mono text-text-tertiary tabular-nums">
+                    {mySkus.length} 条
+                  </span>
+                </div>
+                <div className="flex items-center gap-1.5 flex-wrap">
+                  {mySkus.slice(0, 6).map(s => (
+                    <span key={s.id} className="text-[10px] font-mono text-text-secondary border border-border-subtle rounded px-1.5 py-0.5 bg-bg-root/30">
+                      {s.name.length > 14 ? s.name.slice(0, 14) + '…' : s.name}
+                    </span>
+                  ))}
+                  {mySkus.length > 6 && (
+                    <span className="text-[10px] font-mono text-text-tertiary">+{mySkus.length - 6}</span>
+                  )}
+                </div>
+              </div>
+              <label className="flex items-center gap-2 cursor-pointer flex-shrink-0">
+                <input
+                  type="checkbox"
+                  checked={useSkuContext}
+                  onChange={e => setUseSkuContext(e.target.checked)}
+                  className="accent-cat-content"
+                />
+                <span className="text-[11px] font-mono text-cat-content">
+                  让 AI 避免重复 + 推互补品类
+                </span>
+              </label>
+            </div>
+          )}
         </div>
       </div>
 
