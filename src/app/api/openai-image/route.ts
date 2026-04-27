@@ -19,21 +19,10 @@ import { verifyToken, getCookieName } from '@/lib/auth';
  */
 
 // ============================================================
-// Provider 选择策略
-//   1. HAPPYHORSE_API_KEY 存在 → 优先走国内中转 (HappyHorse / Leone Cloud, 异步任务)
-//      · 单图垫图 (≤1 张 ref) 走 base64File 直传
-//      · 双图垫图 (≥2 张 ref) 临时回退到 OpenAI 直连 (因为 imageUrls 要公网 URL)
-//   2. 否则 OPENAI_API_KEY 存在 → 走官方 /v1/images/generations | /v1/images/edits
-//   3. 都没有 → 503
+// 影棚后端 · 全部走 HappyHorse / Leone Cloud (GPT Image 2 国内中转)
+// 同款 OpenAI 模型, 国内访问稳定, 一个 fc_xxx key 同时调图 + 视频
 // ============================================================
 
-// OpenAI 原生(墙外或反代)
-const OPENAI_BASE = process.env.OPENAI_BASE_URL || 'https://api.openai.com';
-const OPENAI_GENERATIONS = `${OPENAI_BASE}/v1/images/generations`;
-const OPENAI_EDITS = `${OPENAI_BASE}/v1/images/edits`;
-const MODEL = 'gpt-image-1';
-
-// HappyHorse / Leone Cloud (国内中转,基于阿里云 DashScope)
 const HH_BASE = process.env.HAPPYHORSE_BASE_URL || 'https://mm-internal-cn.leonecloud.com';
 const HH_CREATE = `${HH_BASE}/api/v2/open/aigc/gpt-image`;
 const HH_QUERY = (id: string) => `${HH_BASE}/api/v2/open/aigc/${id}`;
@@ -115,32 +104,48 @@ interface HHTaskQuery {
 async function viaHappyhorse(args: {
   apiKey: string;
   prompt: string;
-  ref: string | null;          // 单张垫图 dataURL,可空
+  refs: string[];              // 0-N 张垫图 dataURL 或 https URL
   size: string;
   scenario: string;
 }): Promise<NextResponse> {
-  const { apiKey, prompt, ref, size, scenario } = args;
+  const { apiKey, prompt, refs, size, scenario } = args;
   const headers = {
     Authorization: `Bearer ${apiKey}`,
     'Content-Type': 'application/json',
   };
 
   // 构造请求 body
+  // HappyHorse 文档: base64File 和 imageUrls 可同时使用, base64 图片放 imageUrls 列表最前面
+  // 策略: 第 1 张垫图 → base64File (本地上传走 base64), 第 2-16 张 → imageUrls 数组
+  //   · 如果第 2+ 张是 https URL → 直接放 imageUrls
+  //   · 如果第 2+ 张是 dataURL → 试探 imageUrls 是否接受 data URI (HappyHorse 有支持就跑通)
   const createBody: Record<string, unknown> = {
     prompt,
     aspectRatio: HH_SIZE_MAP[size] ?? 'auto',
   };
-  if (ref) {
-    const parsed = dataUrlToBuffer(ref);
-    if (!parsed) {
-      return NextResponse.json(
-        { error: 'referenceImage 必须是 data:image/...;base64,... 格式' },
-        { status: 400 }
-      );
-    }
+  if (refs.length > 0) {
     createBody.genType = 'i2i';
-    // HappyHorse 的 base64File 不带 data: 前缀, 直接传 base64 字符串
-    createBody.base64File = parsed.buf.toString('base64');
+    const first = refs[0];
+    if (first.startsWith('data:')) {
+      const parsed = dataUrlToBuffer(first);
+      if (!parsed) {
+        return NextResponse.json(
+          { error: 'referenceImages[0] dataURL 解析失败' },
+          { status: 400 }
+        );
+      }
+      createBody.base64File = parsed.buf.toString('base64');
+    } else if (first.startsWith('http')) {
+      createBody.imageUrls = [first];
+    }
+
+    // 第 2+ 张
+    if (refs.length > 1) {
+      const rest = refs.slice(1);
+      const existingUrls = (createBody.imageUrls as string[] | undefined) ?? [];
+      // 全部塞进 imageUrls (data URI 或 https URL 都试)
+      createBody.imageUrls = [...existingUrls, ...rest];
+    }
   }
 
   // 1. 创建任务
@@ -207,7 +212,7 @@ async function viaHappyhorse(args: {
 
   // 标准化输出 (跟 OpenAI 路径返回结构一致)
   return NextResponse.json({
-    mode: ref ? 'edit' : 'generate',
+    mode: refs.length > 0 ? 'edit' : 'generate',
     scenario,
     size,
     quality: 'medium', // HappyHorse 不暴露 quality, 给个固定值
@@ -278,13 +283,12 @@ export async function POST(request: NextRequest) {
     }
   }
 
-  const openaiKey = process.env.OPENAI_API_KEY;
   const happyhorseKey = process.env.HAPPYHORSE_API_KEY;
-  if (!openaiKey && !happyhorseKey) {
+  if (!happyhorseKey) {
     return NextResponse.json(
       {
-        error: 'OPENAI_API_KEY 或 HAPPYHORSE_API_KEY 至少配一个',
-        notice: '国内推荐 HAPPYHORSE_API_KEY (https://mm-internal-cn.leonecloud.com 中转); 海外可用 OPENAI_API_KEY 直连',
+        error: 'HAPPYHORSE_API_KEY 未配置',
+        notice: '配 HAPPYHORSE_API_KEY=fc_xxx 启用 GPT Image 2 (国内中转 + OpenAI 同款模型)',
         code: 'NO_KEY',
       },
       { status: 503 }
@@ -297,118 +301,12 @@ export async function POST(request: NextRequest) {
       ? body.referenceImages
       : (body.referenceImage ? [body.referenceImage] : []);
 
-    // Provider 选择 (OpenAI 直连优先 · 原生 b64 输出无中转压缩, gpt-image-1 完整能力):
-    //   1. OPENAI_API_KEY 存在 → 走官方 /v1/images/generations | /v1/images/edits
-    //   2. 否则 HAPPYHORSE_API_KEY 存在 → 走国内中转 (单图 base64File, 双图模式受限)
-    //   3. 都没有 → 503
-    if (!openaiKey && happyhorseKey) {
-      // 退回 HappyHorse · 仅当 OpenAI key 缺失时
-      if (refList.length > 1) {
-        return NextResponse.json(
-          {
-            error: '双图垫图模式需要 OPENAI_API_KEY 直连 (HappyHorse 中转单图模式)',
-            code: 'OPENAI_REQUIRED',
-          },
-          { status: 503 }
-        );
-      }
-      return await viaHappyhorse({
-        apiKey: happyhorseKey,
-        prompt: body.prompt,
-        ref: refList[0] ?? null,
-        size,
-        scenario: body.scenario,
-      });
-    }
-
-    if (!openaiKey) {
-      return NextResponse.json(
-        { error: 'OPENAI_API_KEY 未配置', code: 'NO_KEY' },
-        { status: 503 }
-      );
-    }
-
-    const apiKey = openaiKey;
-    let upstream: Response;
-
-    if (mode === 'edit' && refList.length > 0) {
-      // multipart/form-data → /v1/images/edits · gpt-image-1 支持 image[] 多图
-      const fd = new FormData();
-      fd.append('model', MODEL);
-      fd.append('prompt', body.prompt);
-      fd.append('size', size);
-      fd.append('quality', quality);
-      fd.append('n', String(n));
-      for (let i = 0; i < refList.length; i++) {
-        const ref = dataUrlToBuffer(refList[i]);
-        if (!ref) {
-          return NextResponse.json(
-            { error: `referenceImages[${i}] 必须是 data:image/...;base64,... 格式` },
-            { status: 400 }
-          );
-        }
-        const ext = ref.mime.includes('png') ? 'png' : ref.mime.includes('webp') ? 'webp' : 'jpg';
-        // gpt-image-1 多图 field 名为 'image[]' 或重复 'image'; 用重复 image (官方推荐)
-        fd.append('image', new Blob([new Uint8Array(ref.buf)], { type: ref.mime }), `ref-${i}.${ext}`);
-      }
-
-      upstream = await fetch(OPENAI_EDITS, {
-        method: 'POST',
-        headers: { Authorization: `Bearer ${apiKey}` },
-        body: fd,
-      });
-    } else {
-      // application/json → /v1/images/generations
-      upstream = await fetch(OPENAI_GENERATIONS, {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${apiKey}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          model: MODEL,
-          prompt: body.prompt,
-          size,
-          quality,
-          n,
-        }),
-      });
-    }
-
-    if (!upstream.ok) {
-      const errText = await upstream.text().catch(() => '');
-      console.warn('[openai-image] upstream error', upstream.status, errText.slice(0, 400));
-      return NextResponse.json(
-        {
-          error: `OpenAI HTTP ${upstream.status}`,
-          detail: errText.slice(0, 600),
-          code: upstream.status === 401 ? 'INVALID_KEY' : upstream.status === 429 ? 'OPENAI_QUOTA' : 'UPSTREAM',
-        },
-        { status: upstream.status === 401 ? 401 : 502 }
-      );
-    }
-
-    const data: OpenAIResponse = await upstream.json();
-    const images = (data.data || []).map((d, i) => {
-      // gpt-image-1 默认返回 b64_json (没有 url 字段)
-      const b64 = d.b64_json;
-      const dataUrl = b64 ? `data:image/png;base64,${b64}` : d.url || '';
-      return {
-        index: i,
-        url: dataUrl,
-        revisedPrompt: d.revised_prompt || null,
-        provider: 'openai',
-        model: MODEL,
-      };
-    });
-
-    return NextResponse.json({
-      mode,
-      scenario: body.scenario,
+    return await viaHappyhorse({
+      apiKey: happyhorseKey,
+      prompt: body.prompt,
+      refs: refList,
       size,
-      quality,
-      images,
-      cost: estimateCost(quality, n),
+      scenario: body.scenario,
     });
   } catch (err) {
     console.error('[openai-image] fatal', err);
@@ -419,6 +317,7 @@ export async function POST(request: NextRequest) {
   }
 }
 
+// (保留以备后续可能的对外费用展示, 当前 HappyHorse 路径 cost 在响应中给固定值)
 function estimateCost(quality: string, n: number): { perImageUsd: number; totalUsd: number } {
   const map: Record<string, number> = { low: 0.011, medium: 0.042, high: 0.167, auto: 0.042 };
   const per = map[quality] || 0.042;
