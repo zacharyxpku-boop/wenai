@@ -105,6 +105,83 @@ export async function recordCost(orgId: string, cents: number): Promise<void> {
   }
 }
 
+/**
+ * 进阶版 · 回写当日总数 + 同时记录明细行
+ *
+ * 明细 list key: wenai:cost:detail:<orgId>:<YYYY-MM-DD> (LPUSH 最新在前, LTRIM 最近 200 行)
+ * 用于 admin 钻取: 该 orgId 今天每一笔花在啥模块, 哪个 taskId, 大概多少
+ */
+export interface CostDetail {
+  module: string;        // openai-image / video-gen / video-teardown
+  cents: number;         // 估算 cents
+  at: string;            // ISO
+  taskId?: string;       // HappyHorse 任务 ID
+  meta?: {
+    scenario?: string;
+    quality?: string;
+    size?: string;
+    duration?: number;
+    model?: string;
+    count?: number;
+  };
+}
+
+const DETAIL_KEY = (orgId: string) => {
+  const d = new Date();
+  const y = d.getUTCFullYear();
+  const m = String(d.getUTCMonth() + 1).padStart(2, '0');
+  const day = String(d.getUTCDate()).padStart(2, '0');
+  return `wenai:cost:detail:${orgId}:${y}-${m}-${day}`;
+};
+
+const memDetails = new Map<string, CostDetail[]>();
+
+export async function recordCostWithDetail(
+  orgId: string,
+  cents: number,
+  detail: Omit<CostDetail, 'cents' | 'at'>
+): Promise<void> {
+  if (cents <= 0) return;
+  const entry: CostDetail = { ...detail, cents, at: new Date().toISOString() };
+
+  // 先累加总数 (兼容旧)
+  await recordCost(orgId, cents);
+
+  // 再写明细
+  const key = DETAIL_KEY(orgId);
+  if (redis) {
+    try {
+      await redis.lpush(key, JSON.stringify(entry));
+      await redis.ltrim(key, 0, 199); // 最近 200 行
+      await redis.expire(key, 7 * 24 * 3600); // 7 天 TTL · 给 admin 一周复盘窗口
+    } catch (e) {
+      console.warn('[cost-cap] detail lpush failed', e);
+    }
+  } else {
+    const list = memDetails.get(key) ?? [];
+    list.unshift(entry);
+    memDetails.set(key, list.slice(0, 200));
+  }
+}
+
+/** Admin 钻取 · 拉某 orgId 当日明细 list */
+export async function listCostDetails(orgId: string, limit = 50): Promise<CostDetail[]> {
+  const key = DETAIL_KEY(orgId);
+  if (redis) {
+    try {
+      const raw = await redis.lrange(key, 0, limit - 1);
+      return raw
+        .map(s => {
+          try { return JSON.parse(s as string) as CostDetail; } catch { return null; }
+        })
+        .filter(Boolean) as CostDetail[];
+    } catch {
+      return [];
+    }
+  }
+  return (memDetails.get(key) ?? []).slice(0, limit);
+}
+
 export async function getDailyCost(orgId: string): Promise<number> {
   const key = todayKey(orgId);
   if (redis) {

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { checkRateLimit } from '@/lib/ratelimit';
-import { checkCostCap, recordCost, COST_ESTIMATE_CENTS } from '@/lib/cost-cap';
+import { checkCostCap, recordCostWithDetail, COST_ESTIMATE_CENTS } from '@/lib/cost-cap';
 import { resolveOrgId } from '@/lib/org-id';
 
 /**
@@ -318,9 +318,20 @@ export async function POST(request: NextRequest) {
       size,
       scenario: body.scenario,
     });
-    // 记录实际开销 (HappyHorse 不返回成本, 按估算累加)
+    // 记录实际开销 + 明细 (HappyHorse 不返回成本, 按估算累加)
     if (response.status === 200) {
-      await recordCost(rateKey, estCents);
+      // 尝试从响应里抽 taskId (clone body 读)
+      let taskId: string | undefined;
+      try {
+        const clone = response.clone();
+        const j = await clone.json();
+        taskId = j?.taskId;
+      } catch {}
+      await recordCostWithDetail(rateKey, estCents, {
+        module: 'openai-image',
+        taskId,
+        meta: { scenario: body.scenario, quality, size, count: n },
+      });
     }
     return response;
   } catch (err) {
