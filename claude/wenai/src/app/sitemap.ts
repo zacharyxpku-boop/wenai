@@ -78,6 +78,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.9,
     },
     {
+      url: `${BASE}/pipelines/data-insights`,
+      lastModified: now,
+      changeFrequency: 'weekly',
+      priority: 0.92,
+    },
+    {
       url: `${BASE}/invite`,
       lastModified: now,
       changeFrequency: 'monthly',

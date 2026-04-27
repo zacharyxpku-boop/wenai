@@ -28,6 +28,7 @@ const LIMITS: Record<string, number> = {
   'video-teardown': 15, // Gemini Vision 拆解 · 8MB 视频 ~$0.01-0.05,15 次/天
   'product-discovery': 20, // AI 选品 · 一次 ~3K token,20 次/天
   'ab-test': 25, // 测款 A-B · 一次 ~3K token (9 个 prompt + SOP),25 次/天
+  'data-insights': 30, // 数据洞察 · 文本驱动 · 商家高频用,30 次/天
 };
 
 // --- Upstash Redis backend ---
