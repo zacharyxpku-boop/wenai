@@ -5,6 +5,7 @@ import { getDailyCost } from '@/lib/cost-cap';
 import { getCacheStatSnapshot } from '@/lib/cache-stats';
 import { getUserSettings } from '@/lib/user-settings';
 import { sendEmail } from '@/lib/mailer';
+import { makeUnsubscribeToken } from '@/lib/unsubscribe';
 
 /**
  * 每日 digest cron · vercel.json 9:00am 触发
@@ -203,7 +204,8 @@ export async function GET(req: NextRequest) {
           (minSev === 'warning' && (digest.critical > 0 || digest.warning > 0)) ||
           (minSev === 'info' && digest.signals.length > 0);
         if (meets) {
-          const html = renderDigestHtml(digest);
+          const unsubToken = makeUnsubscribeToken(orgId);
+          const html = renderDigestHtml(digest, unsubToken);
           const subject = digest.critical > 0
             ? `🚨 wenai 信号 · ${digest.critical} 项紧急`
             : digest.warning > 0
@@ -237,7 +239,7 @@ function countBy(arr: string[]): Record<string, number> {
   return out;
 }
 
-function renderDigestHtml(digest: DigestPayload): string {
+function renderDigestHtml(digest: DigestPayload, unsubToken?: string): string {
   const sevColor: Record<string, string> = {
     critical: '#dc2626', warning: '#d97706', info: '#7c3aed',
   };
@@ -266,7 +268,9 @@ function renderDigestHtml(digest: DigestPayload): string {
     <a href="https://wenai-deploy.vercel.app/me/alerts" style="display:inline-block;padding:10px 20px;background:#3b82f6;color:#fff;text-decoration:none;border-radius:6px;font-size:13px;">看完整信号 →</a>
   </div>
   <div style="padding:12px 24px;font-size:10px;color:#aaa;border-top:1px solid #e5e7eb;">
-    不想再收? 去 /me/settings 关掉 digest 邮件。
+    不想再收? ${unsubToken
+      ? `<a href="https://wenai-deploy.vercel.app/api/unsubscribe?token=${unsubToken}" style="color:#888;text-decoration:underline;">一键退订</a> · `
+      : ''}去 /me/settings 改邮件设置
   </div>
 </div>
 </body></html>`;
