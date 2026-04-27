@@ -30,6 +30,20 @@ interface AlertsResp {
   alerts: Alert[];
 }
 
+interface DigestPoint {
+  date: string;
+  critical: number;
+  warning: number;
+  info: number;
+  topAction: string | null;
+}
+
+interface DigestResp {
+  digests: DigestPoint[];
+  lastDate: string | null;
+  count?: number;
+}
+
 const SEV_META: Record<Alert['severity'], { txt: string; cls: string; icon: string }> = {
   critical: { txt: 'CRITICAL', icon: '🚨', cls: 'border-error/50 bg-error/5 text-error' },
   warning: { txt: 'WARNING', icon: '⚠️', cls: 'border-warning/50 bg-warning/5 text-warning' },
@@ -38,6 +52,7 @@ const SEV_META: Record<Alert['severity'], { txt: string; cls: string; icon: stri
 
 export default function AlertsPage() {
   const [data, setData] = useState<AlertsResp | null>(null);
+  const [digest, setDigest] = useState<DigestResp | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -48,6 +63,10 @@ export default function AlertsPage() {
         setLoading(false);
       })
       .catch(() => setLoading(false));
+    fetch('/api/user/digest?limit=7')
+      .then(r => r.json())
+      .then((d: DigestResp) => setDigest(d))
+      .catch(() => {});
   }, []);
 
   return (
@@ -82,6 +101,45 @@ export default function AlertsPage() {
               <Stat label="警示" value={data.warningCount} cls="border-warning/40 text-warning" />
               <Stat label="提示" value={data.count - data.criticalCount - data.warningCount} cls="border-cat-content/40 text-cat-content" />
             </div>
+
+            {/* 近 7 天 digest 走势 (cron 写入) */}
+            {digest && digest.digests.length > 0 && (
+              <section className="mb-5 border border-border-subtle bg-bg-surface/30 rounded-lg p-4">
+                <div className="text-[10px] font-mono text-text-tertiary uppercase tracking-wider mb-3">
+                  近 {digest.digests.length} 天信号走势 · 最新生成 {digest.lastDate}
+                </div>
+                <div className="flex items-end gap-1 h-16 mb-2">
+                  {digest.digests.slice().reverse().map(p => {
+                    const total = p.critical + p.warning + p.info;
+                    return (
+                      <div key={p.date} className="flex-1 flex flex-col-reverse" title={`${p.date} · ${p.critical} 紧急 / ${p.warning} 警示 / ${p.info} 提示${p.topAction ? '\n→ ' + p.topAction : ''}`}>
+                        {p.critical > 0 && (
+                          <div className="bg-error/70 hover:bg-error transition-colors" style={{ height: `${(p.critical / Math.max(total, 1)) * 100}%`, minHeight: '2px' }} />
+                        )}
+                        {p.warning > 0 && (
+                          <div className="bg-warning/70 hover:bg-warning transition-colors" style={{ height: `${(p.warning / Math.max(total, 1)) * 100}%`, minHeight: '2px' }} />
+                        )}
+                        {p.info > 0 && (
+                          <div className="bg-cat-content/60 hover:bg-cat-content transition-colors" style={{ height: `${(p.info / Math.max(total, 1)) * 100}%`, minHeight: '2px' }} />
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+                <div className="flex gap-1 mb-2">
+                  {digest.digests.slice().reverse().map(p => (
+                    <div key={p.date} className="flex-1 text-center text-[8px] font-mono text-text-tertiary tabular-nums">
+                      {p.date.slice(5)}
+                    </div>
+                  ))}
+                </div>
+                {digest.digests[0]?.topAction && (
+                  <div className="text-[10px] font-mono text-text-tertiary mt-2">
+                    最近一份的 top action: <span className="text-text-secondary">{digest.digests[0].topAction}</span>
+                  </div>
+                )}
+              </section>
+            )}
 
             <div className="space-y-3">
               {data.alerts.map(a => {
