@@ -253,6 +253,12 @@ export default function SkuDetailPage() {
                 📊 横向 benchmark →
               </Link>
             </div>
+
+            <BenchmarkPanel
+              category={sku.category}
+              ctr={sku.performance.bestCtr ?? sku.performance.ctr}
+              cpc={sku.performance.cpc}
+            />
           </div>
         )}
       </section>
@@ -531,6 +537,108 @@ function Stat({ label, value }: { label: string; value: string }) {
     <div className="border border-border-subtle rounded px-2 py-1.5 bg-bg-root/30">
       <div className="text-[9px] font-mono text-text-tertiary uppercase">{label}</div>
       <div className="text-[12px] font-bold text-text-primary mt-0.5 tabular-nums">{value}</div>
+    </div>
+  );
+}
+
+interface BenchSnap {
+  metric: 'ctr' | 'cpc';
+  category: string;
+  count: number;
+  p10: number | null;
+  p25: number | null;
+  p50: number | null;
+  p75: number | null;
+  p90: number | null;
+  yourValue?: number;
+  yourPercentile?: number;
+}
+
+function BenchmarkPanel({ category, ctr, cpc }: { category: string; ctr?: number; cpc?: number }) {
+  const [ctrSnap, setCtrSnap] = useState<BenchSnap | null>(null);
+  const [cpcSnap, setCpcSnap] = useState<BenchSnap | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const queries: Promise<void>[] = [];
+    if (ctr && ctr > 0) {
+      queries.push(
+        fetch(`/api/user/benchmark?metric=ctr&category=${encodeURIComponent(category)}&value=${ctr}`)
+          .then(r => r.json()).then(setCtrSnap).catch(() => {})
+      );
+    }
+    if (cpc && cpc > 0) {
+      queries.push(
+        fetch(`/api/user/benchmark?metric=cpc&category=${encodeURIComponent(category)}&value=${cpc}`)
+          .then(r => r.json()).then(setCpcSnap).catch(() => {})
+      );
+    }
+    Promise.all(queries).finally(() => setLoading(false));
+  }, [category, ctr, cpc]);
+
+  const ctrUseful = ctrSnap && ctrSnap.count >= 5;
+  const cpcUseful = cpcSnap && cpcSnap.count >= 5;
+  if (loading) return null;
+  if (!ctrUseful && !cpcUseful) {
+    // 样本不够 5 不显示, 避免误导
+    return (
+      <div className="mt-3 pt-3 border-t border-border-subtle/50 text-[10px] font-mono text-text-tertiary">
+        🌐 同类目 wenai 样本不够 5 个, 暂无跨商家 benchmark
+      </div>
+    );
+  }
+
+  return (
+    <div className="mt-3 pt-3 border-t border-border-subtle/50">
+      <div className="text-[10px] font-mono text-cat-content uppercase tracking-wider mb-2">
+        🌐 同类目「{category}」全 wenai 匿名 benchmark
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-[11px]">
+        {ctrUseful && (
+          <BenchRow snap={ctrSnap!} label="CTR" suffix="%" higherBetter />
+        )}
+        {cpcUseful && (
+          <BenchRow snap={cpcSnap!} label="CPC" suffix=" ¥" higherBetter={false} />
+        )}
+      </div>
+      <div className="text-[9px] font-mono text-text-tertiary mt-2">
+        样本: {ctrSnap?.count || cpcSnap?.count} 个 SKU · 90 天滚动 · 完全匿名 (只取数值, 不存来源)
+      </div>
+    </div>
+  );
+}
+
+function BenchRow({ snap, label, suffix, higherBetter }: { snap: BenchSnap; label: string; suffix: string; higherBetter: boolean }) {
+  const yp = snap.yourPercentile;
+  const verdict = yp === undefined ? '' :
+    yp >= 75 ? '🏆 头部' :
+    yp >= 50 ? '👍 中上' :
+    yp >= 25 ? '👀 中位下' :
+    '⚠️ 偏低';
+  return (
+    <div className="border border-border-subtle/50 rounded p-2 bg-bg-root/30">
+      <div className="flex items-baseline justify-between mb-1.5">
+        <span className="text-[11px] font-bold text-text-primary">{label}</span>
+        {snap.yourValue !== undefined && (
+          <span className="text-[11px] font-mono">
+            你 <span className="font-bold tabular-nums">{snap.yourValue.toFixed(2)}{suffix}</span>
+            {yp !== undefined && (
+              <span className="ml-1 text-cat-content">{higherBetter ? '排前' : '低过'} {higherBetter ? (100 - yp) : (100 - yp)}%</span>
+            )}
+            {yp !== undefined && (
+              <span className="ml-1">{verdict}</span>
+            )}
+          </span>
+        )}
+      </div>
+      <div className="grid grid-cols-5 gap-1 text-[9px] font-mono text-text-tertiary tabular-nums">
+        {(['p10', 'p25', 'p50', 'p75', 'p90'] as const).map(p => (
+          <div key={p} className="text-center">
+            <div>{p.toUpperCase()}</div>
+            <div className="text-text-secondary mt-0.5">{snap[p]?.toFixed(2) ?? '—'}{suffix}</div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
