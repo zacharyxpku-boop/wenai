@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import Link from 'next/link';
 import JSZip from 'jszip';
 import { applyImageWatermark } from '@/lib/aigc';
@@ -234,6 +234,17 @@ export default function AIPhotoshootPage() {
 
   // 用户额外细节
   const [extraPrompt, setExtraPrompt] = useState('');
+
+  // 从 ?prompt= 预填 (从 video-teardown 跳过来时带着 scene prompt)
+  // 只在 mount 时读一次, 不依赖 query 变化
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    const sp = new URLSearchParams(window.location.search);
+    const incoming = sp.get('prompt');
+    if (incoming) {
+      setExtraPrompt(incoming.slice(0, 800)); // 截断保护
+    }
+  }, []);
 
   // 行业模板状态 (ecom-prompts 包办)
   const [showEcomPanel, setShowEcomPanel] = useState(false);

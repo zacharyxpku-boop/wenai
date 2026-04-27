@@ -2,6 +2,9 @@
 
 import { useRef, useState } from 'react';
 import Link from 'next/link';
+import { useActiveSkuId } from '@/lib/use-active-sku';
+import { ActiveSkuBadge } from '@/components/ActiveSkuBadge';
+import { useMySkus } from '@/lib/use-my-skus';
 
 /**
  * 爆款视频拆解 · /pipelines/video-teardown
@@ -40,6 +43,53 @@ interface TeardownResult {
   model: string;
 }
 
+// 行业爆款模板 · 让没有视频上传经验的商家也能跑起来
+// 选一个模板会预填 productHint, 引导他们去想"我的产品怎么蹭这个结构"
+const INDUSTRY_TEMPLATES: { id: string; emoji: string; title: string; subtitle: string; hint: string }[] = [
+  {
+    id: 'beauty',
+    emoji: '💄',
+    title: '美妆护肤',
+    subtitle: '使用前后对比 + 慢镜质感',
+    hint: '我的产品是 [品类], 主打 [核心卖点]。请把原视频中的产品换成我的, 强化"使用前后"对比, 镜头语言保持原视频的特写+慢镜节奏。',
+  },
+  {
+    id: 'home',
+    emoji: '🏠',
+    title: '家居生活',
+    subtitle: '场景沉浸 + 痛点演示',
+    hint: '我的产品是 [家居物件], 解决 [具体痛点]。复刻原视频的家居场景, 替换主体产品, 保留"问题→产品出现→生活变好"的叙事结构。',
+  },
+  {
+    id: 'food',
+    emoji: '🥘',
+    title: '食品零食',
+    subtitle: 'ASMR 特写 + 满足感',
+    hint: '我的产品是 [食品/零食], 主打 [口感/原料/场景]。复刻原视频的近景特写和 ASMR 节奏, 主体替换为我的产品, 保持咀嚼/拆封的真实质感。',
+  },
+  {
+    id: 'fashion',
+    emoji: '👗',
+    title: '服饰穿搭',
+    subtitle: '一秒变装 + 多场景',
+    hint: '我的产品是 [服饰品类], 风格 [都市/田园/学院/法式]。复刻原视频的"快速换装/多场景"结构, 主体换我的服饰, 保留转场的视觉冲击。',
+  },
+  {
+    id: '3c',
+    emoji: '📱',
+    title: '3C 数码',
+    subtitle: '上手开箱 + 参数对比',
+    hint: '我的产品是 [3C 品类], 卖点是 [参数/功能差异]。复刻原视频的开箱流程, 主体换我的产品, 强化参数特写镜头, 节奏保持原视频。',
+  },
+  {
+    id: 'pet',
+    emoji: '🐶',
+    title: '宠物用品',
+    subtitle: '萌宠互动 + 治愈感',
+    hint: '我的产品是 [宠物品类], 解决 [喂养/出行/健康] 痛点。复刻原视频的萌宠互动场景, 主体换我的产品, 保留宠物自然反应的真实感。',
+  },
+];
+
 const HOOK_LABEL: Record<Storyboard['hook_type'], { txt: string; tip: string }> = {
   question: { txt: '❓ 提问钩子', tip: '开头一句反问拉用户思考' },
   statement: { txt: '📢 陈述钩子', tip: '直接抛结论制造好奇' },
@@ -59,17 +109,39 @@ const CTA_LABEL: Record<Storyboard['cta_position'], string> = {
 };
 
 export default function VideoTeardownPage() {
+  const activeSkuId = useActiveSkuId();
+  const { skus: mySkus } = useMySkus(20);
+
   const [videoBase64, setVideoBase64] = useState<string | null>(null);
   const [videoPreview, setVideoPreview] = useState<string | null>(null);
   const [videoSize, setVideoSize] = useState<number>(0);
   const [productHint, setProductHint] = useState('');
+  const [activeTemplate, setActiveTemplate] = useState<string | null>(null);
 
   const [running, setRunning] = useState(false);
   const [result, setResult] = useState<TeardownResult | null>(null);
   const [error, setError] = useState('');
   const [copiedIdx, setCopiedIdx] = useState<number | null>(null);
+  const [savedSkuId, setSavedSkuId] = useState<string | null>(null);
+  const [savingToSku, setSavingToSku] = useState(false);
 
   const fileRef = useRef<HTMLInputElement>(null);
+
+  const pickTemplate = (id: string) => {
+    const t = INDUSTRY_TEMPLATES.find(x => x.id === id);
+    if (!t) return;
+    setActiveTemplate(id);
+    if (!productHint.trim()) {
+      setProductHint(t.hint);
+    }
+  };
+
+  const pickFromSku = (skuId: string) => {
+    const sku = mySkus.find(s => s.id === skuId);
+    if (!sku) return;
+    const hint = `我的产品是 "${sku.name}" (品类: ${sku.category}${sku.priceCny ? ', 价位 ' + sku.priceCny : ''})${sku.notes ? '。卖点: ' + sku.notes.slice(0, 100) : ''}。请把原视频中的产品替换成我的, 复刻原节奏和钩子。`;
+    setProductHint(hint);
+  };
 
   const handleFile = (file: File) => {
     if (file.size > 8 * 1024 * 1024) {
@@ -99,12 +171,17 @@ export default function VideoTeardownPage() {
     setRunning(true);
     setError('');
     setResult(null);
+    setSavedSkuId(null);
 
     try {
       const res = await fetch('/api/video-teardown', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ videoBase64, productHint: productHint.trim() || undefined }),
+        body: JSON.stringify({
+          videoBase64,
+          productHint: productHint.trim() || undefined,
+          skuId: activeSkuId,
+        }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
@@ -113,6 +190,37 @@ export default function VideoTeardownPage() {
       setError(err instanceof Error ? err.message : '拆解失败');
     } finally {
       setRunning(false);
+    }
+  };
+
+  const saveToSkuLibrary = async () => {
+    if (!result) return;
+    setSavingToSku(true);
+    try {
+      const sb = result.storyboard;
+      const name = activeTemplate
+        ? `${INDUSTRY_TEMPLATES.find(t => t.id === activeTemplate)?.title} 爆款蓝图 ${new Date().toLocaleDateString('zh-CN')}`
+        : `视频拆解 ${new Date().toLocaleDateString('zh-CN')}`;
+      const notes = `钩子: ${HOOK_LABEL[sb.hook_type].txt} · 节奏: ${PACING_LABEL[sb.pacing]} · CTA: ${CTA_LABEL[sb.cta_position]} · ${sb.scenes.length} 镜头\n\n${productHint.slice(0, 200)}`;
+      const res = await fetch('/api/user/sku-history', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name,
+          category: activeTemplate ? INDUSTRY_TEMPLATES.find(t => t.id === activeTemplate)?.title : '视频蓝图',
+          status: 'idea',
+          notes,
+          modules: ['video-teardown'],
+        }),
+      });
+      const data = await res.json();
+      if (data.ok && data.sku?.id) {
+        setSavedSkuId(data.sku.id);
+      }
+    } catch (err) {
+      console.error('save sku failed', err);
+    } finally {
+      setSavingToSku(false);
     }
   };
 
@@ -148,6 +256,7 @@ export default function VideoTeardownPage() {
           </div>
           <h1 className="text-3xl lg:text-4xl font-bold text-text-primary mb-3 font-[family-name:var(--font-outfit)]">
             爆款视频 → 结构化分镜
+            <ActiveSkuBadge skuId={activeSkuId} />
           </h1>
           <p className="text-[13px] lg:text-[14px] text-text-secondary leading-relaxed max-w-[760px]">
             扔一个 TikTok/抖音/小红书 爆款视频上来,Gemini 拆出钩子类型、节奏、情绪曲线、CTA 位置和每个镜头的图像 prompt。
@@ -226,6 +335,66 @@ export default function VideoTeardownPage() {
             )}
           </section>
 
+          {/* 行业爆款模板 · 6 选 1 一键填 */}
+          <section className="border border-cat-content/30 bg-cat-content/5 rounded-lg p-3 space-y-2">
+            <div className="flex items-center justify-between">
+              <div className="text-[10px] font-mono text-cat-content uppercase tracking-wider">
+                🎬 行业爆款模板 (一键填)
+              </div>
+              {activeTemplate && (
+                <button
+                  onClick={() => { setActiveTemplate(null); setProductHint(''); }}
+                  className="text-[9px] font-mono text-text-tertiary hover:text-error"
+                >
+                  清除
+                </button>
+              )}
+            </div>
+            <div className="grid grid-cols-3 gap-1.5">
+              {INDUSTRY_TEMPLATES.map(t => {
+                const active = activeTemplate === t.id;
+                return (
+                  <button
+                    key={t.id}
+                    onClick={() => pickTemplate(t.id)}
+                    className={`text-left rounded p-2 transition-colors ${
+                      active
+                        ? 'bg-cat-content/20 border border-cat-content text-text-primary'
+                        : 'border border-cat-content/20 text-text-secondary hover:border-cat-content/50 hover:bg-cat-content/10'
+                    }`}
+                  >
+                    <div className="text-base mb-0.5">{t.emoji}</div>
+                    <div className="text-[10px] font-semibold">{t.title}</div>
+                    <div className="text-[9px] font-mono text-text-tertiary leading-tight mt-0.5">
+                      {t.subtitle}
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+          </section>
+
+          {/* SKU 库 · 一键带产品上下文 */}
+          {mySkus.length > 0 && (
+            <section className="border border-border-subtle rounded-lg p-3 space-y-2 bg-bg-surface/30">
+              <div className="text-[10px] font-mono text-text-tertiary uppercase tracking-wider">
+                📦 从 SKU 库带产品
+              </div>
+              <div className="flex flex-wrap gap-1 max-h-[80px] overflow-y-auto">
+                {mySkus.map(s => (
+                  <button
+                    key={s.id}
+                    onClick={() => pickFromSku(s.id)}
+                    className="text-[10px] font-mono border border-border-subtle rounded px-1.5 py-0.5 text-text-secondary hover:border-accent/40 hover:text-accent"
+                    title={`${s.category} · ${s.status}`}
+                  >
+                    {s.name.length > 14 ? s.name.slice(0, 14) + '…' : s.name}
+                  </button>
+                ))}
+              </div>
+            </section>
+          )}
+
           {/* Product hint */}
           <section className="border border-border-subtle rounded-lg p-4 bg-bg-surface/30 space-y-2">
             <div className="text-[10px] font-mono text-text-tertiary uppercase tracking-wider">
@@ -234,12 +403,12 @@ export default function VideoTeardownPage() {
             <textarea
               value={productHint}
               onChange={e => setProductHint(e.target.value)}
-              placeholder="例: 我的产品是一款带 LED 小夜灯的便携加湿器,适合宿舍/办公桌。请把原视频中的产品替换成这个,其他构图保持。"
+              placeholder="选个上方模板, 或写: 我的产品是一款 [品类], 主打 [卖点]。请把原视频中的产品替换成这个, 其他构图保持。"
               rows={4}
               className="w-full px-3 py-2 bg-bg-surface border border-border-default rounded text-[12px] resize-none focus:border-accent/60 outline-none"
             />
             <p className="text-[10px] font-mono text-text-tertiary leading-relaxed">
-              填了之后,scene 的 prompt 会自动把原视频产品换成你的货,直接能去影棚生图
+              填了之后, scene 的 prompt 会自动把原视频产品换成你的货, 直接能去影棚生图
             </p>
           </section>
 
@@ -308,7 +477,18 @@ export default function VideoTeardownPage() {
             </div>
           )}
 
-          {!running && result && <TeardownResultView result={result} copyPrompt={copyPrompt} copiedIdx={copiedIdx} exportJson={exportJson} />}
+          {!running && result && (
+            <TeardownResultView
+              result={result}
+              copyPrompt={copyPrompt}
+              copiedIdx={copiedIdx}
+              exportJson={exportJson}
+              activeSkuId={activeSkuId}
+              saveToSkuLibrary={saveToSkuLibrary}
+              savingToSku={savingToSku}
+              savedSkuId={savedSkuId}
+            />
+          )}
         </main>
       </div>
 
@@ -351,11 +531,19 @@ function TeardownResultView({
   copyPrompt,
   copiedIdx,
   exportJson,
+  activeSkuId,
+  saveToSkuLibrary,
+  savingToSku,
+  savedSkuId,
 }: {
   result: TeardownResult;
   copyPrompt: (idx: number, p: string) => void;
   copiedIdx: number | null;
   exportJson: () => void;
+  activeSkuId: string | null;
+  saveToSkuLibrary: () => Promise<void>;
+  savingToSku: boolean;
+  savedSkuId: string | null;
 }) {
   const sb = result.storyboard;
   const totalDuration = sb.scenes.reduce((sum, s) => sum + s.duration_seconds, 0);
@@ -384,12 +572,33 @@ function TeardownResultView({
             </div>
           )}
         </div>
-        <button
-          onClick={exportJson}
-          className="text-[11px] font-mono text-accent border border-accent/30 hover:bg-accent/10 rounded px-3 py-1.5"
-        >
-          ⬇ 导出 JSON
-        </button>
+        <div className="flex items-center gap-2 flex-wrap">
+          {!activeSkuId && (
+            savedSkuId ? (
+              <Link
+                href={`/me/skus/${savedSkuId}`}
+                className="text-[11px] font-mono text-success border border-success/40 rounded px-3 py-1.5 hover:bg-success/10"
+              >
+                ✓ 已存为 SKU · 查看 →
+              </Link>
+            ) : (
+              <button
+                onClick={saveToSkuLibrary}
+                disabled={savingToSku}
+                className="text-[11px] font-mono text-cat-content border border-cat-content/40 hover:bg-cat-content/10 rounded px-3 py-1.5 disabled:opacity-40"
+                title="把这次拆解作为蓝图存进 SKU 库, 下次能复用"
+              >
+                {savingToSku ? '存入中...' : '📦 存为 SKU 蓝图'}
+              </button>
+            )
+          )}
+          <button
+            onClick={exportJson}
+            className="text-[11px] font-mono text-accent border border-accent/30 hover:bg-accent/10 rounded px-3 py-1.5"
+          >
+            ⬇ 导出 JSON
+          </button>
+        </div>
       </div>
 
       {/* Scene 卡片 */}
@@ -419,20 +628,29 @@ function TeardownResultView({
             )}
 
             <div className="bg-bg-root border border-border-subtle rounded p-2.5">
-              <div className="flex items-center justify-between mb-1">
+              <div className="flex items-center justify-between mb-1 flex-wrap gap-1">
                 <span className="text-[10px] font-mono text-text-tertiary uppercase tracking-wider">
                   图像 prompt (拷去 AI 影棚)
                 </span>
-                <button
-                  onClick={() => copyPrompt(i, scene.prompt)}
-                  className={`text-[10px] font-mono px-2 py-0.5 rounded transition-colors ${
-                    copiedIdx === i
-                      ? 'bg-success/20 text-success'
-                      : 'border border-accent/30 text-accent hover:bg-accent/10'
-                  }`}
-                >
-                  {copiedIdx === i ? '✓ 已复制' : '📋 复制'}
-                </button>
+                <div className="flex items-center gap-1.5">
+                  <button
+                    onClick={() => copyPrompt(i, scene.prompt)}
+                    className={`text-[10px] font-mono px-2 py-0.5 rounded transition-colors ${
+                      copiedIdx === i
+                        ? 'bg-success/20 text-success'
+                        : 'border border-accent/30 text-accent hover:bg-accent/10'
+                    }`}
+                  >
+                    {copiedIdx === i ? '✓ 已复制' : '📋 复制'}
+                  </button>
+                  <Link
+                    href={`/pipelines/ai-photoshoot?prompt=${encodeURIComponent(scene.prompt)}${activeSkuId ? `&skuId=${activeSkuId}` : ''}`}
+                    className="text-[10px] font-mono px-2 py-0.5 rounded border border-cat-execution/40 text-cat-execution hover:bg-cat-execution/10"
+                    title="带 prompt 跳到 AI 影棚直接生图"
+                  >
+                    🎬 去影棚生图 →
+                  </Link>
+                </div>
               </div>
               <p className="text-[12px] text-text-secondary leading-relaxed font-mono">{scene.prompt}</p>
             </div>
