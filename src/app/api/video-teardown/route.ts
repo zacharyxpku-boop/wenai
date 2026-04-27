@@ -3,6 +3,7 @@ import { checkRateLimit } from '@/lib/ratelimit';
 import { verifyToken, getCookieName } from '@/lib/auth';
 import { resolveOrgId } from '@/lib/org-id';
 import { checkCostCap, recordCostWithDetail } from '@/lib/cost-cap';
+import { hashVideoBase64, getTeardownCache, setTeardownCache } from '@/lib/teardown-cache';
 
 /**
  * 爆款视频拆解 · Gemini 2.5 Flash Vision · 简化版 (无 yt-dlp + 无 BullMQ)
@@ -135,6 +136,26 @@ export async function POST(request: NextRequest) {
   // 成本闸 · video-teardown 比纯 chat 贵一些 (Gemini Vision 处理视频), 估 4 cents
   const orgId = await resolveOrgId(request);
   const VIDEO_TEARDOWN_COST_CENTS = 4;
+
+  // 内容哈希缓存 · 同 orgId 重复上传同视频直接返回缓存 storyboard (省钱)
+  // ?fresh=1 强制跳过, 重新跑 Gemini
+  const fresh = request.nextUrl?.searchParams?.get('fresh') === '1';
+  const contentHash = hashVideoBase64(parsed.base64);
+  if (!fresh) {
+    try {
+      const cached = await getTeardownCache(orgId, contentHash);
+      if (cached) {
+        return NextResponse.json({
+          ...(typeof cached === 'object' && cached ? cached : {}),
+          fromCache: true,
+          contentHash,
+        });
+      }
+    } catch {
+      // 缓存读失败不阻塞主链路
+    }
+  }
+
   const cap = await checkCostCap(orgId, VIDEO_TEARDOWN_COST_CENTS);
   if (!cap.allowed) {
     return NextResponse.json(
@@ -229,13 +250,19 @@ export async function POST(request: NextRequest) {
       meta: { scenario: 'storyboard', size: `${(sizeBytes / 1024 / 1024).toFixed(1)}MB` },
     }).catch(() => {});
 
-    return NextResponse.json({
+    const payload = {
       ok: true,
       storyboard,
       usage,
       costUsd: costUsd ? +costUsd.toFixed(4) : null,
       model: GEMINI_MODEL,
-    });
+      contentHash,
+    };
+
+    // 缓存写入 · 失败不阻塞 (mem 兜底)
+    setTeardownCache(orgId, contentHash, payload).catch(() => {});
+
+    return NextResponse.json(payload);
   } catch (err) {
     console.error('[video-teardown] fatal', err);
     return NextResponse.json(

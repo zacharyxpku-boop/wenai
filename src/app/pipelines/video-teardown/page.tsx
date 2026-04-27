@@ -41,6 +41,8 @@ interface TeardownResult {
   usage?: { promptTokenCount?: number; candidatesTokenCount?: number };
   costUsd: number | null;
   model: string;
+  fromCache?: boolean;
+  contentHash?: string;
 }
 
 // 行业爆款模板 · 让没有视频上传经验的商家也能跑起来
@@ -565,8 +567,19 @@ function TeardownResultView({
       {/* 操作 */}
       <div className="flex items-center justify-between flex-wrap gap-2">
         <div>
-          <div className="text-[14px] font-bold text-text-primary">{sb.scene_count} 个镜头</div>
-          {result.costUsd !== null && (
+          <div className="text-[14px] font-bold text-text-primary flex items-center gap-2">
+            {sb.scene_count} 个镜头
+            {result.fromCache && (
+              <span className="text-[9px] font-mono text-success border border-success/40 bg-success/10 rounded px-1.5 py-0.5">
+                ⚡ 缓存命中 · 未消耗 quota
+              </span>
+            )}
+          </div>
+          {result.fromCache ? (
+            <div className="text-[10px] font-mono text-success mt-0.5 tabular-nums">
+              同视频 14 天内已拆过 · ¥0 复用 · 想强刷加 ?fresh=1
+            </div>
+          ) : result.costUsd !== null && (
             <div className="text-[10px] font-mono text-text-tertiary mt-0.5 tabular-nums">
               拆解成本 ${result.costUsd.toFixed(4)} ≈ ¥{(result.costUsd * 7.2).toFixed(3)} · {result.model}
             </div>
