@@ -3,6 +3,7 @@ import { checkRateLimit } from '@/lib/ratelimit';
 import { checkCostCap, recordCostWithDetail, COST_ESTIMATE_CENTS } from '@/lib/cost-cap';
 import { resolveOrgId } from '@/lib/org-id';
 import { buildImageCacheKey, getImageCache, setImageCache } from '@/lib/image-cache';
+import { recordCacheEvent } from '@/lib/cache-stats';
 
 /**
  * AI 视频生成 · 阿里通义万相 wanx2.1 i2v (image-to-video)
@@ -323,6 +324,7 @@ export async function POST(request: NextRequest) {
     try {
       const cached = await getImageCache(rateKey, videoCacheHash);
       if (cached && typeof cached === 'object') {
+        recordCacheEvent(rateKey, 'video', true).catch(() => {});
         return NextResponse.json({
           ...(cached as Record<string, unknown>),
           fromCache: true,
@@ -333,6 +335,7 @@ export async function POST(request: NextRequest) {
       /* 缓存读失败不阻塞 */
     }
   }
+  recordCacheEvent(rateKey, 'video', false).catch(() => {});
 
   // 单 org 24h 成本闸 · 视频比图贵, 阈值收紧
   const estVideoCents = resolution === '1080P'

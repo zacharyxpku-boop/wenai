@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
-type TabKey = 'metrics' | 'feedback' | 'payments' | 'invites' | 'inquiries' | 'cost';
+type TabKey = 'metrics' | 'feedback' | 'payments' | 'invites' | 'inquiries' | 'cost' | 'cache';
 interface Tab {
   key: TabKey;
   href: string;
@@ -19,6 +19,7 @@ const TABS: Tab[] = [
   { key: 'invites', href: '/admin/invites', label: '邀请码', icon: '🎟️' },
   { key: 'inquiries', href: '/admin/inquiries', label: '询盘', icon: '📨' },
   { key: 'cost', href: '/admin/cost', label: '成本', icon: '💸' },
+  { key: 'cache', href: '/admin/cache', label: '缓存', icon: '⚡' },
 ];
 
 interface Notifications {
