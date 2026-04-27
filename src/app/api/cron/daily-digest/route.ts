@@ -3,6 +3,7 @@ import { Redis } from '@upstash/redis';
 import { listSkus } from '@/lib/sku-history';
 import { getDailyCost } from '@/lib/cost-cap';
 import { getCacheStatSnapshot } from '@/lib/cache-stats';
+import { listLowOrOut } from '@/lib/inventory';
 import { getUserSettings } from '@/lib/user-settings';
 import { sendEmail } from '@/lib/mailer';
 import { makeUnsubscribeToken } from '@/lib/unsubscribe';
@@ -83,11 +84,26 @@ async function discoverOrgs(): Promise<string[]> {
 }
 
 async function buildDigest(orgId: string, dateStr: string): Promise<DigestPayload> {
-  const [skus, dailyCents] = await Promise.all([
+  const [skus, dailyCents, lowInv] = await Promise.all([
     listSkus(orgId, 200),
     getDailyCost(orgId),
+    listLowOrOut(orgId),
   ]);
   const signals: DigestPayload['signals'] = [];
+
+  // 库存优先级最高
+  const out = lowInv.filter(r => r.status === 'out').length;
+  const low = lowInv.filter(r => r.status === 'low').length;
+  if (out > 0) {
+    signals.push({ kind: 'inventory-out', severity: 'critical', headline: `${out} 个 SKU 断货 · 立即下架或补货` });
+  }
+  if (low > 0) {
+    signals.push({
+      kind: 'inventory-low',
+      severity: low >= 5 ? 'warning' : 'info',
+      headline: `${low} 个 SKU 库存接近阈值`,
+    });
+  }
 
   // stale-sku
   const cutoff = Date.now() - STALE_DAYS * 24 * 3600 * 1000;
