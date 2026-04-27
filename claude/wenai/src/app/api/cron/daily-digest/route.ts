@@ -1,0 +1,206 @@
+import { NextRequest, NextResponse } from 'next/server';
+import { Redis } from '@upstash/redis';
+import { listSkus } from '@/lib/sku-history';
+import { getDailyCost } from '@/lib/cost-cap';
+import { getCacheStatSnapshot } from '@/lib/cache-stats';
+
+/**
+ * 每日 digest cron · vercel.json 9:00am 触发
+ *
+ * 跑全部 org 的轻量信号检测, 把 digest payload 落地到 Redis
+ *   wenai:digest:<orgId>:<YYYY-MM-DD>  hash {jsonPayload}
+ *   wenai:digest:list:<orgId>          list 最近 30 天 dateStr
+ *
+ * 之后商家 /api/user/digest 拉到自己最新一份 → /me/alerts 顶部"昨天推送"展示
+ * 邮件接 Resend/SendGrid 阶段只需读这份 hash 不再算逻辑
+ *
+ * 安全: vercel cron 注入 x-vercel-cron-secret · 拒绝外部直接调
+ *       本地 dev: process.env.CRON_SECRET 匹配也通过
+ */
+
+let redis: Redis | null = null;
+if (process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN) {
+  redis = new Redis({
+    url: process.env.UPSTASH_REDIS_REST_URL,
+    token: process.env.UPSTASH_REDIS_REST_TOKEN,
+  });
+}
+
+const STALE_DAYS = 30;
+const COST_CAP_CENTS = parseInt(process.env.COST_CAP_DAILY_CENTS || '5000', 10);
+const DIGEST_TTL_SEC = 30 * 24 * 3600;
+
+interface DigestPayload {
+  orgId: string;
+  date: string;
+  generatedAt: string;
+  critical: number;
+  warning: number;
+  info: number;
+  signals: Array<{ kind: string; severity: 'critical' | 'warning' | 'info'; headline: string }>;
+  metrics: {
+    skuCount: number;
+    launchedCount: number;
+    todayCny: number;
+    cacheRate7d: number | null;
+  };
+  topAction: string | null; // 一句话最该做的事
+}
+
+async function discoverOrgs(): Promise<string[]> {
+  if (!redis) return [];
+  const orgs = new Set<string>();
+  const today = new Date().toISOString().slice(0, 10);
+  for (const pattern of [`wenai:sku:list:*`, `wenai:cost:*:${today}`]) {
+    let cursor: string | number = 0;
+    let iter = 0;
+    try {
+      do {
+        const res: [string | number, string[]] = await redis.scan(cursor, { match: pattern, count: 200 });
+        cursor = res[0];
+        for (const key of res[1]) {
+          if (key.includes(':detail:')) continue;
+          if (key.startsWith('wenai:sku:list:')) {
+            orgs.add(key.slice('wenai:sku:list:'.length));
+          } else if (key.startsWith('wenai:cost:')) {
+            const parts = key.split(':');
+            const id = parts.slice(2, parts.length - 1).join(':');
+            if (id) orgs.add(id);
+          }
+        }
+        iter++;
+        if (iter > 30) break;
+      } while (cursor !== '0' && cursor !== 0);
+    } catch {
+      // skip
+    }
+  }
+  return Array.from(orgs);
+}
+
+async function buildDigest(orgId: string, dateStr: string): Promise<DigestPayload> {
+  const [skus, dailyCents] = await Promise.all([
+    listSkus(orgId, 200),
+    getDailyCost(orgId),
+  ]);
+  const signals: DigestPayload['signals'] = [];
+
+  // stale-sku
+  const cutoff = Date.now() - STALE_DAYS * 24 * 3600 * 1000;
+  const stale = skus.filter(s => s.status === 'launched' && new Date(s.updatedAt).getTime() < cutoff).length;
+  if (stale >= 5) {
+    signals.push({ kind: 'stale-sku', severity: 'critical', headline: `${stale} 个上架 SKU 死掉` });
+  } else if (stale > 0) {
+    signals.push({ kind: 'stale-sku', severity: 'warning', headline: `${stale} 个上架 SKU 该复评` });
+  }
+
+  // no-perf
+  const noPerf = skus.filter(s => s.status === 'launched' && !s.performance?.testedAt).length;
+  if (noPerf >= 3) {
+    signals.push({ kind: 'no-perf', severity: 'warning', headline: `${noPerf} 个 SKU 无投放数据` });
+  } else if (noPerf > 0) {
+    signals.push({ kind: 'no-perf', severity: 'info', headline: `${noPerf} 个 SKU 待回填` });
+  }
+
+  // cost-near-cap (今日)
+  const ratio = dailyCents / COST_CAP_CENTS;
+  if (ratio >= 1) {
+    signals.push({ kind: 'cost-near-cap', severity: 'critical', headline: '今日已达成本上限' });
+  } else if (ratio >= 0.7) {
+    signals.push({ kind: 'cost-near-cap', severity: 'warning', headline: `今日成本 ${(ratio * 100).toFixed(0)}% × cap` });
+  }
+
+  // cache-rate-7d
+  let totalHits = 0;
+  let totalCalls = 0;
+  for (let i = 0; i < 7; i++) {
+    const d = new Date();
+    d.setUTCDate(d.getUTCDate() - i);
+    const dStr = d.toISOString().slice(0, 10);
+    const snap = await getCacheStatSnapshot(orgId, dStr);
+    totalHits += snap.totalHits;
+    totalCalls += snap.totalHits + snap.totalMisses;
+  }
+  const cacheRate7d = totalCalls >= 30 ? totalHits / totalCalls : null;
+  if (cacheRate7d !== null && cacheRate7d < 0.10) {
+    signals.push({ kind: 'low-cache-rate', severity: 'info', headline: `命中率 ${(cacheRate7d * 100).toFixed(1)}% (低)` });
+  }
+
+  // no-bench
+  const withPerf = skus.filter(s => s.performance?.testedAt).length;
+  if (skus.length >= 5 && withPerf < 3) {
+    signals.push({ kind: 'no-bench', severity: 'info', headline: `自建 benchmark 不足 (${withPerf}/${skus.length})` });
+  }
+
+  const critical = signals.filter(s => s.severity === 'critical').length;
+  const warning = signals.filter(s => s.severity === 'warning').length;
+  const info = signals.filter(s => s.severity === 'info').length;
+
+  // 选一个 topAction
+  const topAction = signals.find(s => s.severity === 'critical')?.headline
+    ?? signals.find(s => s.severity === 'warning')?.headline
+    ?? signals.find(s => s.severity === 'info')?.headline
+    ?? null;
+
+  return {
+    orgId,
+    date: dateStr,
+    generatedAt: new Date().toISOString(),
+    critical, warning, info,
+    signals,
+    metrics: {
+      skuCount: skus.length,
+      launchedCount: skus.filter(s => s.status === 'launched').length,
+      todayCny: +(dailyCents / 100).toFixed(2),
+      cacheRate7d,
+    },
+    topAction,
+  };
+}
+
+export async function GET(req: NextRequest) {
+  // 鉴权: vercel cron header 或 ?secret= (本地 dev)
+  const cronSecret = process.env.CRON_SECRET;
+  const provided = req.headers.get('x-vercel-cron-secret')
+    || req.headers.get('authorization')?.replace(/^Bearer /, '')
+    || new URL(req.url).searchParams.get('secret');
+  if (cronSecret && provided !== cronSecret) {
+    return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
+  }
+
+  if (!redis) {
+    return NextResponse.json({ ok: false, error: 'Redis 未配置' });
+  }
+
+  const dateStr = new Date().toISOString().slice(0, 10);
+  const orgs = await discoverOrgs();
+  const written: string[] = [];
+  const errors: Array<{ orgId: string; err: string }> = [];
+
+  for (const orgId of orgs) {
+    try {
+      const digest = await buildDigest(orgId, dateStr);
+      // 跳过完全无信号的 org (减无效写)
+      if (digest.signals.length === 0) continue;
+      const key = `wenai:digest:${orgId}:${dateStr}`;
+      await redis.set(key, JSON.stringify(digest), { ex: DIGEST_TTL_SEC });
+      // 推到列表头, 截前 30 条
+      const listKey = `wenai:digest:list:${orgId}`;
+      await redis.lpush(listKey, dateStr);
+      await redis.ltrim(listKey, 0, 29);
+      await redis.expire(listKey, DIGEST_TTL_SEC);
+      written.push(orgId);
+    } catch (e) {
+      errors.push({ orgId, err: e instanceof Error ? e.message : 'unknown' });
+    }
+  }
+
+  return NextResponse.json({
+    ok: true,
+    date: dateStr,
+    totalOrgs: orgs.length,
+    digestsWritten: written.length,
+    skipped: orgs.length - written.length - errors.length,
+    errors: errors.slice(0, 10),
+  });
+}
