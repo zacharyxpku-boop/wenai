@@ -141,10 +141,11 @@ export default function Sidebar({ modules, categories, clientName, userRole }: S
           <div className="w-1.5 h-1.5 rounded-full bg-accent shadow-[0_0_4px_currentColor]" />
           <p className="label-mono text-[9px] font-semibold text-accent">PIPELINES</p>
           <div className="flex-1 h-px bg-accent/20" />
-          <span className="text-[7px] font-mono text-accent/60">7</span>
+          <span className="text-[7px] font-mono text-accent/60">8</span>
         </div>
         <div className="space-y-1">
           {[
+            { href: '/pipelines/product-discovery', label: 'AI 选品发现', badge: '🎯', tone: 'NEW' },
             { href: '/pipelines/ai-photoshoot', label: 'AI 影棚 (8 模式)', badge: '★', tone: 'HOT' },
             { href: '/pipelines/ai-video', label: 'AI 视频 (i2v)', badge: '🎬', tone: 'NEW' },
             { href: '/pipelines/video-teardown', label: '爆款视频拆解', badge: '🔬', tone: 'MOAT' },
