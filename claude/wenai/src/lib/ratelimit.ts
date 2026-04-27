@@ -29,6 +29,7 @@ const LIMITS: Record<string, number> = {
   'product-discovery': 20, // AI 选品 · 一次 ~3K token,20 次/天
   'ab-test': 25, // 测款 A-B · 一次 ~3K token (9 个 prompt + SOP),25 次/天
   'data-insights': 30, // 数据洞察 · 文本驱动 · 商家高频用,30 次/天
+  'batch-launch': 8, // 批量上架计划 · 一次 SKU × 工序 矩阵 ~5K token,8 次/天
 };
 
 // --- Upstash Redis backend ---
