@@ -31,6 +31,7 @@ const PUBLIC_PAGE_PREFIXES = [
   '/MOAT_MAP', // 文档页(若实装路由)
   '/share', // 公开分享页
   '/invite', // 邀请码兑换
+  '/me', // 个人中心 (SKU 库) · 匿名用户用 IP 当 orgId
 ];
 
 export async function middleware(request: NextRequest) {
