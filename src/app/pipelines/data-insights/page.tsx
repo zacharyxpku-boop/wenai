@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useActiveSkuId } from '@/lib/use-active-sku';
 import { ActiveSkuBadge } from '@/components/ActiveSkuBadge';
+import { useMySkus } from '@/lib/use-my-skus';
 
 /**
  * 数据洞察 (痛点 #10) · STRATEGY_DEEP L4 列的核心钩子
@@ -61,6 +62,25 @@ const TYPE_META: Record<Insight['type'], { icon: string; cls: string }> = {
   opportunity: { icon: '🟡', cls: 'border-cat-content/40 bg-cat-content/5' },
 };
 
+// 把 SKU 列表按 category 聚合, 返回每品类的 avg CTR + 样本数 · benchmark 用
+function aggregateByCategory(skus: { name: string; category: string; ctr: number; cpc: number }[]): string {
+  const groups = new Map<string, { ctr: number[]; cpc: number[] }>();
+  for (const s of skus) {
+    if (!groups.has(s.category)) groups.set(s.category, { ctr: [], cpc: [] });
+    const g = groups.get(s.category)!;
+    g.ctr.push(s.ctr);
+    if (s.cpc > 0) g.cpc.push(s.cpc);
+  }
+  const lines: string[] = [];
+  for (const [cat, g] of groups.entries()) {
+    if (g.ctr.length === 0) continue;
+    const avgCtr = g.ctr.reduce((s, x) => s + x, 0) / g.ctr.length;
+    const avgCpc = g.cpc.length > 0 ? g.cpc.reduce((s, x) => s + x, 0) / g.cpc.length : 0;
+    lines.push(`- ${cat} (${g.ctr.length} SKU): 均 CTR ${avgCtr.toFixed(2)}%${avgCpc > 0 ? ` · 均 CPC ¥${avgCpc.toFixed(2)}` : ''}`);
+  }
+  return lines.join('\n') || '(数据不足)';
+}
+
 const EXAMPLE_DATA = `产品: 红枣山药八珍糕 50g/盒 ¥39
 渠道: 淘宝
 周期: 本周 (vs 上周)
@@ -87,14 +107,76 @@ export default function DataInsightsPage() {
   const [context, setContext] = useState('');
 
   const activeSkuId = useActiveSkuId();
+  const { skus: mySkus } = useMySkus(100);
   const [running, setRunning] = useState(false);
+  const [benchmarkLoaded, setBenchmarkLoaded] = useState(false);
   const [result, setResult] = useState<DataInsightsResult | null>(null);
   const [error, setError] = useState('');
   const [rawDebug, setRawDebug] = useState('');
   const [showRaw, setShowRaw] = useState(false);
 
+  // 从 SKU 库构造 benchmark 文本 · ab-test 写的 performance 真兑现
+  const loadSkuBenchmark = () => {
+    if (mySkus.length === 0) {
+      setError('SKU 库还空, 先在 ab-test 投放回填一些数据');
+      return;
+    }
+    const tested = mySkus.filter(s => s.performance?.testedAt);
+    if (tested.length === 0) {
+      setError('没找到任何已回填投放数据的 SKU. 先去 /pipelines/ab-test 跑一轮 + 回填实战数据');
+      return;
+    }
+
+    const ctrs = tested.map(s => ({ name: s.name, category: s.category, ctr: s.performance?.bestCtr ?? s.performance?.ctr ?? 0, cpc: s.performance?.cpc ?? 0, conv: s.performance?.convRate ?? 0 }))
+      .filter(x => x.ctr > 0);
+    if (ctrs.length === 0) {
+      setError('回填的 SKU 都没有 CTR 数据');
+      return;
+    }
+
+    const avgCtr = ctrs.reduce((s, x) => s + x.ctr, 0) / ctrs.length;
+    const validCpc = ctrs.filter(x => x.cpc > 0);
+    const avgCpc = validCpc.length > 0 ? validCpc.reduce((s, x) => s + x.cpc, 0) / validCpc.length : 0;
+    const sortedByCtr = [...ctrs].sort((a, b) => b.ctr - a.ctr);
+    const top3 = sortedByCtr.slice(0, 3);
+    const worst3 = sortedByCtr.slice(-3).reverse();
+
+    // 当前 SKU 的位置
+    let currentSkuLine = '';
+    if (activeSkuId) {
+      const cur = ctrs.find(x => mySkus.find(s => s.id === activeSkuId)?.name === x.name);
+      if (cur) {
+        const rank = sortedByCtr.findIndex(x => x.name === cur.name) + 1;
+        const vsAvg = ((cur.ctr - avgCtr) / avgCtr) * 100;
+        currentSkuLine = `\n【当前焦点 SKU】 ${cur.name}\n  CTR ${cur.ctr.toFixed(2)}% (排第 ${rank}/${ctrs.length}, ${vsAvg >= 0 ? '高于' : '低于'}均值 ${Math.abs(vsAvg).toFixed(0)}%)\n  CPC ¥${cur.cpc.toFixed(2)}${cur.conv > 0 ? ` · 转化率 ${cur.conv.toFixed(2)}%` : ''}\n`;
+      }
+    }
+
+    const text = `
+【全店 SKU 投放 benchmark · 来自 wenai SKU 性能库】
+样本: ${ctrs.length} 个已投放 SKU (共 ${mySkus.length} 个 SKU 在库)
+
+平均 CTR: ${avgCtr.toFixed(2)}%
+平均 CPC: ${avgCpc > 0 ? '¥' + avgCpc.toFixed(2) : 'N/A'}
+${currentSkuLine}
+【表现 TOP 3 (CTR 高)】
+${top3.map((x, i) => `${i + 1}. ${x.name} (${x.category}) · CTR ${x.ctr.toFixed(2)}%${x.cpc > 0 ? ' · CPC ¥' + x.cpc.toFixed(2) : ''}`).join('\n')}
+
+【表现 BOTTOM 3 (CTR 低 → 候选 kill)】
+${worst3.map((x, i) => `${i + 1}. ${x.name} (${x.category}) · CTR ${x.ctr.toFixed(2)}%${x.cpc > 0 ? ' · CPC ¥' + x.cpc.toFixed(2) : ''}`).join('\n')}
+
+【按品类聚合】
+${aggregateByCategory(ctrs)}
+`.trim();
+
+    setData(text);
+    setBenchmarkLoaded(true);
+    setError('');
+  };
+
   const buildPrompt = () => `
 你是一个跨境/本土电商 15 年实战的数据分析师 + 操盘手, 帮商家从一段销售数据中挖出洞察 + 下一步动作。
+${benchmarkLoaded ? '\n注意: 本次数据是基于商家在 wenai 自己跑过的 ab-test 真实回填数据生成的 benchmark, 是该商家自己的样本(不是行业大盘), 给的判断和建议要按这个上下文调整。' : ''}
 
 【商家信息】
 - 渠道: ${CHANNEL_LABELS[channel]}
@@ -240,12 +322,25 @@ ${data}
             <span className="text-accent">AI 给 4-8 条带 P0/P1 优先级的诊断 + 具体改图/调价/换词建议</span> + 下一轮 SOP,
             串联 wenai 选品/影棚/测款。
           </p>
-          <button
-            onClick={() => { setData(EXAMPLE_DATA); setChannel('tmall'); setPeriod('week'); setContext('八珍糕赛道, 主打办公室白领养生场景'); }}
-            className="text-[11px] font-mono text-accent border border-accent/40 hover:bg-accent/10 rounded px-3 py-1.5 mt-4"
-          >
-            ⚡ 一键填案例 (淘宝八珍糕周报)
-          </button>
+          <div className="flex items-center gap-2 flex-wrap mt-4">
+            <button
+              onClick={() => { setData(EXAMPLE_DATA); setChannel('tmall'); setPeriod('week'); setContext('八珍糕赛道, 主打办公室白领养生场景'); setBenchmarkLoaded(false); }}
+              className="text-[11px] font-mono text-accent border border-accent/40 hover:bg-accent/10 rounded px-3 py-1.5"
+            >
+              ⚡ 一键填案例 (淘宝八珍糕周报)
+            </button>
+            <button
+              onClick={loadSkuBenchmark}
+              className={`text-[11px] font-mono border rounded px-3 py-1.5 ${
+                benchmarkLoaded
+                  ? 'border-success/50 bg-success/10 text-success'
+                  : 'border-cat-content/40 text-cat-content hover:bg-cat-content/10'
+              }`}
+              title="基于 ab-test 投放回填的真实 SKU 性能, 自动生成 benchmark 数据"
+            >
+              {benchmarkLoaded ? '✓ 已载入 SKU benchmark' : '📊 载入我的 SKU benchmark (从 ab-test 回填)'}
+            </button>
+          </div>
         </div>
       </div>
 

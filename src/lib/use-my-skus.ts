@@ -11,6 +11,18 @@ import { useEffect, useState } from 'react';
  *   const { skus, loading, refresh } = useMySkus(20);
  */
 
+export interface MySkuPerformance {
+  ctr?: number;            // 平均 CTR (百分比, 例 3.2 = 3.2%)
+  bestCtr?: number;        // 最佳变体 CTR
+  cpc?: number;            // 最低 CPC (¥)
+  convRate?: number;       // 转化率 (百分比)
+  roi?: number;
+  sales7d?: number;
+  winningVariant?: string;
+  testedAt?: string;       // ISO
+  variantsCount?: number;
+}
+
 export interface MySku {
   id: string;
   name: string;
@@ -21,6 +33,7 @@ export interface MySku {
   notes?: string;
   modules?: string[];
   addedAt?: string;
+  performance?: MySkuPerformance;
 }
 
 export function useMySkus(limit = 20) {
