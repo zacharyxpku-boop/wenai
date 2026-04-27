@@ -102,6 +102,75 @@ export default function MySkusPage() {
     }
   };
 
+  // 批量导入 · 解 onboarding 痛点 (新商家不用一个个手填)
+  const [bulkOpen, setBulkOpen] = useState(false);
+  const [bulkText, setBulkText] = useState('');
+  const [bulkImporting, setBulkImporting] = useState(false);
+  const [bulkProgress, setBulkProgress] = useState({ done: 0, total: 0, failed: 0 });
+
+  // 智能切列: 优先 tab → 中文 / → 半角 , (如有引号字段, 简单跳过)
+  const parseRow = (line: string): { name: string; category: string; platform?: string; priceCny?: string; notes?: string } | null => {
+    const cleaned = line.trim();
+    if (!cleaned) return null;
+    let parts: string[];
+    if (cleaned.includes('\t')) parts = cleaned.split('\t');
+    else if (cleaned.includes('|')) parts = cleaned.split('|');
+    else if (cleaned.match(/[，,]/)) parts = cleaned.split(/[，,]/);
+    else parts = [cleaned];
+    parts = parts.map(p => p.trim()).filter(p => p.length > 0);
+    if (parts.length === 0) return null;
+    return {
+      name: parts[0],
+      category: parts[1] || '未分类',
+      platform: parts[2] || undefined,
+      priceCny: parts[3] || undefined,
+      notes: parts[4] || undefined,
+    };
+  };
+
+  const parsedRows = bulkText
+    .split(/\r?\n/)
+    .map(parseRow)
+    .filter((x): x is NonNullable<typeof x> => x !== null && x.name.length >= 2);
+
+  const handleBulkImport = async () => {
+    if (parsedRows.length === 0) {
+      setError('解析后 0 条有效行 · 检查格式 (每行至少 SKU 名)');
+      return;
+    }
+    if (parsedRows.length > 500) {
+      setError(`一次最多 500 条 (你贴了 ${parsedRows.length})`);
+      return;
+    }
+    setBulkImporting(true);
+    setError('');
+    setBulkProgress({ done: 0, total: parsedRows.length, failed: 0 });
+
+    let done = 0;
+    let failed = 0;
+    // 串行 (Redis 写避免淹), 每 5 条更新一次进度
+    for (const row of parsedRows) {
+      try {
+        const res = await fetch('/api/user/sku-history', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ ...row, status: 'idea' }),
+        });
+        if (res.ok) done++;
+        else failed++;
+      } catch {
+        failed++;
+      }
+      if ((done + failed) % 5 === 0 || (done + failed) === parsedRows.length) {
+        setBulkProgress({ done, total: parsedRows.length, failed });
+      }
+    }
+    setBulkProgress({ done, total: parsedRows.length, failed });
+    setBulkImporting(false);
+    setBulkText('');
+    load();
+  };
+
   const handleStatusChange = async (id: string, status: Sku['status']) => {
     await fetch(`/api/user/sku-history?id=${id}`, {
       method: 'PATCH',
@@ -241,6 +310,65 @@ export default function MySkusPage() {
           >
             {adding ? '添加中...' : '添加'}
           </button>
+        </div>
+        <div className="mt-3 pt-3 border-t border-border-subtle">
+          <button
+            onClick={() => setBulkOpen(o => !o)}
+            className="text-[10px] font-mono text-cat-content hover:underline"
+          >
+            {bulkOpen ? '▾ 收起批量导入' : '▸ 批量导入 (粘贴 CSV / Excel · 一次最多 500 条)'}
+          </button>
+          {bulkOpen && (
+            <div className="mt-3 space-y-2">
+              <div className="text-[10px] font-mono text-text-tertiary leading-relaxed">
+                每行一个 SKU, 列顺序: <code className="text-accent">名 [, 类目 [, 平台 [, 价格 [, 备注]]]]</code>
+                <br />
+                支持分隔符: tab(从 Excel 直接 Ctrl+C) / 中文逗号 / 半角逗号 / 竖线
+              </div>
+              <textarea
+                value={bulkText}
+                onChange={e => setBulkText(e.target.value)}
+                placeholder={'连衣裙, 女装春季, 天猫, ¥199, 法式茶歇风\nT 恤, 女装基础款, 抖音, ¥69-99\n...'}
+                rows={8}
+                className="w-full px-3 py-2 bg-bg-surface border border-border-default rounded text-[11px] font-mono leading-relaxed resize-none"
+                disabled={bulkImporting}
+              />
+              <div className="flex items-center justify-between flex-wrap gap-2">
+                <div className="text-[10px] font-mono text-text-tertiary tabular-nums">
+                  解析: <span className="text-accent">{parsedRows.length}</span> 条有效
+                  {bulkImporting && (
+                    <span className="ml-3">
+                      进度 {bulkProgress.done + bulkProgress.failed}/{bulkProgress.total}
+                      {bulkProgress.failed > 0 && <span className="text-error"> · 失败 {bulkProgress.failed}</span>}
+                    </span>
+                  )}
+                </div>
+                <div className="flex items-center gap-2">
+                  {parsedRows.length > 0 && !bulkImporting && (
+                    <span className="text-[10px] font-mono text-text-tertiary">
+                      预览前 3: {parsedRows.slice(0, 3).map(r => r.name).join(' · ')}
+                      {parsedRows.length > 3 && ` ...`}
+                    </span>
+                  )}
+                  <button
+                    onClick={handleBulkImport}
+                    disabled={bulkImporting || parsedRows.length === 0}
+                    className="text-[11px] font-mono px-3 py-1.5 bg-cat-content text-bg-root rounded hover:opacity-90 disabled:opacity-40"
+                  >
+                    {bulkImporting ? `导入中 ${bulkProgress.done}/${bulkProgress.total}` : `📥 导入 ${parsedRows.length} 条`}
+                  </button>
+                </div>
+              </div>
+              {bulkImporting && bulkProgress.total > 0 && (
+                <div className="h-1 bg-bg-surface rounded overflow-hidden">
+                  <div
+                    className="h-full bg-cat-content transition-all"
+                    style={{ width: `${((bulkProgress.done + bulkProgress.failed) / bulkProgress.total) * 100}%` }}
+                  />
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </section>
 
