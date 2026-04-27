@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useActiveSkuId } from '@/lib/use-active-sku';
 import { ActiveSkuBadge } from '@/components/ActiveSkuBadge';
 import { useMySkus } from '@/lib/use-my-skus';
+import { ShareButton } from '@/components/ShareButton';
 
 /**
  * 数据洞察 (痛点 #10) · STRATEGY_DEEP L4 列的核心钩子
@@ -257,6 +258,44 @@ ${data}
     }
   };
 
+  // 公开分享 markdown · 同 video-teardown / ab-test 走共享 hook
+  const buildShareMarkdown = () => {
+    if (!result) return '';
+    return [
+      `# 数据洞察报告 · ${CHANNEL_LABELS[channel]}`,
+      ``,
+      `**周期**: ${period === 'day' ? '今日' : period === 'week' ? '本周' : '本月'}`,
+      ``,
+      `## 整体判断`,
+      ``,
+      result.overallVerdict,
+      ``,
+      `## 趋势`,
+      ``,
+      result.trendSummary,
+      ``,
+      `## ${result.insights.length} 条洞察`,
+      ``,
+      ...result.insights.flatMap(i => [
+        `### [${i.priority}] ${TYPE_META[i.type].icon} ${i.headline}`,
+        ``,
+        `- **依据**: ${i.evidence}`,
+        `- **根因**: ${i.rootCause}`,
+        `- **行动**: ${i.action}`,
+        ``,
+      ]),
+      `## 下一轮 SOP`,
+      ``,
+      result.nextRoundPlaybook,
+      ``,
+      ...(result.killList?.length
+        ? [`## ⛔ 立即停掉`, ``, ...result.killList.map(k => `- ${k}`), ``]
+        : []),
+      `---`,
+      `*由 [wenai 数据洞察](https://wenai-deploy.vercel.app/pipelines/data-insights) 生成 · 想分析你的数据?*`,
+    ].join('\n');
+  };
+
   const exportMd = () => {
     if (!result) return;
     const lines = [
@@ -448,7 +487,7 @@ ${data}
             </div>
           )}
 
-          {!running && result && <Report result={result} exportMd={exportMd} channel={CHANNEL_LABELS[channel]} context={context} />}
+          {!running && result && <Report result={result} exportMd={exportMd} channel={CHANNEL_LABELS[channel]} context={context} buildShareMarkdown={buildShareMarkdown} period={period} />}
         </main>
       </div>
 
@@ -507,7 +546,7 @@ function Tip({ emoji, title, desc }: { emoji: string; title: string; desc: strin
   );
 }
 
-function Report({ result, exportMd, channel, context }: { result: DataInsightsResult; exportMd: () => void; channel: string; context: string }) {
+function Report({ result, exportMd, channel, context, buildShareMarkdown, period }: { result: DataInsightsResult; exportMd: () => void; channel: string; context: string; buildShareMarkdown: () => string; period: Period }) {
   const [savingSku, setSavingSku] = useState(false);
   const [savedSku, setSavedSku] = useState(false);
 
@@ -550,18 +589,28 @@ function Report({ result, exportMd, channel, context }: { result: DataInsightsRe
       <section className="border border-accent/30 bg-accent/5 rounded-lg p-4 space-y-2">
         <div className="flex items-center justify-between flex-wrap gap-2">
           <div className="text-[10px] font-mono text-accent uppercase tracking-wider">整体判断</div>
-          <button
-            onClick={saveToLibrary}
-            disabled={savingSku || savedSku}
-            className={`text-[10px] font-mono px-2.5 py-1 rounded border transition-colors ${
-              savedSku
-                ? 'border-success/40 bg-success/10 text-success'
-                : 'border-accent/40 text-accent hover:bg-accent/10'
-            }`}
-            title={`基于 ${result.insights.length} 条洞察推断状态: ${statusLabel} · 一键写入 SKU 库`}
-          >
-            {savedSku ? `✓ 已写入 ${statusLabel}` : savingSku ? '保存中…' : `📦 写入 SKU 库 (${statusLabel})`}
-          </button>
+          <div className="flex items-center gap-2 flex-wrap">
+            <ShareButton
+              buildPayload={() => ({
+                moduleId: 'data-insights',
+                title: `数据洞察 · ${channel} · ${period === 'day' ? '日' : period === 'week' ? '周' : '月'}报`,
+                content: buildShareMarkdown(),
+                source: 'module' as const,
+              })}
+            />
+            <button
+              onClick={saveToLibrary}
+              disabled={savingSku || savedSku}
+              className={`text-[10px] font-mono px-2.5 py-1 rounded border transition-colors ${
+                savedSku
+                  ? 'border-success/40 bg-success/10 text-success'
+                  : 'border-accent/40 text-accent hover:bg-accent/10'
+              }`}
+              title={`基于 ${result.insights.length} 条洞察推断状态: ${statusLabel} · 一键写入 SKU 库`}
+            >
+              {savedSku ? `✓ 已写入 ${statusLabel}` : savingSku ? '保存中…' : `📦 写入 SKU 库 (${statusLabel})`}
+            </button>
+          </div>
         </div>
         <p className="text-[13px] text-text-primary leading-relaxed">{result.overallVerdict}</p>
         <p className="text-[12px] text-text-secondary leading-relaxed">{result.trendSummary}</p>
