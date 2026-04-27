@@ -3,6 +3,8 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useMySkus } from '@/lib/use-my-skus';
+import { useActiveSkuId } from '@/lib/use-active-sku';
+import { ActiveSkuBadge } from '@/components/ActiveSkuBadge';
 
 /**
  * 多 SKU 批量上架 · 把 10 pipelines 串成一条流水线
@@ -75,6 +77,7 @@ export default function BatchLaunchPage() {
 
   // 读 SKU 库 · 让用户从已有 SKU 一键导入到批量列表
   const { skus: mySkus } = useMySkus(20);
+  const activeSkuId = useActiveSkuId();
   const [pickedSkuIds, setPickedSkuIds] = useState<Set<string>>(new Set());
 
   const togglePickSku = (id: string) => {
@@ -200,6 +203,7 @@ ${skuList}
           moduleId: 'batch-launch',
           prompt: buildPrompt(),
           input: skuList,
+          skuId: activeSkuId,
         }),
       });
       const data = await res.json();
@@ -285,6 +289,7 @@ ${skuList}
           </div>
           <h1 className="text-3xl lg:text-4xl font-bold text-text-primary mb-3 font-[family-name:var(--font-outfit)]">
             50 个 SKU 不再 50 次手动跑 · 一份计划全搞定
+            <ActiveSkuBadge skuId={activeSkuId} />
           </h1>
           <p className="text-[13px] lg:text-[14px] text-text-secondary leading-relaxed max-w-[820px]">
             把 wenai 现有 10 条 pipeline 串成一条流水线。

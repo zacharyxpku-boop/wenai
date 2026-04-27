@@ -3,6 +3,8 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useMySkus } from '@/lib/use-my-skus';
+import { useActiveSkuId } from '@/lib/use-active-sku';
+import { ActiveSkuBadge } from '@/components/ActiveSkuBadge';
 
 /**
  * 测款 A-B 实验室 (痛点 #11)
@@ -52,6 +54,7 @@ export default function AbTestPage() {
 
   // 读 SKU 库 · 让用户从已有 SKU 一键填测款
   const { skus: mySkus } = useMySkus(15);
+  const activeSkuId = useActiveSkuId();
   const [dailyBudget, setDailyBudget] = useState(500);
   const [primaryDimension, setPrimaryDimension] = useState<Dimension>('hook');
 
@@ -124,6 +127,7 @@ export default function AbTestPage() {
           moduleId: 'ab-test',
           prompt: buildPrompt(),
           input: productHint,
+          skuId: activeSkuId,
         }),
       });
       const data = await res.json();
@@ -165,6 +169,7 @@ export default function AbTestPage() {
           </div>
           <h1 className="text-3xl lg:text-4xl font-bold text-text-primary mb-3 font-[family-name:var(--font-outfit)]">
             一张图变 9 张测款变体 · 不再瞎投
+            <ActiveSkuBadge skuId={activeSkuId} />
           </h1>
           <p className="text-[13px] lg:text-[14px] text-text-secondary leading-relaxed max-w-[800px]">
             投不出爆款 = 没测款数据 → 不敢加预算 → 死循环。
