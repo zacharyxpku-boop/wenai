@@ -53,6 +53,7 @@ export default function MySkusPage() {
   const [newCategory, setNewCategory] = useState('');
   const [todayCny, setTodayCny] = useState<number | null>(null);
   const [savedCny, setSavedCny] = useState<number | null>(null);
+  const [alertsCount, setAlertsCount] = useState<{ total: number; critical: number; warning: number } | null>(null);
 
   useEffect(() => {
     fetch('/api/user/cost-summary')
@@ -62,6 +63,14 @@ export default function MySkusPage() {
     fetch('/api/user/savings-summary?days=7')
       .then(r => r.json())
       .then(d => setSavedCny(d.grandTotalSavedCny ?? 0))
+      .catch(() => {});
+    fetch('/api/user/alerts')
+      .then(r => r.json())
+      .then(d => setAlertsCount({
+        total: d.count ?? 0,
+        critical: d.criticalCount ?? 0,
+        warning: d.warningCount ?? 0,
+      }))
       .catch(() => {});
   }, []);
 
@@ -252,17 +261,38 @@ export default function MySkusPage() {
           wenai 替你记住每个 SKU 的状态、跑过哪些模块、当前业绩。
           决策层模块(选品/测款/数据洞察)会基于这份历史给你更精准的建议。
         </p>
-        {savedCny !== null && savedCny > 0 && (
-          <Link
-            href="/me/savings"
-            className="mt-3 inline-flex items-center gap-2 border border-success/40 bg-success/5 hover:bg-success/10 rounded-md px-3 py-2 text-[12px] transition-colors"
-          >
-            <span className="text-success font-bold tabular-nums">
-              💰 近 7 天 wenai 帮你省了 ¥{savedCny.toLocaleString('zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-            </span>
-            <span className="text-[10px] font-mono text-success/80">看明细 →</span>
-          </Link>
-        )}
+        <div className="mt-3 flex flex-wrap gap-2 items-center">
+          {savedCny !== null && savedCny > 0 && (
+            <Link
+              href="/me/savings"
+              className="inline-flex items-center gap-2 border border-success/40 bg-success/5 hover:bg-success/10 rounded-md px-3 py-2 text-[12px] transition-colors"
+            >
+              <span className="text-success font-bold tabular-nums">
+                💰 近 7 天 wenai 帮你省了 ¥{savedCny.toLocaleString('zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+              </span>
+              <span className="text-[10px] font-mono text-success/80">看明细 →</span>
+            </Link>
+          )}
+          {alertsCount && alertsCount.total > 0 && (
+            <Link
+              href="/me/alerts"
+              className={`inline-flex items-center gap-2 border rounded-md px-3 py-2 text-[12px] transition-colors ${
+                alertsCount.critical > 0
+                  ? 'border-error/40 bg-error/5 hover:bg-error/10 text-error'
+                  : alertsCount.warning > 0
+                  ? 'border-warning/40 bg-warning/5 hover:bg-warning/10 text-warning'
+                  : 'border-cat-content/40 bg-cat-content/5 hover:bg-cat-content/10 text-cat-content'
+              }`}
+            >
+              <span className="font-bold tabular-nums">
+                🔔 {alertsCount.critical > 0 ? `🚨 ${alertsCount.critical} 紧急 · ` : ''}
+                {alertsCount.warning > 0 ? `⚠️ ${alertsCount.warning} 警示 · ` : ''}
+                共 {alertsCount.total} 条信号待看
+              </span>
+              <span className="text-[10px] font-mono opacity-80">→</span>
+            </Link>
+          )}
+        </div>
       </div>
 
       {/* 状态过滤 */}
