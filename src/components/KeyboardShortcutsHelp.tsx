@@ -28,6 +28,10 @@ const SHORTCUTS: Shortcut[] = [
   { keys: ['j'], desc: '下一个 SKU (vim 风格)', scope: 'SKU 详情页' },
   { keys: ['k'], desc: '上一个 SKU', scope: 'SKU 详情页' },
   { keys: ['/'], desc: '聚焦关键字搜索框', scope: 'SKU 库' },
+  { keys: ['j'], desc: '高亮下一行 (在过滤结果内)', scope: 'SKU 库' },
+  { keys: ['k'], desc: '高亮上一行', scope: 'SKU 库' },
+  { keys: ['Enter'], desc: '进激活行的 SKU 详情', scope: 'SKU 库' },
+  { keys: ['x'], desc: '勾选/取消勾选激活行 (批量操作用)', scope: 'SKU 库' },
 ];
 
 export function KeyboardShortcutsHelp() {
