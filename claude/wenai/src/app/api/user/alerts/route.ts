@@ -3,6 +3,7 @@ import { resolveOrgId } from '@/lib/org-id';
 import { listSkus } from '@/lib/sku-history';
 import { getDailyCost, listCostDetailsRange } from '@/lib/cost-cap';
 import { getCacheStatSnapshot } from '@/lib/cache-stats';
+import { listLowOrOut } from '@/lib/inventory';
 
 /**
  * 商家被动等触发改主动 push · 把死信号扫出来给主人看
@@ -26,7 +27,7 @@ const COST_CAP_CENTS_DEFAULT = parseInt(process.env.COST_CAP_DAILY_CENTS || '500
 export interface UserAlert {
   id: string;
   severity: 'critical' | 'warning' | 'info';
-  kind: 'stale-sku' | 'no-perf' | 'low-cache-rate' | 'cost-near-cap' | 'no-bench';
+  kind: 'stale-sku' | 'no-perf' | 'low-cache-rate' | 'cost-near-cap' | 'no-bench' | 'inventory-low' | 'inventory-out';
   headline: string;
   body: string;
   action: { label: string; href: string };
@@ -41,10 +42,35 @@ export async function GET(req: NextRequest) {
   const alerts: UserAlert[] = [];
 
   // 拉数据并发
-  const [skus, dailyCents] = await Promise.all([
+  const [skus, dailyCents, lowInv] = await Promise.all([
     listSkus(orgId, 200),
     getDailyCost(orgId),
+    listLowOrOut(orgId),
   ]);
+
+  // 0. 库存断货优先 (商家最痛)
+  const outItems = lowInv.filter(r => r.status === 'out');
+  const lowItems = lowInv.filter(r => r.status === 'low');
+  if (outItems.length > 0) {
+    alerts.push({
+      id: 'inventory-out',
+      severity: 'critical',
+      kind: 'inventory-out',
+      headline: `${outItems.length} 个 SKU 断货 (qty=0)`,
+      body: `${outItems.slice(0, 3).map(r => r.skuId).join(', ')}${outItems.length > 3 ? ' 等' : ''} 已 0 库存. 上架页继续卖会扣分, 立即下架或补货.`,
+      action: { label: '看库存 →', href: '/me/inventory' },
+    });
+  }
+  if (lowItems.length > 0) {
+    alerts.push({
+      id: 'inventory-low',
+      severity: lowItems.length >= 5 ? 'warning' : 'info',
+      kind: 'inventory-low',
+      headline: `${lowItems.length} 个 SKU 库存接近阈值`,
+      body: `最低 ${lowItems[0].skuId} 仅 ${lowItems[0].qty} 件 (阈值 ${lowItems[0].threshold}). 评估补货 lead time, 别等 0 才动.`,
+      action: { label: '看库存 →', href: '/me/inventory' },
+    });
+  }
 
   // 1. stale-sku: launched > 30 天没更新
   const staleCutoff = Date.now() - STALE_DAYS * 24 * 3600 * 1000;

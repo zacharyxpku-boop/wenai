@@ -48,12 +48,18 @@ interface SettingsResp {
   };
 }
 
+interface InventorySummary {
+  count: number;
+  inventory: Array<{ status: 'healthy' | 'low' | 'out' }>;
+}
+
 export default function MeDashboardPage() {
   const [alerts, setAlerts] = useState<AlertsSummary | null>(null);
   const [savings, setSavings] = useState<SavingsSummary | null>(null);
   const [cost, setCost] = useState<CostSummary | null>(null);
   const [digests, setDigests] = useState<DigestPoint[] | null>(null);
   const [settings, setSettings] = useState<SettingsResp['settings'] | null>(null);
+  const [inv, setInv] = useState<InventorySummary | null>(null);
 
   useEffect(() => {
     fetch('/api/user/alerts').then(r => r.json()).then(setAlerts).catch(() => {});
@@ -61,7 +67,13 @@ export default function MeDashboardPage() {
     fetch('/api/user/cost-summary').then(r => r.json()).then(setCost).catch(() => {});
     fetch('/api/user/digest?limit=7').then(r => r.json()).then(d => setDigests(d.digests || [])).catch(() => {});
     fetch('/api/user/settings').then(r => r.json()).then((d: SettingsResp) => setSettings(d.settings || {})).catch(() => {});
+    fetch('/api/user/inventory').then(r => r.json()).then((d: InventorySummary) => setInv(d)).catch(() => {});
   }, []);
+
+  const invStats = inv ? {
+    out: inv.inventory.filter(i => i.status === 'out').length,
+    low: inv.inventory.filter(i => i.status === 'low').length,
+  } : null;
 
   const alertSeverityClass =
     !alerts || alerts.count === 0 ? 'border-success/40 text-success' :
@@ -155,6 +167,36 @@ export default function MeDashboardPage() {
             </div>
           </Link>
         </div>
+
+        {/* 库存监控条 (有数据才显示) */}
+        {inv && inv.count > 0 && invStats && (
+          <Link
+            href="/me/inventory"
+            className={`block border rounded-lg px-4 py-3 mb-6 transition-colors ${
+              invStats.out > 0
+                ? 'border-error/50 bg-error/5 hover:bg-error/10'
+                : invStats.low > 0
+                  ? 'border-warning/40 bg-warning/5 hover:bg-warning/10'
+                  : 'border-border-subtle hover:border-accent/40'
+            }`}
+          >
+            <div className="flex items-center justify-between flex-wrap gap-3">
+              <div className="flex items-center gap-3">
+                <span className="text-2xl">📦</span>
+                <div>
+                  <div className="text-[10px] font-mono text-text-tertiary uppercase tracking-wider">库存监控</div>
+                  <div className="text-[13px] text-text-primary">
+                    {inv.count} 个 SKU 在监控
+                    {invStats.out > 0 && <span className="text-error font-bold"> · 🔴 {invStats.out} 断货</span>}
+                    {invStats.low > 0 && <span className="text-warning"> · 🟡 {invStats.low} 低位</span>}
+                    {invStats.out === 0 && invStats.low === 0 && <span className="text-success"> · ✓ 全健康</span>}
+                  </div>
+                </div>
+              </div>
+              <span className="text-[10px] font-mono text-accent">看详情 →</span>
+            </div>
+          </Link>
+        )}
 
         {/* 7 天 digest 趋势 (如果有) */}
         {digests && digests.length > 0 && (
