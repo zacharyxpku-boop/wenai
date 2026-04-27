@@ -4,6 +4,13 @@ import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 
+interface StatusEvent {
+  status: Sku['status'];
+  at: string;
+  fromModule?: string;
+  reason?: string;
+}
+
 interface Sku {
   id: string;
   orgId: string;
@@ -17,6 +24,7 @@ interface Sku {
   addedAt: string;
   updatedAt: string;
   modules?: string[];
+  statusHistory?: StatusEvent[];
 }
 
 const STATUS_FLOW = [
@@ -206,6 +214,56 @@ export default function SkuDetailPage() {
           })}
         </div>
       </section>
+
+      {/* 状态变更历史 · MOAT-05 真深度 */}
+      {sku.statusHistory && sku.statusHistory.length > 0 && (
+        <section className="mb-6">
+          <h2 className="text-[12px] font-mono text-text-tertiary uppercase tracking-wider mb-3">
+            📜 状态变更历史
+          </h2>
+          <div className="border border-border-subtle rounded-lg p-4 bg-bg-surface/30">
+            <div className="space-y-2">
+              {sku.statusHistory.slice().reverse().map((ev, i) => {
+                const flow = STATUS_FLOW.find(s => s.key === ev.status);
+                const isLatest = i === 0;
+                return (
+                  <div key={i} className="flex items-start gap-3">
+                    <div className="flex flex-col items-center pt-1">
+                      <div className={`w-2 h-2 rounded-full ${isLatest ? 'bg-accent shadow-[0_0_6px_currentColor]' : 'bg-border-default'}`} />
+                      {i < (sku.statusHistory!.length - 1) && (
+                        <div className="w-px h-8 bg-border-subtle mt-1" />
+                      )}
+                    </div>
+                    <div className="flex-1 pb-2">
+                      <div className="flex items-baseline gap-2 flex-wrap">
+                        <span className={`text-[12px] font-semibold ${isLatest ? 'text-accent' : 'text-text-primary'}`}>
+                          {flow?.label || ev.status}
+                        </span>
+                        <span className="text-[10px] font-mono text-text-tertiary tabular-nums">
+                          {new Date(ev.at).toLocaleString('zh-CN')}
+                        </span>
+                        {isLatest && (
+                          <span className="text-[9px] font-mono text-accent border border-accent/40 rounded px-1 py-0.5">
+                            当前
+                          </span>
+                        )}
+                      </div>
+                      {(ev.reason || ev.fromModule) && (
+                        <div className="text-[10px] font-mono text-text-secondary mt-0.5">
+                          {ev.fromModule && (
+                            <span className="text-cat-content mr-2">[{ev.fromModule}]</span>
+                          )}
+                          {ev.reason}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* 跑过的模块 */}
       <section className="mb-6">
