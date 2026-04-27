@@ -38,6 +38,69 @@ export async function GET(request: NextRequest) {
     });
   }
 
+  // ?trend=N · 全店过去 N 天 (扫每日 SCAN + 聚合)
+  const trendDaysRaw = searchParams.get('trend');
+  if (trendDaysRaw) {
+    const trendDays = Math.min(Math.max(parseInt(trendDaysRaw, 10) || 7, 1), 30);
+    if (!redis) {
+      return NextResponse.json({ trend: [], totalSavedCny: 0, error: 'Redis 未配置' });
+    }
+    const points: Array<{ date: string; hits: number; misses: number; savedCny: number; hitRate: number }> = [];
+    for (let i = trendDays - 1; i >= 0; i--) {
+      const d = new Date();
+      d.setUTCDate(d.getUTCDate() - i);
+      const dStr = d.toISOString().slice(0, 10);
+      // 扫该日所有 org 求和
+      let hits = 0;
+      let misses = 0;
+      let savedCents = 0;
+      let cursor: string | number = 0;
+      let iter = 0;
+      try {
+        do {
+          const res: [string | number, string[]] = await redis.scan(cursor, {
+            match: `wenai:cachestats:*:${dStr}`,
+            count: 200,
+          });
+          cursor = res[0];
+          for (const key of res[1]) {
+            const parts = key.split(':');
+            const orgIdParsed = parts.slice(2, parts.length - 1).join(':');
+            if (!orgIdParsed) continue;
+            const snap = await getCacheStatSnapshot(orgIdParsed, dStr);
+            hits += snap.totalHits;
+            misses += snap.totalMisses;
+            savedCents += snap.estimatedSavedCents;
+          }
+          iter++;
+          if (iter > 30) break;
+        } while (cursor !== '0' && cursor !== 0);
+      } catch {
+        // 这一天读失败给 0 占位
+      }
+      const total = hits + misses;
+      points.push({
+        date: dStr,
+        hits,
+        misses,
+        savedCny: +(savedCents / 100).toFixed(2),
+        hitRate: total > 0 ? +(hits / total).toFixed(3) : 0,
+      });
+    }
+    const totalSavedCny = +points.reduce((s, p) => s + p.savedCny, 0).toFixed(2);
+    const totalHits = points.reduce((s, p) => s + p.hits, 0);
+    const totalMisses = points.reduce((s, p) => s + p.misses, 0);
+    const totalRate = totalHits + totalMisses > 0 ? +(totalHits / (totalHits + totalMisses)).toFixed(3) : 0;
+    return NextResponse.json({
+      days: trendDays,
+      points,
+      totalHits,
+      totalMisses,
+      totalSavedCny,
+      avgHitRate: totalRate,
+    });
+  }
+
   if (wantList) {
     if (!redis) {
       return NextResponse.json({ error: '需要 Redis 才能聚合', orgs: [] });
