@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { IndustryHint } from '@/components/IndustryHint';
 
 /**
  * 反向意图扩客 · 跳出固有客群标签
@@ -196,6 +197,7 @@ ${knownSegments || '无'}
           <h1 className="text-3xl lg:text-4xl font-bold text-text-primary mb-3 font-[family-name:var(--font-outfit)]">
             跳出固有客群,挖出"美甲师→电子锁"
           </h1>
+          <div className="mb-3"><IndustryHint /></div>
           <p className="text-[13px] lg:text-[14px] text-text-secondary leading-relaxed max-w-[760px]">
             阿里妈妈 LMA3 / AI 万相同款方法论。
             产品描述丢进来,DeepSeek 跳出"装修业主"这种显然标签,

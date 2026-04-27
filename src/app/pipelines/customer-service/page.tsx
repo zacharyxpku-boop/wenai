@@ -6,6 +6,7 @@ import { useActiveSkuId } from '@/lib/use-active-sku';
 import { ActiveSkuBadge } from '@/components/ActiveSkuBadge';
 import { useMySkus } from '@/lib/use-my-skus';
 import { ShareButton } from '@/components/ShareButton';
+import { IndustryHint } from '@/components/IndustryHint';
 
 /**
  * 销售转化 Agent · /pipelines/customer-service
@@ -217,6 +218,7 @@ ${customerMsg}
             客服不是回复, 是推进成交
             <ActiveSkuBadge skuId={activeSkuId} />
           </h1>
+          <div className="mb-3"><IndustryHint /></div>
           <p className="text-[13px] lg:text-[14px] text-text-secondary leading-relaxed max-w-[820px]">
             把"客户咨询"变"主动成交": 8 类典型意图自动识别, 三版回复(保守/转化/共情)直接发,
             <span className="text-accent">下一步话术钩子提前备好</span>,

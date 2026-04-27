@@ -6,6 +6,7 @@ import { useMySkus } from '@/lib/use-my-skus';
 import { useActiveSkuId } from '@/lib/use-active-sku';
 import { ActiveSkuBadge } from '@/components/ActiveSkuBadge';
 import { ShareButton } from '@/components/ShareButton';
+import { IndustryHint } from '@/components/IndustryHint';
 
 /**
  * 多 SKU 批量上架 · 把 10 pipelines 串成一条流水线
@@ -421,6 +422,7 @@ ${skuList}
             50 个 SKU 不再 50 次手动跑 · 一份计划全搞定
             <ActiveSkuBadge skuId={activeSkuId} />
           </h1>
+          <div className="mb-3"><IndustryHint /></div>
           <p className="text-[13px] lg:text-[14px] text-text-secondary leading-relaxed max-w-[820px]">
             把 wenai 现有 10 条 pipeline 串成一条流水线。
             贴你 SKU 列表(每行一个)+ 选工序 + 选平台,
