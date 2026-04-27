@@ -27,6 +27,7 @@ const SHORTCUTS: Shortcut[] = [
   { keys: ['Esc'], desc: '关闭命令面板 / 帮助 / 弹层', scope: '全局' },
   { keys: ['j'], desc: '下一个 SKU (vim 风格)', scope: 'SKU 详情页' },
   { keys: ['k'], desc: '上一个 SKU', scope: 'SKU 详情页' },
+  { keys: ['/'], desc: '聚焦关键字搜索框', scope: 'SKU 库' },
 ];
 
 export function KeyboardShortcutsHelp() {
