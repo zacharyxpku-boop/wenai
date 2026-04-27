@@ -9,9 +9,11 @@ import {
   CATEGORY_LABELS,
   SCENARIO_LABELS,
   STYLE_LABELS,
+  SOP_PRESETS,
   type EcomCategory,
   type EcomScenario,
   type EcomStyle,
+  type SopPreset,
 } from '@/lib/ecom-prompts';
 
 /**
@@ -243,6 +245,17 @@ export default function AIPhotoshootPage() {
     'main-image', 'detail-set', 'lifestyle', 'model-on', 'flat-lay',
     'close-up', 'before-after', 'package-shot', 'unboxing',
   ];
+
+  // SOP 一键预设 · 选了之后, 默认场景/风格 全配好,只等用户填一句话产品
+  const applySop = (sop: SopPreset) => {
+    setEcomCategory(sop.category);
+    setEcomStyle(sop.defaultStyle);
+    if (sop.scenarios.length > 0) {
+      const firstPhotoScenario = sop.scenarios.find(s => !s.startsWith('video-'));
+      if (firstPhotoScenario) setEcomScenario(firstPhotoScenario);
+    }
+    setShowEcomPanel(true);
+  };
 
   const applyEcomTemplate = () => {
     const resolved = resolvePrompt({
@@ -496,6 +509,43 @@ export default function AIPhotoshootPage() {
             生成 AI 模特 → 模特换装 → 换姿 → 换景 → OOTD 拆解,完整闭环。
             <span className="text-accent">同一张模特图复用一整年</span>,告别真人拍摄 ¥3-8K/组成本。
           </p>
+
+          {/* 一键 SOP · 真·包办 · 选预设 → 填一句产品 → 出全套 */}
+          <div className="mt-5">
+            <div className="flex items-center gap-2 mb-2.5">
+              <span className="text-[10px] font-mono text-accent uppercase tracking-wider">
+                🎯 一键预设 · 选准品类直接走流水线
+              </span>
+              <div className="flex-1 h-px bg-accent/20" />
+              <span className="text-[10px] font-mono text-text-tertiary">
+                {SOP_PRESETS.length} 套行业模板
+              </span>
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5">
+              {SOP_PRESETS.slice(0, 8).map(sop => (
+                <button
+                  key={sop.id}
+                  onClick={() => applySop(sop)}
+                  className="group text-left border border-border-subtle hover:border-accent/60 bg-bg-surface/40 hover:bg-bg-surface rounded-lg p-3 transition-all hover:-translate-y-0.5 hover:shadow-[0_4px_16px_rgba(200,151,90,0.12)]"
+                >
+                  <div className="flex items-center gap-1.5 mb-1.5">
+                    <span className="text-[10px] font-mono text-accent">
+                      {CATEGORY_LABELS[sop.category].split(' ')[0]}
+                    </span>
+                    <span className="text-[9px] font-mono text-text-tertiary px-1 py-0.5 border border-border-subtle rounded">
+                      {sop.scenarios.length} 件
+                    </span>
+                  </div>
+                  <div className="text-[12px] font-semibold text-text-primary group-hover:text-accent transition-colors mb-1 leading-tight">
+                    {sop.title}
+                  </div>
+                  <div className="text-[10px] text-text-tertiary leading-relaxed line-clamp-2">
+                    {sop.desc}
+                  </div>
+                </button>
+              ))}
+            </div>
+          </div>
 
           {/* 行业模板 · prompt 包办 */}
           <div className="mt-5 border border-accent/30 bg-accent/5 rounded-lg overflow-hidden">
@@ -755,18 +805,48 @@ export default function AIPhotoshootPage() {
         {/* RIGHT · Result */}
         <main className="space-y-4 min-h-[600px]">
           {running && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {Array.from({ length: n }).map((_, i) => (
-                <div
-                  key={i}
-                  className="aspect-[3/4] rounded-lg bg-bg-surface border border-border-subtle animate-pulse flex items-center justify-center"
-                >
-                  <div className="text-text-tertiary text-[11px] font-mono">
-                    生成第 {i + 1}/{n} 张...
+            <>
+              {/* 流转进度提示条 */}
+              <div className="mb-4 border border-accent/40 bg-accent/5 rounded-lg p-4 flex items-center gap-3">
+                <div className="relative flex-shrink-0">
+                  <div className="w-8 h-8 rounded-full border-2 border-accent/30 border-t-accent animate-spin" />
+                  <div className="absolute inset-0 flex items-center justify-center text-[14px]">
+                    {MODES[mode].icon}
                   </div>
                 </div>
-              ))}
-            </div>
+                <div className="flex-1 min-w-0">
+                  <div className="text-[12px] font-semibold text-text-primary mb-0.5">
+                    {MODES[mode].title} · 调用 GPT Image 2 中
+                  </div>
+                  <div className="text-[10px] font-mono text-text-tertiary tabular-nums">
+                    HappyHorse 异步任务 · 通常 30-60 秒 · 实时轮询任务状态
+                  </div>
+                </div>
+                <div className="text-[10px] font-mono text-accent/70 tabular-nums hidden md:block">
+                  {n} 张 · {size}
+                </div>
+              </div>
+              {/* 骨架占位 */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {Array.from({ length: n }).map((_, i) => (
+                  <div
+                    key={i}
+                    className="aspect-[3/4] rounded-lg bg-gradient-to-br from-bg-surface via-bg-raised to-bg-surface border border-border-subtle relative overflow-hidden"
+                  >
+                    {/* shimmer 扫光效果 */}
+                    <div className="absolute inset-0 -translate-x-full animate-[shimmer_2s_infinite] bg-gradient-to-r from-transparent via-accent/10 to-transparent" />
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <div className="text-center">
+                        <div className="text-[10px] font-mono text-accent/60 uppercase tracking-wider mb-1">
+                          slot {i + 1} / {n}
+                        </div>
+                        <div className="w-1.5 h-1.5 mx-auto rounded-full bg-accent animate-pulse-dot" />
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </>
           )}
 
           {!running && images.length === 0 && <EmptyState mode={mode} />}
@@ -847,26 +927,31 @@ export default function AIPhotoshootPage() {
                 {images.map((img, idx) => (
                   <div
                     key={idx}
-                    className="group relative rounded-lg border border-border-subtle overflow-hidden hover:border-accent/40 transition-colors"
+                    className={`group relative rounded-lg border border-border-subtle overflow-hidden hover:border-accent/60 hover:shadow-[0_12px_40px_rgba(200,151,90,0.18)] transition-all duration-300 hover:-translate-y-1 animate-fade-up stagger-${Math.min(idx + 1, 6)}`}
+                    style={idx > 5 ? { animationDelay: `${0.05 + idx * 0.05}s` } : undefined}
                   >
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={img.url}
                       alt={`AI 生成 ${idx + 1}`}
-                      className="w-full h-auto block cursor-zoom-in"
+                      className="w-full h-auto block cursor-zoom-in transition-transform duration-500 group-hover:scale-[1.02]"
                       onClick={() => setPreviewImage(img.url)}
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-bg-root/90 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity p-3 flex flex-col justify-end gap-2">
+                    {/* 角标 */}
+                    <div className="absolute top-2 left-2 px-2 py-0.5 bg-bg-root/70 backdrop-blur-sm rounded text-[9px] font-mono text-accent uppercase tracking-wider">
+                      #{idx + 1} · {img.provider}
+                    </div>
+                    <div className="absolute inset-0 bg-gradient-to-t from-bg-root/95 via-bg-root/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 p-3 flex flex-col justify-end gap-2">
                       <div className="flex gap-2 flex-wrap">
                         <button
                           onClick={() => setPreviewImage(img.url)}
-                          className="text-[10px] font-mono px-2 py-1 bg-bg-root/80 backdrop-blur text-text-primary rounded hover:bg-accent hover:text-bg-root"
+                          className="text-[10px] font-mono px-2.5 py-1 bg-bg-root/90 backdrop-blur-sm text-text-primary rounded hover:bg-accent hover:text-bg-root transition-colors"
                         >
                           🔍 放大
                         </button>
                         <button
                           onClick={() => downloadImage(img.url, idx)}
-                          className="text-[10px] font-mono px-2 py-1 bg-bg-root/80 backdrop-blur text-text-primary rounded hover:bg-accent hover:text-bg-root"
+                          className="text-[10px] font-mono px-2.5 py-1 bg-bg-root/90 backdrop-blur-sm text-text-primary rounded hover:bg-accent hover:text-bg-root transition-colors"
                         >
                           ⬇ 下载
                         </button>
