@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import ModuleCard from '@/components/ModuleCard';
 import OnboardingTour from '@/components/OnboardingTour';
+import { PublicSavingsCounter } from '@/components/PublicSavingsCounter';
 import ROICalculator from '@/components/ROICalculator';
 import modulesConfig from '@/config/modules.json';
 import clientConfig from '@/config/client.json';
@@ -560,6 +561,9 @@ export default function Dashboard() {
               先看案例 →
             </a>
           </div>
+
+          {/* 实时节省计数器 · 公开领先动作产品 */}
+          <PublicSavingsCounter />
         </div>
       </div>
 
