@@ -207,7 +207,9 @@ export default function MySkusPage() {
                 <div className="flex items-start justify-between gap-3 flex-wrap">
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap mb-1">
-                      <h3 className="text-[14px] font-bold text-text-primary">{sku.name}</h3>
+                      <Link href={`/me/skus/${sku.id}`} className="text-[14px] font-bold text-text-primary hover:text-accent transition-colors">
+                        {sku.name}
+                      </Link>
                       <span className={`text-[10px] font-mono px-1.5 py-0.5 border rounded ${lab.cls}`}>
                         {lab.txt}
                       </span>
