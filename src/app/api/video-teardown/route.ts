@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { checkRateLimit } from '@/lib/ratelimit';
 import { verifyToken, getCookieName } from '@/lib/auth';
+import { resolveOrgId } from '@/lib/org-id';
+import { checkCostCap, recordCostWithDetail } from '@/lib/cost-cap';
 
 /**
  * 爆款视频拆解 · Gemini 2.5 Flash Vision · 简化版 (无 yt-dlp + 无 BullMQ)
@@ -23,6 +25,7 @@ interface TeardownBody {
   productHint?: string; // 用户产品提示,Gemini 在 scene prompt 里会替换主体
   fromPipeline?: boolean;
   dryRun?: boolean;
+  skuId?: string; // 关联 SKU (从 ?skuId= 进来时, 成本归因到该 SKU)
 }
 
 const STORYBOARD_PROMPT = `分析这个短视频,返回结构化 JSON storyboard,字段如下:
@@ -129,6 +132,22 @@ export async function POST(request: NextRequest) {
     }
   }
 
+  // 成本闸 · video-teardown 比纯 chat 贵一些 (Gemini Vision 处理视频), 估 4 cents
+  const orgId = await resolveOrgId(request);
+  const VIDEO_TEARDOWN_COST_CENTS = 4;
+  const cap = await checkCostCap(orgId, VIDEO_TEARDOWN_COST_CENTS);
+  if (!cap.allowed) {
+    return NextResponse.json(
+      {
+        error: cap.reason ?? '今日成本配额已达上限',
+        code: 'COST_CAP_REACHED',
+        currentCny: +(cap.currentCents / 100).toFixed(2),
+        capCny: +(cap.capCents / 100).toFixed(2),
+      },
+      { status: 429 }
+    );
+  }
+
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) {
     return NextResponse.json(
@@ -202,6 +221,13 @@ export async function POST(request: NextRequest) {
     const costUsd = usage
       ? ((usage.promptTokenCount ?? 0) * 0.3 + (usage.candidatesTokenCount ?? 0) * 1.25) / 1_000_000
       : null;
+
+    // 写成本明细 · 关联 skuId (如果有)
+    recordCostWithDetail(orgId, VIDEO_TEARDOWN_COST_CENTS, {
+      module: 'video-teardown',
+      skuId: body.skuId,
+      meta: { scenario: 'storyboard', size: `${(sizeBytes / 1024 / 1024).toFixed(1)}MB` },
+    }).catch(() => {});
 
     return NextResponse.json({
       ok: true,
