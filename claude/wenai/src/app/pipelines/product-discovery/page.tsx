@@ -410,7 +410,7 @@ export default function ProductDiscoveryPage() {
 
               <div className="space-y-3">
                 {result.candidates.map((c, i) => (
-                  <SkuCard key={i} idx={i} sku={c} />
+                  <SkuCard key={i} idx={i} sku={c} platform={PLATFORM_LABELS[platform]} />
                 ))}
               </div>
 
@@ -483,9 +483,34 @@ function Tip({ emoji, title, desc }: { emoji: string; title: string; desc: strin
   );
 }
 
-function SkuCard({ idx, sku }: { idx: number; sku: SKUCandidate }) {
+function SkuCard({ idx, sku, platform }: { idx: number; sku: SKUCandidate; platform: string }) {
   const compColor = sku.competition === 'low' ? 'success' : sku.competition === 'medium' ? 'accent' : 'error';
   const trendIcon = sku.trendDirection === 'rising' ? '↗' : sku.trendDirection === 'stable' ? '→' : '↘';
+  const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
+
+  const saveToLibrary = async () => {
+    setSaving(true);
+    try {
+      const res = await fetch('/api/user/sku-history', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: sku.name,
+          category: sku.category,
+          platform,
+          priceCny: sku.estPriceCny,
+          status: 'discovery-done',
+          notes: `${sku.entryStrategy}\n\n搜索词: ${sku.searchKeywords.join(', ')}`,
+          modules: ['product-discovery'],
+        }),
+      });
+      if (res.ok) setSaved(true);
+    } catch {} finally {
+      setSaving(false);
+    }
+  };
+
   return (
     <div className={`border border-border-subtle rounded-lg p-4 bg-bg-surface/30 hover:border-accent/40 transition-colors animate-fade-up stagger-${Math.min(idx + 1, 6)}`}>
       <div className="flex items-baseline justify-between gap-2 mb-2 flex-wrap">
@@ -499,6 +524,18 @@ function SkuCard({ idx, sku }: { idx: number; sku: SKUCandidate }) {
             竞争 {sku.competition}
           </span>
           <span className="text-text-secondary">{trendIcon} {sku.trendDirection}</span>
+          <button
+            onClick={saveToLibrary}
+            disabled={saving || saved}
+            className={`text-[10px] font-mono px-2 py-0.5 rounded border transition-colors ${
+              saved
+                ? 'border-success/40 bg-success/10 text-success'
+                : 'border-accent/30 text-accent hover:bg-accent/10'
+            }`}
+            title="加进我的 SKU 库, 决策层模块后续基于历史给更精准建议"
+          >
+            {saved ? '✓ 已入库' : saving ? '保存中…' : '📦 入库'}
+          </button>
         </div>
       </div>
 
