@@ -131,6 +131,9 @@ export default function SettingsPage() {
               </div>
             </section>
 
+            {/* Outbound webhook (飞书 / Slack / Discord) */}
+            <WebhooksSection />
+
             {/* API Key */}
             <ApiKeySection />
 
@@ -357,6 +360,188 @@ function ApiKeySection() {
         用法示例: <code className="text-text-secondary">curl -H &quot;Authorization: Bearer wn_xxx&quot; https://wenai-deploy.vercel.app/api/v1/skus</code>
         <br />
         当前可用端点: GET / POST <code className="text-accent">/api/v1/skus</code> · 更多接口逐步开放
+      </div>
+    </section>
+  );
+}
+
+interface WebhookMeta {
+  id: string;
+  urlPreview: string;
+  kind: 'feishu' | 'slack' | 'discord' | 'generic';
+  label: string | null;
+  createdAt: string;
+  lastFireAt: string | null;
+  lastError: string | null;
+}
+
+const KIND_BADGE: Record<WebhookMeta['kind'], { label: string; color: string }> = {
+  feishu:  { label: '飞书',    color: 'text-cyan-500 border-cyan-500/40 bg-cyan-500/5' },
+  slack:   { label: 'Slack',  color: 'text-purple-500 border-purple-500/40 bg-purple-500/5' },
+  discord: { label: 'Discord', color: 'text-indigo-500 border-indigo-500/40 bg-indigo-500/5' },
+  generic: { label: '通用',    color: 'text-text-secondary border-border-default bg-bg-surface' },
+};
+
+function WebhooksSection() {
+  const [hooks, setHooks] = useState<WebhookMeta[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [adding, setAdding] = useState(false);
+  const [url, setUrl] = useState('');
+  const [label, setLabel] = useState('');
+  const [err, setErr] = useState('');
+  const [testing, setTesting] = useState<string | null>(null);
+  const [testMsg, setTestMsg] = useState<{ id: string; ok: boolean; text: string } | null>(null);
+
+  const load = () => {
+    setLoading(true);
+    fetch('/api/user/webhooks')
+      .then(r => r.json())
+      .then(d => { setHooks(d.webhooks || []); setLoading(false); })
+      .catch(() => setLoading(false));
+  };
+  useEffect(load, []);
+
+  const add = async () => {
+    setErr('');
+    if (!url.trim()) { setErr('URL 必填'); return; }
+    setAdding(true);
+    try {
+      const r = await fetch('/api/user/webhooks', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url: url.trim(), label: label.trim() || undefined }),
+      });
+      const d = await r.json();
+      if (!r.ok) { setErr(d.error || `HTTP ${r.status}`); return; }
+      setUrl(''); setLabel('');
+      load();
+    } finally {
+      setAdding(false);
+    }
+  };
+
+  const remove = async (id: string) => {
+    if (!confirm('删除这条 webhook? 之后不再推送到该地址')) return;
+    await fetch(`/api/user/webhooks?id=${id}`, { method: 'DELETE' });
+    load();
+  };
+
+  const test = async (id: string) => {
+    setTesting(id);
+    setTestMsg(null);
+    try {
+      const r = await fetch('/api/user/webhooks/test', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id }),
+      });
+      const d = await r.json();
+      setTestMsg({ id, ok: !!d.ok, text: d.ok ? '✓ 推送成功 · 去群里看消息' : `✗ ${d.error || '失败'}` });
+      load();  // refresh lastFireAt / lastError
+    } finally {
+      setTesting(null);
+    }
+  };
+
+  return (
+    <section className="border border-border-subtle rounded-lg p-5 bg-bg-surface/30 space-y-3">
+      <div className="text-[10px] font-mono text-text-tertiary uppercase tracking-wider">
+        🪝 群推送 · 飞书 / Slack / Discord webhook
+      </div>
+      <div className="text-[11px] text-text-secondary leading-relaxed">
+        把每日 digest 推到你公司群 · 与邮件并行, 互不冲突. 配上 URL 后, 北京 09:00 cron 会自动 fan-out.
+      </div>
+
+      {loading ? (
+        <div className="text-[11px] font-mono text-text-tertiary py-3 text-center">加载中...</div>
+      ) : hooks.length === 0 ? (
+        <div className="text-[11px] font-mono text-text-tertiary py-2">还没配 webhook · 在下方添加</div>
+      ) : (
+        <div className="space-y-2">
+          {hooks.map(h => {
+            const b = KIND_BADGE[h.kind];
+            return (
+              <div key={h.id} className="border border-border-subtle rounded p-2.5 bg-bg-root/40 space-y-1.5">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className={`text-[9px] font-mono px-1.5 py-0.5 rounded border ${b.color}`}>{b.label}</span>
+                  {h.label && <span className="text-[11px] text-text-primary font-medium">{h.label}</span>}
+                  <code className="text-[10px] font-mono text-text-tertiary truncate flex-1">{h.urlPreview}</code>
+                </div>
+                <div className="flex items-center gap-3 text-[10px] font-mono text-text-tertiary flex-wrap">
+                  <span>加于 {new Date(h.createdAt).toLocaleDateString('zh-CN')}</span>
+                  <span>·</span>
+                  <span>
+                    {h.lastFireAt ? `最近 ${new Date(h.lastFireAt).toLocaleString('zh-CN')}` : '未发过'}
+                  </span>
+                  {h.lastError && (
+                    <span className="text-error">⚠ {h.lastError.slice(0, 50)}</span>
+                  )}
+                </div>
+                <div className="flex items-center gap-2 pt-1">
+                  <button
+                    onClick={() => test(h.id)}
+                    disabled={testing === h.id}
+                    className="text-[10px] font-mono px-2 py-1 border border-accent/40 text-accent hover:bg-accent/10 rounded disabled:opacity-40"
+                  >
+                    {testing === h.id ? '推送中...' : '🧪 发测试消息'}
+                  </button>
+                  <button
+                    onClick={() => remove(h.id)}
+                    className="text-[10px] font-mono px-2 py-1 border border-error/40 text-error hover:bg-error/10 rounded"
+                  >
+                    🗑️ 删
+                  </button>
+                  {testMsg && testMsg.id === h.id && (
+                    <span className={`text-[10px] font-mono ${testMsg.ok ? 'text-success' : 'text-error'}`}>
+                      {testMsg.text}
+                    </span>
+                  )}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      {hooks.length < 5 && (
+        <div className="border-t border-border-subtle pt-3 space-y-2">
+          <div className="text-[11px] text-text-secondary">添加新 webhook</div>
+          <input
+            type="url"
+            value={url}
+            onChange={e => setUrl(e.target.value)}
+            placeholder="https://open.feishu.cn/open-apis/bot/v2/hook/xxx · 或 hooks.slack.com / discord.com 的"
+            className="w-full px-3 py-2 bg-bg-surface border border-border-default rounded text-[11px] font-mono"
+          />
+          <input
+            type="text"
+            value={label}
+            onChange={e => setLabel(e.target.value)}
+            placeholder="标签 (可选): 例 '运营飞书群' / '老板 Slack DM'"
+            className="w-full px-3 py-2 bg-bg-surface border border-border-default rounded text-[12px]"
+            maxLength={60}
+          />
+          <div className="flex items-center gap-2">
+            <button
+              onClick={add}
+              disabled={adding || !url.trim()}
+              className="text-[11px] font-mono px-4 py-1.5 bg-accent text-bg-root rounded hover:bg-accent-hover disabled:opacity-40"
+            >
+              {adding ? '添加中...' : '+ 添加 webhook'}
+            </button>
+            {err && <span className="text-[10px] font-mono text-error">✗ {err}</span>}
+          </div>
+        </div>
+      )}
+
+      <div className="text-[10px] font-mono text-text-tertiary leading-relaxed border-t border-border-subtle pt-2">
+        飞书机器人配置: 群 → 设置 → 群机器人 → 添加自定义机器人 · 复制 webhook URL 粘到上面
+        <br />
+        Slack: <code>App → Incoming Webhooks → New Webhook to Workspace</code>
+        <br />
+        Discord: 频道 → 编辑频道 → 整合 → Webhook → 复制 URL
+        <br />
+        URL 含密钥, 我们只展示前 60 字符防泄漏
       </div>
     </section>
   );

@@ -6,6 +6,7 @@ import { getCacheStatSnapshot } from '@/lib/cache-stats';
 import { getUserSettings } from '@/lib/user-settings';
 import { sendEmail } from '@/lib/mailer';
 import { makeUnsubscribeToken } from '@/lib/unsubscribe';
+import { sendDigestToWebhooks } from '@/lib/webhook-out';
 
 /**
  * 每日 digest cron · vercel.json 9:00am 触发
@@ -179,6 +180,7 @@ export async function GET(req: NextRequest) {
   const orgs = await discoverOrgs();
   const written: string[] = [];
   const emailsSent: Array<{ orgId: string; provider: string }> = [];
+  const webhooksFired = { sent: 0, failed: 0 };
   const errors: Array<{ orgId: string; err: string }> = [];
 
   for (const orgId of orgs) {
@@ -216,6 +218,18 @@ export async function GET(req: NextRequest) {
           else errors.push({ orgId, err: `mail:${r.provider}:${r.error}` });
         }
       }
+
+      // outbound webhook fan-out (飞书/Slack/Discord/generic) · 与邮件独立, 互不阻塞
+      try {
+        const wh = await sendDigestToWebhooks(orgId, digest);
+        webhooksFired.sent += wh.sent;
+        webhooksFired.failed += wh.failed;
+        for (const r of wh.results) {
+          if (!r.ok) errors.push({ orgId, err: `webhook:${r.kind}:${r.error || 'fail'}` });
+        }
+      } catch (e) {
+        errors.push({ orgId, err: `webhook:throw:${e instanceof Error ? e.message : 'unknown'}` });
+      }
     } catch (e) {
       errors.push({ orgId, err: e instanceof Error ? e.message : 'unknown' });
     }
@@ -228,6 +242,8 @@ export async function GET(req: NextRequest) {
     digestsWritten: written.length,
     emailsSent: emailsSent.length,
     emailProviders: countBy(emailsSent.map(e => e.provider)),
+    webhooksSent: webhooksFired.sent,
+    webhooksFailed: webhooksFired.failed,
     skipped: orgs.length - written.length - errors.length,
     errors: errors.slice(0, 10),
   });
