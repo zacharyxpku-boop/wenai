@@ -112,10 +112,11 @@ export async function recordCost(orgId: string, cents: number): Promise<void> {
  * 用于 admin 钻取: 该 orgId 今天每一笔花在啥模块, 哪个 taskId, 大概多少
  */
 export interface CostDetail {
-  module: string;        // openai-image / video-gen / video-teardown
+  module: string;        // openai-image / video-gen / video-teardown / chat:<moduleId>
   cents: number;         // 估算 cents
   at: string;            // ISO
   taskId?: string;       // HappyHorse 任务 ID
+  skuId?: string;        // 关联到哪个 SKU (从前端 body.skuId 透传, 用户从 SKU 详情页跳模块时带)
   meta?: {
     scenario?: string;
     quality?: string;

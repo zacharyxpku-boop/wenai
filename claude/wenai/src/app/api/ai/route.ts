@@ -81,6 +81,7 @@ export async function POST(request: NextRequest) {
   let category: string | undefined;
   let fromPipeline = false;
   let dryRun = false;
+  let skuId: string | undefined;
   try {
     const body = await request.json();
     prompt = body.prompt;
@@ -89,6 +90,7 @@ export async function POST(request: NextRequest) {
     category = body.category;
     fromPipeline = body.fromPipeline === true;
     dryRun = body.dryRun === true;
+    if (typeof body.skuId === 'string') skuId = body.skuId;
   } catch {
     return NextResponse.json({ error: '请求格式错误' }, { status: 400 });
   }
@@ -205,6 +207,7 @@ export async function POST(request: NextRequest) {
     // 异步 fire-and-forget 写明细 · 不阻塞响应
     recordCostWithDetail(rateKey, estChatCents, {
       module: `chat:${moduleId}`,
+      skuId,
       meta: { scenario: moduleId },
     }).catch(() => {});
   }

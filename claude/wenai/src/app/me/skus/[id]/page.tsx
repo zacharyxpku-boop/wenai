@@ -68,6 +68,7 @@ export default function SkuDetailPage() {
   const [notesDraft, setNotesDraft] = useState('');
   const [savingNotes, setSavingNotes] = useState(false);
   const [costSummary, setCostSummary] = useState<CostSummary | null>(null);
+  const [skuCost, setSkuCost] = useState<{ totalCny: number; callCount: number; byModule: Record<string, { cents: number; count: number }> } | null>(null);
 
   useEffect(() => {
     fetch('/api/user/cost-summary')
@@ -75,6 +76,14 @@ export default function SkuDetailPage() {
       .then(d => setCostSummary(d as CostSummary))
       .catch(() => {});
   }, []);
+
+  useEffect(() => {
+    if (!params.id) return;
+    fetch(`/api/user/sku-cost?skuId=${params.id}`)
+      .then(r => r.json())
+      .then(d => setSkuCost(d))
+      .catch(() => {});
+  }, [params.id]);
 
   useEffect(() => {
     if (!params.id) return;
@@ -231,14 +240,50 @@ export default function SkuDetailPage() {
         </div>
       </section>
 
-      {/* 成本概况 · 用户自己看烧钱速度 */}
+      {/* 本 SKU 累计成本 · phase-2 真打通 */}
+      {skuCost && skuCost.callCount > 0 && (
+        <section className="mb-6 border border-cat-content/40 bg-cat-content/5 rounded-lg p-4">
+          <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
+            <h2 className="text-[12px] font-mono text-cat-content uppercase tracking-wider">
+              🎯 这个 SKU 在 wenai 累计花费
+            </h2>
+            <span className="text-[9px] font-mono text-text-tertiary">仅当日 · 跨模块带 ?skuId 才进此账</span>
+          </div>
+          <div className="grid grid-cols-3 gap-2 text-[12px]">
+            <div className="border border-cat-content/30 bg-bg-root/30 rounded p-2">
+              <div className="text-[9px] font-mono text-text-tertiary uppercase">SKU 累计</div>
+              <div className="text-2xl font-bold text-cat-content tabular-nums">¥{skuCost.totalCny.toFixed(2)}</div>
+            </div>
+            <div className="border border-border-subtle rounded p-2 bg-bg-root/30">
+              <div className="text-[9px] font-mono text-text-tertiary uppercase">调用次数</div>
+              <div className="text-2xl font-bold text-text-primary tabular-nums">{skuCost.callCount}</div>
+            </div>
+            <div className="border border-border-subtle rounded p-2 bg-bg-root/30">
+              <div className="text-[9px] font-mono text-text-tertiary uppercase">真人对照</div>
+              <div className="text-[12px] font-bold text-success tabular-nums leading-tight">省 ¥{(3000 - skuCost.totalCny).toFixed(0)}+</div>
+              <div className="text-[9px] font-mono text-text-tertiary">vs 真人摄影 ¥3K</div>
+            </div>
+          </div>
+          {Object.keys(skuCost.byModule).length > 0 && (
+            <div className="mt-2 flex flex-wrap gap-1.5">
+              {Object.entries(skuCost.byModule).map(([m, agg]) => (
+                <span key={m} className="text-[10px] font-mono px-2 py-0.5 border border-cat-content/30 rounded text-cat-content">
+                  {m} ¥{(agg.cents / 100).toFixed(2)} <span className="opacity-70">×{agg.count}</span>
+                </span>
+              ))}
+            </div>
+          )}
+        </section>
+      )}
+
+      {/* 成本概况 · 用户自己看烧钱速度 (全用户视角) */}
       {costSummary && (
         <section className="mb-6 border border-border-subtle rounded-lg p-4 bg-bg-surface/30">
           <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
             <h2 className="text-[12px] font-mono text-text-tertiary uppercase tracking-wider">
               💸 我在 wenai 的成本概况
             </h2>
-            <span className="text-[9px] font-mono text-text-tertiary">phase-1: 全用户视角 · phase-2 精到单 SKU</span>
+            <span className="text-[9px] font-mono text-text-tertiary">全用户视角 · 上面是单 SKU 视角</span>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-[12px]">
             <div className="border border-accent/30 bg-accent/5 rounded p-2">
@@ -337,7 +382,7 @@ export default function SkuDetailPage() {
               return (
                 <Link
                   key={m}
-                  href={meta.href}
+                  href={`${meta.href}?skuId=${sku.id}`}
                   className="border border-success/30 bg-success/5 rounded p-2.5 hover:border-success/60 transition-colors group"
                 >
                   <div className="flex items-center gap-1.5">
@@ -346,7 +391,7 @@ export default function SkuDetailPage() {
                       {meta.txt}
                     </span>
                   </div>
-                  <div className="text-[9px] font-mono text-success/70 mt-0.5">✓ 已跑过 · 再跑 →</div>
+                  <div className="text-[9px] font-mono text-success/70 mt-0.5">✓ 已跑过 · 带本 SKU 再跑 →</div>
                 </Link>
               );
             })}
@@ -414,7 +459,7 @@ export default function SkuDetailPage() {
             return (
               <Link
                 key={m}
-                href={meta.href}
+                href={`${meta.href}?skuId=${sku.id}`}
                 className="text-[11px] font-mono px-3 py-1.5 bg-cat-content text-bg-root rounded hover:opacity-90"
               >
                 {meta.icon} {meta.txt} →
