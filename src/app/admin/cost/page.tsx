@@ -34,6 +34,20 @@ interface CostList {
   items: CostItem[];
 }
 
+interface CostTrendPoint {
+  date: string;
+  totalCents: number;
+  totalCny: number;
+  orgCount: number;
+}
+
+interface CostTrendResp {
+  days: number;
+  points: CostTrendPoint[];
+  totalCny: number;
+  avgDailyCny: number;
+}
+
 export default function AdminCostPage() {
   const [data, setData] = useState<CostList | null>(null);
   const [loading, setLoading] = useState(true);
@@ -44,6 +58,20 @@ export default function AdminCostPage() {
   const [singleResult, setSingleResult] = useState<CostItem | null>(null);
   const [drillDown, setDrillDown] = useState<DrillDown | null>(null);
   const [drillLoading, setDrillLoading] = useState(false);
+  const [trend, setTrend] = useState<CostTrendResp | null>(null);
+  const [trendDays, setTrendDays] = useState<7 | 14 | 30>(7);
+  const [trendLoading, setTrendLoading] = useState(false);
+
+  const loadTrend = async (n: number) => {
+    setTrendLoading(true);
+    try {
+      const r = await fetch(`/api/admin/cost?trend=${n}`);
+      const d = await r.json();
+      setTrend(d as CostTrendResp);
+    } finally {
+      setTrendLoading(false);
+    }
+  };
 
   const openDrill = async (orgId: string) => {
     setDrillLoading(true);
@@ -83,6 +111,10 @@ export default function AdminCostPage() {
   useEffect(() => {
     if (authed) load();
   }, [authed]);
+  useEffect(() => {
+    if (authed) loadTrend(trendDays);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [authed, trendDays]);
 
   const queryOrg = async () => {
     if (!singleOrg.trim()) return;
@@ -164,6 +196,55 @@ export default function AdminCostPage() {
           </div>
         </div>
       )}
+
+      {/* 全店成本趋势 */}
+      <section className="mb-6 border border-cat-content/30 bg-cat-content/5 rounded-lg p-4">
+        <div className="flex items-center justify-between flex-wrap gap-2 mb-3">
+          <div className="text-[10px] font-mono text-cat-content uppercase tracking-wider">
+            全店日花费趋势
+          </div>
+          <div className="flex items-center gap-1">
+            {([7, 14, 30] as const).map(n => (
+              <button
+                key={n}
+                onClick={() => setTrendDays(n)}
+                className={`text-[10px] font-mono px-2 py-0.5 rounded border ${
+                  trendDays === n
+                    ? 'border-cat-content text-cat-content bg-cat-content/10'
+                    : 'border-border-subtle text-text-secondary hover:border-cat-content/40'
+                }`}
+              >
+                {n} 天
+              </button>
+            ))}
+          </div>
+        </div>
+        {trendLoading ? (
+          <div className="text-[11px] font-mono text-text-tertiary py-6 text-center">加载中...</div>
+        ) : !trend || trend.points.length === 0 ? (
+          <div className="text-[11px] font-mono text-text-tertiary py-6 text-center">无数据</div>
+        ) : (
+          <>
+            <div className="grid grid-cols-3 gap-3 mb-4 text-[12px]">
+              <div>
+                <div className="text-[9px] font-mono text-text-tertiary uppercase">{trend.days} 天总花费</div>
+                <div className="text-cat-content font-bold tabular-nums text-xl">¥{trend.totalCny.toFixed(2)}</div>
+              </div>
+              <div>
+                <div className="text-[9px] font-mono text-text-tertiary uppercase">日均花费</div>
+                <div className="text-text-primary font-bold tabular-nums text-xl">¥{trend.avgDailyCny.toFixed(2)}</div>
+              </div>
+              <div>
+                <div className="text-[9px] font-mono text-text-tertiary uppercase">峰值日花费</div>
+                <div className="text-warning font-bold tabular-nums text-xl">
+                  ¥{Math.max(...trend.points.map(p => p.totalCny)).toFixed(2)}
+                </div>
+              </div>
+            </div>
+            <CostTrendBars points={trend.points} />
+          </>
+        )}
+      </section>
 
       {/* 单 org 查询 */}
       <div className="mb-6 border border-border-subtle rounded-lg p-4 bg-bg-surface/30">
@@ -368,6 +449,57 @@ export default function AdminCostPage() {
       <p className="text-[10px] font-mono text-text-tertiary mt-6 leading-relaxed">
         累计基于 cost-cap.ts 估算 · 影棚单图 ¥0.30 / 高 ¥1.20 · 视频 720p ¥4 / 1080p ¥8 · 默认日上限 ¥50/org (env COST_CAP_DAILY_CNY 可调) · 点 orgId 钻取明细 + SKU 关联
       </p>
+    </div>
+  );
+}
+
+function CostTrendBars({ points }: { points: CostTrendPoint[] }) {
+  const maxCny = Math.max(...points.map(p => p.totalCny), 0.01);
+  const maxOrgs = Math.max(...points.map(p => p.orgCount), 1);
+  return (
+    <div className="space-y-3">
+      <div>
+        <div className="text-[9px] font-mono text-text-tertiary uppercase mb-1.5">日花费 (¥)</div>
+        <div className="flex items-end gap-1 h-24">
+          {points.map(p => {
+            const h = (p.totalCny / maxCny) * 100;
+            return (
+              <div key={p.date} className="flex-1 flex flex-col items-center justify-end gap-0.5" title={`${p.date}: ¥${p.totalCny.toFixed(2)}`}>
+                <span className="text-[8px] font-mono text-cat-content tabular-nums">
+                  {p.totalCny > 0 ? p.totalCny.toFixed(0) : ''}
+                </span>
+                <div
+                  className="w-full bg-cat-content/60 hover:bg-cat-content rounded-t transition-colors"
+                  style={{ height: `${h}%`, minHeight: p.totalCny > 0 ? '2px' : '0' }}
+                />
+              </div>
+            );
+          })}
+        </div>
+        <div className="flex gap-1 mt-1">
+          {points.map(p => (
+            <div key={p.date} className="flex-1 text-center text-[8px] font-mono text-text-tertiary tabular-nums">
+              {p.date.slice(5)}
+            </div>
+          ))}
+        </div>
+      </div>
+      <div>
+        <div className="text-[9px] font-mono text-text-tertiary uppercase mb-1.5">活跃 org 数</div>
+        <div className="flex items-end gap-1 h-10">
+          {points.map(p => {
+            const h = (p.orgCount / maxOrgs) * 100;
+            return (
+              <div key={p.date} className="flex-1 flex flex-col items-center justify-end" title={`${p.date}: ${p.orgCount} org`}>
+                <div
+                  className="w-full bg-accent/40 hover:bg-accent/70 rounded-t transition-colors"
+                  style={{ height: `${h}%`, minHeight: p.orgCount > 0 ? '2px' : '0' }}
+                />
+              </div>
+            );
+          })}
+        </div>
+      </div>
     </div>
   );
 }

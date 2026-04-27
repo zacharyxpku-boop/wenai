@@ -75,6 +75,62 @@ export async function GET(request: NextRequest) {
     });
   }
 
+  // ?trend=N · 全店过去 N 天每日总花费
+  const trendDaysRaw = searchParams.get('trend');
+  if (trendDaysRaw && redis) {
+    const trendDays = Math.min(Math.max(parseInt(trendDaysRaw, 10) || 7, 1), 30);
+    const points: Array<{ date: string; totalCents: number; totalCny: number; orgCount: number }> = [];
+    for (let i = trendDays - 1; i >= 0; i--) {
+      const d = new Date();
+      d.setUTCDate(d.getUTCDate() - i);
+      const y = d.getUTCFullYear();
+      const m = String(d.getUTCMonth() + 1).padStart(2, '0');
+      const day = String(d.getUTCDate()).padStart(2, '0');
+      const dStr = `${y}-${m}-${day}`;
+      let totalCents = 0;
+      let orgCount = 0;
+      let cursor: string | number = 0;
+      let iter = 0;
+      try {
+        do {
+          const res: [string | number, string[]] = await redis.scan(cursor, {
+            match: `wenai:cost:*:${dStr}`,
+            count: 200,
+          });
+          cursor = res[0];
+          for (const key of res[1]) {
+            // 排除 detail key (wenai:cost:detail:...)
+            if (key.includes(':detail:')) continue;
+            const v = await redis.get<number>(key);
+            const cents = typeof v === 'number' ? v : 0;
+            if (cents > 0) {
+              totalCents += cents;
+              orgCount++;
+            }
+          }
+          iter++;
+          if (iter > 30) break;
+        } while (cursor !== '0' && cursor !== 0);
+      } catch {
+        // 这一天读失败给 0 占位
+      }
+      points.push({
+        date: dStr,
+        totalCents,
+        totalCny: +(totalCents / 100).toFixed(2),
+        orgCount,
+      });
+    }
+    const totalCents = points.reduce((s, p) => s + p.totalCents, 0);
+    return NextResponse.json({
+      days: trendDays,
+      points,
+      totalCents,
+      totalCny: +(totalCents / 100).toFixed(2),
+      avgDailyCny: +(totalCents / 100 / trendDays).toFixed(2),
+    });
+  }
+
   if (wantList && redis) {
     // SCAN 当日所有 org · Upstash 支持 SCAN
     const date = todayDateStr();
