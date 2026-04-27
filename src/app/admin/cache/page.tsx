@@ -11,6 +11,23 @@ interface OrgRow {
   savedCny: number;
 }
 
+interface TrendPoint {
+  date: string;
+  hits: number;
+  misses: number;
+  savedCny: number;
+  hitRate: number;
+}
+
+interface TrendResp {
+  days: number;
+  points: TrendPoint[];
+  totalHits: number;
+  totalMisses: number;
+  totalSavedCny: number;
+  avgHitRate: number;
+}
+
 interface ListResp {
   date: string;
   count: number;
@@ -41,6 +58,9 @@ export default function AdminCachePage() {
   const [snap, setSnap] = useState<OrgSnap | null>(null);
   const [activeOrg, setActiveOrg] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [trend, setTrend] = useState<TrendResp | null>(null);
+  const [trendDays, setTrendDays] = useState<7 | 14 | 30>(7);
+  const [trendLoading, setTrendLoading] = useState(false);
 
   const loadList = async () => {
     setLoading(true);
@@ -60,7 +80,19 @@ export default function AdminCachePage() {
     setSnap(d);
   };
 
+  const loadTrend = async (n: number) => {
+    setTrendLoading(true);
+    try {
+      const r = await fetch(`/api/admin/cache?trend=${n}`);
+      const d = await r.json();
+      setTrend(d);
+    } finally {
+      setTrendLoading(false);
+    }
+  };
+
   useEffect(() => { loadList(); /* eslint-disable-next-line */ }, [date]);
+  useEffect(() => { loadTrend(trendDays); /* eslint-disable-next-line */ }, [trendDays]);
 
   return (
     <div className="min-h-screen bg-bg-root">
@@ -81,6 +113,53 @@ export default function AdminCachePage() {
             刷新
           </button>
         </div>
+
+        {/* 7/14/30 天趋势 */}
+        <section className="border border-accent/30 bg-accent/5 rounded-lg p-4">
+          <div className="flex items-center justify-between flex-wrap gap-2 mb-3">
+            <div className="text-[10px] font-mono text-accent uppercase tracking-wider">
+              全店缓存命中趋势
+            </div>
+            <div className="flex items-center gap-1">
+              {([7, 14, 30] as const).map(n => (
+                <button
+                  key={n}
+                  onClick={() => setTrendDays(n)}
+                  className={`text-[10px] font-mono px-2 py-0.5 rounded border ${
+                    trendDays === n
+                      ? 'border-accent text-accent bg-accent/10'
+                      : 'border-border-subtle text-text-secondary hover:border-accent/40'
+                  }`}
+                >
+                  {n} 天
+                </button>
+              ))}
+            </div>
+          </div>
+          {trendLoading ? (
+            <div className="text-[11px] font-mono text-text-tertiary py-6 text-center">趋势加载中...</div>
+          ) : !trend || trend.points.length === 0 ? (
+            <div className="text-[11px] font-mono text-text-tertiary py-6 text-center">该时段无缓存活动</div>
+          ) : (
+            <>
+              <div className="grid grid-cols-3 gap-3 mb-4 text-[12px]">
+                <div>
+                  <div className="text-[9px] font-mono text-text-tertiary uppercase">{trend.days} 天总命中</div>
+                  <div className="text-success font-bold tabular-nums text-xl">{trend.totalHits}</div>
+                </div>
+                <div>
+                  <div className="text-[9px] font-mono text-text-tertiary uppercase">平均命中率</div>
+                  <div className="text-accent font-bold tabular-nums text-xl">{(trend.avgHitRate * 100).toFixed(1)}%</div>
+                </div>
+                <div>
+                  <div className="text-[9px] font-mono text-text-tertiary uppercase">{trend.days} 天累计省</div>
+                  <div className="text-success font-bold tabular-nums text-xl">¥{trend.totalSavedCny.toFixed(2)}</div>
+                </div>
+              </div>
+              <TrendBars points={trend.points} />
+            </>
+          )}
+        </section>
 
         {/* 总览 */}
         <section className="border border-success/30 bg-success/5 rounded-lg p-4 grid grid-cols-1 md:grid-cols-3 gap-3 text-[13px]">
@@ -196,6 +275,82 @@ function Stat({ label, value, highlight }: { label: string; value: string | numb
       <div className="text-[10px] font-mono text-text-tertiary uppercase tracking-wider mb-1">{label}</div>
       <div className={`tabular-nums ${highlight ? 'text-success font-bold text-2xl' : 'text-text-primary text-xl font-semibold'}`}>
         {value}
+      </div>
+    </div>
+  );
+}
+
+function TrendBars({ points }: { points: TrendPoint[] }) {
+  const maxSaved = Math.max(...points.map(p => p.savedCny), 1);
+  const maxCalls = Math.max(...points.map(p => p.hits + p.misses), 1);
+  return (
+    <div className="space-y-3">
+      {/* 日省钱柱状 */}
+      <div>
+        <div className="text-[9px] font-mono text-text-tertiary uppercase mb-1.5">日累计省 (¥)</div>
+        <div className="flex items-end gap-1 h-20">
+          {points.map(p => {
+            const h = (p.savedCny / maxSaved) * 100;
+            return (
+              <div key={p.date} className="flex-1 flex flex-col items-center justify-end gap-0.5" title={`${p.date}: ¥${p.savedCny.toFixed(2)}`}>
+                <span className="text-[8px] font-mono text-success tabular-nums">
+                  {p.savedCny > 0 ? p.savedCny.toFixed(0) : ''}
+                </span>
+                <div
+                  className="w-full bg-success/60 hover:bg-success rounded-t transition-colors"
+                  style={{ height: `${h}%`, minHeight: p.savedCny > 0 ? '2px' : '0' }}
+                />
+              </div>
+            );
+          })}
+        </div>
+        <div className="flex gap-1 mt-1">
+          {points.map(p => (
+            <div key={p.date} className="flex-1 text-center text-[8px] font-mono text-text-tertiary tabular-nums">
+              {p.date.slice(5)}
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* 命中率折线 */}
+      <div>
+        <div className="text-[9px] font-mono text-text-tertiary uppercase mb-1.5">命中率 (%)</div>
+        <div className="flex items-end gap-1 h-12">
+          {points.map(p => {
+            const total = p.hits + p.misses;
+            const h = total > 0 ? p.hitRate * 100 : 0;
+            return (
+              <div key={p.date} className="flex-1 flex flex-col items-center justify-end" title={`${p.date}: ${(p.hitRate * 100).toFixed(1)}% (${p.hits}/${total})`}>
+                <div
+                  className={`w-full rounded-t transition-colors ${
+                    h >= 30 ? 'bg-accent' : h >= 10 ? 'bg-cat-content' : 'bg-text-tertiary/40'
+                  }`}
+                  style={{ height: `${h}%`, minHeight: total > 0 ? '2px' : '0' }}
+                />
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* 总调用量条 */}
+      <div>
+        <div className="text-[9px] font-mono text-text-tertiary uppercase mb-1.5">每日总调用 ({points.reduce((s, p) => s + p.hits + p.misses, 0)} 次)</div>
+        <div className="flex items-end gap-1 h-8">
+          {points.map(p => {
+            const total = p.hits + p.misses;
+            const h = (total / maxCalls) * 100;
+            return (
+              <div key={p.date} className="flex-1 flex" title={`${p.date}: ${total} 次`}>
+                <div
+                  className="flex-1 bg-text-tertiary/30 rounded-t"
+                  style={{ height: `${h}%`, minHeight: total > 0 ? '1px' : '0' }}
+                />
+              </div>
+            );
+          })}
+        </div>
       </div>
     </div>
   );
