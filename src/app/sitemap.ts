@@ -84,6 +84,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.92,
     },
     {
+      url: `${BASE}/pipelines/batch-launch`,
+      lastModified: now,
+      changeFrequency: 'weekly',
+      priority: 0.97,
+    },
+    {
       url: `${BASE}/invite`,
       lastModified: now,
       changeFrequency: 'monthly',
