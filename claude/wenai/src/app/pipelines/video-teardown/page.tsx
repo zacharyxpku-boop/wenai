@@ -243,6 +243,87 @@ export default function VideoTeardownPage() {
     URL.revokeObjectURL(url);
   };
 
+  // 公开分享 · 借 clico 拉新机制 · 商家分享拆解结果 → 朋友打开看到 wenai 品牌
+  const [shareUrl, setShareUrl] = useState<string | null>(null);
+  const [sharing, setSharing] = useState(false);
+  const [shareErr, setShareErr] = useState('');
+  const [shareCopied, setShareCopied] = useState(false);
+
+  const buildShareMarkdown = (): string => {
+    if (!result) return '';
+    const sb = result.storyboard;
+    const lines: string[] = [];
+    lines.push(`# 爆款视频拆解 · ${sb.scene_count} 个镜头`);
+    lines.push('');
+    lines.push(`**钩子**: ${HOOK_LABEL[sb.hook_type].txt} · ${HOOK_LABEL[sb.hook_type].tip}`);
+    lines.push(`**节奏**: ${PACING_LABEL[sb.pacing]}`);
+    lines.push(`**CTA 位置**: ${CTA_LABEL[sb.cta_position]}`);
+    lines.push(`**情绪曲线**: ${sb.emotional_arc.join(' → ')}`);
+    lines.push('');
+    lines.push('---');
+    lines.push('');
+    sb.scenes.forEach((s, i) => {
+      lines.push(`## 镜头 ${i + 1} · ${s.duration_seconds.toFixed(1)}s${sb.emotional_arc[i] ? ` · ${sb.emotional_arc[i]}` : ''}`);
+      lines.push('');
+      lines.push(s.description);
+      lines.push('');
+      if (s.caption_text) {
+        lines.push(`> 字幕/口播: ${s.caption_text}`);
+        lines.push('');
+      }
+      lines.push('**图像 prompt**:');
+      lines.push('');
+      lines.push('```');
+      lines.push(s.prompt);
+      lines.push('```');
+      lines.push('');
+    });
+    lines.push('---');
+    lines.push('');
+    lines.push('*由 [wenai 跨境代运营 AI](https://wenai-deploy.vercel.app) 自动拆解 · 想拆你自己的视频?*');
+    return lines.join('\n');
+  };
+
+  const buildShareTitle = (): string => {
+    if (!result) return 'wenai 视频拆解';
+    const sb = result.storyboard;
+    const tplName = activeTemplate ? INDUSTRY_TEMPLATES.find(t => t.id === activeTemplate)?.title : null;
+    return `${tplName ? tplName + ' · ' : ''}${sb.scene_count} 镜头爆款拆解 (${HOOK_LABEL[sb.hook_type].txt})`;
+  };
+
+  const generateShare = async () => {
+    if (!result) return;
+    setSharing(true);
+    setShareErr('');
+    try {
+      const res = await fetch('/api/share', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          moduleId: 'video-teardown',
+          title: buildShareTitle(),
+          content: buildShareMarkdown(),
+          source: 'module',
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
+      const fullUrl = `${window.location.origin}${data.url}`;
+      setShareUrl(fullUrl);
+    } catch (err) {
+      setShareErr(err instanceof Error ? err.message : '生成分享失败');
+    } finally {
+      setSharing(false);
+    }
+  };
+
+  const copyShareUrl = async () => {
+    if (!shareUrl) return;
+    await navigator.clipboard.writeText(shareUrl);
+    setShareCopied(true);
+    setTimeout(() => setShareCopied(false), 1500);
+  };
+
   return (
     <div className="min-h-screen bg-bg-root">
       {/* Hero */}
@@ -489,6 +570,12 @@ export default function VideoTeardownPage() {
               saveToSkuLibrary={saveToSkuLibrary}
               savingToSku={savingToSku}
               savedSkuId={savedSkuId}
+              shareUrl={shareUrl}
+              sharing={sharing}
+              shareErr={shareErr}
+              shareCopied={shareCopied}
+              generateShare={generateShare}
+              copyShareUrl={copyShareUrl}
             />
           )}
         </main>
@@ -537,6 +624,12 @@ function TeardownResultView({
   saveToSkuLibrary,
   savingToSku,
   savedSkuId,
+  shareUrl,
+  sharing,
+  shareErr,
+  shareCopied,
+  generateShare,
+  copyShareUrl,
 }: {
   result: TeardownResult;
   copyPrompt: (idx: number, p: string) => void;
@@ -546,6 +639,12 @@ function TeardownResultView({
   saveToSkuLibrary: () => Promise<void>;
   savingToSku: boolean;
   savedSkuId: string | null;
+  shareUrl: string | null;
+  sharing: boolean;
+  shareErr: string;
+  shareCopied: boolean;
+  generateShare: () => Promise<void>;
+  copyShareUrl: () => Promise<void>;
 }) {
   const sb = result.storyboard;
   const totalDuration = sb.scenes.reduce((sum, s) => sum + s.duration_seconds, 0);
@@ -611,8 +710,41 @@ function TeardownResultView({
           >
             ⬇ 导出 JSON
           </button>
+          {shareUrl ? (
+            <div className="flex items-center gap-1 border border-success/40 bg-success/5 rounded px-2 py-1.5">
+              <button
+                onClick={copyShareUrl}
+                className={`text-[10px] font-mono px-1.5 py-0.5 rounded ${
+                  shareCopied ? 'bg-success/30 text-success' : 'text-success hover:bg-success/10'
+                }`}
+              >
+                {shareCopied ? '✓ 已复制' : '📋 复制'}
+              </button>
+              <a
+                href={shareUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[10px] font-mono text-success underline truncate max-w-[180px]"
+                title={shareUrl}
+              >
+                {shareUrl.replace(/^https?:\/\//, '').slice(0, 30)}...
+              </a>
+            </div>
+          ) : (
+            <button
+              onClick={generateShare}
+              disabled={sharing}
+              className="text-[11px] font-mono text-cat-content border border-cat-content/40 hover:bg-cat-content/10 rounded px-3 py-1.5 disabled:opacity-40"
+              title="生成 7 天有效公开分享链接, 朋友打开看到完整 storyboard + wenai 品牌"
+            >
+              {sharing ? '生成中...' : '🔗 公开分享'}
+            </button>
+          )}
         </div>
       </div>
+      {shareErr && (
+        <div className="text-[10px] text-error font-mono">✗ {shareErr}</div>
+      )}
 
       {/* Scene 卡片 */}
       <div className="space-y-3">
