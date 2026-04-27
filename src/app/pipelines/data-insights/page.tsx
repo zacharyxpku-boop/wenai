@@ -117,7 +117,7 @@ export default function DataInsightsPage() {
   const [showRaw, setShowRaw] = useState(false);
 
   // 从 SKU 库构造 benchmark 文本 · ab-test 写的 performance 真兑现
-  const loadSkuBenchmark = () => {
+  const loadSkuBenchmark = async () => {
     if (mySkus.length === 0) {
       setError('SKU 库还空, 先在 ab-test 投放回填一些数据');
       return;
@@ -153,7 +153,7 @@ export default function DataInsightsPage() {
       }
     }
 
-    const text = `
+    let text = `
 【全店 SKU 投放 benchmark · 来自 wenai SKU 性能库】
 样本: ${ctrs.length} 个已投放 SKU (共 ${mySkus.length} 个 SKU 在库)
 
@@ -170,6 +170,43 @@ ${worst3.map((x, i) => `${i + 1}. ${x.name} (${x.category}) · CTR ${x.ctr.toFix
 ${aggregateByCategory(ctrs)}
 `.trim();
 
+    // 跨 org 匿名 benchmark · 当前 SKU 焦点 + 该品类全 wenai 池子分位
+    if (activeSkuId) {
+      const focus = mySkus.find(s => s.id === activeSkuId);
+      if (focus?.category && (focus.performance?.bestCtr || focus.performance?.ctr || focus.performance?.cpc)) {
+        const ctrVal = focus.performance?.bestCtr ?? focus.performance?.ctr ?? 0;
+        const cpcVal = focus.performance?.cpc ?? 0;
+        try {
+          const queries: Promise<Response>[] = [];
+          if (ctrVal > 0) {
+            queries.push(fetch(`/api/user/benchmark?metric=ctr&category=${encodeURIComponent(focus.category)}&value=${ctrVal}`));
+          }
+          if (cpcVal > 0) {
+            queries.push(fetch(`/api/user/benchmark?metric=cpc&category=${encodeURIComponent(focus.category)}&value=${cpcVal}`));
+          }
+          const res = await Promise.all(queries);
+          const snaps = await Promise.all(res.map(r => r.json()));
+          const useful = snaps.filter(s => s.count >= 5);
+          if (useful.length > 0) {
+            const lines: string[] = ['', '【跨 wenai 商家匿名 benchmark · 该品类全池子】'];
+            for (const s of useful) {
+              const verdict = s.metric === 'ctr'
+                ? (s.yourPercentile >= 75 ? '头部' : s.yourPercentile >= 50 ? '中上' : s.yourPercentile >= 25 ? '中位下' : '偏低')
+                : (s.yourPercentile >= 75 ? '极优 (低)' : s.yourPercentile >= 50 ? '中等偏低' : s.yourPercentile >= 25 ? '中位偏高' : '偏高');
+              const suffix = s.metric === 'ctr' ? '%' : ' ¥';
+              lines.push(
+                `${s.metric.toUpperCase()}: 你 ${s.yourValue.toFixed(2)}${suffix} · 同品类 ${s.count} 个 SKU 中 ${s.metric === 'ctr' ? '排前' : '低过'} ${100 - s.yourPercentile}% (${verdict})`,
+                `  分位: p10=${s.p10}${suffix} · p25=${s.p25}${suffix} · p50=${s.p50}${suffix} · p75=${s.p75}${suffix} · p90=${s.p90}${suffix}`,
+              );
+            }
+            text += '\n' + lines.join('\n');
+          }
+        } catch {
+          // 跨 org benchmark 失败不阻塞主链路
+        }
+      }
+    }
+
     setData(text);
     setBenchmarkLoaded(true);
     setError('');
@@ -177,7 +214,7 @@ ${aggregateByCategory(ctrs)}
 
   const buildPrompt = () => `
 你是一个跨境/本土电商 15 年实战的数据分析师 + 操盘手, 帮商家从一段销售数据中挖出洞察 + 下一步动作。
-${benchmarkLoaded ? '\n注意: 本次数据是基于商家在 wenai 自己跑过的 ab-test 真实回填数据生成的 benchmark, 是该商家自己的样本(不是行业大盘), 给的判断和建议要按这个上下文调整。' : ''}
+${benchmarkLoaded ? '\n注意: 本次数据来自 wenai 真实回填的投放数据, 含商家自己的 SKU 池 + 跨 wenai 全体商家在该品类的匿名 percentile 分位 (有时会附 p10-p90)。判断时要把单 SKU 的位置在两层池子里都说清楚, 并基于分位数给"加预算 / 改图 / 杀验"的具体阈值建议, 不要泛泛而谈。' : ''}
 
 【商家信息】
 - 渠道: ${CHANNEL_LABELS[channel]}
