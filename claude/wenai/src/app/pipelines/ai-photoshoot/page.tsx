@@ -382,6 +382,55 @@ export default function AIPhotoshootPage() {
     document.body.removeChild(a);
   };
 
+  const [sharing, setSharing] = useState(false);
+  const [shareUrl, setShareUrl] = useState<string | null>(null);
+
+  const handleShare = async () => {
+    if (images.length === 0) return;
+    setSharing(true);
+    try {
+      // 拼成 Markdown · /share/[id] 页用 ReactMarkdown 渲染 ![]() 图片
+      const modeMeta = MODES[mode];
+      const lines = [
+        `## ${modeMeta.icon} ${modeMeta.title}`,
+        '',
+        productHint ? `**产品**: ${productHint}` : '',
+        extraPrompt ? `**额外要求**: ${extraPrompt.slice(0, 200)}` : '',
+        '',
+        `生成 ${images.length} 张:`,
+        '',
+        ...images.map((img, i) => `![${modeMeta.title} ${i + 1}](${img.url})\n`),
+        '',
+        '---',
+        '',
+        '> 由 [wenai AI 影棚](/pipelines/ai-photoshoot) 生成 · GPT Image 2 同款 OpenAI 模型 · 7 天有效',
+      ].filter(Boolean).join('\n');
+
+      const res = await fetch('/api/share', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          moduleId: 'ai-photoshoot',
+          title: `${modeMeta.title} · ${productHint || '电商图集'}`,
+          content: lines,
+          source: 'module',
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
+      const url = `${window.location.origin}/share/${data.id}`;
+      setShareUrl(url);
+      // 自动复制到剪贴板
+      try {
+        await navigator.clipboard.writeText(url);
+      } catch {}
+    } catch (err) {
+      setError(err instanceof Error ? err.message : '分享失败');
+    } finally {
+      setSharing(false);
+    }
+  };
+
   const downloadAllZip = async () => {
     if (images.length === 0) return;
     const zip = new JSZip();
@@ -744,7 +793,14 @@ export default function AIPhotoshootPage() {
                     </div>
                   )}
                 </div>
-                <div className="flex gap-2">
+                <div className="flex gap-2 flex-wrap">
+                  <button
+                    onClick={handleShare}
+                    disabled={sharing}
+                    className="px-3 py-1.5 border border-accent/40 text-accent text-[11px] font-mono rounded hover:bg-accent/10 disabled:opacity-50"
+                  >
+                    {sharing ? '分享中...' : '🔗 公开分享'}
+                  </button>
                   <button
                     onClick={downloadAllZip}
                     className="px-3 py-1.5 border border-accent/40 text-accent text-[11px] font-mono rounded hover:bg-accent/10"
@@ -759,6 +815,33 @@ export default function AIPhotoshootPage() {
                   </button>
                 </div>
               </div>
+
+              {shareUrl && (
+                <div className="border border-success/40 bg-success/5 rounded p-3 flex items-center justify-between gap-3 flex-wrap">
+                  <div className="flex-1 min-w-0">
+                    <div className="text-[10px] font-mono text-success uppercase tracking-wider mb-1">
+                      ✓ 分享链接已复制(7 天有效)
+                    </div>
+                    <code className="text-[11px] font-mono text-text-primary truncate block">
+                      {shareUrl}
+                    </code>
+                  </div>
+                  <a
+                    href={shareUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-[10px] font-mono text-accent border border-accent/30 hover:bg-accent/10 rounded px-2 py-1"
+                  >
+                    打开 →
+                  </a>
+                  <button
+                    onClick={() => setShareUrl(null)}
+                    className="text-[10px] font-mono text-text-tertiary hover:text-text-primary"
+                  >
+                    ✗
+                  </button>
+                </div>
+              )}
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {images.map((img, idx) => (
