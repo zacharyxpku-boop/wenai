@@ -1016,6 +1016,7 @@ export default function Dashboard() {
           <div className="flex flex-wrap gap-x-4 gap-y-2 text-[11px] font-mono">
             <a href="/docs" className="text-text-secondary hover:text-accent">手册</a>
             <a href="/cases" className="text-text-secondary hover:text-accent">案例</a>
+            <a href="/benchmark" className="text-accent hover:underline">行业基线</a>
             <a href="/pricing" className="text-text-secondary hover:text-accent">定价</a>
             <a href="/enterprise" className="text-text-secondary hover:text-accent">企业版</a>
             <a href="/status" className="text-text-secondary hover:text-accent">状态</a>
