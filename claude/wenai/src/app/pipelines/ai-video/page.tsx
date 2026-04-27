@@ -6,9 +6,11 @@ import {
   resolvePrompt,
   CATEGORY_LABELS,
   STYLE_LABELS,
+  SOP_PRESETS,
   type EcomCategory,
   type EcomScenario,
   type EcomStyle,
+  type SopPreset,
 } from '@/lib/ecom-prompts';
 
 /**
@@ -113,6 +115,18 @@ export default function AIVideoPage() {
 
   const VIDEO_SCENARIOS: EcomScenario[] = ['video-display', 'video-usage', 'video-lifestyle'];
 
+  // 视频 SOP 一键预设 · 选完自动 set 品类 + 默认场景
+  const applySop = (sop: SopPreset) => {
+    setEcomCategory(sop.category);
+    setEcomStyle(sop.defaultStyle);
+    const videoScenario = sop.scenarios.find(s => s.startsWith('video-')) as EcomScenario | undefined;
+    if (videoScenario) setEcomVideoScenario(videoScenario);
+    setShowEcomPanel(true);
+  };
+
+  // 只展示含视频场景的 SOP
+  const VIDEO_SOPS = SOP_PRESETS.filter(s => s.scenarios.some(sc => sc.startsWith('video-')));
+
   const applyEcomTemplate = () => {
     const resolved = resolvePrompt({
       category: ecomCategory,
@@ -207,6 +221,40 @@ export default function AIVideoPage() {
             <span className="text-accent">真人拍摄+剪辑 ¥500-3K/条 → AI 一条 ¥3-7</span>。
             视频号/抖音/小红书/Reels 直接传。
           </p>
+
+          {/* SOP 一键卡 (含视频场景的预设) */}
+          <div className="mt-5">
+            <div className="flex items-center gap-2 mb-2.5">
+              <span className="text-[10px] font-mono text-accent uppercase tracking-wider">
+                🎯 一键带货视频预设
+              </span>
+              <div className="flex-1 h-px bg-accent/20" />
+              <span className="text-[10px] font-mono text-text-tertiary">
+                {VIDEO_SOPS.length} 套行业模板
+              </span>
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5">
+              {VIDEO_SOPS.map(sop => (
+                <button
+                  key={sop.id}
+                  onClick={() => applySop(sop)}
+                  className="group text-left border border-border-subtle hover:border-accent/60 bg-bg-surface/40 hover:bg-bg-surface rounded-lg p-3 transition-all hover:-translate-y-0.5 hover:shadow-[0_4px_16px_rgba(200,151,90,0.12)]"
+                >
+                  <div className="flex items-center gap-1.5 mb-1.5">
+                    <span className="text-[10px] font-mono text-accent">
+                      {CATEGORY_LABELS[sop.category].split(' ')[0]}
+                    </span>
+                  </div>
+                  <div className="text-[12px] font-semibold text-text-primary group-hover:text-accent transition-colors mb-1 leading-tight">
+                    {sop.title}
+                  </div>
+                  <div className="text-[10px] text-text-tertiary leading-relaxed line-clamp-2">
+                    {sop.desc}
+                  </div>
+                </button>
+              ))}
+            </div>
+          </div>
 
           {/* 行业模板 */}
           <div className="mt-5 border border-accent/30 bg-accent/5 rounded-lg overflow-hidden">

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { checkRateLimit } from '@/lib/ratelimit';
 import { verifyToken, getCookieName } from '@/lib/auth';
+import { checkCostCap, recordCost, COST_ESTIMATE_CENTS } from '@/lib/cost-cap';
 
 /**
  * OpenAI gpt-image-1 后端 · AI 影棚旗舰模块
@@ -295,19 +296,40 @@ export async function POST(request: NextRequest) {
     );
   }
 
+  // 单 org 24h 成本闸 · 防客户/恶意用户烧爆 HappyHorse 配额
+  const estCents = quality === 'high' ? COST_ESTIMATE_CENTS['image-high'] : COST_ESTIMATE_CENTS['image-medium'];
+  const cap = await checkCostCap(rateKey, estCents);
+  if (!cap.allowed) {
+    return NextResponse.json(
+      {
+        error: cap.reason ?? '今日成本配额已达上限',
+        code: 'COST_CAP_REACHED',
+        currentCny: +(cap.currentCents / 100).toFixed(2),
+        capCny: +(cap.capCents / 100).toFixed(2),
+        remainingCny: +(cap.remainingCents / 100).toFixed(2),
+      },
+      { status: 429 }
+    );
+  }
+
   try {
     // 收集垫图: 优先用 referenceImages 数组, 其次用单图 referenceImage (历史兼容)
     const refList: string[] = body.referenceImages && body.referenceImages.length > 0
       ? body.referenceImages
       : (body.referenceImage ? [body.referenceImage] : []);
 
-    return await viaHappyhorse({
+    const response = await viaHappyhorse({
       apiKey: happyhorseKey,
       prompt: body.prompt,
       refs: refList,
       size,
       scenario: body.scenario,
     });
+    // 记录实际开销 (HappyHorse 不返回成本, 按估算累加)
+    if (response.status === 200) {
+      await recordCost(rateKey, estCents);
+    }
+    return response;
   } catch (err) {
     console.error('[openai-image] fatal', err);
     return NextResponse.json(

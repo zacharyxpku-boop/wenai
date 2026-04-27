@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { checkRateLimit } from '@/lib/ratelimit';
 import { verifyToken, getCookieName } from '@/lib/auth';
+import { checkCostCap, recordCost, COST_ESTIMATE_CENTS } from '@/lib/cost-cap';
 
 /**
  * AI 视频生成 · 阿里通义万相 wanx2.1 i2v (image-to-video)
@@ -310,12 +311,30 @@ export async function POST(request: NextRequest) {
     }
   }
 
+  // 单 org 24h 成本闸 · 视频比图贵, 阈值收紧
+  const estVideoCents = resolution === '1080P'
+    ? COST_ESTIMATE_CENTS['video-1080p']
+    : COST_ESTIMATE_CENTS['video-720p'];
+  const cap = await checkCostCap(rateKey, estVideoCents);
+  if (!cap.allowed) {
+    return NextResponse.json(
+      {
+        error: cap.reason ?? '今日成本配额已达上限',
+        code: 'COST_CAP_REACHED',
+        currentCny: +(cap.currentCents / 100).toFixed(2),
+        capCny: +(cap.capCents / 100).toFixed(2),
+        remainingCny: +(cap.remainingCents / 100).toFixed(2),
+      },
+      { status: 429 }
+    );
+  }
+
   // Provider 选择: HappyHorse 优先 (国内中转 + base64 直传)
   const happyhorseKey = process.env.HAPPYHORSE_API_KEY;
   const dashscopeKey = process.env.AI_API_KEY;
 
   if (happyhorseKey) {
-    return await viaHappyhorseHh({
+    const r = await viaHappyhorseHh({
       apiKey: happyhorseKey,
       prompt: body.prompt,
       imageUrl: body.imageUrl,
@@ -326,6 +345,8 @@ export async function POST(request: NextRequest) {
       watermark,
       scenario: body.scenario,
     });
+    if (r.status === 200) await recordCost(rateKey, estVideoCents);
+    return r;
   }
 
   // DashScope 直连 fallback (要求公网 imageUrl)

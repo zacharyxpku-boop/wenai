@@ -897,29 +897,49 @@ export default function AIPhotoshootPage() {
               </div>
 
               {shareUrl && (
-                <div className="border border-success/40 bg-success/5 rounded p-3 flex items-center justify-between gap-3 flex-wrap">
+                <div className="border border-success/40 bg-success/5 rounded-lg p-4 flex items-start justify-between gap-4 flex-wrap animate-fade-up">
                   <div className="flex-1 min-w-0">
-                    <div className="text-[10px] font-mono text-success uppercase tracking-wider mb-1">
-                      ✓ 分享链接已复制(7 天有效)
+                    <div className="text-[10px] font-mono text-success uppercase tracking-wider mb-1.5">
+                      ✓ 分享链接已复制 · 7 天有效
                     </div>
-                    <code className="text-[11px] font-mono text-text-primary truncate block">
+                    <code className="text-[11px] font-mono text-text-primary block break-all bg-bg-root/50 border border-border-subtle rounded px-2 py-1.5">
                       {shareUrl}
                     </code>
+                    <div className="flex gap-2 mt-2">
+                      <a
+                        href={shareUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="text-[10px] font-mono text-accent border border-accent/30 hover:bg-accent/10 rounded px-2 py-1"
+                      >
+                        🔗 打开 →
+                      </a>
+                      <button
+                        onClick={() => navigator.clipboard.writeText(shareUrl)}
+                        className="text-[10px] font-mono text-text-secondary border border-border-default hover:border-accent/40 rounded px-2 py-1"
+                      >
+                        📋 再次复制
+                      </button>
+                      <button
+                        onClick={() => setShareUrl(null)}
+                        className="ml-auto text-[10px] font-mono text-text-tertiary hover:text-text-primary"
+                      >
+                        ✗ 关闭
+                      </button>
+                    </div>
                   </div>
-                  <a
-                    href={shareUrl}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="text-[10px] font-mono text-accent border border-accent/30 hover:bg-accent/10 rounded px-2 py-1"
-                  >
-                    打开 →
-                  </a>
-                  <button
-                    onClick={() => setShareUrl(null)}
-                    className="text-[10px] font-mono text-text-tertiary hover:text-text-primary"
-                  >
-                    ✗
-                  </button>
+                  {/* QR 码 · 手机扫一扫直接打开分享页 */}
+                  <div className="flex flex-col items-center gap-1">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={`https://api.qrserver.com/v1/create-qr-code/?size=120x120&margin=8&data=${encodeURIComponent(shareUrl)}`}
+                      alt="扫码看图"
+                      className="w-[120px] h-[120px] rounded bg-white p-1"
+                      width={120}
+                      height={120}
+                    />
+                    <span className="text-[9px] font-mono text-text-tertiary">手机扫一扫</span>
+                  </div>
                 </div>
               )}
 
