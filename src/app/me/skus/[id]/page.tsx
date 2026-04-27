@@ -11,6 +11,14 @@ interface StatusEvent {
   reason?: string;
 }
 
+interface CostSummary {
+  todayCny: number;
+  todayCalls: number;
+  skuCount: number;
+  avgCostPerSkuCny: number;
+  byModule: Record<string, { cents: number; count: number }>;
+}
+
 interface Sku {
   id: string;
   orgId: string;
@@ -59,6 +67,14 @@ export default function SkuDetailPage() {
   const [editingNotes, setEditingNotes] = useState(false);
   const [notesDraft, setNotesDraft] = useState('');
   const [savingNotes, setSavingNotes] = useState(false);
+  const [costSummary, setCostSummary] = useState<CostSummary | null>(null);
+
+  useEffect(() => {
+    fetch('/api/user/cost-summary')
+      .then(r => r.json())
+      .then(d => setCostSummary(d as CostSummary))
+      .catch(() => {});
+  }, []);
 
   useEffect(() => {
     if (!params.id) return;
@@ -214,6 +230,45 @@ export default function SkuDetailPage() {
           })}
         </div>
       </section>
+
+      {/* 成本概况 · 用户自己看烧钱速度 */}
+      {costSummary && (
+        <section className="mb-6 border border-border-subtle rounded-lg p-4 bg-bg-surface/30">
+          <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
+            <h2 className="text-[12px] font-mono text-text-tertiary uppercase tracking-wider">
+              💸 我在 wenai 的成本概况
+            </h2>
+            <span className="text-[9px] font-mono text-text-tertiary">phase-1: 全用户视角 · phase-2 精到单 SKU</span>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-[12px]">
+            <div className="border border-accent/30 bg-accent/5 rounded p-2">
+              <div className="text-[9px] font-mono text-text-tertiary uppercase">今日总花费</div>
+              <div className="text-lg font-bold text-accent tabular-nums">¥{costSummary.todayCny.toFixed(2)}</div>
+            </div>
+            <div className="border border-border-subtle rounded p-2 bg-bg-root/30">
+              <div className="text-[9px] font-mono text-text-tertiary uppercase">今日调用</div>
+              <div className="text-lg font-bold text-text-primary tabular-nums">{costSummary.todayCalls}</div>
+            </div>
+            <div className="border border-border-subtle rounded p-2 bg-bg-root/30">
+              <div className="text-[9px] font-mono text-text-tertiary uppercase">SKU 库总数</div>
+              <div className="text-lg font-bold text-text-primary tabular-nums">{costSummary.skuCount}</div>
+            </div>
+            <div className="border border-cat-content/30 bg-cat-content/5 rounded p-2">
+              <div className="text-[9px] font-mono text-text-tertiary uppercase">每 SKU 均成本</div>
+              <div className="text-lg font-bold text-cat-content tabular-nums">¥{costSummary.avgCostPerSkuCny.toFixed(2)}</div>
+            </div>
+          </div>
+          {Object.keys(costSummary.byModule).length > 0 && (
+            <div className="mt-3 flex flex-wrap gap-1.5">
+              {Object.entries(costSummary.byModule).map(([m, agg]) => (
+                <span key={m} className="text-[10px] font-mono px-2 py-0.5 border border-border-subtle rounded text-text-secondary">
+                  {m} ¥{(agg.cents / 100).toFixed(2)} <span className="text-text-tertiary">×{agg.count}</span>
+                </span>
+              ))}
+            </div>
+          )}
+        </section>
+      )}
 
       {/* 状态变更历史 · MOAT-05 真深度 */}
       {sku.statusHistory && sku.statusHistory.length > 0 && (

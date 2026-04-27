@@ -36,6 +36,14 @@ export default function MySkusPage() {
   const [adding, setAdding] = useState(false);
   const [newName, setNewName] = useState('');
   const [newCategory, setNewCategory] = useState('');
+  const [todayCny, setTodayCny] = useState<number | null>(null);
+
+  useEffect(() => {
+    fetch('/api/user/cost-summary')
+      .then(r => r.json())
+      .then(d => setTodayCny(d.todayCny))
+      .catch(() => {});
+  }, []);
 
   const load = () => {
     setLoading(true);
@@ -111,8 +119,15 @@ export default function MySkusPage() {
   return (
     <div className="max-w-[1100px] mx-auto py-8 px-6">
       <div className="mb-6 pb-4 border-b border-border-subtle">
-        <div className="text-[10px] font-mono text-accent uppercase tracking-[0.15em] mb-1">
-          MY SKU LIBRARY · 我的 SKU 库
+        <div className="flex items-center justify-between mb-1 flex-wrap gap-2">
+          <div className="text-[10px] font-mono text-accent uppercase tracking-[0.15em]">
+            MY SKU LIBRARY · 我的 SKU 库
+          </div>
+          {todayCny !== null && (
+            <span className="text-[10px] font-mono text-text-tertiary">
+              今日累计花费 <span className="text-accent font-bold tabular-nums">¥{todayCny.toFixed(2)}</span>
+            </span>
+          )}
         </div>
         <h1 className="text-2xl lg:text-3xl font-bold text-text-primary mb-2 font-[family-name:var(--font-outfit)]">
           你跑过的 SKU 都在这
