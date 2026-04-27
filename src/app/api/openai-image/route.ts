@@ -47,6 +47,7 @@ interface GenerateBody {
   n?: number;
   fromPipeline?: boolean;
   dryRun?: boolean;
+  skuId?: string;  // 关联到我的 SKU 库 (前端从 ?skuId= 读到带过来)
 }
 
 const SCENARIO_ALLOWED = new Set([
@@ -330,6 +331,7 @@ export async function POST(request: NextRequest) {
       await recordCostWithDetail(rateKey, estCents, {
         module: 'openai-image',
         taskId,
+        skuId: body.skuId,
         meta: { scenario: body.scenario, quality, size, count: n },
       });
     }

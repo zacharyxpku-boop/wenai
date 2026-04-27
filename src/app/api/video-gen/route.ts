@@ -47,6 +47,7 @@ interface VideoBody {
   watermark?: boolean;
   fromPipeline?: boolean;
   dryRun?: boolean;
+  skuId?: string;
 }
 
 const SCENARIO_ALLOWED = new Set(['model-display', 'product-rotate', 'lifestyle-clip', 'custom']);
@@ -348,6 +349,7 @@ export async function POST(request: NextRequest) {
       await recordCostWithDetail(rateKey, estVideoCents, {
         module: 'video-gen',
         taskId,
+        skuId: body.skuId,
         meta: { scenario: body.scenario, duration, model, size: resolution },
       });
     }

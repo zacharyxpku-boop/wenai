@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import Link from 'next/link';
 import JSZip from 'jszip';
 import { applyImageWatermark } from '@/lib/aigc';
@@ -365,6 +365,7 @@ export default function AIPhotoshootPage() {
           quality,
           n,
           fromPipeline: false,
+          skuId: activeSkuId,
         }),
       });
       const data = await res.json();
@@ -398,6 +399,15 @@ export default function AIPhotoshootPage() {
 
   const [sharing, setSharing] = useState(false);
   const [shareUrl, setShareUrl] = useState<string | null>(null);
+  // 关联到我的 SKU (从 URL ?skuId= 读, 用户从 SKU 详情页跳来时带)
+  const [activeSkuId, setActiveSkuId] = useState<string | null>(null);
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const sp = new URLSearchParams(window.location.search);
+    const sid = sp.get('skuId');
+    if (sid) setActiveSkuId(sid);
+  }, []);
+
   const [savingSku, setSavingSku] = useState(false);
   const [savedSku, setSavedSku] = useState(false);
 
@@ -530,6 +540,15 @@ export default function AIPhotoshootPage() {
           </div>
           <h1 className="text-3xl lg:text-4xl font-bold text-text-primary mb-3 font-[family-name:var(--font-outfit)]">
             AI 影棚 · 替你出 ¥5000 一组的电商图
+            {activeSkuId && (
+              <Link
+                href={`/me/skus/${activeSkuId}`}
+                className="ml-3 text-[11px] font-mono text-cat-content border border-cat-content/40 hover:bg-cat-content/10 rounded px-2 py-0.5 align-middle"
+                title="本次跑的所有花费会归到这个 SKU"
+              >
+                📦 关联 SKU: {activeSkuId.slice(0, 12)}…
+              </Link>
+            )}
           </h1>
           <p className="text-[13px] lg:text-[14px] text-text-secondary leading-relaxed max-w-[760px]">
             生成 AI 模特 → 模特换装 → 换姿 → 换景 → OOTD 拆解,完整闭环。
