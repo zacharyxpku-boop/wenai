@@ -102,6 +102,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.95, // SEO 入口 · 高权重
     },
     {
+      url: `${BASE}/me`,
+      lastModified: now,
+      changeFrequency: 'always',
+      priority: 0.6,
+    },
+    {
       url: `${BASE}/invite`,
       lastModified: now,
       changeFrequency: 'monthly',
