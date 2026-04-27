@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useActiveSkuId } from '@/lib/use-active-sku';
 import { ActiveSkuBadge } from '@/components/ActiveSkuBadge';
 import { useMySkus } from '@/lib/use-my-skus';
+import { ShareButton } from '@/components/ShareButton';
 
 /**
  * 销售转化 Agent · /pipelines/customer-service
@@ -394,7 +395,7 @@ ${customerMsg}
           )}
 
           {!running && result && (
-            <ResultView result={result} copyText={copyText} copied={copied} intent={intent} />
+            <ResultView result={result} copyText={copyText} copied={copied} intent={intent} customerMsg={customerMsg} lang={lang} />
           )}
         </main>
       </div>
@@ -430,20 +431,81 @@ function Tip({ emoji, title, desc }: { emoji: string; title: string; desc: strin
 }
 
 function ResultView({
-  result, copyText, copied, intent,
+  result, copyText, copied, intent, customerMsg, lang,
 }: {
   result: ServiceResult;
   copyText: (k: string, text: string) => void;
   copied: string | null;
   intent: Intent;
+  customerMsg: string;
+  lang: Lang;
 }) {
+  const buildShareMd = () => {
+    const lines: string[] = [];
+    lines.push(`# 销售转化客服回复 · ${INTENT_LABELS[intent].txt}`);
+    lines.push('');
+    lines.push(`> 客户原话: ${customerMsg.slice(0, 200)}`);
+    lines.push('');
+    lines.push(`**识别意图**: ${result.intentDetected}`);
+    lines.push(`**客户情绪**: ${result.emotion} · **紧急度**: ${result.urgency}`);
+    lines.push('');
+    lines.push('## 三版回复');
+    lines.push('');
+    lines.push('### 🛡️ 保守版');
+    lines.push(result.replies.safe.text);
+    lines.push(`> ${result.replies.safe.expected}`);
+    lines.push('');
+    lines.push('### 🚀 转化版');
+    lines.push(result.replies.convert.text);
+    lines.push(`> ${result.replies.convert.expected}`);
+    lines.push('');
+    lines.push('### 💗 共情版');
+    lines.push(result.replies.empathy.text);
+    lines.push(`> ${result.replies.empathy.expected}`);
+    lines.push('');
+    if (result.hooks?.length) {
+      lines.push('## 🪝 下一步钩子');
+      result.hooks.forEach(h => {
+        lines.push(`- 客户「${h.trigger}」 → 回: ${h.reply}`);
+      });
+      lines.push('');
+    }
+    if (result.upsells?.length) {
+      lines.push('## 📈 升单建议');
+      result.upsells.forEach(u => {
+        lines.push(`- **${u.product}**: ${u.pitch}`);
+      });
+      lines.push('');
+    }
+    if (result.forbidden?.length) {
+      lines.push('## 🚫 这次不能说');
+      result.forbidden.forEach(f => lines.push(`- ${f}`));
+      lines.push('');
+    }
+    lines.push('---');
+    lines.push('*由 [wenai 销售转化客服](https://wenai-deploy.vercel.app/pipelines/customer-service) 生成 · 想拿你自己的客服对话?*');
+    return lines.join('\n');
+  };
+
   const URGENCY_COLOR: Record<string, string> = {
     P0: 'text-error border-error/40 bg-error/10',
     P1: 'text-warning border-warning/40 bg-warning/10',
     P2: 'text-success border-success/40 bg-success/10',
   };
+  void lang;
   return (
     <>
+      {/* 分享按钮 */}
+      <div className="flex justify-end">
+        <ShareButton
+          buildPayload={() => ({
+            moduleId: 'customer-service',
+            title: `${INTENT_LABELS[intent].txt} · 三版客服回复 (${result.urgency})`,
+            content: buildShareMd(),
+            source: 'module' as const,
+          })}
+        />
+      </div>
       {/* 顶部识别摘要 */}
       <section className="border border-accent/30 bg-accent/5 rounded-lg p-4 grid grid-cols-1 md:grid-cols-3 gap-3">
         <div>
