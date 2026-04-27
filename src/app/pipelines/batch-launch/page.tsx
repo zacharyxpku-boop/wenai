@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useMySkus } from '@/lib/use-my-skus';
 import { useActiveSkuId } from '@/lib/use-active-sku';
 import { ActiveSkuBadge } from '@/components/ActiveSkuBadge';
+import { ShareButton } from '@/components/ShareButton';
 
 /**
  * 多 SKU 批量上架 · 把 10 pipelines 串成一条流水线
@@ -780,6 +781,14 @@ function Plan({
           >
             ⬇ 导出完整 SOP (markdown)
           </button>
+          <ShareButton
+            buildPayload={() => ({
+              moduleId: 'batch-launch',
+              title: `批量上架 SOP · ${result.skuPlans.length} SKU × ${PLATFORM_LABELS[platform]}`,
+              content: buildBatchShareMd(result, platform),
+              source: 'module' as const,
+            })}
+          />
         </div>
       </div>
       {saveErr && (
@@ -863,4 +872,45 @@ function Row({ label, value, accent }: { label: string; value: string; accent?: 
       <span className={accent ? 'text-accent font-medium' : 'text-text-secondary'}>{value}</span>
     </div>
   );
+}
+
+function buildBatchShareMd(result: BatchPlan, platform: Platform): string {
+  const lines: string[] = [];
+  lines.push(`# ${result.skuPlans.length} SKU 批量上架 SOP · ${PLATFORM_LABELS[platform]}`);
+  lines.push('');
+  lines.push(`**预估总成本**: ${result.estimatedTotalCost} · **预估总耗时**: ${result.estimatedDuration}`);
+  lines.push('');
+  lines.push('## 整体策略');
+  lines.push('');
+  lines.push(result.overallStrategy);
+  lines.push('');
+  lines.push('## 全局必做 checklist');
+  result.globalChecklist.forEach(c => lines.push(`- [ ] ${c}`));
+  lines.push('');
+  if (result.riskFlags?.length) {
+    lines.push('## ⚠️ 风险预警');
+    result.riskFlags.forEach(r => lines.push(`- ${r}`));
+    lines.push('');
+  }
+  lines.push(`## ${result.skuPlans.length} 个 SKU 各自的 SOP`);
+  lines.push('');
+  result.skuPlans.forEach((sku, i) => {
+    lines.push(`### ${i + 1}. ${sku.skuName} (${sku.category})`);
+    lines.push('');
+    lines.push(`**定位**: ${sku.positioning}`);
+    lines.push('');
+    sku.stages.forEach(s => {
+      lines.push(`#### ${STAGE_LABELS[s.stage]?.icon || ''} ${STAGE_LABELS[s.stage]?.txt || s.stage}`);
+      lines.push(`- prompt: ${s.prompt}`);
+      lines.push(`- 参数: ${s.params}`);
+      lines.push(`- 产出: ${s.expectedOutput}`);
+      lines.push(`- 耗时: ${s.estimatedTime}`);
+      lines.push(`- 验收: ${s.checkCriteria}`);
+      lines.push('');
+    });
+    lines.push('---');
+    lines.push('');
+  });
+  lines.push('*由 [wenai 多 SKU 批量上架](https://wenai-deploy.vercel.app/pipelines/batch-launch) 一键生成 · 想批你自己的 SKU 池?*');
+  return lines.join('\n');
 }
