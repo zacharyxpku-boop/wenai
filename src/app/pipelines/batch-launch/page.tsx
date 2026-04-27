@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { useMySkus } from '@/lib/use-my-skus';
 
 /**
  * 多 SKU 批量上架 · 把 10 pipelines 串成一条流水线
@@ -71,6 +72,30 @@ T 恤 - 女装基础款 - 莫代尔棉, oversize 版型 - ¥69-99
 
 export default function BatchLaunchPage() {
   const [skuList, setSkuList] = useState('');
+
+  // 读 SKU 库 · 让用户从已有 SKU 一键导入到批量列表
+  const { skus: mySkus } = useMySkus(20);
+  const [pickedSkuIds, setPickedSkuIds] = useState<Set<string>>(new Set());
+
+  const togglePickSku = (id: string) => {
+    setPickedSkuIds(prev => {
+      const n = new Set(prev);
+      if (n.has(id)) n.delete(id);
+      else n.add(id);
+      return n;
+    });
+  };
+
+  const importPickedSkus = () => {
+    const picked = mySkus.filter(s => pickedSkuIds.has(s.id));
+    if (picked.length === 0) return;
+    const lines = picked.map(s =>
+      `${s.name} - ${s.category}${s.priceCny ? ' - ' + s.priceCny : ''}${s.notes ? ' - ' + s.notes.slice(0, 60) : ''}`
+    );
+    const merged = skuList ? skuList + '\n' + lines.join('\n') : lines.join('\n');
+    setSkuList(merged);
+    setPickedSkuIds(new Set());
+  };
   const [platform, setPlatform] = useState<Platform>('mixed');
   const [selectedStages, setSelectedStages] = useState<Stage[]>(['discovery', 'photoshoot', 'abtest', 'listing']);
   const [brandContext, setBrandContext] = useState('');
@@ -279,6 +304,49 @@ ${skuList}
       <div className="max-w-[1280px] mx-auto px-6 py-6 grid grid-cols-1 lg:grid-cols-[420px_1fr] gap-6">
         {/* LEFT */}
         <aside className="lg:sticky lg:top-4 lg:self-start space-y-4">
+          {/* SKU 库导入 · 飞轮读侧 */}
+          {mySkus.length > 0 && (
+            <section className="border border-cat-content/30 bg-cat-content/5 rounded-lg p-3">
+              <div className="flex items-center justify-between mb-2 flex-wrap gap-2">
+                <div className="flex items-center gap-1.5">
+                  <span className="text-[10px] font-mono text-cat-content uppercase tracking-wider">
+                    📦 从我的 SKU 库导入
+                  </span>
+                  <span className="text-[9px] font-mono text-text-tertiary tabular-nums">
+                    {mySkus.length} 条
+                  </span>
+                </div>
+                {pickedSkuIds.size > 0 && (
+                  <button
+                    onClick={importPickedSkus}
+                    className="text-[10px] font-mono px-2 py-0.5 bg-cat-content text-bg-root rounded hover:opacity-90"
+                  >
+                    导入选中 {pickedSkuIds.size} 条 →
+                  </button>
+                )}
+              </div>
+              <div className="flex flex-wrap gap-1 max-h-[110px] overflow-y-auto">
+                {mySkus.map(s => {
+                  const picked = pickedSkuIds.has(s.id);
+                  return (
+                    <button
+                      key={s.id}
+                      onClick={() => togglePickSku(s.id)}
+                      className={`text-[10px] font-mono rounded px-1.5 py-0.5 transition-colors ${
+                        picked
+                          ? 'bg-cat-content text-bg-root'
+                          : 'border border-cat-content/30 text-cat-content hover:bg-cat-content/10'
+                      }`}
+                      title={`${s.category} · ${s.status}`}
+                    >
+                      {picked ? '✓ ' : ''}{s.name.length > 14 ? s.name.slice(0, 14) + '…' : s.name}
+                    </button>
+                  );
+                })}
+              </div>
+            </section>
+          )}
+
           <section className="border border-border-subtle rounded-lg p-4 bg-bg-surface/30 space-y-3">
             <div>
               <label className="text-[10px] font-mono text-text-secondary mb-1 block">

@@ -1,7 +1,8 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
+import { useMySkus } from '@/lib/use-my-skus';
 
 /**
  * AI 选品发现 (痛点 #1) · STRATEGY_DEEP L4 列的最大缺口
@@ -78,16 +79,8 @@ export default function ProductDiscoveryPage() {
   const [showRaw, setShowRaw] = useState(false);
 
   // 读 SKU 库 · 飞轮变双向: 已有 SKU 当 context, AI 推相邻互补品类
-  interface UserSku { id: string; name: string; category: string; status: string; platform?: string }
-  const [mySkus, setMySkus] = useState<UserSku[]>([]);
+  const { skus: mySkus } = useMySkus(20);
   const [useSkuContext, setUseSkuContext] = useState(true);
-
-  useEffect(() => {
-    fetch('/api/user/sku-history?limit=20')
-      .then(r => r.json())
-      .then(d => setMySkus((d.skus || []) as UserSku[]))
-      .catch(() => {});
-  }, []);
 
   const skuContextLine = useSkuContext && mySkus.length > 0
     ? `\n\n【商家已有 SKU(请避免重复推荐, 优先推互补/相邻品类)】\n${mySkus.slice(0, 10).map(s => `- ${s.name} (${s.category}, ${s.status})`).join('\n')}`
