@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 interface Sku {
   id: string;
@@ -43,6 +44,7 @@ const STATUS_LABELS: Record<Sku['status'], { txt: string; cls: string }> = {
 };
 
 export default function MySkusPage() {
+  const router = useRouter();
   const [skus, setSkus] = useState<Sku[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -59,6 +61,8 @@ export default function MySkusPage() {
   const [bulkOpProgress, setBulkOpProgress] = useState({ done: 0, total: 0 });
   // 列表内关键字搜索 (前端 filter, 已 load 全量) · '/' 键聚焦
   const [search, setSearch] = useState('');
+  // 列表 j/k 浏览的激活索引 · 与 SKU 详情页同款 vim 流
+  const [activeIdx, setActiveIdx] = useState<number>(-1);
 
   // '/' 键聚焦搜索框 (与 ⌘K 错峰: ⌘K 跳走, / 原地搜)
   // 输入框聚焦时不抢, 让用户能输 '/' 字符本身
@@ -317,6 +321,60 @@ export default function MySkusPage() {
   const staleCount = skus.filter(s =>
     s.status === 'launched' && new Date(s.updatedAt).getTime() < staleCutoff
   ).length;
+
+  // 列表 j/k 浏览 vim 流 (与 SKU 详情页对齐)
+  // - j 下一行 / k 上一行 (首次按落第 0 行)
+  // - Enter 进详情
+  // - x 切选 (与 checkbox 等价)
+  // - Esc 清空 activeIdx 和 selected
+  // - filter/search 变化时 activeIdx 自动夹紧到合法范围
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (e.metaKey || e.ctrlKey || e.altKey || e.shiftKey) return;
+      const tag = (e.target as HTMLElement)?.tagName;
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+      if (filtered.length === 0) return;
+      if (e.key === 'j') {
+        e.preventDefault();
+        setActiveIdx(i => Math.min(i < 0 ? 0 : i + 1, filtered.length - 1));
+      } else if (e.key === 'k') {
+        e.preventDefault();
+        setActiveIdx(i => Math.max(i < 0 ? 0 : i - 1, 0));
+      } else if (e.key === 'Enter' && activeIdx >= 0 && activeIdx < filtered.length) {
+        e.preventDefault();
+        router.push(`/me/skus/${filtered[activeIdx].id}`);
+      } else if (e.key === 'x' && activeIdx >= 0 && activeIdx < filtered.length) {
+        e.preventDefault();
+        const id = filtered[activeIdx].id;
+        setSelected(prev => {
+          const next = new Set(prev);
+          if (next.has(id)) next.delete(id);
+          else next.add(id);
+          return next;
+        });
+      } else if (e.key === 'Escape') {
+        setActiveIdx(-1);
+        setSelected(new Set());
+      }
+    };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, [filtered, activeIdx, router]);
+
+  // activeIdx 变化 → 滚动到视图内 (居中)
+  useEffect(() => {
+    if (activeIdx < 0) return;
+    const el = document.getElementById(`sku-row-${activeIdx}`);
+    el?.scrollIntoView({ block: 'center', behavior: 'smooth' });
+  }, [activeIdx]);
+
+  // filter / search 变了, 把 activeIdx 夹紧防越界
+  useEffect(() => {
+    if (activeIdx >= filtered.length) {
+      setActiveIdx(filtered.length === 0 ? -1 : filtered.length - 1);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filtered.length]);
   const counts = {
     all: skus.length,
     idea: skus.filter(s => s.status === 'idea').length,
@@ -651,13 +709,15 @@ export default function MySkusPage() {
           </div>
         )}
         <div className="space-y-2">
-          {filtered.map(sku => {
+          {filtered.map((sku, i) => {
             const lab = STATUS_LABELS[sku.status];
             const isSelected = selected.has(sku.id);
+            const isActive = i === activeIdx;
             return (
               <div
                 key={sku.id}
-                className={`border rounded-lg p-3 bg-bg-surface/30 transition-colors hover:border-accent/30 ${lab.cls} ${isSelected ? 'ring-1 ring-accent/60' : ''}`}
+                id={`sku-row-${i}`}
+                className={`border rounded-lg p-3 bg-bg-surface/30 transition-colors hover:border-accent/30 ${lab.cls} ${isSelected ? 'ring-1 ring-accent/60' : ''} ${isActive ? 'ring-2 ring-accent shadow-[0_0_0_2px_rgba(200,151,90,0.2)]' : ''}`}
               >
                 <div className="flex items-start justify-between gap-3 flex-wrap">
                   <div className="flex-1 min-w-0 flex items-start gap-2">
