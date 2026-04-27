@@ -3,6 +3,7 @@ import { getReferenceContext } from '@/lib/references';
 import { logUsageEntry } from '@/lib/usage';
 import { checkRateLimit } from '@/lib/ratelimit';
 import { verifyToken, getCookieName } from '@/lib/auth';
+import { checkCostCap, recordCostWithDetail } from '@/lib/cost-cap';
 import { getCategoryPrefix, CATEGORIES } from '@/lib/category-prompts';
 
 const CATEGORY_WHITELIST: Set<string> = new Set(CATEGORIES.map(c => c.id));
@@ -174,6 +175,38 @@ export async function POST(request: NextRequest) {
         { status: 429 }
       );
     }
+
+    // 成本闸 · 决策层模块 token 量差异大, 按 moduleId 分档估算
+    // DeepSeek / qwen 计价 ~¥0.5/百万 token, 含输出保守估
+    const moduleCostCents: Record<string, number> = {
+      'batch-launch': 8,         // 矩阵输出 ~8K token
+      'product-discovery': 5,    // 5-8 SKU 详细
+      'ab-test': 5,              // 9 prompt 变体
+      'data-insights': 5,        // 4-8 洞察 + SOP
+      'intent-mining': 4,        // 5-8 客群
+      copywriting: 2,
+      reviews: 2,
+      'ip-compliance': 2,
+      outreach: 2,
+    };
+    const estChatCents = moduleCostCents[moduleId] ?? 1;
+    const cap = await checkCostCap(rateKey, estChatCents);
+    if (!cap.allowed) {
+      return NextResponse.json(
+        {
+          error: cap.reason ?? '今日成本配额已达上限',
+          code: 'COST_CAP_REACHED',
+          currentCny: +(cap.currentCents / 100).toFixed(2),
+          capCny: +(cap.capCents / 100).toFixed(2),
+        },
+        { status: 429 }
+      );
+    }
+    // 异步 fire-and-forget 写明细 · 不阻塞响应
+    recordCostWithDetail(rateKey, estChatCents, {
+      module: `chat:${moduleId}`,
+      meta: { scenario: moduleId },
+    }).catch(() => {});
   }
 
   // Per-module temperature: lower for deterministic tasks, higher for creative
