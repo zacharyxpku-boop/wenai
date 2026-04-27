@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useMySkus } from '@/lib/use-my-skus';
 import { useActiveSkuId } from '@/lib/use-active-sku';
 import { ActiveSkuBadge } from '@/components/ActiveSkuBadge';
+import { ShareButton } from '@/components/ShareButton';
 
 /**
  * 测款 A-B 实验室 (痛点 #11)
@@ -396,11 +397,57 @@ function ResultView({
     }
   };
 
+  // 公开分享 markdown 构造 · 复用 useShare/ShareButton
+  const buildSharePayload = () => ({
+    moduleId: 'ab-test',
+    title: `测款 9 变体 · ${productHint.slice(0, 40)} (${platformLabel})`,
+    content: [
+      `# 测款 A-B 变体规划 · ${platformLabel}`,
+      ``,
+      `**产品**: ${productHint}`,
+      ``,
+      `## 核心策略`,
+      ``,
+      `${result.productSummary}`,
+      ``,
+      `${result.testStrategy}`,
+      ``,
+      `## 推荐先投`,
+      `**先投 3 个 ID**: ${result.recommendedFirst3.join(' / ')}`,
+      ``,
+      `**预算分配**: ${result.budgetAllocation}`,
+      ``,
+      `**杀/留硬指标**: ${result.killCriteria}`,
+      ``,
+      `## 9 个变体`,
+      ``,
+      ...result.variants.flatMap(v => [
+        `### ${v.id} · ${v.hookType} × ${v.paletteType} (预测 CTR: ${v.predictedCtr})`,
+        ``,
+        `**为何戳人**: ${v.whyHook}`,
+        ``,
+        '```',
+        v.prompt,
+        '```',
+        ``,
+      ]),
+      `## 数据回流 SOP`,
+      ``,
+      result.rollupSop,
+      ``,
+      `---`,
+      `*由 [wenai 测款实验室](https://wenai-deploy.vercel.app/pipelines/ab-test) 生成 · 想测你自己的产品?*`,
+    ].join('\n'),
+    source: 'module' as const,
+  });
+
   return (
     <>
       <section className="border border-accent/30 bg-accent/5 rounded-lg p-4 space-y-2 relative">
         <div className="flex items-center justify-between gap-2 flex-wrap">
           <div className="text-[10px] font-mono text-accent uppercase tracking-wider">核心策略</div>
+          <div className="flex items-center gap-2 flex-wrap">
+          <ShareButton buildPayload={buildSharePayload} />
           <button
             onClick={saveToLibrary}
             disabled={savingSku || savedSku}
@@ -413,6 +460,7 @@ function ResultView({
           >
             {savedSku ? '✓ 已入库 SKU 历史' : savingSku ? '保存中…' : '📦 保存到 SKU 库'}
           </button>
+          </div>
         </div>
         <p className="text-[13px] text-text-primary leading-relaxed">{result.productSummary}</p>
         <p className="text-[12px] text-text-secondary leading-relaxed">{result.testStrategy}</p>

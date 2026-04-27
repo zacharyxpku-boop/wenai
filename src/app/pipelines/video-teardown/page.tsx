@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useActiveSkuId } from '@/lib/use-active-sku';
 import { ActiveSkuBadge } from '@/components/ActiveSkuBadge';
 import { useMySkus } from '@/lib/use-my-skus';
+import { ShareButton } from '@/components/ShareButton';
 
 /**
  * 爆款视频拆解 · /pipelines/video-teardown
@@ -243,12 +244,7 @@ export default function VideoTeardownPage() {
     URL.revokeObjectURL(url);
   };
 
-  // 公开分享 · 借 clico 拉新机制 · 商家分享拆解结果 → 朋友打开看到 wenai 品牌
-  const [shareUrl, setShareUrl] = useState<string | null>(null);
-  const [sharing, setSharing] = useState(false);
-  const [shareErr, setShareErr] = useState('');
-  const [shareCopied, setShareCopied] = useState(false);
-
+  // 公开分享 markdown 构造 · 共享 ShareButton 组件统一 UI
   const buildShareMarkdown = (): string => {
     if (!result) return '';
     const sb = result.storyboard;
@@ -291,38 +287,6 @@ export default function VideoTeardownPage() {
     return `${tplName ? tplName + ' · ' : ''}${sb.scene_count} 镜头爆款拆解 (${HOOK_LABEL[sb.hook_type].txt})`;
   };
 
-  const generateShare = async () => {
-    if (!result) return;
-    setSharing(true);
-    setShareErr('');
-    try {
-      const res = await fetch('/api/share', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          moduleId: 'video-teardown',
-          title: buildShareTitle(),
-          content: buildShareMarkdown(),
-          source: 'module',
-        }),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
-      const fullUrl = `${window.location.origin}${data.url}`;
-      setShareUrl(fullUrl);
-    } catch (err) {
-      setShareErr(err instanceof Error ? err.message : '生成分享失败');
-    } finally {
-      setSharing(false);
-    }
-  };
-
-  const copyShareUrl = async () => {
-    if (!shareUrl) return;
-    await navigator.clipboard.writeText(shareUrl);
-    setShareCopied(true);
-    setTimeout(() => setShareCopied(false), 1500);
-  };
 
   return (
     <div className="min-h-screen bg-bg-root">
@@ -570,12 +534,8 @@ export default function VideoTeardownPage() {
               saveToSkuLibrary={saveToSkuLibrary}
               savingToSku={savingToSku}
               savedSkuId={savedSkuId}
-              shareUrl={shareUrl}
-              sharing={sharing}
-              shareErr={shareErr}
-              shareCopied={shareCopied}
-              generateShare={generateShare}
-              copyShareUrl={copyShareUrl}
+              buildShareMarkdown={buildShareMarkdown}
+              buildShareTitle={buildShareTitle}
             />
           )}
         </main>
@@ -624,12 +584,8 @@ function TeardownResultView({
   saveToSkuLibrary,
   savingToSku,
   savedSkuId,
-  shareUrl,
-  sharing,
-  shareErr,
-  shareCopied,
-  generateShare,
-  copyShareUrl,
+  buildShareMarkdown,
+  buildShareTitle,
 }: {
   result: TeardownResult;
   copyPrompt: (idx: number, p: string) => void;
@@ -639,12 +595,8 @@ function TeardownResultView({
   saveToSkuLibrary: () => Promise<void>;
   savingToSku: boolean;
   savedSkuId: string | null;
-  shareUrl: string | null;
-  sharing: boolean;
-  shareErr: string;
-  shareCopied: boolean;
-  generateShare: () => Promise<void>;
-  copyShareUrl: () => Promise<void>;
+  buildShareMarkdown: () => string;
+  buildShareTitle: () => string;
 }) {
   const sb = result.storyboard;
   const totalDuration = sb.scenes.reduce((sum, s) => sum + s.duration_seconds, 0);
@@ -710,41 +662,16 @@ function TeardownResultView({
           >
             ⬇ 导出 JSON
           </button>
-          {shareUrl ? (
-            <div className="flex items-center gap-1 border border-success/40 bg-success/5 rounded px-2 py-1.5">
-              <button
-                onClick={copyShareUrl}
-                className={`text-[10px] font-mono px-1.5 py-0.5 rounded ${
-                  shareCopied ? 'bg-success/30 text-success' : 'text-success hover:bg-success/10'
-                }`}
-              >
-                {shareCopied ? '✓ 已复制' : '📋 复制'}
-              </button>
-              <a
-                href={shareUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-[10px] font-mono text-success underline truncate max-w-[180px]"
-                title={shareUrl}
-              >
-                {shareUrl.replace(/^https?:\/\//, '').slice(0, 30)}...
-              </a>
-            </div>
-          ) : (
-            <button
-              onClick={generateShare}
-              disabled={sharing}
-              className="text-[11px] font-mono text-cat-content border border-cat-content/40 hover:bg-cat-content/10 rounded px-3 py-1.5 disabled:opacity-40"
-              title="生成 7 天有效公开分享链接, 朋友打开看到完整 storyboard + wenai 品牌"
-            >
-              {sharing ? '生成中...' : '🔗 公开分享'}
-            </button>
-          )}
+          <ShareButton
+            buildPayload={() => ({
+              moduleId: 'video-teardown',
+              title: buildShareTitle(),
+              content: buildShareMarkdown(),
+              source: 'module' as const,
+            })}
+          />
         </div>
       </div>
-      {shareErr && (
-        <div className="text-[10px] text-error font-mono">✗ {shareErr}</div>
-      )}
 
       {/* Scene 卡片 */}
       <div className="space-y-3">
