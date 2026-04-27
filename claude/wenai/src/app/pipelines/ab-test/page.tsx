@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { useMySkus } from '@/lib/use-my-skus';
 
 /**
  * 测款 A-B 实验室 (痛点 #11)
@@ -48,6 +49,9 @@ const PLATFORM_LABELS: Record<Platform, string> = {
 export default function AbTestPage() {
   const [platform, setPlatform] = useState<Platform>('amazon');
   const [productHint, setProductHint] = useState('');
+
+  // 读 SKU 库 · 让用户从已有 SKU 一键填测款
+  const { skus: mySkus } = useMySkus(15);
   const [dailyBudget, setDailyBudget] = useState(500);
   const [primaryDimension, setPrimaryDimension] = useState<Dimension>('hook');
 
@@ -196,6 +200,24 @@ export default function AbTestPage() {
                 rows={3}
                 className="w-full px-3 py-2 bg-bg-surface border border-border-default rounded text-[12px] resize-none"
               />
+              {/* SKU 库快选 · 一键填 */}
+              {mySkus.length > 0 && (
+                <div className="mt-1.5">
+                  <div className="text-[9px] font-mono text-text-tertiary mb-1">📦 一键从 SKU 库填:</div>
+                  <div className="flex flex-wrap gap-1">
+                    {mySkus.slice(0, 8).map(s => (
+                      <button
+                        key={s.id}
+                        onClick={() => setProductHint(s.name + (s.priceCny ? ` ${s.priceCny}` : '') + (s.notes ? ` · ${s.notes.slice(0, 50)}` : ''))}
+                        className="text-[10px] font-mono text-cat-content border border-cat-content/30 hover:bg-cat-content/10 rounded px-1.5 py-0.5"
+                        title={`${s.category} · ${s.status}`}
+                      >
+                        {s.name.length > 14 ? s.name.slice(0, 14) + '…' : s.name}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
 
             <div>
