@@ -135,14 +135,42 @@ export default function Sidebar({ modules, categories, clientName, userRole }: S
         <span className="font-[family-name:var(--font-outfit)] font-semibold">工作台</span>
       </Link>
 
-      {/* 我的 SKU 库 · 决策层数据飞轮入口 */}
-      <div className="mx-3.5 mt-3">
+      {/* 我的 · Dashboard / SKU 库 / 信号 / 省钱 / 设置 */}
+      <div className="mx-3.5 mt-3 space-y-0.5">
+        <a
+          href="/me"
+          className="flex items-center gap-2 px-2.5 py-1.5 rounded text-[12px] font-mono text-accent hover:bg-bg-surface transition-colors"
+        >
+          <span>🏠</span>
+          <span className="font-semibold">总览</span>
+        </a>
         <a
           href="/me/skus"
           className="flex items-center gap-2 px-2.5 py-1.5 rounded text-[12px] font-mono text-text-secondary hover:text-accent hover:bg-bg-surface transition-colors"
         >
           <span>📦</span>
-          <span>我的 SKU 库</span>
+          <span>SKU 库</span>
+        </a>
+        <a
+          href="/me/alerts"
+          className="flex items-center gap-2 px-2.5 py-1.5 rounded text-[12px] font-mono text-text-secondary hover:text-accent hover:bg-bg-surface transition-colors"
+        >
+          <span>🔔</span>
+          <span>信号</span>
+        </a>
+        <a
+          href="/me/savings"
+          className="flex items-center gap-2 px-2.5 py-1.5 rounded text-[12px] font-mono text-text-secondary hover:text-accent hover:bg-bg-surface transition-colors"
+        >
+          <span>💰</span>
+          <span>省钱</span>
+        </a>
+        <a
+          href="/me/settings"
+          className="flex items-center gap-2 px-2.5 py-1.5 rounded text-[12px] font-mono text-text-secondary hover:text-accent hover:bg-bg-surface transition-colors"
+        >
+          <span>⚙️</span>
+          <span>设置</span>
         </a>
       </div>
 
