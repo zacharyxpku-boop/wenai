@@ -78,6 +78,8 @@ export default function SkuDetailPage() {
   const [editingNotes, setEditingNotes] = useState(false);
   const [notesDraft, setNotesDraft] = useState('');
   const [savingNotes, setSavingNotes] = useState(false);
+  const [notesSavedAt, setNotesSavedAt] = useState<Date | null>(null);
+  const [notesDirty, setNotesDirty] = useState(false);
   const [costSummary, setCostSummary] = useState<CostSummary | null>(null);
   const [skuCost, setSkuCost] = useState<{ totalCny: number; callCount: number; byModule: Record<string, { cents: number; count: number }> } | null>(null);
   const [neighbors, setNeighbors] = useState<{ prev: Sku | null; next: Sku | null; pos: number; total: number } | null>(null);
@@ -162,7 +164,29 @@ export default function SkuDetailPage() {
     await updateField({ notes: notesDraft });
     setSavingNotes(false);
     setEditingNotes(false);
+    setNotesSavedAt(new Date());
+    setNotesDirty(false);
   };
+
+  // 自动保存 notes (debounce 1.5s) · 编辑时商家不用怕忘记按保存
+  useEffect(() => {
+    if (!editingNotes) return;
+    if (!sku) return;
+    if (notesDraft === (sku.notes || '')) {
+      setNotesDirty(false);
+      return;
+    }
+    setNotesDirty(true);
+    const timer = setTimeout(async () => {
+      setSavingNotes(true);
+      await updateField({ notes: notesDraft });
+      setSavingNotes(false);
+      setNotesSavedAt(new Date());
+      setNotesDirty(false);
+    }, 1500);
+    return () => clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [notesDraft, editingNotes]);
 
   const deleteSku = async () => {
     if (!sku) return;
@@ -527,34 +551,48 @@ export default function SkuDetailPage() {
 
       {/* notes 编辑 */}
       <section className="mb-6 border border-border-subtle rounded-lg p-4 bg-bg-surface/30">
-        <div className="flex items-center justify-between mb-2">
+        <div className="flex items-center justify-between mb-2 flex-wrap gap-2">
           <h2 className="text-[12px] font-mono text-text-tertiary uppercase tracking-wider">
             📝 备注 / 上下文
           </h2>
-          {!editingNotes ? (
-            <button
-              onClick={() => setEditingNotes(true)}
-              className="text-[10px] font-mono text-accent border border-accent/30 hover:bg-accent/10 rounded px-2 py-0.5"
-            >
-              编辑
-            </button>
-          ) : (
-            <div className="flex gap-1.5">
+          <div className="flex items-center gap-2">
+            {editingNotes && (
+              <span className="text-[10px] font-mono">
+                {savingNotes ? (
+                  <span className="text-warning">保存中…</span>
+                ) : notesDirty ? (
+                  <span className="text-text-tertiary">⏳ 1.5s 后自动保存</span>
+                ) : notesSavedAt ? (
+                  <span className="text-success">✓ 已保存 {fmtRelTime(notesSavedAt)}</span>
+                ) : null}
+              </span>
+            )}
+            {!editingNotes ? (
               <button
-                onClick={() => { setEditingNotes(false); setNotesDraft(sku.notes || ''); }}
-                className="text-[10px] font-mono text-text-tertiary border border-border-subtle hover:border-text-secondary/40 rounded px-2 py-0.5"
+                onClick={() => setEditingNotes(true)}
+                className="text-[10px] font-mono text-accent border border-accent/30 hover:bg-accent/10 rounded px-2 py-0.5"
               >
-                取消
+                编辑
               </button>
-              <button
-                onClick={saveNotes}
-                disabled={savingNotes}
-                className="text-[10px] font-mono text-bg-root bg-accent hover:bg-accent-hover rounded px-2 py-0.5 disabled:opacity-40"
-              >
-                {savingNotes ? '保存中…' : '保存'}
-              </button>
-            </div>
-          )}
+            ) : (
+              <div className="flex gap-1.5">
+                <button
+                  onClick={() => { setEditingNotes(false); setNotesDraft(sku.notes || ''); setNotesDirty(false); }}
+                  className="text-[10px] font-mono text-text-tertiary border border-border-subtle hover:border-text-secondary/40 rounded px-2 py-0.5"
+                >
+                  完成
+                </button>
+                <button
+                  onClick={saveNotes}
+                  disabled={savingNotes || !notesDirty}
+                  className="text-[10px] font-mono text-bg-root bg-accent hover:bg-accent-hover rounded px-2 py-0.5 disabled:opacity-40"
+                  title="不等 debounce, 立即保存"
+                >
+                  立即保存
+                </button>
+              </div>
+            )}
+          </div>
         </div>
         {editingNotes ? (
           <textarea
@@ -732,4 +770,12 @@ function nextModuleSuggestions(status: Sku['status']): string[] {
     case 'paused': return ['data-insights', 'ab-test'];
     case 'killed': return ['product-discovery'];
   }
+}
+
+function fmtRelTime(d: Date): string {
+  const diffSec = Math.floor((Date.now() - d.getTime()) / 1000);
+  if (diffSec < 5) return '刚刚';
+  if (diffSec < 60) return `${diffSec} 秒前`;
+  if (diffSec < 3600) return `${Math.floor(diffSec / 60)} 分钟前`;
+  return d.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' });
 }
