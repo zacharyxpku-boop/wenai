@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { checkRateLimit } from '@/lib/ratelimit';
 import { checkCostCap, recordCostWithDetail, COST_ESTIMATE_CENTS } from '@/lib/cost-cap';
 import { resolveOrgId } from '@/lib/org-id';
+import { buildImageCacheKey, getImageCache, setImageCache } from '@/lib/image-cache';
 
 /**
  * AI 视频生成 · 阿里通义万相 wanx2.1 i2v (image-to-video)
@@ -305,6 +306,34 @@ export async function POST(request: NextRequest) {
     }
   }
 
+  // 内容哈希缓存 · 同 prompt + 同图 + 同尺寸/时长/模型 ¥0 复用
+  // 视频比图更贵 (¥3-7/条), 缓存 ROI 更高
+  // ?fresh=1 强刷
+  const fresh = request.nextUrl?.searchParams?.get('fresh') === '1';
+  const refForCache = body.imageBase64 || body.imageUrl || '';
+  const videoCacheHash = buildImageCacheKey({
+    prompt: body.prompt,
+    mode: 'video',
+    scenario: body.scenario,
+    size: `${resolution}-${ratio}`,
+    quality: `${model}-d${duration}-${watermark ? 'wm' : 'nowm'}`,
+    refs: refForCache ? [refForCache] : [],
+  });
+  if (!fresh) {
+    try {
+      const cached = await getImageCache(rateKey, videoCacheHash);
+      if (cached && typeof cached === 'object') {
+        return NextResponse.json({
+          ...(cached as Record<string, unknown>),
+          fromCache: true,
+          cacheHash: videoCacheHash,
+        });
+      }
+    } catch {
+      /* 缓存读失败不阻塞 */
+    }
+  }
+
   // 单 org 24h 成本闸 · 视频比图贵, 阈值收紧
   const estVideoCents = resolution === '1080P'
     ? COST_ESTIMATE_CENTS['video-1080p']
@@ -341,10 +370,11 @@ export async function POST(request: NextRequest) {
     });
     if (r.status === 200) {
       let taskId: string | undefined;
+      let parsedBody: Record<string, unknown> | null = null;
       try {
         const clone = r.clone();
-        const j = await clone.json();
-        taskId = j?.taskId;
+        parsedBody = await clone.json();
+        taskId = parsedBody?.taskId as string | undefined;
       } catch {}
       await recordCostWithDetail(rateKey, estVideoCents, {
         module: 'video-gen',
@@ -352,6 +382,9 @@ export async function POST(request: NextRequest) {
         skuId: body.skuId,
         meta: { scenario: body.scenario, duration, model, size: resolution },
       });
+      if (parsedBody) {
+        setImageCache(rateKey, videoCacheHash, parsedBody).catch(() => {});
+      }
     }
     return r;
   }
@@ -392,7 +425,7 @@ export async function POST(request: NextRequest) {
     }
 
     const perSec = model.includes('plus') ? 1.4 : 0.7;
-    return NextResponse.json({
+    const successPayload = {
       ok: true,
       videoUrl: poll.videoUrl,
       taskId,
@@ -400,7 +433,16 @@ export async function POST(request: NextRequest) {
       resolution,
       model,
       cost: { perSecondCny: perSec, totalCny: +(perSec * duration).toFixed(2) },
+    };
+    // DashScope 直连成功也写一笔成本明细 + 缓存 (此前未对账)
+    await recordCostWithDetail(rateKey, estVideoCents, {
+      module: 'video-gen',
+      taskId,
+      skuId: body.skuId,
+      meta: { scenario: body.scenario, duration, model, size: resolution },
     });
+    setImageCache(rateKey, videoCacheHash, successPayload).catch(() => {});
+    return NextResponse.json(successPayload);
   } catch (err) {
     console.error('[video-gen] fatal', err);
     return NextResponse.json(

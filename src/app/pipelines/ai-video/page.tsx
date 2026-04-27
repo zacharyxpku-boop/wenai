@@ -98,6 +98,8 @@ interface VideoResult {
   resolution: string;
   model: string;
   cost?: { perSecondCny: number; totalCny: number };
+  fromCache?: boolean;
+  cacheHash?: string;
 }
 
 export default function AIVideoPage() {
@@ -519,10 +521,20 @@ export default function AIVideoPage() {
             <>
               <div className="flex items-center justify-between flex-wrap gap-2">
                 <div>
-                  <div className="text-[14px] font-bold text-text-primary">视频生成完成</div>
+                  <div className="text-[14px] font-bold text-text-primary flex items-center gap-2 flex-wrap">
+                    视频生成完成
+                    {result.fromCache && (
+                      <span className="text-[9px] font-mono text-success border border-success/40 bg-success/10 rounded px-1.5 py-0.5">
+                        ⚡ 缓存命中 · ¥0
+                      </span>
+                    )}
+                  </div>
                   <div className="text-[10px] font-mono text-text-tertiary mt-0.5 tabular-nums">
                     {result.duration}s · {result.resolution} · {result.model.replace('wanx2.1-i2v-', '')} ·
-                    成本 ¥{result.cost?.totalCny || '?'}
+                    {result.fromCache
+                      ? <span className="text-success"> 同 prompt+图 7 天内已生过 · ¥0 复用</span>
+                      : <> 成本 ¥{result.cost?.totalCny || '?'}</>
+                    }
                   </div>
                 </div>
                 <div className="flex gap-2">
