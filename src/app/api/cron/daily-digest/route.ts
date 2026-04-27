@@ -3,6 +3,8 @@ import { Redis } from '@upstash/redis';
 import { listSkus } from '@/lib/sku-history';
 import { getDailyCost } from '@/lib/cost-cap';
 import { getCacheStatSnapshot } from '@/lib/cache-stats';
+import { getUserSettings } from '@/lib/user-settings';
+import { sendEmail } from '@/lib/mailer';
 
 /**
  * 每日 digest cron · vercel.json 9:00am 触发
@@ -175,6 +177,7 @@ export async function GET(req: NextRequest) {
   const dateStr = new Date().toISOString().slice(0, 10);
   const orgs = await discoverOrgs();
   const written: string[] = [];
+  const emailsSent: Array<{ orgId: string; provider: string }> = [];
   const errors: Array<{ orgId: string; err: string }> = [];
 
   for (const orgId of orgs) {
@@ -190,6 +193,27 @@ export async function GET(req: NextRequest) {
       await redis.ltrim(listKey, 0, 29);
       await redis.expire(listKey, DIGEST_TTL_SEC);
       written.push(orgId);
+
+      // 邮件 push (如果商家配了 email + 开关 + 阈值匹配)
+      const settings = await getUserSettings(orgId);
+      if (settings.email && settings.digestEmailEnabled) {
+        const minSev = settings.digestSeverityMin ?? 'warning';
+        const meets =
+          (minSev === 'critical' && digest.critical > 0) ||
+          (minSev === 'warning' && (digest.critical > 0 || digest.warning > 0)) ||
+          (minSev === 'info' && digest.signals.length > 0);
+        if (meets) {
+          const html = renderDigestHtml(digest);
+          const subject = digest.critical > 0
+            ? `🚨 wenai 信号 · ${digest.critical} 项紧急`
+            : digest.warning > 0
+              ? `⚠️ wenai 信号 · ${digest.warning} 项警示`
+              : `💡 wenai 每日信号 · ${digest.signals.length} 条`;
+          const r = await sendEmail({ to: settings.email, subject, html });
+          if (r.ok) emailsSent.push({ orgId, provider: r.provider });
+          else errors.push({ orgId, err: `mail:${r.provider}:${r.error}` });
+        }
+      }
     } catch (e) {
       errors.push({ orgId, err: e instanceof Error ? e.message : 'unknown' });
     }
@@ -200,7 +224,54 @@ export async function GET(req: NextRequest) {
     date: dateStr,
     totalOrgs: orgs.length,
     digestsWritten: written.length,
+    emailsSent: emailsSent.length,
+    emailProviders: countBy(emailsSent.map(e => e.provider)),
     skipped: orgs.length - written.length - errors.length,
     errors: errors.slice(0, 10),
   });
+}
+
+function countBy(arr: string[]): Record<string, number> {
+  const out: Record<string, number> = {};
+  for (const s of arr) out[s] = (out[s] || 0) + 1;
+  return out;
+}
+
+function renderDigestHtml(digest: DigestPayload): string {
+  const sevColor: Record<string, string> = {
+    critical: '#dc2626', warning: '#d97706', info: '#7c3aed',
+  };
+  const sevEmoji: Record<string, string> = {
+    critical: '🚨', warning: '⚠️', info: '💡',
+  };
+  const rows = digest.signals
+    .map(s => `<tr>
+  <td style="padding:8px 12px;border-left:3px solid ${sevColor[s.severity]};color:${sevColor[s.severity]};font-weight:600;">${sevEmoji[s.severity]} ${escapeHtml(s.kind)}</td>
+  <td style="padding:8px 12px;color:#222;">${escapeHtml(s.headline)}</td>
+</tr>`).join('');
+  return `<!DOCTYPE html><html><body style="font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif;background:#f8f9fb;margin:0;padding:24px;">
+<div style="max-width:600px;margin:0 auto;background:#fff;border:1px solid #e5e7eb;border-radius:8px;overflow:hidden;">
+  <div style="padding:20px 24px;border-bottom:1px solid #e5e7eb;">
+    <div style="font-size:11px;color:#888;letter-spacing:0.1em;text-transform:uppercase;">wenai 每日信号 · ${digest.date}</div>
+    <h1 style="margin:8px 0 0;font-size:18px;color:#111;">${digest.critical > 0 ? '🚨' : digest.warning > 0 ? '⚠️' : '💡'} ${digest.signals.length} 条待看</h1>
+  </div>
+  <div style="padding:16px 24px;display:flex;gap:12px;font-size:13px;">
+    <span style="color:#dc2626;">${digest.critical} 紧急</span>
+    <span style="color:#d97706;">${digest.warning} 警示</span>
+    <span style="color:#7c3aed;">${digest.info} 提示</span>
+  </div>
+  <table style="width:100%;border-collapse:collapse;font-size:13px;">${rows}</table>
+  <div style="padding:16px 24px;border-top:1px solid #e5e7eb;">
+    <div style="font-size:11px;color:#666;margin-bottom:8px;">SKU ${digest.metrics.skuCount} 个 · 上架 ${digest.metrics.launchedCount} · 今日花费 ¥${digest.metrics.todayCny.toFixed(2)}${digest.metrics.cacheRate7d !== null ? ' · 缓存命中率 ' + (digest.metrics.cacheRate7d * 100).toFixed(1) + '%' : ''}</div>
+    <a href="https://wenai-deploy.vercel.app/me/alerts" style="display:inline-block;padding:10px 20px;background:#3b82f6;color:#fff;text-decoration:none;border-radius:6px;font-size:13px;">看完整信号 →</a>
+  </div>
+  <div style="padding:12px 24px;font-size:10px;color:#aaa;border-top:1px solid #e5e7eb;">
+    不想再收? 去 /me/settings 关掉 digest 邮件。
+  </div>
+</div>
+</body></html>`;
+}
+
+function escapeHtml(s: string): string {
+  return s.replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c] as string));
 }
