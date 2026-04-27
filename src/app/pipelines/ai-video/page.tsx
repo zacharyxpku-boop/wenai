@@ -12,6 +12,8 @@ import {
   type EcomStyle,
   type SopPreset,
 } from '@/lib/ecom-prompts';
+import { useActiveSkuId } from '@/lib/use-active-sku';
+import { ActiveSkuBadge } from '@/components/ActiveSkuBadge';
 
 /**
  * AI 视频 · wanx2.1 i2v · 一张图 → 5s 带货短视频
@@ -99,6 +101,7 @@ interface VideoResult {
 }
 
 export default function AIVideoPage() {
+  const activeSkuId = useActiveSkuId();
   const [scenario, setScenario] = useState<Scenario>('model-display');
   const [imageUrl, setImageUrl] = useState('');
   const [extraPrompt, setExtraPrompt] = useState('');
@@ -171,6 +174,7 @@ export default function AIVideoPage() {
           duration,
           resolution,
           model,
+          skuId: activeSkuId,
         }),
       });
       const data = await res.json();
@@ -215,6 +219,7 @@ export default function AIVideoPage() {
           </div>
           <h1 className="text-3xl lg:text-4xl font-bold text-text-primary mb-3 font-[family-name:var(--font-outfit)]">
             一张图 → 5 秒带货短视频
+            <ActiveSkuBadge skuId={activeSkuId} />
           </h1>
           <p className="text-[13px] lg:text-[14px] text-text-secondary leading-relaxed max-w-[760px]">
             模特动态展示 / 产品 360° 旋转 / lifestyle 使用场景。

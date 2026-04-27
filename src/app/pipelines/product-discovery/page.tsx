@@ -3,6 +3,8 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useMySkus } from '@/lib/use-my-skus';
+import { useActiveSkuId } from '@/lib/use-active-sku';
+import { ActiveSkuBadge } from '@/components/ActiveSkuBadge';
 
 /**
  * AI 选品发现 (痛点 #1) · STRATEGY_DEEP L4 列的最大缺口
@@ -81,6 +83,7 @@ export default function ProductDiscoveryPage() {
   // 读 SKU 库 · 飞轮变双向: 已有 SKU 当 context, AI 推相邻互补品类
   const { skus: mySkus } = useMySkus(20);
   const [useSkuContext, setUseSkuContext] = useState(true);
+  const activeSkuId = useActiveSkuId();
 
   const skuContextLine = useSkuContext && mySkus.length > 0
     ? `\n\n【商家已有 SKU(请避免重复推荐, 优先推互补/相邻品类)】\n${mySkus.slice(0, 10).map(s => `- ${s.name} (${s.category}, ${s.status})`).join('\n')}`
@@ -160,6 +163,7 @@ export default function ProductDiscoveryPage() {
           moduleId: 'product-discovery',
           prompt: buildPrompt(),
           input: `${PLATFORM_LABELS[platform]} · ${category}`,
+          skuId: activeSkuId,
         }),
       });
       const data = await res.json();
@@ -243,6 +247,7 @@ export default function ProductDiscoveryPage() {
           </div>
           <h1 className="text-3xl lg:text-4xl font-bold text-text-primary mb-3 font-[family-name:var(--font-outfit)]">
             别拍脑袋选品 · AI 给你 5-8 个候选 SKU
+            <ActiveSkuBadge skuId={activeSkuId} />
           </h1>
           <p className="text-[13px] lg:text-[14px] text-text-secondary leading-relaxed max-w-[800px]">
             告诉 wenai 你的<span className="text-accent">平台 + 类目 + 价格带 + 启动预算 + 风险偏好</span>,

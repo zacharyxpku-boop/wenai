@@ -2,6 +2,8 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { useActiveSkuId } from '@/lib/use-active-sku';
+import { ActiveSkuBadge } from '@/components/ActiveSkuBadge';
 
 /**
  * 数据洞察 (痛点 #10) · STRATEGY_DEEP L4 列的核心钩子
@@ -84,6 +86,7 @@ export default function DataInsightsPage() {
   const [data, setData] = useState('');
   const [context, setContext] = useState('');
 
+  const activeSkuId = useActiveSkuId();
   const [running, setRunning] = useState(false);
   const [result, setResult] = useState<DataInsightsResult | null>(null);
   const [error, setError] = useState('');
@@ -151,6 +154,7 @@ ${data}
           moduleId: 'data-insights',
           prompt: buildPrompt(),
           input: data,
+          skuId: activeSkuId,
         }),
       });
       const d = await res.json();
@@ -228,6 +232,7 @@ ${data}
           </div>
           <h1 className="text-3xl lg:text-4xl font-bold text-text-primary mb-3 font-[family-name:var(--font-outfit)]">
             数据贴进来 · AI 替你看懂为啥涨/跌
+            <ActiveSkuBadge skuId={activeSkuId} />
           </h1>
           <p className="text-[13px] lg:text-[14px] text-text-secondary leading-relaxed max-w-[800px]">
             测完款投放完, 不知道为啥点击下滑 / 退货飙升 / ROI 崩。
