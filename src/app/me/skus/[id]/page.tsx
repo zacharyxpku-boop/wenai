@@ -28,7 +28,17 @@ interface Sku {
   priceCny?: string;
   status: 'idea' | 'discovery-done' | 'photoshoot-done' | 'abtest-done' | 'launched' | 'paused' | 'killed';
   notes?: string;
-  performance?: { ctr?: number; convRate?: number; roi?: number; sales7d?: number };
+  performance?: {
+    ctr?: number;            // 平均 CTR (百分比, 例 3.2 = 3.2%)
+    bestCtr?: number;        // 最佳变体 CTR
+    cpc?: number;            // 最低 CPC (¥)
+    convRate?: number;
+    roi?: number;
+    sales7d?: number;
+    winningVariant?: string;
+    testedAt?: string;
+    variantsCount?: number;
+  };
   addedAt: string;
   updatedAt: string;
   modules?: string[];
@@ -195,14 +205,56 @@ export default function SkuDetailPage() {
           <Stat label="入库" value={new Date(sku.addedAt).toLocaleDateString('zh-CN')} />
           <Stat label="最近更新" value={new Date(sku.updatedAt).toLocaleDateString('zh-CN')} />
           <Stat label="跑过模块" value={`${ranModules.length} 个`} />
-          {sku.performance?.ctr !== undefined ? (
-            <Stat label="CTR" value={`${(sku.performance.ctr * 100).toFixed(1)}%`} />
+          {sku.performance?.bestCtr !== undefined ? (
+            <Stat
+              label={`CTR ${sku.performance.winningVariant ? '(' + sku.performance.winningVariant + ')' : ''}`}
+              value={`${sku.performance.bestCtr.toFixed(1)}%`}
+            />
+          ) : sku.performance?.ctr !== undefined ? (
+            <Stat label="CTR" value={`${sku.performance.ctr.toFixed(1)}%`} />
           ) : sku.performance?.roi !== undefined ? (
             <Stat label="ROI" value={sku.performance.roi.toFixed(2)} />
           ) : (
             <Stat label="" value="" />
           )}
         </div>
+
+        {/* 实战数据详情 (只有 testedAt 才显示) */}
+        {sku.performance?.testedAt && (
+          <div className="mt-3 pt-3 border-t border-border-subtle">
+            <div className="text-[10px] font-mono text-text-tertiary uppercase tracking-wider mb-2">
+              📊 实战数据 · 投放回填于 {new Date(sku.performance.testedAt).toLocaleString('zh-CN')}
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-[11px]">
+              {sku.performance.ctr !== undefined && (
+                <Stat label="平均 CTR" value={`${sku.performance.ctr.toFixed(2)}%`} />
+              )}
+              {sku.performance.cpc !== undefined && (
+                <Stat label="最低 CPC" value={`¥${sku.performance.cpc.toFixed(2)}`} />
+              )}
+              {sku.performance.convRate !== undefined && (
+                <Stat label="转化率" value={`${sku.performance.convRate.toFixed(2)}%`} />
+              )}
+              {sku.performance.variantsCount !== undefined && (
+                <Stat label="测过变体" value={`${sku.performance.variantsCount} 个`} />
+              )}
+            </div>
+            <div className="mt-3 flex items-center gap-2 flex-wrap">
+              <Link
+                href={`/pipelines/ab-test?skuId=${sku.id}`}
+                className="text-[10px] font-mono text-accent border border-accent/30 hover:bg-accent/10 rounded px-2 py-1"
+              >
+                ⚗️ 再来一轮 A-B → 看能不能再压 CPC
+              </Link>
+              <Link
+                href={`/pipelines/data-insights?skuId=${sku.id}`}
+                className="text-[10px] font-mono text-text-secondary border border-border-subtle hover:border-accent/40 hover:text-accent rounded px-2 py-1"
+              >
+                📊 横向 benchmark →
+              </Link>
+            </div>
+          </div>
+        )}
       </section>
 
       {/* 状态轨迹 */}

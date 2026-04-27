@@ -12,11 +12,23 @@ interface Sku {
   priceCny?: string;
   status: 'idea' | 'discovery-done' | 'photoshoot-done' | 'abtest-done' | 'launched' | 'paused' | 'killed';
   notes?: string;
-  performance?: { ctr?: number; convRate?: number; roi?: number };
+  performance?: {
+    ctr?: number;            // 平均 CTR (百分比值, 例 3.2 = 3.2%)
+    bestCtr?: number;        // 最佳变体 CTR
+    cpc?: number;            // 最低 CPC (¥)
+    convRate?: number;       // 转化率 (百分比值)
+    roi?: number;
+    winningVariant?: string; // 例 A1
+    testedAt?: string;       // ISO
+    variantsCount?: number;
+    sales7d?: number;
+  };
   addedAt: string;
   updatedAt: string;
   modules?: string[];
 }
+
+type SortBy = 'recent' | 'ctr-desc' | 'cpc-asc';
 
 const STATUS_LABELS: Record<Sku['status'], { txt: string; cls: string }> = {
   idea: { txt: '💡 想法', cls: 'text-text-tertiary border-border-subtle' },
@@ -33,6 +45,7 @@ export default function MySkusPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [filterStatus, setFilterStatus] = useState<Sku['status'] | 'all'>('all');
+  const [sortBy, setSortBy] = useState<SortBy>('recent');
   const [adding, setAdding] = useState(false);
   const [newName, setNewName] = useState('');
   const [newCategory, setNewCategory] = useState('');
@@ -104,7 +117,21 @@ export default function MySkusPage() {
     load();
   };
 
-  const filtered = filterStatus === 'all' ? skus : skus.filter(s => s.status === filterStatus);
+  const filtered = (filterStatus === 'all' ? skus : skus.filter(s => s.status === filterStatus))
+    .slice() // copy before sort
+    .sort((a, b) => {
+      if (sortBy === 'ctr-desc') {
+        const ac = a.performance?.bestCtr ?? a.performance?.ctr ?? -1;
+        const bc = b.performance?.bestCtr ?? b.performance?.ctr ?? -1;
+        return bc - ac;
+      }
+      if (sortBy === 'cpc-asc') {
+        const ap = a.performance?.cpc ?? Number.POSITIVE_INFINITY;
+        const bp = b.performance?.cpc ?? Number.POSITIVE_INFINITY;
+        return ap - bp;
+      }
+      return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime();
+    });
   const counts = {
     all: skus.length,
     idea: skus.filter(s => s.status === 'idea').length,
@@ -139,7 +166,7 @@ export default function MySkusPage() {
       </div>
 
       {/* 状态过滤 */}
-      <div className="flex flex-wrap gap-1.5 mb-4">
+      <div className="flex flex-wrap gap-1.5 mb-2">
         <button
           onClick={() => setFilterStatus('all')}
           className={`text-[11px] font-mono px-2.5 py-1 rounded border ${
@@ -161,6 +188,28 @@ export default function MySkusPage() {
             }`}
           >
             {STATUS_LABELS[s].txt} ({counts[s]})
+          </button>
+        ))}
+      </div>
+
+      {/* 排序 */}
+      <div className="flex items-center gap-2 mb-4 text-[10px] font-mono">
+        <span className="text-text-tertiary">排序:</span>
+        {([
+          { v: 'recent' as SortBy, txt: '最近更新' },
+          { v: 'ctr-desc' as SortBy, txt: 'CTR 高 → 低' },
+          { v: 'cpc-asc' as SortBy, txt: 'CPC 低 → 高' },
+        ]).map(o => (
+          <button
+            key={o.v}
+            onClick={() => setSortBy(o.v)}
+            className={`px-2 py-0.5 rounded border ${
+              sortBy === o.v
+                ? 'border-accent text-accent bg-accent/10'
+                : 'border-border-subtle text-text-secondary hover:border-accent/40'
+            }`}
+          >
+            {o.txt}
           </button>
         ))}
       </div>
@@ -241,8 +290,21 @@ export default function MySkusPage() {
                       {sku.modules && sku.modules.length > 0 && (
                         <span>跑过 {sku.modules.length} 个模块</span>
                       )}
-                      {sku.performance?.ctr !== undefined && (
-                        <span className="text-accent">CTR {(sku.performance.ctr * 100).toFixed(1)}%</span>
+                      {sku.performance?.bestCtr !== undefined ? (
+                        <span className="text-accent">
+                          CTR {sku.performance.bestCtr.toFixed(1)}%
+                          {sku.performance.winningVariant && (
+                            <span className="text-text-tertiary"> ({sku.performance.winningVariant})</span>
+                          )}
+                        </span>
+                      ) : sku.performance?.ctr !== undefined ? (
+                        <span className="text-accent">CTR {sku.performance.ctr.toFixed(1)}%</span>
+                      ) : null}
+                      {sku.performance?.cpc !== undefined && (
+                        <span className="text-success">CPC ¥{sku.performance.cpc.toFixed(2)}</span>
+                      )}
+                      {sku.performance?.convRate !== undefined && (
+                        <span className="text-cat-content">转化 {sku.performance.convRate.toFixed(1)}%</span>
                       )}
                       {sku.performance?.roi !== undefined && (
                         <span className="text-success">ROI {sku.performance.roi.toFixed(1)}</span>
