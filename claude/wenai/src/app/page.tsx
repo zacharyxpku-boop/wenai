@@ -457,7 +457,7 @@ export default function Dashboard() {
 
       {/* AI 工厂杀器 Hero · MOAT_MAP 一句话叙事 */}
       <div className="mb-6 animate-fade-up stagger-3">
-        <div className="border border-accent/40 bg-gradient-to-br from-bg-surface via-bg-raised to-bg-surface rounded-md p-6 lg:p-8 shadow-[0_16px_48px_rgba(200,151,90,0.10)]"
+        <div className="relative border border-accent/40 bg-gradient-to-br from-bg-surface via-bg-raised to-bg-surface rounded-md p-6 lg:p-8 shadow-[0_16px_48px_rgba(200,151,90,0.10)] overflow-hidden hero-breathing"
           style={{ borderLeftWidth: '3px', borderLeftColor: '#c8975a' }}
         >
           <div className="flex items-center gap-2 mb-3 flex-wrap">
