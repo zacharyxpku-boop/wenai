@@ -75,6 +75,47 @@ export interface BenchSnapshot {
   yourPercentile?: number; // 0-100, 越高越好 (CTR) 或越低越好 (CPC, 反向)
 }
 
+/**
+ * 列出所有有数据的 category (用于公开 /benchmark 索引页)
+ *
+ * 隐私控制: 只返回样本 ≥ minCount 的桶 (默认 10)
+ * 防过分小桶反向识别
+ */
+export async function listBenchCategories(
+  metric: BenchMetric,
+  minCount = 10
+): Promise<Array<{ category: string; count: number; median: number }>> {
+  if (!redis) return [];
+  const out: Array<{ category: string; count: number; median: number }> = [];
+  let cursor: string | number = 0;
+  const pattern = `wenai:bench:${metric}:*`;
+  let iter = 0;
+  try {
+    do {
+      const res: [string | number, string[]] = await redis.scan(cursor, { match: pattern, count: 200 });
+      cursor = res[0];
+      for (const key of res[1]) {
+        const cat = key.replace(`wenai:bench:${metric}:`, '');
+        const count = await redis.zcard(key);
+        if (!count || count < minCount) continue;
+        // median = element at zcard/2
+        const midIdx = Math.floor(count / 2);
+        const items = await redis.zrange(key, midIdx, midIdx, { withScores: true }) as (string | number)[];
+        const score = items[1];
+        const num = typeof score === 'number' ? score : parseFloat(String(score));
+        if (isNaN(num)) continue;
+        out.push({ category: cat, count, median: +num.toFixed(2) });
+      }
+      iter++;
+      if (iter > 50) break;
+    } while (cursor !== '0' && cursor !== 0);
+  } catch {
+    /* 读失败返回已收集到的部分 */
+  }
+  out.sort((a, b) => b.count - a.count);
+  return out;
+}
+
 /** 读取分桶 + 算商家自己的 percentile */
 export async function getBenchSnapshot(
   metric: BenchMetric,
