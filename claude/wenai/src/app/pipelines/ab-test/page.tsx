@@ -311,13 +311,22 @@ export default function AbTestPage() {
           )}
 
           {!running && result && (
-            <ResultView
-              result={result}
-              copyPrompt={copyPrompt}
-              copiedId={copiedId}
-              productHint={productHint}
-              platformLabel={PLATFORM_LABELS[platform]}
-            />
+            <>
+              <ResultView
+                result={result}
+                copyPrompt={copyPrompt}
+                copiedId={copiedId}
+                productHint={productHint}
+                platformLabel={PLATFORM_LABELS[platform]}
+              />
+              {activeSkuId && (
+                <PerformanceWriteback
+                  variants={result.variants}
+                  recommended={result.recommendedFirst3}
+                  skuId={activeSkuId}
+                />
+              )}
+            </>
           )}
         </main>
       </div>
@@ -488,5 +497,153 @@ function ResultView({
         <p className="text-[12px] text-text-secondary leading-relaxed whitespace-pre-line">{result.rollupSop}</p>
       </section>
     </>
+  );
+}
+
+/**
+ * 性能数据回填 · 把投放后真实 CTR/CPC 写到 SKU.performance
+ *
+ * 这是 wenai 真正变成"商家性能档案库"的关键钩子:
+ * - 跑完 24-72h 投放后, 商家来这里贴实际数据
+ * - 写到 SKU.performance.ctr / .cpc / .winningVariant
+ * - /me/skus/[id] 实时显示, /pipelines/data-insights 反向 benchmark
+ * - 数据越多, wenai 越懂这个 SKU, 越锁
+ */
+function PerformanceWriteback({
+  variants,
+  recommended,
+  skuId,
+}: {
+  variants: PromptVariant[];
+  recommended: string[];
+  skuId: string;
+}) {
+  // 默认只填 recommendedFirst3 三个变体
+  const recVariants = variants.filter(v => recommended.includes(v.id));
+  const [data, setData] = useState<Record<string, { ctr: string; cpc: string; conv: string }>>(
+    Object.fromEntries(recVariants.map(v => [v.id, { ctr: '', cpc: '', conv: '' }]))
+  );
+  const [saving, setSaving] = useState(false);
+  const [savedAt, setSavedAt] = useState<string | null>(null);
+  const [error, setError] = useState('');
+
+  const update = (id: string, field: 'ctr' | 'cpc' | 'conv', val: string) => {
+    setData(prev => ({ ...prev, [id]: { ...prev[id], [field]: val } }));
+  };
+
+  const handleSave = async () => {
+    setSaving(true);
+    setError('');
+    try {
+      // 找最高 CTR 作为 winningVariant
+      const entries = Object.entries(data).filter(([, v]) => v.ctr.trim());
+      if (entries.length === 0) {
+        setError('至少填一个变体的 CTR');
+        return;
+      }
+      const ctrs = entries.map(([id, v]) => ({ id, ctr: parseFloat(v.ctr), cpc: parseFloat(v.cpc) || 0, conv: parseFloat(v.conv) || 0 }));
+      const winner = ctrs.reduce((a, b) => a.ctr > b.ctr ? a : b);
+      const avgCtr = ctrs.reduce((s, x) => s + x.ctr, 0) / ctrs.length;
+      const minCpc = ctrs.reduce((m, x) => x.cpc > 0 && (m === 0 || x.cpc < m) ? x.cpc : m, 0);
+
+      const performance = {
+        ctr: +avgCtr.toFixed(2),
+        bestCtr: +winner.ctr.toFixed(2),
+        cpc: minCpc > 0 ? +minCpc.toFixed(2) : undefined,
+        convRate: winner.conv > 0 ? +winner.conv.toFixed(2) : undefined,
+        winningVariant: winner.id,
+        testedAt: new Date().toISOString(),
+        variantsCount: ctrs.length,
+      };
+
+      const res = await fetch(`/api/user/sku-history?id=${skuId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          performance,
+          status: 'abtest-done',
+          modules: ['ab-test'],
+        }),
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.error || `HTTP ${res.status}`);
+      }
+      setSavedAt(new Date().toISOString());
+    } catch (err) {
+      setError(err instanceof Error ? err.message : '保存失败');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  return (
+    <section className="border border-success/40 bg-success/5 rounded-lg p-4 space-y-3">
+      <div className="flex items-center justify-between flex-wrap gap-2">
+        <div>
+          <div className="text-[12px] font-bold text-success">📊 投放后回填实战数据</div>
+          <div className="text-[10px] font-mono text-text-tertiary mt-0.5">
+            跑完 24-72h 来填 · 写到 SKU performance · /me/skus 自动看
+          </div>
+        </div>
+        {savedAt && (
+          <span className="text-[10px] font-mono text-success">
+            ✓ {new Date(savedAt).toLocaleString('zh-CN')} 已写入
+          </span>
+        )}
+      </div>
+
+      <div className="space-y-2">
+        {recVariants.map(v => (
+          <div key={v.id} className="grid grid-cols-[60px_1fr_1fr_1fr] gap-2 items-center">
+            <span className="text-[12px] font-bold text-accent font-mono tabular-nums">{v.id}</span>
+            <input
+              type="text"
+              inputMode="decimal"
+              placeholder="CTR %"
+              value={data[v.id]?.ctr || ''}
+              onChange={e => update(v.id, 'ctr', e.target.value)}
+              className="px-2 py-1 bg-bg-surface border border-border-default rounded text-[11px] font-mono"
+            />
+            <input
+              type="text"
+              inputMode="decimal"
+              placeholder="CPC ¥"
+              value={data[v.id]?.cpc || ''}
+              onChange={e => update(v.id, 'cpc', e.target.value)}
+              className="px-2 py-1 bg-bg-surface border border-border-default rounded text-[11px] font-mono"
+            />
+            <input
+              type="text"
+              inputMode="decimal"
+              placeholder="转化率 %"
+              value={data[v.id]?.conv || ''}
+              onChange={e => update(v.id, 'conv', e.target.value)}
+              className="px-2 py-1 bg-bg-surface border border-border-default rounded text-[11px] font-mono"
+            />
+          </div>
+        ))}
+      </div>
+
+      <div className="flex items-center gap-2">
+        <button
+          onClick={handleSave}
+          disabled={saving}
+          className="text-[11px] font-mono px-3 py-1.5 rounded bg-success text-bg-root hover:opacity-90 disabled:opacity-40"
+        >
+          {saving ? '保存中...' : '💾 写入 SKU performance'}
+        </button>
+        <Link
+          href={`/me/skus/${skuId}`}
+          className="text-[11px] font-mono text-accent hover:underline"
+        >
+          → 看 SKU 档案
+        </Link>
+      </div>
+
+      {error && (
+        <div className="text-[10px] text-error font-mono">✗ {error}</div>
+      )}
+    </section>
   );
 }
