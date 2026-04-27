@@ -9,13 +9,14 @@ import { ActiveSkuBadge } from '@/components/ActiveSkuBadge';
 /**
  * 多 SKU 批量上架 · 把 10 pipelines 串成一条流水线
  *
- * Phase-1 (本版): 批量计划生成器
- *   - 用户贴 N 个 SKU 行 + 选工序 + 选目标平台
- *   - DeepSeek 输出每个 SKU 在每个工序的: 推荐 prompt + 参数 + 检查清单
- *   - 商家拿这份 markdown SOP 去手动执行 (复制 prompt 到对应模块跑)
- *   - 效率提升 10× (50 SKU 不再 50 次手编 prompt)
+ * 路由:
+ *   ≤ 8 SKU → 走 /api/ai 单次 (快路径, 一次拿全策略+全详情)
+ *   > 8 SKU → 走 /api/batch-launch/chunk 分片并发
+ *     - chunkType=overall 拿整体策略
+ *     - chunkType=plans 每片 6 SKU, 并发 2
+ *     - 100 SKU 上限 (从老版 20 上限解锁)
  *
- * Phase-2 (待做): 真后端任务编排, 自动并行调 wenai 模块, 进度可视化
+ * 失败容忍: 单片失败不阻塞其他片, riskFlags 里标出来
  */
 
 type Stage = 'discovery' | 'photoshoot' | 'video' | 'abtest' | 'listing' | 'insights';
@@ -109,6 +110,8 @@ export default function BatchLaunchPage() {
   const [rawDebug, setRawDebug] = useState('');
   const [showRaw, setShowRaw] = useState(false);
   const [openSku, setOpenSku] = useState<number | null>(null);
+  // 分片进度 · 100 SKU 上限新逻辑
+  const [progress, setProgress] = useState<{ done: number; total: number; phase: string } | null>(null);
 
   const toggleStage = (s: Stage) => {
     setSelectedStages(prev =>
@@ -181,8 +184,8 @@ ${skuList}
       setError('至少 2 个 SKU 才有"批量"意义');
       return;
     }
-    if (skuCount > 20) {
-      setError('一次最多 20 个 SKU (避免 LLM 输出截断)');
+    if (skuCount > 100) {
+      setError('一次最多 100 个 SKU (再多建议拆批次)');
       return;
     }
     if (selectedStages.length === 0) {
@@ -194,34 +197,160 @@ ${skuList}
     setError('');
     setResult(null);
     setRawDebug('');
+    setProgress(null);
+
+    const skuLines = skuList.split('\n').map(l => l.trim()).filter(Boolean);
 
     try {
-      const res = await fetch('/api/ai', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          moduleId: 'batch-launch',
-          prompt: buildPrompt(),
-          input: skuList,
-          skuId: activeSkuId,
-        }),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
-      const raw = data.content || '';
-      setRawDebug(raw);
-      const m = raw.match(/\{[\s\S]*\}/);
-      if (!m) throw new Error('AI 输出非 JSON');
-      const parsed = JSON.parse(m[0]) as BatchPlan;
-      if (!parsed.skuPlans || parsed.skuPlans.length === 0) {
-        throw new Error('AI 没返回 skuPlans');
+      // ≤ 8 SKU 走快路径 (单次 LLM, 一次拿全)
+      if (skuLines.length <= 8) {
+        await runFastPath(skuLines);
+      } else {
+        await runChunkedPath(skuLines);
       }
-      setResult(parsed);
     } catch (err) {
       setError(err instanceof Error ? err.message : '生成失败');
     } finally {
       setRunning(false);
+      setProgress(null);
     }
+  };
+
+  // 快路径 · ≤8 SKU 一次性出全
+  const runFastPath = async (skuLines: string[]) => {
+    setProgress({ done: 0, total: 1, phase: '生成完整计划...' });
+    const res = await fetch('/api/ai', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        moduleId: 'batch-launch',
+        prompt: buildPrompt(),
+        input: skuList,
+        skuId: activeSkuId,
+      }),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
+    const raw = data.content || '';
+    setRawDebug(raw);
+    const m = raw.match(/\{[\s\S]*\}/);
+    if (!m) throw new Error('AI 输出非 JSON');
+    const parsed = JSON.parse(m[0]) as BatchPlan;
+    if (!parsed.skuPlans || parsed.skuPlans.length === 0) {
+      throw new Error('AI 没返回 skuPlans');
+    }
+    setProgress({ done: 1, total: 1, phase: '完成' });
+    setResult(parsed);
+  };
+
+  // 分片路径 · >8 SKU 拆 chunk 并发
+  const runChunkedPath = async (skuLines: string[]) => {
+    const CHUNK_SIZE = 6;
+    const CONCURRENCY = 2;
+
+    const chunks: string[][] = [];
+    for (let i = 0; i < skuLines.length; i += CHUNK_SIZE) {
+      chunks.push(skuLines.slice(i, i + CHUNK_SIZE));
+    }
+
+    const totalSteps = 1 + chunks.length; // 1 个 overall + N 个 plan chunks
+    let doneSteps = 0;
+    const bumpProgress = (phase: string) => {
+      doneSteps++;
+      setProgress({ done: doneSteps, total: totalSteps, phase });
+    };
+
+    setProgress({ done: 0, total: totalSteps, phase: `准备分 ${chunks.length} 片处理 ${skuLines.length} SKU...` });
+
+    // Step 1: overall
+    const overallRes = await fetch('/api/batch-launch/chunk', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        chunkType: 'overall',
+        skus: skuLines.slice(0, 3), // 给 LLM 一点 sample 但 totalCount 才是真总数
+        stages: selectedStages,
+        platform,
+        brandContext,
+        totalCount: skuLines.length,
+        skuId: activeSkuId,
+      }),
+    });
+    const overallData = await overallRes.json();
+    if (!overallRes.ok) throw new Error(overallData.error || `Overall ${overallRes.status}`);
+    const overall = overallData.result as {
+      overallStrategy: string;
+      estimatedTotalCost: string;
+      estimatedDuration: string;
+      globalChecklist: string[];
+      riskFlags: string[];
+    };
+    bumpProgress(`整体策略 ✓ · 开始 ${chunks.length} 片 SKU 详情`);
+
+    // Step 2: plans · 并发 CONCURRENCY
+    const allPlans: SkuPlan[] = [];
+    let cursor = 0;
+    const errors: string[] = [];
+
+    const runOne = async (chunkIdx: number) => {
+      const chunk = chunks[chunkIdx];
+      try {
+        const res = await fetch('/api/batch-launch/chunk', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            chunkType: 'plans',
+            skus: chunk,
+            stages: selectedStages,
+            platform,
+            brandContext,
+            totalCount: skuLines.length,
+            skuId: activeSkuId,
+          }),
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          errors.push(`片 ${chunkIdx + 1}: ${data.error || res.status}`);
+          return;
+        }
+        const plans = (data.result?.skuPlans || []) as SkuPlan[];
+        allPlans.push(...plans);
+      } catch (err) {
+        errors.push(`片 ${chunkIdx + 1}: ${err instanceof Error ? err.message : 'fail'}`);
+      } finally {
+        bumpProgress(`SKU 详情 ${allPlans.length}/${skuLines.length}`);
+      }
+    };
+
+    // worker pool
+    const workers: Promise<void>[] = [];
+    const next = async (): Promise<void> => {
+      while (cursor < chunks.length) {
+        const idx = cursor++;
+        await runOne(idx);
+      }
+    };
+    for (let i = 0; i < Math.min(CONCURRENCY, chunks.length); i++) {
+      workers.push(next());
+    }
+    await Promise.all(workers);
+
+    if (allPlans.length === 0) {
+      throw new Error(`所有分片都失败: ${errors.join(' / ')}`);
+    }
+
+    // 合成完整 BatchPlan
+    const merged: BatchPlan = {
+      overallStrategy: overall.overallStrategy,
+      estimatedTotalCost: overall.estimatedTotalCost,
+      estimatedDuration: overall.estimatedDuration,
+      globalChecklist: overall.globalChecklist,
+      riskFlags: errors.length > 0
+        ? [...(overall.riskFlags || []), `⚠️ ${errors.length} 个分片失败 (有部分 SKU 缺失): ${errors.slice(0, 2).join(' · ')}`]
+        : overall.riskFlags,
+      skuPlans: allPlans,
+    };
+    setResult(merged);
   };
 
   const exportMd = () => {
@@ -364,8 +493,13 @@ ${skuList}
                 rows={9}
                 className="w-full px-3 py-2 bg-bg-surface border border-border-default rounded text-[11px] font-mono resize-none leading-relaxed"
               />
-              <div className="text-[10px] font-mono text-text-tertiary mt-1 tabular-nums">
-                {skuCount} SKU · 上限 20
+              <div className="text-[10px] font-mono text-text-tertiary mt-1 tabular-nums flex items-center gap-2 flex-wrap">
+                <span>{skuCount} SKU · 上限 100</span>
+                {skuCount > 8 && (
+                  <span className="text-accent">
+                    · 分片模式 ({Math.ceil(skuCount / 6)} 片 × 6 SKU, 并发 2)
+                  </span>
+                )}
               </div>
             </div>
 
@@ -444,9 +578,11 @@ ${skuList}
           )}
 
           <p className="text-[10px] font-mono text-text-tertiary leading-relaxed border-t border-border-subtle pt-3">
-            Phase 1 · 计划生成器 · 商家拷 prompt 手动跑各模块
+            ≤ 8 SKU · 单次出全 (~15s)
             <br/>
-            Phase 2 (待做) · 后端任务编排 + 自动并发跑 + 进度看板
+            &gt; 8 SKU · 自动分片并发 · 100 SKU 上限 (~1min 全做完)
+            <br/>
+            <span className="text-accent">商家拷 prompt 手动跑各模块, 或点 SKU 卡片直跳到对应 wenai 模块</span>
           </p>
         </aside>
 
@@ -455,19 +591,42 @@ ${skuList}
           {!running && !result && <EmptyState />}
 
           {running && (
-            <div className="border border-accent/40 bg-accent/5 rounded-lg p-6 flex items-center gap-3">
-              <div className="w-8 h-8 rounded-full border-2 border-accent/30 border-t-accent animate-spin" />
-              <div>
-                <div className="text-[13px] font-semibold text-text-primary">在跑批量计划</div>
-                <div className="text-[10px] font-mono text-text-tertiary mt-0.5">
-                  整体策略 · {skuCount} SKU × {selectedStages.length} 工序 · 全局 checklist
+            <div className="border border-accent/40 bg-accent/5 rounded-lg p-6 space-y-3">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-full border-2 border-accent/30 border-t-accent animate-spin" />
+                <div className="flex-1">
+                  <div className="text-[13px] font-semibold text-text-primary">
+                    {progress?.phase || '在跑批量计划'}
+                  </div>
+                  <div className="text-[10px] font-mono text-text-tertiary mt-0.5">
+                    {skuCount} SKU × {selectedStages.length} 工序 · {skuCount > 8 ? '分片并发模式' : '快路径单次模式'}
+                  </div>
                 </div>
+                {progress && (
+                  <div className="text-[11px] font-mono text-accent tabular-nums">
+                    {progress.done}/{progress.total}
+                  </div>
+                )}
               </div>
+              {progress && progress.total > 1 && (
+                <div className="h-1.5 bg-bg-surface rounded-full overflow-hidden">
+                  <div
+                    className="h-full bg-accent transition-all duration-300"
+                    style={{ width: `${(progress.done / progress.total) * 100}%` }}
+                  />
+                </div>
+              )}
             </div>
           )}
 
           {!running && result && (
-            <Plan result={result} exportMd={exportMd} openSku={openSku} setOpenSku={setOpenSku} />
+            <Plan
+              result={result}
+              exportMd={exportMd}
+              openSku={openSku}
+              setOpenSku={setOpenSku}
+              platform={platform}
+            />
           )}
         </main>
       </div>
@@ -503,13 +662,49 @@ function Tip({ emoji, title, desc }: { emoji: string; title: string; desc: strin
 }
 
 function Plan({
-  result, exportMd, openSku, setOpenSku,
+  result, exportMd, openSku, setOpenSku, platform,
 }: {
   result: BatchPlan;
   exportMd: () => void;
   openSku: number | null;
   setOpenSku: (n: number | null) => void;
+  platform: Platform;
 }) {
+  const [saving, setSaving] = useState(false);
+  const [savedCount, setSavedCount] = useState(0);
+  const [saveErr, setSaveErr] = useState('');
+
+  const saveAllToLibrary = async () => {
+    setSaving(true);
+    setSaveErr('');
+    let ok = 0;
+    const errs: string[] = [];
+    // 串行 (不要并发淹 Redis)
+    for (const sku of result.skuPlans) {
+      try {
+        const res = await fetch('/api/user/sku-history', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name: sku.skuName,
+            category: sku.category,
+            platform,
+            status: 'idea',
+            notes: sku.positioning,
+            modules: ['batch-launch'],
+          }),
+        });
+        if (res.ok) ok++;
+        else errs.push(`${sku.skuName}: ${res.status}`);
+      } catch (err) {
+        errs.push(`${sku.skuName}: ${err instanceof Error ? err.message : 'fail'}`);
+      }
+    }
+    setSavedCount(ok);
+    setSaving(false);
+    if (errs.length > 0) setSaveErr(`${errs.length} 失败 (前 2): ${errs.slice(0, 2).join(' / ')}`);
+  };
+
   return (
     <>
       {/* 摘要 */}
@@ -560,17 +755,36 @@ function Plan({
         )}
       </div>
 
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between flex-wrap gap-2">
         <h2 className="text-[14px] font-bold text-text-primary">
           {result.skuPlans.length} 个 SKU 各自的执行 SOP
         </h2>
-        <button
-          onClick={exportMd}
-          className="text-[11px] font-mono text-accent border border-accent/30 hover:bg-accent/10 rounded px-3 py-1.5"
-        >
-          ⬇ 导出完整 SOP (markdown)
-        </button>
+        <div className="flex items-center gap-2 flex-wrap">
+          {savedCount === 0 ? (
+            <button
+              onClick={saveAllToLibrary}
+              disabled={saving}
+              className="text-[11px] font-mono text-cat-content border border-cat-content/40 hover:bg-cat-content/10 rounded px-3 py-1.5 disabled:opacity-40"
+              title="存入 SKU 库后每个 SKU 都能在选品/测款/数据洞察里被引用"
+            >
+              {saving ? `存入中 ${savedCount}/${result.skuPlans.length}...` : `📦 存入 SKU 库 (${result.skuPlans.length})`}
+            </button>
+          ) : (
+            <span className="text-[11px] font-mono text-success">
+              ✓ 已存入 {savedCount} 个 SKU · <Link href="/me/skus" className="underline hover:text-accent">查看 →</Link>
+            </span>
+          )}
+          <button
+            onClick={exportMd}
+            className="text-[11px] font-mono text-accent border border-accent/30 hover:bg-accent/10 rounded px-3 py-1.5"
+          >
+            ⬇ 导出完整 SOP (markdown)
+          </button>
+        </div>
       </div>
+      {saveErr && (
+        <div className="text-[10px] text-error">{saveErr}</div>
+      )}
 
       <div className="space-y-2">
         {result.skuPlans.map((sku, i) => {
