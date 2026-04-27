@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Redis } from '@upstash/redis';
-import { getDailyCost } from '@/lib/cost-cap';
+import { getDailyCost, listCostDetails } from '@/lib/cost-cap';
+import { listSkus } from '@/lib/sku-history';
 
 /**
  * Admin 成本面板 · 看任意 org 当日累计花费
@@ -35,6 +36,37 @@ export async function GET(request: NextRequest) {
 
   if (orgId) {
     const cents = await getDailyCost(orgId);
+    const detailMode = searchParams.get('detail') === '1';
+
+    if (detailMode) {
+      // 钻取: 当日花费明细 + 该 orgId 的 SKU 列表 (基于 org-id helper 一致性)
+      const [details, skus] = await Promise.all([
+        listCostDetails(orgId, 100),
+        listSkus(orgId, 50),
+      ]);
+      // 按模块聚合
+      const byModule: Record<string, { cents: number; count: number }> = {};
+      for (const d of details) {
+        const m = byModule[d.module] ?? { cents: 0, count: 0 };
+        m.cents += d.cents;
+        m.count += 1;
+        byModule[d.module] = m;
+      }
+      return NextResponse.json({
+        orgId,
+        date: todayDateStr(),
+        currentCents: cents,
+        currentCny: +(cents / 100).toFixed(2),
+        details,
+        byModule,
+        skuCount: skus.length,
+        skus: skus.map(s => ({
+          id: s.id, name: s.name, category: s.category, status: s.status,
+          modules: s.modules, addedAt: s.addedAt,
+        })),
+      });
+    }
+
     return NextResponse.json({
       orgId,
       date: todayDateStr(),

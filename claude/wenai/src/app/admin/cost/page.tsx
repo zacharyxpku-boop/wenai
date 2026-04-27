@@ -9,6 +9,23 @@ interface CostItem {
   currentCny: number;
 }
 
+interface CostDetail {
+  module: string;
+  cents: number;
+  at: string;
+  taskId?: string;
+  meta?: Record<string, unknown>;
+}
+
+interface DrillDown {
+  orgId: string;
+  currentCny: number;
+  details: CostDetail[];
+  byModule: Record<string, { cents: number; count: number }>;
+  skuCount: number;
+  skus: { id: string; name: string; category: string; status: string; addedAt: string }[];
+}
+
 interface CostList {
   date: string;
   totalCents: number;
@@ -25,6 +42,20 @@ export default function AdminCostPage() {
   const [key, setKey] = useState('');
   const [singleOrg, setSingleOrg] = useState('');
   const [singleResult, setSingleResult] = useState<CostItem | null>(null);
+  const [drillDown, setDrillDown] = useState<DrillDown | null>(null);
+  const [drillLoading, setDrillLoading] = useState(false);
+
+  const openDrill = async (orgId: string) => {
+    setDrillLoading(true);
+    setDrillDown(null);
+    try {
+      const r = await fetch(`/api/admin/cost?orgId=${encodeURIComponent(orgId)}&detail=1`);
+      const d = await r.json();
+      setDrillDown(d as DrillDown);
+    } catch {} finally {
+      setDrillLoading(false);
+    }
+  };
 
   useEffect(() => {
     const saved = sessionStorage.getItem('wenai_admin_key');
@@ -199,9 +230,12 @@ export default function AdminCostPage() {
                   key={item.orgId}
                   className="px-4 py-2.5 grid grid-cols-[1fr_120px_80px] gap-3 items-center hover:bg-bg-surface/50"
                 >
-                  <code className="text-[11px] font-mono text-text-primary truncate">
+                  <button
+                    onClick={() => openDrill(item.orgId)}
+                    className="text-[11px] font-mono text-text-primary truncate hover:text-accent text-left"
+                  >
                     {item.orgId}
-                  </code>
+                  </button>
                   <span className={`text-[13px] font-bold tabular-nums text-right ${isHot ? 'text-error' : 'text-accent'}`}>
                     ¥{item.currentCny.toFixed(2)}
                   </span>
@@ -215,8 +249,124 @@ export default function AdminCostPage() {
         </div>
       )}
 
+      {/* Drill-down · orgId 明细 + SKU 关联 */}
+      {(drillLoading || drillDown) && (
+        <div
+          onClick={() => { if (!drillLoading) setDrillDown(null); }}
+          className="fixed inset-0 bg-bg-root/80 backdrop-blur z-50 flex items-start justify-center pt-12 px-4 overflow-y-auto"
+        >
+          <div
+            onClick={e => e.stopPropagation()}
+            className="bg-bg-surface border border-accent/40 rounded-lg max-w-[900px] w-full p-5 mb-12 shadow-2xl"
+          >
+            <div className="flex items-center justify-between mb-3">
+              <div className="text-[10px] font-mono text-accent uppercase tracking-wider">
+                orgId 钻取
+              </div>
+              <button
+                onClick={() => setDrillDown(null)}
+                className="text-[12px] font-mono text-text-tertiary hover:text-text-primary"
+              >
+                ✗ 关闭
+              </button>
+            </div>
+
+            {drillLoading || !drillDown ? (
+              <div className="text-center py-8 text-text-tertiary text-[12px]">加载中...</div>
+            ) : (
+              <>
+                <h2 className="text-xl font-bold text-text-primary mb-2 font-[family-name:var(--font-outfit)]">
+                  {drillDown.orgId}
+                </h2>
+                <div className="grid grid-cols-3 gap-3 mb-4">
+                  <div className="border border-accent/30 bg-accent/5 rounded p-2">
+                    <div className="text-[9px] font-mono text-text-tertiary uppercase">今日花费</div>
+                    <div className="text-lg font-bold text-accent tabular-nums">¥{drillDown.currentCny.toFixed(2)}</div>
+                  </div>
+                  <div className="border border-border-subtle rounded p-2">
+                    <div className="text-[9px] font-mono text-text-tertiary uppercase">今日调用</div>
+                    <div className="text-lg font-bold text-text-primary tabular-nums">{drillDown.details.length}</div>
+                  </div>
+                  <div className="border border-border-subtle rounded p-2">
+                    <div className="text-[9px] font-mono text-text-tertiary uppercase">SKU 库</div>
+                    <div className="text-lg font-bold text-text-primary tabular-nums">{drillDown.skuCount}</div>
+                  </div>
+                </div>
+
+                {/* 按模块聚合 */}
+                <div className="mb-4">
+                  <div className="text-[10px] font-mono text-text-tertiary uppercase tracking-wider mb-1.5">
+                    按模块聚合
+                  </div>
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                    {Object.entries(drillDown.byModule).map(([mod, agg]) => (
+                      <div key={mod} className="border border-border-subtle rounded p-2 bg-bg-root/40">
+                        <div className="text-[11px] font-mono text-text-primary">{mod}</div>
+                        <div className="flex items-baseline gap-2 mt-0.5">
+                          <span className="text-[12px] font-bold text-accent tabular-nums">¥{(agg.cents / 100).toFixed(2)}</span>
+                          <span className="text-[9px] font-mono text-text-tertiary">{agg.count} 次</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* 调用明细 */}
+                <div className="mb-4">
+                  <div className="text-[10px] font-mono text-text-tertiary uppercase tracking-wider mb-1.5">
+                    调用明细 (最近 {drillDown.details.length})
+                  </div>
+                  <div className="border border-border-subtle rounded max-h-[200px] overflow-y-auto divide-y divide-border-subtle">
+                    {drillDown.details.length === 0 ? (
+                      <div className="p-3 text-center text-[11px] text-text-tertiary font-mono">没有明细记录(老调用未追踪)</div>
+                    ) : drillDown.details.map((d, i) => (
+                      <div key={i} className="px-3 py-1.5 grid grid-cols-[1fr_100px_60px] gap-2 items-center text-[11px]">
+                        <div>
+                          <span className="font-mono text-text-primary">{d.module}</span>
+                          {typeof d.meta?.scenario === 'string' && d.meta.scenario && (
+                            <span className="text-[9px] font-mono text-text-tertiary ml-1.5">· {d.meta.scenario}</span>
+                          )}
+                        </div>
+                        <span className="font-mono text-text-tertiary text-right">
+                          {new Date(d.at).toLocaleTimeString('zh-CN')}
+                        </span>
+                        <span className="font-bold text-accent text-right tabular-nums">
+                          ¥{(d.cents / 100).toFixed(2)}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* SKU 关联 */}
+                <div>
+                  <div className="text-[10px] font-mono text-text-tertiary uppercase tracking-wider mb-1.5">
+                    该用户 SKU 库 (跨表关联)
+                  </div>
+                  {drillDown.skus.length === 0 ? (
+                    <div className="text-[11px] font-mono text-text-tertiary border border-dashed border-border-subtle rounded p-3 text-center">
+                      没有 SKU 入库 (烧钱但没沉淀历史 = 高风险用户?)
+                    </div>
+                  ) : (
+                    <div className="border border-border-subtle rounded max-h-[160px] overflow-y-auto divide-y divide-border-subtle">
+                      {drillDown.skus.map(s => (
+                        <div key={s.id} className="px-3 py-1.5 grid grid-cols-[1fr_120px_80px] gap-2 items-center text-[11px]">
+                          <span className="text-text-primary truncate">{s.name}</span>
+                          <span className="font-mono text-text-tertiary truncate">{s.category}</span>
+                          <span className="font-mono text-cat-content text-right">{s.status}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      )}
+
       <p className="text-[10px] font-mono text-text-tertiary mt-6 leading-relaxed">
-        累计基于 cost-cap.ts 估算 · 影棚单图 ¥0.30 / 高 ¥1.20 · 视频 720p ¥4 / 1080p ¥8 · 默认日上限 ¥50/org (env COST_CAP_DAILY_CNY 可调)
+        累计基于 cost-cap.ts 估算 · 影棚单图 ¥0.30 / 高 ¥1.20 · 视频 720p ¥4 / 1080p ¥8 · 默认日上限 ¥50/org (env COST_CAP_DAILY_CNY 可调) · 点 orgId 钻取明细 + SKU 关联
       </p>
     </div>
   );

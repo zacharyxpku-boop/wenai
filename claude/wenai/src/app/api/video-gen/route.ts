@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { checkRateLimit } from '@/lib/ratelimit';
-import { checkCostCap, recordCost, COST_ESTIMATE_CENTS } from '@/lib/cost-cap';
+import { checkCostCap, recordCostWithDetail, COST_ESTIMATE_CENTS } from '@/lib/cost-cap';
 import { resolveOrgId } from '@/lib/org-id';
 
 /**
@@ -338,7 +338,19 @@ export async function POST(request: NextRequest) {
       watermark,
       scenario: body.scenario,
     });
-    if (r.status === 200) await recordCost(rateKey, estVideoCents);
+    if (r.status === 200) {
+      let taskId: string | undefined;
+      try {
+        const clone = r.clone();
+        const j = await clone.json();
+        taskId = j?.taskId;
+      } catch {}
+      await recordCostWithDetail(rateKey, estVideoCents, {
+        module: 'video-gen',
+        taskId,
+        meta: { scenario: body.scenario, duration, model, size: resolution },
+      });
+    }
     return r;
   }
 
