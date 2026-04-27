@@ -514,7 +514,8 @@ export default function Dashboard() {
                 { num: '6', name: '测款 A-B', href: '/pipelines/ab-test', cn: '9 张测点击率' },
                 { num: '7', name: '上新流水线', href: '/pipelines/new-listing', cn: '翻译/文案/合规' },
                 { num: '8', name: '数据洞察', href: '/pipelines/data-insights', cn: '诊断 + 行动' },
-                { num: '9', name: '询盘对接', href: '/inquire?from=hero', cn: '24h 内联系' },
+                { num: '9', name: '客服转化', href: '/pipelines/customer-service', cn: '三版回复推单' },
+                { num: '10', name: '询盘对接', href: '/inquire?from=hero', cn: '24h 内联系' },
               ].map((step, i, arr) => (
                 <div key={i} className="flex items-center gap-1.5">
                   <a
