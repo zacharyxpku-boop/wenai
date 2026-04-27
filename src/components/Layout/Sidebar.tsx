@@ -135,8 +135,19 @@ export default function Sidebar({ modules, categories, clientName, userRole }: S
         <span className="font-[family-name:var(--font-outfit)] font-semibold">工作台</span>
       </Link>
 
+      {/* 我的 SKU 库 · 决策层数据飞轮入口 */}
+      <div className="mx-3.5 mt-3">
+        <a
+          href="/me/skus"
+          className="flex items-center gap-2 px-2.5 py-1.5 rounded text-[12px] font-mono text-text-secondary hover:text-accent hover:bg-bg-surface transition-colors"
+        >
+          <span>📦</span>
+          <span>我的 SKU 库</span>
+        </a>
+      </div>
+
       {/* Pipeline 导航区 · 首屏焦点 */}
-      <div className="mx-3.5 mt-4 pb-3 border-b border-border-subtle">
+      <div className="mx-3.5 mt-2 pb-3 border-b border-border-subtle">
         <div className="flex items-center gap-2 px-2.5 mb-2">
           <div className="w-1.5 h-1.5 rounded-full bg-accent shadow-[0_0_4px_currentColor]" />
           <p className="label-mono text-[9px] font-semibold text-accent">PIPELINES</p>
