@@ -283,7 +283,15 @@ export default function AbTestPage() {
             </div>
           )}
 
-          {!running && result && <ResultView result={result} copyPrompt={copyPrompt} copiedId={copiedId} />}
+          {!running && result && (
+            <ResultView
+              result={result}
+              copyPrompt={copyPrompt}
+              copiedId={copiedId}
+              productHint={productHint}
+              platformLabel={PLATFORM_LABELS[platform]}
+            />
+          )}
         </main>
       </div>
 
@@ -319,15 +327,57 @@ function ResultView({
   result,
   copyPrompt,
   copiedId,
+  productHint,
+  platformLabel,
 }: {
   result: AbTestResult;
   copyPrompt: (id: string, p: string) => void;
   copiedId: string | null;
+  productHint: string;
+  platformLabel: string;
 }) {
+  const [savingSku, setSavingSku] = useState(false);
+  const [savedSku, setSavedSku] = useState(false);
+
+  const saveToLibrary = async () => {
+    setSavingSku(true);
+    try {
+      const res = await fetch('/api/user/sku-history', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: productHint.slice(0, 80),
+          category: '已测款',
+          platform: platformLabel,
+          status: 'abtest-done',
+          notes: `测款策略: ${result.testStrategy}\n\n推荐先投: ${result.recommendedFirst3.join(' / ')}\n\n${result.budgetAllocation}\n\n杀/留: ${result.killCriteria}`,
+          modules: ['ab-test'],
+        }),
+      });
+      if (res.ok) setSavedSku(true);
+    } catch {} finally {
+      setSavingSku(false);
+    }
+  };
+
   return (
     <>
-      <section className="border border-accent/30 bg-accent/5 rounded-lg p-4 space-y-2">
-        <div className="text-[10px] font-mono text-accent uppercase tracking-wider">核心策略</div>
+      <section className="border border-accent/30 bg-accent/5 rounded-lg p-4 space-y-2 relative">
+        <div className="flex items-center justify-between gap-2 flex-wrap">
+          <div className="text-[10px] font-mono text-accent uppercase tracking-wider">核心策略</div>
+          <button
+            onClick={saveToLibrary}
+            disabled={savingSku || savedSku}
+            className={`text-[10px] font-mono px-2.5 py-1 rounded border transition-colors ${
+              savedSku
+                ? 'border-success/40 bg-success/10 text-success'
+                : 'border-accent/40 text-accent hover:bg-accent/10'
+            }`}
+            title="保存到我的 SKU 库, 数据洞察会基于此分析"
+          >
+            {savedSku ? '✓ 已入库 SKU 历史' : savingSku ? '保存中…' : '📦 保存到 SKU 库'}
+          </button>
+        </div>
         <p className="text-[13px] text-text-primary leading-relaxed">{result.productSummary}</p>
         <p className="text-[12px] text-text-secondary leading-relaxed">{result.testStrategy}</p>
       </section>
