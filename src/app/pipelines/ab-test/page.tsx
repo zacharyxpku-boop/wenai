@@ -6,6 +6,7 @@ import { useMySkus } from '@/lib/use-my-skus';
 import { useActiveSkuId } from '@/lib/use-active-sku';
 import { ActiveSkuBadge } from '@/components/ActiveSkuBadge';
 import { ShareButton } from '@/components/ShareButton';
+import { IndustryHint } from '@/components/IndustryHint';
 
 /**
  * 测款 A-B 实验室 (痛点 #11)
@@ -172,6 +173,7 @@ export default function AbTestPage() {
             一张图变 9 张测款变体 · 不再瞎投
             <ActiveSkuBadge skuId={activeSkuId} />
           </h1>
+          <div className="mb-3"><IndustryHint /></div>
           <p className="text-[13px] lg:text-[14px] text-text-secondary leading-relaxed max-w-[800px]">
             投不出爆款 = 没测款数据 → 不敢加预算 → 死循环。
             wenai 一次给 <span className="text-accent">3 钩子 × 3 配色 = 9 个变体 prompt + 推荐先投哪 3 张 + 杀/留硬指标</span>,
