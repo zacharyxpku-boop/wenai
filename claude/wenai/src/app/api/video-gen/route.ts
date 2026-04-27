@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { checkRateLimit } from '@/lib/ratelimit';
-import { verifyToken, getCookieName } from '@/lib/auth';
 import { checkCostCap, recordCost, COST_ESTIMATE_CENTS } from '@/lib/cost-cap';
+import { resolveOrgId } from '@/lib/org-id';
 
 /**
  * AI 视频生成 · 阿里通义万相 wanx2.1 i2v (image-to-video)
@@ -291,15 +291,8 @@ export async function POST(request: NextRequest) {
     });
   }
 
-  // 限流
-  let rateKey = request.headers.get('x-tenant-id') || 'default';
-  try {
-    const token = request.cookies.get(getCookieName())?.value;
-    if (token) {
-      const payload = await verifyToken(token);
-      if (payload?.username) rateKey = payload.username;
-    }
-  } catch {}
+  // 限流 · orgId 走统一 helper
+  const rateKey = await resolveOrgId(request);
 
   if (!body.fromPipeline) {
     const limit = await checkRateLimit('video-gen', rateKey);

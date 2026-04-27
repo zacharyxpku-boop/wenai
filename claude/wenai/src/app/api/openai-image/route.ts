@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { checkRateLimit } from '@/lib/ratelimit';
-import { verifyToken, getCookieName } from '@/lib/auth';
 import { checkCostCap, recordCost, COST_ESTIMATE_CENTS } from '@/lib/cost-cap';
+import { resolveOrgId } from '@/lib/org-id';
 
 /**
  * OpenAI gpt-image-1 后端 · AI 影棚旗舰模块
@@ -264,15 +264,8 @@ export async function POST(request: NextRequest) {
     });
   }
 
-  // 限流 · 单独配额(生图昂贵)
-  let rateKey = request.headers.get('x-tenant-id') || 'default';
-  try {
-    const token = request.cookies.get(getCookieName())?.value;
-    if (token) {
-      const payload = await verifyToken(token);
-      if (payload?.username) rateKey = payload.username;
-    }
-  } catch {}
+  // 限流 · 单独配额 (生图昂贵) · orgId 走统一 helper
+  const rateKey = await resolveOrgId(request);
 
   if (!body.fromPipeline) {
     const limit = await checkRateLimit('openai-image', rateKey);

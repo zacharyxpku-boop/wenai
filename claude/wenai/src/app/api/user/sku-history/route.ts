@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { addSku, listSkus, updateSku, deleteSku, type SkuRecord } from '@/lib/sku-history';
-import { verifyToken, getCookieName } from '@/lib/auth';
+import { resolveOrgId } from '@/lib/org-id';
 
 /**
  * /api/user/sku-history
@@ -9,27 +9,8 @@ import { verifyToken, getCookieName } from '@/lib/auth';
  *   PATCH  ?id=xxx  更新
  *   DELETE ?id=xxx  删除
  *
- * orgId 解析:
- *   - 优先 cookie token 里的 username
- *   - 否则 x-tenant-id header
- *   - 否则 IP (匿名)
+ * orgId 解析: src/lib/org-id.ts (跨 API 统一口径)
  */
-
-function getIp(req: NextRequest): string {
-  const fwd = req.headers.get('x-forwarded-for');
-  return fwd?.split(',')[0].trim() || req.headers.get('x-real-ip') || 'anon';
-}
-
-async function resolveOrgId(req: NextRequest): Promise<string> {
-  try {
-    const token = req.cookies.get(getCookieName())?.value;
-    if (token) {
-      const payload = await verifyToken(token);
-      if (payload?.username) return payload.username;
-    }
-  } catch {}
-  return req.headers.get('x-tenant-id') || `ip:${getIp(req)}`;
-}
 
 export async function GET(req: NextRequest) {
   const orgId = await resolveOrgId(req);
