@@ -305,6 +305,7 @@ export default function AIPhotoshootPage() {
   const [cost, setCost] = useState<CostInfo | null>(null);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const [showFinalPrompt, setShowFinalPrompt] = useState(false);
+  const [fromCache, setFromCache] = useState(false);
 
   const fileInputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
@@ -385,6 +386,7 @@ export default function AIPhotoshootPage() {
       if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
       setImages(data.images || []);
       if (data.cost) setCost(data.cost);
+      setFromCache(data.fromCache === true);
     } catch (err) {
       setError(err instanceof Error ? err.message : '生成失败');
     } finally {
@@ -898,10 +900,19 @@ export default function AIPhotoshootPage() {
             <>
               <div className="flex items-center justify-between flex-wrap gap-2">
                 <div>
-                  <div className="text-[14px] font-bold text-text-primary">
+                  <div className="text-[14px] font-bold text-text-primary flex items-center gap-2 flex-wrap">
                     生成完成 · {images.length} 张
+                    {fromCache && (
+                      <span className="text-[9px] font-mono text-success border border-success/40 bg-success/10 rounded px-1.5 py-0.5">
+                        ⚡ 缓存命中 · 未消耗 quota
+                      </span>
+                    )}
                   </div>
-                  {cost && (
+                  {fromCache ? (
+                    <div className="text-[10px] font-mono text-success mt-0.5 tabular-nums">
+                      同 prompt + 同垫图 + 同尺寸 7 天内已生过 · ¥0 复用 · 想强刷加 ?fresh=1
+                    </div>
+                  ) : cost && (
                     <div className="text-[10px] font-mono text-text-tertiary mt-0.5 tabular-nums">
                       实际成本: ${cost.totalUsd} ≈ ¥{(cost.totalUsd * 7.2).toFixed(2)} · 真人拍摄需 ¥{({
                         'model-generate': '1000-3000',

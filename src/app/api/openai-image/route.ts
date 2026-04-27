@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { checkRateLimit } from '@/lib/ratelimit';
 import { checkCostCap, recordCostWithDetail, COST_ESTIMATE_CENTS } from '@/lib/cost-cap';
 import { resolveOrgId } from '@/lib/org-id';
+import { buildImageCacheKey, getImageCache, setImageCache } from '@/lib/image-cache';
 
 /**
  * OpenAI gpt-image-1 后端 · AI 影棚旗舰模块
@@ -290,6 +291,37 @@ export async function POST(request: NextRequest) {
     );
   }
 
+  // 收集垫图: 优先用 referenceImages 数组, 其次用单图 referenceImage (历史兼容)
+  const refList: string[] = body.referenceImages && body.referenceImages.length > 0
+    ? body.referenceImages
+    : (body.referenceImage ? [body.referenceImage] : []);
+
+  // 内容哈希缓存 · 同 prompt + 同垫图 + 同尺寸/质量 → ¥0 复用上次结果
+  // ?fresh=1 强制跳缓存
+  const fresh = request.nextUrl?.searchParams?.get('fresh') === '1';
+  const imgCacheHash = buildImageCacheKey({
+    prompt: body.prompt,
+    mode,
+    scenario: body.scenario,
+    size,
+    quality,
+    refs: refList,
+  });
+  if (!fresh) {
+    try {
+      const cached = await getImageCache(rateKey, imgCacheHash);
+      if (cached && typeof cached === 'object') {
+        return NextResponse.json({
+          ...(cached as Record<string, unknown>),
+          fromCache: true,
+          cacheHash: imgCacheHash,
+        });
+      }
+    } catch {
+      /* 缓存读失败不阻塞主链路 */
+    }
+  }
+
   // 单 org 24h 成本闸 · 防客户/恶意用户烧爆 HappyHorse 配额
   const estCents = quality === 'high' ? COST_ESTIMATE_CENTS['image-high'] : COST_ESTIMATE_CENTS['image-medium'];
   const cap = await checkCostCap(rateKey, estCents);
@@ -307,11 +339,6 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    // 收集垫图: 优先用 referenceImages 数组, 其次用单图 referenceImage (历史兼容)
-    const refList: string[] = body.referenceImages && body.referenceImages.length > 0
-      ? body.referenceImages
-      : (body.referenceImage ? [body.referenceImage] : []);
-
     const response = await viaHappyhorse({
       apiKey: happyhorseKey,
       prompt: body.prompt,
@@ -319,14 +346,15 @@ export async function POST(request: NextRequest) {
       size,
       scenario: body.scenario,
     });
-    // 记录实际开销 + 明细 (HappyHorse 不返回成本, 按估算累加)
+    // 记录实际开销 + 明细 + 写缓存 (HappyHorse 不返回成本, 按估算累加)
     if (response.status === 200) {
-      // 尝试从响应里抽 taskId (clone body 读)
+      // 尝试从响应里抽 taskId + 完整 payload (clone body 读)
       let taskId: string | undefined;
+      let parsedBody: Record<string, unknown> | null = null;
       try {
         const clone = response.clone();
-        const j = await clone.json();
-        taskId = j?.taskId;
+        parsedBody = await clone.json();
+        taskId = parsedBody?.taskId as string | undefined;
       } catch {}
       await recordCostWithDetail(rateKey, estCents, {
         module: 'openai-image',
@@ -334,6 +362,10 @@ export async function POST(request: NextRequest) {
         skuId: body.skuId,
         meta: { scenario: body.scenario, quality, size, count: n },
       });
+      // 缓存这次成功结果 (key 已在前面算好)
+      if (parsedBody) {
+        setImageCache(rateKey, imgCacheHash, parsedBody).catch(() => {});
+      }
     }
     return response;
   } catch (err) {
