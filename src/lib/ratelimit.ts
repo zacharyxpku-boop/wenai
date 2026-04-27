@@ -27,6 +27,7 @@ const LIMITS: Record<string, number> = {
   'video-gen': 8, // wanx i2v · 5s 视频 ~¥3.5,8 条/天/用户
   'video-teardown': 15, // Gemini Vision 拆解 · 8MB 视频 ~$0.01-0.05,15 次/天
   'product-discovery': 20, // AI 选品 · 一次 ~3K token,20 次/天
+  'ab-test': 25, // 测款 A-B · 一次 ~3K token (9 个 prompt + SOP),25 次/天
 };
 
 // --- Upstash Redis backend ---
