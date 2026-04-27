@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useMySkus } from '@/lib/use-my-skus';
 import { useActiveSkuId } from '@/lib/use-active-sku';
 import { ActiveSkuBadge } from '@/components/ActiveSkuBadge';
+import { IndustryHint } from '@/components/IndustryHint';
 
 /**
  * AI 选品发现 (痛点 #1) · STRATEGY_DEEP L4 列的最大缺口
@@ -249,6 +250,7 @@ export default function ProductDiscoveryPage() {
             别拍脑袋选品 · AI 给你 5-8 个候选 SKU
             <ActiveSkuBadge skuId={activeSkuId} />
           </h1>
+          <div className="mb-3"><IndustryHint /></div>
           <p className="text-[13px] lg:text-[14px] text-text-secondary leading-relaxed max-w-[800px]">
             告诉 wenai 你的<span className="text-accent">平台 + 类目 + 价格带 + 启动预算 + 风险偏好</span>,
             AI 反推真实需求 + 候选 SKU + 利润预测 + 切入策略 + 风险点 + 搜索词。

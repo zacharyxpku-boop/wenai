@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getReferenceContext } from '@/lib/references';
+import { getUserSettings } from '@/lib/user-settings';
 import { logUsageEntry } from '@/lib/usage';
 import { checkRateLimit } from '@/lib/ratelimit';
 import { verifyToken, getCookieName } from '@/lib/auth';
@@ -251,7 +252,25 @@ export async function POST(request: NextRequest) {
 
     // 品类专属前缀 — 差异化核心（见 category-prompts.ts）
     const categoryPrefix = category ? `\n\n${getCategoryPrefix(category)}\n\n` : '';
-    const systemContent = prompt + categoryPrefix + (moduleId ? getReferenceContext(moduleId, input) : '') + trademarkContext;
+
+    // 商家行业上下文 (来自 /me/settings 自报) · 让推荐更贴他实际盘子
+    // 决策类模块更受益, 文案类已经吃 category 不重复加
+    let industryContext = '';
+    const INDUSTRY_INJECT_MODULES = new Set([
+      'product-discovery', 'data-insights', 'ab-test', 'intent-mining',
+      'batch-launch', 'customer-service', 'operations', 'positioning',
+      'competitor', 'selection', 'leads', 'ad-optimizer',
+    ]);
+    if (moduleId && INDUSTRY_INJECT_MODULES.has(moduleId)) {
+      try {
+        const settings = await getUserSettings(rateKey);
+        if (settings.industry && settings.industry.length > 0) {
+          industryContext = `\n\n【商家自报行业上下文】\n${settings.industry.slice(0, 200)}\n\n按这个具体业务场景给建议, 不要泛泛而谈。\n\n`;
+        }
+      } catch { /* settings 读失败不阻塞主链路 */ }
+    }
+
+    const systemContent = prompt + categoryPrefix + industryContext + (moduleId ? getReferenceContext(moduleId, input) : '') + trademarkContext;
     const requestBody = {
       model,
       messages: [

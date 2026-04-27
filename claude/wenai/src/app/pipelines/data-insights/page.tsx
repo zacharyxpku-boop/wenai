@@ -6,6 +6,7 @@ import { useActiveSkuId } from '@/lib/use-active-sku';
 import { ActiveSkuBadge } from '@/components/ActiveSkuBadge';
 import { useMySkus } from '@/lib/use-my-skus';
 import { ShareButton } from '@/components/ShareButton';
+import { IndustryHint } from '@/components/IndustryHint';
 
 /**
  * 数据洞察 (痛点 #10) · STRATEGY_DEEP L4 列的核心钩子
@@ -392,6 +393,7 @@ ${data}
             数据贴进来 · AI 替你看懂为啥涨/跌
             <ActiveSkuBadge skuId={activeSkuId} />
           </h1>
+          <div className="mb-3"><IndustryHint /></div>
           <p className="text-[13px] lg:text-[14px] text-text-secondary leading-relaxed max-w-[800px]">
             测完款投放完, 不知道为啥点击下滑 / 退货飙升 / ROI 崩。
             把后台导出的销售数据贴过来,
