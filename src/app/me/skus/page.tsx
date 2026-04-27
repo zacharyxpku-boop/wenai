@@ -28,7 +28,9 @@ interface Sku {
   modules?: string[];
 }
 
-type SortBy = 'recent' | 'ctr-desc' | 'cpc-asc';
+type SortBy = 'recent' | 'ctr-desc' | 'cpc-asc' | 'stale';
+
+const STALE_THRESHOLD_DAYS = 30;
 
 const STATUS_LABELS: Record<Sku['status'], { txt: string; cls: string }> = {
   idea: { txt: '💡 想法', cls: 'text-text-tertiary border-border-subtle' },
@@ -204,8 +206,21 @@ export default function MySkusPage() {
         const bp = b.performance?.cpc ?? Number.POSITIVE_INFINITY;
         return ap - bp;
       }
+      if (sortBy === 'stale') {
+        // 上架且最久未更新优先 (复评提醒)
+        const aLaunched = a.status === 'launched' ? 0 : 1;
+        const bLaunched = b.status === 'launched' ? 0 : 1;
+        if (aLaunched !== bLaunched) return aLaunched - bLaunched;
+        return new Date(a.updatedAt).getTime() - new Date(b.updatedAt).getTime();
+      }
       return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime();
     });
+
+  // stale: 上架超 30 天没更新, 该复评了 (MOAT-09 retention 钩子)
+  const staleCutoff = Date.now() - STALE_THRESHOLD_DAYS * 24 * 3600 * 1000;
+  const staleCount = skus.filter(s =>
+    s.status === 'launched' && new Date(s.updatedAt).getTime() < staleCutoff
+  ).length;
   const counts = {
     all: skus.length,
     idea: skus.filter(s => s.status === 'idea').length,
@@ -278,12 +293,13 @@ export default function MySkusPage() {
       </div>
 
       {/* 排序 */}
-      <div className="flex items-center gap-2 mb-4 text-[10px] font-mono">
+      <div className="flex items-center gap-2 mb-4 text-[10px] font-mono flex-wrap">
         <span className="text-text-tertiary">排序:</span>
         {([
           { v: 'recent' as SortBy, txt: '最近更新' },
           { v: 'ctr-desc' as SortBy, txt: 'CTR 高 → 低' },
           { v: 'cpc-asc' as SortBy, txt: 'CPC 低 → 高' },
+          { v: 'stale' as SortBy, txt: `🕰️ 该复评 (上架 ${STALE_THRESHOLD_DAYS}+ 天没更新)` },
         ]).map(o => (
           <button
             key={o.v}
@@ -298,6 +314,25 @@ export default function MySkusPage() {
           </button>
         ))}
       </div>
+
+      {/* 复评提醒 banner · MOAT-09 retention 钩子 */}
+      {staleCount > 0 && sortBy !== 'stale' && (
+        <div className="mb-4 border border-warning/40 bg-warning/5 rounded-lg p-3 flex items-center justify-between flex-wrap gap-2">
+          <div className="text-[12px] text-text-primary flex items-center gap-2">
+            <span>🕰️</span>
+            <span>
+              你有 <span className="font-bold text-warning">{staleCount}</span> 个 SKU 上架超过 {STALE_THRESHOLD_DAYS} 天没更新 ·
+              <span className="text-text-tertiary text-[10px] font-mono ml-2">爆款生命周期会衰减, 跑数据洞察看下是否需要换图/改价</span>
+            </span>
+          </div>
+          <button
+            onClick={() => setSortBy('stale')}
+            className="text-[10px] font-mono text-warning border border-warning/40 hover:bg-warning/10 rounded px-2 py-1"
+          >
+            看哪些 →
+          </button>
+        </div>
+      )}
 
       {/* 新增 SKU */}
       <section className="mb-6 border border-border-subtle rounded-lg p-4 bg-bg-surface/30">
@@ -431,6 +466,11 @@ export default function MySkusPage() {
                     </div>
                     <div className="flex items-center gap-3 text-[10px] font-mono text-text-tertiary flex-wrap">
                       <span>添加 {new Date(sku.addedAt).toLocaleDateString('zh-CN')}</span>
+                      {sku.status === 'launched' && new Date(sku.updatedAt).getTime() < staleCutoff && (
+                        <span className="text-warning border border-warning/40 rounded px-1">
+                          🕰️ {Math.floor((Date.now() - new Date(sku.updatedAt).getTime()) / 86400000)} 天没动 · 该复评
+                        </span>
+                      )}
                       {sku.modules && sku.modules.length > 0 && (
                         <span>跑过 {sku.modules.length} 个模块</span>
                       )}
