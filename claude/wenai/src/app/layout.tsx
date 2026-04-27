@@ -5,6 +5,7 @@ import { cookies } from "next/headers";
 import { readFile } from "fs/promises";
 import { join } from "path";
 import Sidebar from "@/components/Layout/Sidebar";
+import { CommandPalette } from "@/components/CommandPalette";
 import modulesConfig from "@/config/modules.json";
 import { verifyToken, getCookieName } from "@/lib/auth";
 
@@ -137,6 +138,7 @@ export default async function RootLayout({
         <main className={showChrome ? "lg:ml-[240px] min-h-screen p-4 lg:p-8" : "min-h-screen"}>
           {children}
         </main>
+        {showChrome && <CommandPalette />}
       </body>
     </html>
   );
