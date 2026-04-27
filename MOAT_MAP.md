@@ -53,6 +53,19 @@ clico 是"单点 SaaS 比 Arcads 快",wenai 是"**全链路工厂**,你的电商
 ### MOAT-04 · ToB 询盘 + 私域微信全栈
 跨境老板要的不是"我能用",是"我能找谁问、谁能给我定制、谁能把我的供应链对接进来"。wenai 有 `/inquire` 自助提交 + admin 收件箱 + 微信渠道,clico 跟 Picset 都没做。这块不是技术护城河,是**关系密度护城河**——一旦有 30 个真实跨境老板进来,他们会互相推荐,后来者要追同样规模的客户密度需要 6-12 个月。
 
+### MOAT-05 · SKU 全生命周期闭环 (2026-04-27 新增)
+单点工具的最大问题: 客户做完一个动作就走,没下一步指引,留存差。
+wenai 现在有完整闭环: **选品(#1) → 反向意图 → 拆解 → 影棚 → 视频 → 测款(#11) → 上新 → 数据洞察(#10) → 回选品**。每个模块的"下一步"都明确指向闭环里的下个节点(`NextStepHint` 组件),客户跑完一个 SKU 自动进入下个 SKU。
+**这是 retention 护城河**: 商家用得越深, 历史数据越多, 越离不开。竞品做单点工具的根本搭不出这个循环。clico 也只做"视频复刻"单环,没有商业闭环。
+
+### MOAT-06 · 决策层 vs 执行层 二元产品架构
+所有 AI 工具都集中在"执行层"(给我生张图 / 写段文案), 没有"决策层"(我该选哪个 SKU / 该投哪张图 / 数据该怎么解读)。
+wenai 把决策层(选品 / 测款 / 数据洞察)和执行层(影棚 / 视频 / 拆解 / 文案)显式分开,UI 颜色编码区分(决策蓝 cat-content / 执行金 accent)。**决策层模块是商家"动脑"的地方,粘性极强,因为商家一旦把品类配置/历史数据交给 wenai,迁移成本就指数上升。**
+
+### MOAT-07 · 工厂入口 (batch-launch)
+真正把 11 pipelines 串成一条流水线的是 `/pipelines/batch-launch`。商家贴 5-20 个 SKU,选 6 工序,系统一次生成完整 SOP — 含每个 SKU 在每个工序的具体 prompt + 参数 + 验收标准。
+**这是从 SaaS 工具进化为"数字员工" 的关键一步**: 商家不再"我去 wenai 跑一个工具",而是"我把这批 SKU 交给 wenai,自己去做更高价值的事"。竞品没有这种"批量编排"维度的玩家。
+
 ---
 
 ## 3. Moat 半衰期估算
@@ -63,29 +76,43 @@ clico 是"单点 SaaS 比 Arcads 快",wenai 是"**全链路工厂**,你的电商
 | MOAT-02 反向意图扩客 | **6 个月** | prompt engineering 不是壁垒,但需要 DeepSeek/qwen 长期调教 + 真实电商案例反馈。竞品照抄 prompt 一周能上,但效果没法跟用户回流数据飞轮比 |
 | MOAT-03 全链路工厂 | **12-18 个月** | 这是产品架构护城河。竞品要从单工具变工厂,等于重写整个产品。商业上他们也不愿意——破坏自己的单工具定价模型 |
 | MOAT-04 ToB 询盘 + 私域 | **3-6 个月** | 技术护城河弱,但**关系密度**护城河强。每多一个客户,新进入者越难追 |
+| MOAT-05 SKU 全生命周期闭环 | **18-24 个月** | retention 飞轮,客户用得越深越锁定。竞品要重写产品哲学。这是 wenai 最深的护城河 |
+| MOAT-06 决策-执行二元架构 | **12 个月** | 决策层模块(选品/测款/数据洞察)单独抄不难,但抄完没用 — 商家不会单买决策工具,要跟执行层一起买 |
+| MOAT-07 工厂入口(batch-launch) | **9 个月** | 把多模块串成一条 SOP 的产品架构,本身不复杂,但需要其他 10 模块齐备才有意义 |
 | 中国 AIGC 合规栈 | **12 个月** | 海外竞品没动力。GB/T 42888 + 深度合成规定 + 平台规则版本管理是时间成本 |
 
 ---
 
-## 4. 当前模块 → Moat 映射
+## 4. 当前模块 → Moat 映射 (11 pipelines · 2026-04-27)
 
 ```
-Pipelines (5):
-  /pipelines/ai-photoshoot      → MOAT-03 (8 模式工厂主入口)
-  /pipelines/ai-video           → MOAT-03 (流水线最后一站)
-  /pipelines/video-teardown     → MOAT-01 (拆解器, 闭环起点)
-  /pipelines/intent-mining      → MOAT-02 (反向客群)
-  /pipelines/new-listing        → MOAT-03 (上架工位)
-  /pipelines/influencer-outbound→ MOAT-03 (达人工位)
-  /pipelines/product-image      → MOAT-03 (wanx 工位 · 中文 prompt 互补)
+Pipelines (11):
+  ★ /pipelines/batch-launch       → MOAT-07 (工厂入口, 串联所有)
+
+  决策层 (3 · cat-content 蓝):
+    /pipelines/product-discovery  → MOAT-06 + MOAT-05 (闭环起点)
+    /pipelines/ab-test            → MOAT-06 (测款 → 数据回流)
+    /pipelines/data-insights      → MOAT-06 + MOAT-05 (闭环回路)
+
+  执行层 (4 · accent 金):
+    /pipelines/ai-photoshoot      → MOAT-03 (8 模式主战场)
+    /pipelines/ai-video           → MOAT-03 + MOAT-01 (视频生产)
+    /pipelines/video-teardown     → MOAT-01 (拆解 → 静态图直通)
+    /pipelines/intent-mining      → MOAT-02 (反向客群)
+
+  老模块 (3 · 灰边):
+    /pipelines/new-listing        → MOAT-03 (上架工位)
+    /pipelines/influencer-outbound→ MOAT-03 (达人工位)
+    /pipelines/product-image      → MOAT-03 (wanx 中文互补)
 
 Toolbox (19): 翻译 / 文案 / 评论 / 合规 / 直播 / 私域...
   → 全部归属 MOAT-03 (单工位多功能)
 
 ToB:
-  /enterprise + /pricing + /inquire + /admin/inquiries → MOAT-04
-  cloudflare-openai-proxy.js + 中国合规组件          → 中国合规栈
-  src/lib/aigc.ts (水印 + 平台披露)                  → 中国合规栈
+  /enterprise + /pricing + /inquire + /admin/inquiries  → MOAT-04
+  /admin/cost (24h 成本闸)                              → 单 org 配额防护
+  cloudflare-openai-proxy.js + 中国合规组件             → 中国合规栈
+  src/lib/aigc.ts (水印 + 平台披露)                     → 中国合规栈
 ```
 
 ---
