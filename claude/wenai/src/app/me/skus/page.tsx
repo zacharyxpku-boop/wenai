@@ -50,11 +50,16 @@ export default function MySkusPage() {
   const [newName, setNewName] = useState('');
   const [newCategory, setNewCategory] = useState('');
   const [todayCny, setTodayCny] = useState<number | null>(null);
+  const [savedCny, setSavedCny] = useState<number | null>(null);
 
   useEffect(() => {
     fetch('/api/user/cost-summary')
       .then(r => r.json())
       .then(d => setTodayCny(d.todayCny))
+      .catch(() => {});
+    fetch('/api/user/savings-summary?days=7')
+      .then(r => r.json())
+      .then(d => setSavedCny(d.grandTotalSavedCny ?? 0))
       .catch(() => {});
   }, []);
 
@@ -232,6 +237,17 @@ export default function MySkusPage() {
           wenai 替你记住每个 SKU 的状态、跑过哪些模块、当前业绩。
           决策层模块(选品/测款/数据洞察)会基于这份历史给你更精准的建议。
         </p>
+        {savedCny !== null && savedCny > 0 && (
+          <Link
+            href="/me/savings"
+            className="mt-3 inline-flex items-center gap-2 border border-success/40 bg-success/5 hover:bg-success/10 rounded-md px-3 py-2 text-[12px] transition-colors"
+          >
+            <span className="text-success font-bold tabular-nums">
+              💰 近 7 天 wenai 帮你省了 ¥{savedCny.toLocaleString('zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+            </span>
+            <span className="text-[10px] font-mono text-success/80">看明细 →</span>
+          </Link>
+        )}
       </div>
 
       {/* 状态过滤 */}

@@ -183,6 +183,35 @@ export async function listCostDetails(orgId: string, limit = 50): Promise<CostDe
   return (memDetails.get(key) ?? []).slice(0, limit);
 }
 
+/** 跨天聚合 · 拉过去 N 天的所有明细 (TTL 7 天上限, 7 days 之外读不到) */
+export async function listCostDetailsRange(orgId: string, days: number, perDayLimit = 200): Promise<CostDetail[]> {
+  const out: CostDetail[] = [];
+  for (let i = 0; i < days; i++) {
+    const d = new Date();
+    d.setUTCDate(d.getUTCDate() - i);
+    const y = d.getUTCFullYear();
+    const m = String(d.getUTCMonth() + 1).padStart(2, '0');
+    const day = String(d.getUTCDate()).padStart(2, '0');
+    const key = `wenai:cost:detail:${orgId}:${y}-${m}-${day}`;
+    if (redis) {
+      try {
+        const raw = await redis.lrange(key, 0, perDayLimit - 1);
+        for (const s of raw) {
+          try {
+            out.push(JSON.parse(s as string) as CostDetail);
+          } catch { /* skip */ }
+        }
+      } catch {
+        /* skip this day */
+      }
+    } else {
+      const memList = memDetails.get(key);
+      if (memList) out.push(...memList);
+    }
+  }
+  return out;
+}
+
 export async function getDailyCost(orgId: string): Promise<number> {
   const key = todayKey(orgId);
   if (redis) {
