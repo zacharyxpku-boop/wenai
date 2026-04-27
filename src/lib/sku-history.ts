@@ -25,6 +25,15 @@ if (process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN) 
 const memStore = new Map<string, SkuRecord>();
 const memList = new Map<string, string[]>();
 
+export type SkuStatus = 'idea' | 'discovery-done' | 'photoshoot-done' | 'abtest-done' | 'launched' | 'paused' | 'killed';
+
+export interface StatusEvent {
+  status: SkuStatus;
+  at: string;             // ISO
+  fromModule?: string;    // 是哪个模块触发的状态变更 (例: 'data-insights')
+  reason?: string;        // 变更原因 (例: AI 推断 / 手动)
+}
+
 export interface SkuRecord {
   id: string;
   orgId: string;
@@ -32,7 +41,7 @@ export interface SkuRecord {
   category: string;       // 例: 服装-连衣裙
   platform?: string;      // 例: tmall / amazon-us
   priceCny?: string;      // 例: ¥199-299
-  status: 'idea' | 'discovery-done' | 'photoshoot-done' | 'abtest-done' | 'launched' | 'paused' | 'killed';
+  status: SkuStatus;
   notes?: string;
   performance?: {
     ctr?: number;
@@ -44,6 +53,7 @@ export interface SkuRecord {
   addedAt: string;        // ISO
   updatedAt: string;
   modules?: string[];     // 跑过的 wenai 模块 id
+  statusHistory?: StatusEvent[]; // 状态变迁轨迹 (老数据可能缺, UI 要兼容)
 }
 
 const STATUS_LABELS: Record<SkuRecord['status'], string> = {
@@ -71,6 +81,8 @@ const SKU_KEY = (orgId: string, skuId: string) => `wenai:sku:${orgId}:${skuId}`;
 export async function addSku(orgId: string, input: Partial<SkuRecord>): Promise<SkuRecord> {
   const id = input.id || genId();
   const now = new Date().toISOString();
+  const status: SkuStatus = input.status || 'idea';
+  const fromModule = input.modules?.[0];
   const record: SkuRecord = {
     id,
     orgId,
@@ -78,12 +90,18 @@ export async function addSku(orgId: string, input: Partial<SkuRecord>): Promise<
     category: input.category?.slice(0, 100) || '未分类',
     platform: input.platform?.slice(0, 50),
     priceCny: input.priceCny?.slice(0, 50),
-    status: input.status || 'idea',
+    status,
     notes: input.notes?.slice(0, 2000),
     performance: input.performance,
     addedAt: now,
     updatedAt: now,
     modules: input.modules || [],
+    statusHistory: [{
+      status,
+      at: now,
+      fromModule,
+      reason: fromModule ? `通过 ${fromModule} 入库` : '手动创建',
+    }],
   };
 
   if (redis) {
@@ -130,22 +148,43 @@ export async function listSkus(orgId: string, limit = 50): Promise<SkuRecord[]> 
   return ids.slice(0, limit).map(id => memStore.get(`${orgId}:${id}`)!).filter(Boolean);
 }
 
-/** 更新一个 SKU (合并字段) */
+/** 更新一个 SKU (合并字段, status 变更时自动追加 statusHistory) */
 export async function updateSku(
   orgId: string,
   id: string,
-  patch: Partial<SkuRecord>
+  patch: Partial<SkuRecord>,
+  meta?: { fromModule?: string; reason?: string }
 ): Promise<SkuRecord | null> {
+  const now = new Date().toISOString();
+
+  function appendHistory(prev: SkuRecord, next: Partial<SkuRecord>): StatusEvent[] {
+    const history = prev.statusHistory || [];
+    if (next.status && next.status !== prev.status) {
+      return [
+        ...history,
+        {
+          status: next.status,
+          at: now,
+          fromModule: meta?.fromModule,
+          reason: meta?.reason || (meta?.fromModule ? `${meta.fromModule} 触发` : '手动切换'),
+        },
+      ];
+    }
+    return history;
+  }
+
   if (redis) {
     try {
       const existing = await redis.hgetall(SKU_KEY(orgId, id));
       if (!existing || Object.keys(existing).length === 0) return null;
+      const prev = existing as unknown as SkuRecord;
       const merged: SkuRecord = {
-        ...(existing as unknown as SkuRecord),
+        ...prev,
         ...patch,
         id,
         orgId,
-        updatedAt: new Date().toISOString(),
+        updatedAt: now,
+        statusHistory: appendHistory(prev, patch),
       };
       await redis.hset(SKU_KEY(orgId, id), merged as unknown as Record<string, unknown>);
       return merged;
@@ -157,7 +196,14 @@ export async function updateSku(
   const key = `${orgId}:${id}`;
   const existing = memStore.get(key);
   if (!existing) return null;
-  const merged = { ...existing, ...patch, id, orgId, updatedAt: new Date().toISOString() };
+  const merged: SkuRecord = {
+    ...existing,
+    ...patch,
+    id,
+    orgId,
+    updatedAt: now,
+    statusHistory: appendHistory(existing, patch),
+  };
   memStore.set(key, merged);
   return merged;
 }
