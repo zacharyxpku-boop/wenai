@@ -18,12 +18,25 @@ import { verifyToken, getCookieName } from '@/lib/auth';
  * 替代真人模特拍摄 ¥3-8K/组的核心论点 → 这条路由是商家最愿付费的入口
  */
 
-// 走 OPENAI_BASE_URL (例: Cloudflare Worker 反代 https://wenai-openai-proxy.xxx.workers.dev)
-// 没设就走官方,适用于墙外服务器
+// ============================================================
+// Provider 选择策略
+//   1. HAPPYHORSE_API_KEY 存在 → 优先走国内中转 (HappyHorse / Leone Cloud, 异步任务)
+//      · 单图垫图 (≤1 张 ref) 走 base64File 直传
+//      · 双图垫图 (≥2 张 ref) 临时回退到 OpenAI 直连 (因为 imageUrls 要公网 URL)
+//   2. 否则 OPENAI_API_KEY 存在 → 走官方 /v1/images/generations | /v1/images/edits
+//   3. 都没有 → 503
+// ============================================================
+
+// OpenAI 原生(墙外或反代)
 const OPENAI_BASE = process.env.OPENAI_BASE_URL || 'https://api.openai.com';
 const OPENAI_GENERATIONS = `${OPENAI_BASE}/v1/images/generations`;
 const OPENAI_EDITS = `${OPENAI_BASE}/v1/images/edits`;
 const MODEL = 'gpt-image-1';
+
+// HappyHorse / Leone Cloud (国内中转,基于阿里云 DashScope)
+const HH_BASE = process.env.HAPPYHORSE_BASE_URL || 'https://mm-internal-cn.leonecloud.com';
+const HH_CREATE = `${HH_BASE}/api/v2/open/aigc/gpt-image`;
+const HH_QUERY = (id: string) => `${HH_BASE}/api/v2/open/aigc/${id}`;
 
 interface GenerateBody {
   mode?: 'generate' | 'edit';
@@ -68,6 +81,146 @@ function dataUrlToBuffer(dataUrl: string): { buf: Buffer; mime: string } | null 
   const m = dataUrl.match(/^data:(image\/[a-zA-Z+]+);base64,(.+)$/);
   if (!m) return null;
   return { mime: m[1], buf: Buffer.from(m[2], 'base64') };
+}
+
+// ============================================================
+// HappyHorse / Leone Cloud · 国内中转
+// 异步任务: POST 创建拿 taskId → GET 轮询 → result URL
+// ============================================================
+
+// OpenAI size → HappyHorse aspectRatio 映射
+const HH_SIZE_MAP: Record<string, string> = {
+  '1024x1024': '1:1',
+  '1024x1536': '2:3',
+  '1536x1024': '3:2',
+  'auto': 'auto',
+};
+
+interface HHTaskCreate {
+  code: number;
+  msg: string;
+  data?: { taskId: string; status: string };
+}
+interface HHTaskQuery {
+  code: number;
+  msg: string;
+  data?: {
+    taskId: string;
+    status: 'processing' | 'success' | 'failed';
+    result?: string[];
+    errorMsg?: string;
+  };
+}
+
+async function viaHappyhorse(args: {
+  apiKey: string;
+  prompt: string;
+  ref: string | null;          // 单张垫图 dataURL,可空
+  size: string;
+  scenario: string;
+}): Promise<NextResponse> {
+  const { apiKey, prompt, ref, size, scenario } = args;
+  const headers = {
+    Authorization: `Bearer ${apiKey}`,
+    'Content-Type': 'application/json',
+  };
+
+  // 构造请求 body
+  const createBody: Record<string, unknown> = {
+    prompt,
+    aspectRatio: HH_SIZE_MAP[size] ?? 'auto',
+  };
+  if (ref) {
+    const parsed = dataUrlToBuffer(ref);
+    if (!parsed) {
+      return NextResponse.json(
+        { error: 'referenceImage 必须是 data:image/...;base64,... 格式' },
+        { status: 400 }
+      );
+    }
+    createBody.genType = 'i2i';
+    // HappyHorse 的 base64File 不带 data: 前缀, 直接传 base64 字符串
+    createBody.base64File = parsed.buf.toString('base64');
+  }
+
+  // 1. 创建任务
+  const createRes = await fetch(HH_CREATE, {
+    method: 'POST',
+    headers,
+    body: JSON.stringify(createBody),
+  });
+  if (!createRes.ok) {
+    const txt = await createRes.text().catch(() => '');
+    console.warn('[happyhorse] create error', createRes.status, txt.slice(0, 400));
+    return NextResponse.json(
+      {
+        error: `HappyHorse HTTP ${createRes.status}`,
+        detail: txt.slice(0, 600),
+        code: createRes.status === 401 ? 'INVALID_KEY' : 'HH_UPSTREAM',
+      },
+      { status: createRes.status === 401 ? 401 : 502 }
+    );
+  }
+  const created: HHTaskCreate = await createRes.json();
+  if (created.code !== 0 || !created.data?.taskId) {
+    return NextResponse.json(
+      { error: `HappyHorse 创建任务失败: ${created.msg ?? 'unknown'}`, raw: created },
+      { status: 502 }
+    );
+  }
+  const taskId = created.data.taskId;
+
+  // 2. 轮询任务 · 文档建议 3-10s 间隔, 最多 ~120s
+  const start = Date.now();
+  const timeoutMs = 180_000;
+  let pollDelayMs = 3_000;
+  let queried: HHTaskQuery | null = null;
+  while (Date.now() - start < timeoutMs) {
+    await new Promise(r => setTimeout(r, pollDelayMs));
+    const elapsed = Date.now() - start;
+    if (elapsed > 30_000) pollDelayMs = 5_000;
+    if (elapsed > 120_000) pollDelayMs = 10_000;
+
+    const r = await fetch(HH_QUERY(taskId), {
+      headers: { Authorization: `Bearer ${apiKey}` },
+    });
+    if (!r.ok) continue;
+    queried = await r.json();
+    if (!queried || queried.code !== 0) continue;
+    const status = queried.data?.status;
+    if (status === 'success' || status === 'failed') break;
+  }
+
+  if (!queried?.data) {
+    return NextResponse.json({ error: 'HappyHorse 轮询超时(3 分钟)', taskId }, { status: 504 });
+  }
+  if (queried.data.status === 'failed') {
+    return NextResponse.json(
+      { error: `HappyHorse 生成失败: ${queried.data.errorMsg ?? '未知'}`, taskId },
+      { status: 502 }
+    );
+  }
+  const urls = queried.data.result ?? [];
+  if (urls.length === 0) {
+    return NextResponse.json({ error: 'HappyHorse 成功但无 result URL', taskId }, { status: 502 });
+  }
+
+  // 标准化输出 (跟 OpenAI 路径返回结构一致)
+  return NextResponse.json({
+    mode: ref ? 'edit' : 'generate',
+    scenario,
+    size,
+    quality: 'medium', // HappyHorse 不暴露 quality, 给个固定值
+    images: urls.map((url, i) => ({
+      index: i,
+      url, // 这里是公网 URL 不是 b64,前端 <img src> 直接用
+      revisedPrompt: null,
+      provider: 'happyhorse',
+      model: 'gpt-image-2',
+    })),
+    cost: { perImageUsd: 0, totalUsd: 0, note: 'HappyHorse 计费按账户走, 不在响应内' },
+    taskId,
+  });
 }
 
 export async function POST(request: NextRequest) {
@@ -125,12 +278,13 @@ export async function POST(request: NextRequest) {
     }
   }
 
-  const apiKey = process.env.OPENAI_API_KEY;
-  if (!apiKey) {
+  const openaiKey = process.env.OPENAI_API_KEY;
+  const happyhorseKey = process.env.HAPPYHORSE_API_KEY;
+  if (!openaiKey && !happyhorseKey) {
     return NextResponse.json(
       {
-        error: 'OPENAI_API_KEY 未配置',
-        notice: '请在 .env.local 添加 OPENAI_API_KEY=sk-xxx 后重启',
+        error: 'OPENAI_API_KEY 或 HAPPYHORSE_API_KEY 至少配一个',
+        notice: '国内推荐 HAPPYHORSE_API_KEY (https://mm-internal-cn.leonecloud.com 中转); 海外可用 OPENAI_API_KEY 直连',
         code: 'NO_KEY',
       },
       { status: 503 }
@@ -138,11 +292,38 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    let upstream: Response;
     // 收集垫图: 优先用 referenceImages 数组, 其次用单图 referenceImage (历史兼容)
     const refList: string[] = body.referenceImages && body.referenceImages.length > 0
       ? body.referenceImages
       : (body.referenceImage ? [body.referenceImage] : []);
+
+    // Provider 选择:
+    //   - HappyHorse 仅支持 1 张 base64File (多图要 imageUrls 公网 URL,本地 base64 不便)
+    //   - 双图垫图 (outfit-swap / hot-clone) 必须走 OpenAI 直连 multipart
+    const useHappyhorse = happyhorseKey && refList.length <= 1;
+    if (useHappyhorse) {
+      return await viaHappyhorse({
+        apiKey: happyhorseKey,
+        prompt: body.prompt,
+        ref: refList[0] ?? null,
+        size,
+        scenario: body.scenario,
+      });
+    }
+
+    if (!openaiKey) {
+      return NextResponse.json(
+        {
+          error: '双图垫图模式需要 OPENAI_API_KEY (HappyHorse 国内中转暂只支持单图)',
+          code: 'OPENAI_REQUIRED',
+          notice: '配 OPENAI_API_KEY 或先用单张垫图试',
+        },
+        { status: 503 }
+      );
+    }
+
+    const apiKey = openaiKey;
+    let upstream: Response;
 
     if (mode === 'edit' && refList.length > 0) {
       // multipart/form-data → /v1/images/edits · gpt-image-1 支持 image[] 多图
