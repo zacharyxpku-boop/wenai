@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { addSku, listSkus, updateSku, deleteSku, type SkuRecord } from '@/lib/sku-history';
 import { resolveOrgId } from '@/lib/org-id';
+import { recordBench } from '@/lib/cross-org-benchmark';
 
 /**
  * /api/user/sku-history
@@ -48,6 +49,24 @@ export async function PATCH(req: NextRequest) {
   }
   const updated = await updateSku(orgId, id, body);
   if (!updated) return NextResponse.json({ error: 'SKU 不存在' }, { status: 404 });
+
+  // 跨 org 匿名 benchmark 写入 (只取数值, 不上传 SKU 名/orgId 实体)
+  // 触发条件: 这次 patch 含 performance.ctr 或 .cpc, 且 SKU 有 category
+  if (body.performance && updated.category) {
+    const bestCtr = body.performance.bestCtr ?? body.performance.ctr;
+    const cpc = body.performance.cpc;
+    if (typeof bestCtr === 'number' && bestCtr > 0) {
+      recordBench({
+        orgId, skuId: id, category: updated.category, metric: 'ctr', value: bestCtr,
+      }).catch(() => {});
+    }
+    if (typeof cpc === 'number' && cpc > 0) {
+      recordBench({
+        orgId, skuId: id, category: updated.category, metric: 'cpc', value: cpc,
+      }).catch(() => {});
+    }
+  }
+
   return NextResponse.json({ ok: true, sku: updated });
 }
 
