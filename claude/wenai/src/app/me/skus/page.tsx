@@ -53,6 +53,10 @@ export default function MySkusPage() {
   const [newCategory, setNewCategory] = useState('');
   const [todayCny, setTodayCny] = useState<number | null>(null);
   const [savedCny, setSavedCny] = useState<number | null>(null);
+  // 批量选择 · 多选 status 改 / 删除
+  const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [bulkRunning, setBulkRunning] = useState(false);
+  const [bulkOpProgress, setBulkOpProgress] = useState({ done: 0, total: 0 });
   const [alertsCount, setAlertsCount] = useState<{ total: number; critical: number; warning: number } | null>(null);
 
   useEffect(() => {
@@ -199,6 +203,60 @@ export default function MySkusPage() {
   const handleDelete = async (id: string) => {
     if (!confirm('确认删除这个 SKU?')) return;
     await fetch(`/api/user/sku-history?id=${id}`, { method: 'DELETE' });
+    load();
+  };
+
+  // 批量选择切换
+  const toggleSelected = (id: string) => {
+    setSelected(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
+
+  const bulkChangeStatus = async (status: Sku['status']) => {
+    if (selected.size === 0) return;
+    if (!confirm(`确认把选中的 ${selected.size} 个 SKU 状态改成 "${status}"?`)) return;
+    setBulkRunning(true);
+    setBulkOpProgress({ done: 0, total: selected.size });
+    let done = 0;
+    for (const id of selected) {
+      try {
+        await fetch(`/api/user/sku-history?id=${id}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ status }),
+        });
+      } catch { /* skip */ }
+      done++;
+      if (done % 5 === 0 || done === selected.size) {
+        setBulkOpProgress({ done, total: selected.size });
+      }
+    }
+    setBulkRunning(false);
+    setSelected(new Set());
+    load();
+  };
+
+  const bulkDelete = async () => {
+    if (selected.size === 0) return;
+    if (!confirm(`⚠️ 确认删除选中的 ${selected.size} 个 SKU? 此操作不可撤销!`)) return;
+    setBulkRunning(true);
+    setBulkOpProgress({ done: 0, total: selected.size });
+    let done = 0;
+    for (const id of selected) {
+      try {
+        await fetch(`/api/user/sku-history?id=${id}`, { method: 'DELETE' });
+      } catch { /* skip */ }
+      done++;
+      if (done % 5 === 0 || done === selected.size) {
+        setBulkOpProgress({ done, total: selected.size });
+      }
+    }
+    setBulkRunning(false);
+    setSelected(new Set());
     load();
   };
 
@@ -485,16 +543,80 @@ export default function MySkusPage() {
           </p>
         </div>
       ) : (
+        <>
+        {/* 全选 / 反选 / 浮动批量操作条 */}
+        <div className="flex items-center gap-2 mb-2 text-[10px] font-mono text-text-tertiary flex-wrap">
+          <button
+            onClick={() => {
+              if (selected.size === filtered.length) setSelected(new Set());
+              else setSelected(new Set(filtered.map(s => s.id)));
+            }}
+            className="px-2 py-0.5 border border-border-subtle hover:border-accent/40 hover:text-accent rounded"
+          >
+            {selected.size === filtered.length ? '取消全选' : `全选当前过滤 (${filtered.length})`}
+          </button>
+          {selected.size > 0 && (
+            <span className="text-accent">已选 {selected.size}</span>
+          )}
+        </div>
+        {selected.size > 0 && (
+          <div className="sticky top-3 z-30 mb-3 border border-accent/50 bg-bg-surface rounded-lg p-3 shadow-[0_4px_16px_rgba(0,0,0,0.2)] flex items-center justify-between flex-wrap gap-2">
+            <div className="text-[12px] font-mono text-text-primary">
+              <span className="text-accent font-bold">{selected.size}</span> 个 SKU 已选 ·
+              {bulkRunning && (
+                <span className="text-warning ml-2">处理中 {bulkOpProgress.done}/{bulkOpProgress.total}</span>
+              )}
+            </div>
+            <div className="flex items-center gap-1.5 flex-wrap">
+              <span className="text-[9px] font-mono text-text-tertiary">改状态:</span>
+              {(['paused', 'launched', 'killed'] as const).map(s => (
+                <button
+                  key={s}
+                  onClick={() => bulkChangeStatus(s)}
+                  disabled={bulkRunning}
+                  className={`text-[10px] font-mono px-2 py-1 border rounded ${STATUS_LABELS[s].cls} hover:bg-bg-surface disabled:opacity-40`}
+                >
+                  {STATUS_LABELS[s].txt}
+                </button>
+              ))}
+              <span className="w-px h-4 bg-border-default mx-1" />
+              <button
+                onClick={bulkDelete}
+                disabled={bulkRunning}
+                className="text-[10px] font-mono px-2 py-1 border border-error/40 text-error hover:bg-error/10 rounded disabled:opacity-40"
+              >
+                🗑️ 批量删
+              </button>
+              <button
+                onClick={() => setSelected(new Set())}
+                disabled={bulkRunning}
+                className="text-[10px] font-mono text-text-tertiary hover:text-text-primary px-1"
+              >
+                ✗ 清除选择
+              </button>
+            </div>
+          </div>
+        )}
         <div className="space-y-2">
           {filtered.map(sku => {
             const lab = STATUS_LABELS[sku.status];
+            const isSelected = selected.has(sku.id);
             return (
               <div
                 key={sku.id}
-                className={`border rounded-lg p-3 bg-bg-surface/30 transition-colors hover:border-accent/30 ${lab.cls}`}
+                className={`border rounded-lg p-3 bg-bg-surface/30 transition-colors hover:border-accent/30 ${lab.cls} ${isSelected ? 'ring-1 ring-accent/60' : ''}`}
               >
                 <div className="flex items-start justify-between gap-3 flex-wrap">
-                  <div className="flex-1 min-w-0">
+                  <div className="flex-1 min-w-0 flex items-start gap-2">
+                    <input
+                      type="checkbox"
+                      checked={isSelected}
+                      onChange={() => toggleSelected(sku.id)}
+                      className="mt-1 w-3.5 h-3.5 cursor-pointer"
+                      title="选中后顶部出现批量操作条"
+                      aria-label={`选择 ${sku.name}`}
+                    />
+                    <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap mb-1">
                       <Link href={`/me/skus/${sku.id}`} className="text-[14px] font-bold text-text-primary hover:text-accent transition-colors">
                         {sku.name}
@@ -540,6 +662,7 @@ export default function MySkusPage() {
                         <span className="text-success">ROI {sku.performance.roi.toFixed(1)}</span>
                       )}
                     </div>
+                    </div>
                   </div>
                   <div className="flex items-center gap-1 flex-shrink-0">
                     <select
@@ -563,6 +686,7 @@ export default function MySkusPage() {
             );
           })}
         </div>
+        </>
       )}
 
       <div className="mt-10 pt-6 border-t border-border-subtle">
