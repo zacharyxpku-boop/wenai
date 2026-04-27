@@ -273,6 +273,12 @@ export default function MySkusPage() {
               <span className="text-[10px] font-mono text-success/80">看明细 →</span>
             </Link>
           )}
+          <Link
+            href="/me/settings"
+            className="inline-flex items-center gap-2 border border-border-subtle hover:border-accent/40 rounded-md px-3 py-2 text-[12px] text-text-secondary hover:text-accent transition-colors"
+          >
+            <span>⚙️ 设置 · 邮件推送/行业</span>
+          </Link>
           {alertsCount && alertsCount.total > 0 && (
             <Link
               href="/me/alerts"
