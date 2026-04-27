@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import AdminHeader from '@/components/AdminHeader';
 
 interface Inquiry {
@@ -52,6 +52,7 @@ export default function AdminInquiriesPage() {
   const [filter, setFilter] = useState<'all' | 'new' | 'contacted' | 'converted' | 'dropped'>('all');
   const [expanded, setExpanded] = useState<string | null>(null);
   const [updating, setUpdating] = useState<string | null>(null);
+  const [openSourceTop, setOpenSourceTop] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     const saved = sessionStorage.getItem('wenai_admin_key');
@@ -163,19 +164,45 @@ export default function AdminInquiriesPage() {
     dropped: inquiries.filter(i => i.status === 'dropped').length,
   };
 
-  // 来源聚合 · 30 天内分布 (含转化率)
+  // 来源聚合 · 30 天内分布 (含转化率) · 二级品类拆分
   const cutoff30d = Date.now() - 30 * 24 * 3600 * 1000;
   const recent = inquiries.filter(i => new Date(i.createdAt).getTime() > cutoff30d);
-  const sourceMap = new Map<string, { total: number; converted: number }>();
+  // 主源 → 子源 → 计数
+  const sourceMap = new Map<string, Map<string, { total: number; converted: number }>>();
   for (const i of recent) {
-    const s = i.source || 'direct';
-    const cur = sourceMap.get(s) ?? { total: 0, converted: 0 };
+    const raw = i.source || 'direct';
+    const dashIdx = raw.indexOf('-');
+    const top = dashIdx === -1 ? raw : raw.slice(0, dashIdx);
+    const sub = dashIdx === -1 ? '' : raw.slice(dashIdx + 1);
+    if (!sourceMap.has(top)) sourceMap.set(top, new Map());
+    const subMap = sourceMap.get(top)!;
+    const cur = subMap.get(sub) ?? { total: 0, converted: 0 };
     cur.total++;
     if (i.status === 'converted') cur.converted++;
-    sourceMap.set(s, cur);
+    subMap.set(sub, cur);
   }
-  const sourceRows = Array.from(sourceMap.entries())
-    .map(([source, v]) => ({ source, total: v.total, converted: v.converted, rate: v.total > 0 ? v.converted / v.total : 0 }))
+  type SourceRow = {
+    top: string;
+    total: number;
+    converted: number;
+    rate: number;
+    children: Array<{ sub: string; total: number; converted: number; rate: number }>;
+  };
+  const sourceRows: SourceRow[] = Array.from(sourceMap.entries())
+    .map(([top, subMap]) => {
+      const childrenArr = Array.from(subMap.entries())
+        .map(([sub, v]) => ({ sub, total: v.total, converted: v.converted, rate: v.total > 0 ? v.converted / v.total : 0 }))
+        .sort((a, b) => b.total - a.total);
+      const total = childrenArr.reduce((s, c) => s + c.total, 0);
+      const converted = childrenArr.reduce((s, c) => s + c.converted, 0);
+      return {
+        top,
+        total,
+        converted,
+        rate: total > 0 ? converted / total : 0,
+        children: childrenArr,
+      };
+    })
     .sort((a, b) => b.total - a.total);
 
   return (
@@ -188,15 +215,27 @@ export default function AdminInquiriesPage() {
         }}
       />
 
-      {/* 来源聚合 · 看 SEO/share/hero 哪条转化最高 */}
+      {/* 来源聚合 · 主源/子源两级 · 看 SEO/share/hero 哪条转化最高 */}
       {sourceRows.length > 0 && (
         <section className="mb-5 border border-border-subtle rounded-lg p-4 bg-bg-surface/30">
-          <div className="text-[10px] font-mono text-text-tertiary uppercase tracking-wider mb-2">
-            近 30 天来源分布 (n={recent.length})
+          <div className="flex items-center justify-between mb-2 flex-wrap gap-2">
+            <div className="text-[10px] font-mono text-text-tertiary uppercase tracking-wider">
+              近 30 天来源分布 (n={recent.length}) · 点主源展开品类
+            </div>
+            <button
+              onClick={() => {
+                if (openSourceTop.size === sourceRows.length) setOpenSourceTop(new Set());
+                else setOpenSourceTop(new Set(sourceRows.map(r => r.top)));
+              }}
+              className="text-[10px] font-mono text-accent hover:underline"
+            >
+              {openSourceTop.size === sourceRows.length ? '全部折叠' : '全部展开'}
+            </button>
           </div>
           <table className="w-full text-[11px]">
             <thead className="text-[10px] font-mono text-text-tertiary border-b border-border-subtle">
               <tr>
+                <th className="text-left py-1 w-8"></th>
                 <th className="text-left py-1">source</th>
                 <th className="text-right py-1">询盘数</th>
                 <th className="text-right py-1">转化数</th>
@@ -204,16 +243,54 @@ export default function AdminInquiriesPage() {
               </tr>
             </thead>
             <tbody>
-              {sourceRows.map(r => (
-                <tr key={r.source} className="border-b border-border-subtle/40">
-                  <td className="py-1 font-mono text-text-primary">{r.source}</td>
-                  <td className="py-1 text-right tabular-nums">{r.total}</td>
-                  <td className="py-1 text-right tabular-nums text-success">{r.converted}</td>
-                  <td className="py-1 text-right tabular-nums text-accent">
-                    {(r.rate * 100).toFixed(1)}%
-                  </td>
-                </tr>
-              ))}
+              {sourceRows.map(r => {
+                const isOpen = openSourceTop.has(r.top);
+                const expandable = r.children.some(c => c.sub.length > 0);
+                return (
+                  <Fragment key={r.top}>
+                    <tr
+                      className={`border-b border-border-subtle/40 ${expandable ? 'cursor-pointer hover:bg-bg-surface/50' : ''}`}
+                      onClick={() => {
+                        if (!expandable) return;
+                        const next = new Set(openSourceTop);
+                        if (isOpen) next.delete(r.top);
+                        else next.add(r.top);
+                        setOpenSourceTop(next);
+                      }}
+                    >
+                      <td className="py-1 text-text-tertiary tabular-nums text-[10px]">
+                        {expandable ? (isOpen ? '▾' : '▸') : ' '}
+                      </td>
+                      <td className="py-1 font-mono text-text-primary font-bold">
+                        {r.top}
+                        {expandable && (
+                          <span className="ml-2 text-[9px] font-normal text-text-tertiary">
+                            ({r.children.length} 子源)
+                          </span>
+                        )}
+                      </td>
+                      <td className="py-1 text-right tabular-nums">{r.total}</td>
+                      <td className="py-1 text-right tabular-nums text-success">{r.converted}</td>
+                      <td className="py-1 text-right tabular-nums text-accent">
+                        {(r.rate * 100).toFixed(1)}%
+                      </td>
+                    </tr>
+                    {isOpen && r.children.filter(c => c.sub.length > 0).map(c => (
+                      <tr key={r.top + ':' + c.sub} className="border-b border-border-subtle/20 bg-bg-root/30">
+                        <td></td>
+                        <td className="py-1 pl-3 font-mono text-text-secondary text-[10px]">
+                          ↳ {c.sub}
+                        </td>
+                        <td className="py-1 text-right tabular-nums text-text-secondary">{c.total}</td>
+                        <td className="py-1 text-right tabular-nums text-success/80">{c.converted}</td>
+                        <td className="py-1 text-right tabular-nums text-accent/80">
+                          {(c.rate * 100).toFixed(1)}%
+                        </td>
+                      </tr>
+                    ))}
+                  </Fragment>
+                );
+              })}
             </tbody>
           </table>
         </section>
