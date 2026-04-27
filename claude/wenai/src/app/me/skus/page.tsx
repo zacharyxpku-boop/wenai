@@ -393,12 +393,22 @@ export default function MySkusPage() {
           </button>
         </div>
         <div className="mt-3 pt-3 border-t border-border-subtle">
-          <button
-            onClick={() => setBulkOpen(o => !o)}
-            className="text-[10px] font-mono text-cat-content hover:underline"
-          >
-            {bulkOpen ? '▾ 收起批量导入' : '▸ 批量导入 (粘贴 CSV / Excel · 一次最多 500 条)'}
-          </button>
+          <div className="flex items-center justify-between flex-wrap gap-2">
+            <button
+              onClick={() => setBulkOpen(o => !o)}
+              className="text-[10px] font-mono text-cat-content hover:underline"
+            >
+              {bulkOpen ? '▾ 收起批量导入' : '▸ 批量导入 (粘贴 CSV / Excel · 一次最多 500 条)'}
+            </button>
+            <button
+              onClick={() => exportSkusCsv(skus)}
+              disabled={skus.length === 0}
+              className="text-[10px] font-mono text-text-secondary border border-border-subtle hover:border-accent/40 hover:text-accent rounded px-2 py-0.5 disabled:opacity-40"
+              title="导出当前 SKU 库 CSV (含 perf 数据), 供 ERP / 对账"
+            >
+              ⬇ 导出 SKU CSV ({skus.length})
+            </button>
+          </div>
           {bulkOpen && (
             <div className="mt-3 space-y-2">
               <div className="text-[10px] font-mono text-text-tertiary leading-relaxed">
@@ -570,4 +580,42 @@ export default function MySkusPage() {
       </div>
     </div>
   );
+}
+
+function exportSkusCsv(skus: Sku[]) {
+  if (skus.length === 0) return;
+  const header = [
+    'id', 'name', 'category', 'platform', 'priceCny', 'status',
+    'addedAt', 'updatedAt', 'modules',
+    'bestCtr', 'avgCtr', 'cpc', 'convRate', 'winningVariant', 'testedAt', 'variantsCount',
+    'notes',
+  ];
+  const rows = skus.map(s => [
+    s.id, s.name, s.category, s.platform || '', s.priceCny || '', s.status,
+    s.addedAt, s.updatedAt, (s.modules || []).join('|'),
+    s.performance?.bestCtr ?? '',
+    s.performance?.ctr ?? '',
+    s.performance?.cpc ?? '',
+    s.performance?.convRate ?? '',
+    s.performance?.winningVariant || '',
+    s.performance?.testedAt || '',
+    s.performance?.variantsCount ?? '',
+    (s.notes || '').replace(/\n/g, ' '),
+  ]);
+  const escape = (v: string | number) => {
+    const s = String(v ?? '');
+    if (s.includes(',') || s.includes('"') || s.includes('\n')) {
+      return '"' + s.replace(/"/g, '""') + '"';
+    }
+    return s;
+  };
+  const csv = [header, ...rows].map(r => r.map(escape).join(',')).join('\n');
+  const blob = new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  const today = new Date();
+  a.download = `wenai-skus-${today.getFullYear()}${String(today.getMonth() + 1).padStart(2, '0')}${String(today.getDate()).padStart(2, '0')}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
 }

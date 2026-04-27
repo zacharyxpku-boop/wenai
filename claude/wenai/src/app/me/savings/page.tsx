@@ -57,6 +57,60 @@ export default function SavingsPage() {
     ? Math.round((1 - data.totalWenaiCostCny / data.totalAltCostCny) * 100)
     : 0;
 
+  // 给 CFO / 财务对账的导出 · 商家把数字往他们 ERP 送
+  const downloadCsv = () => {
+    if (!data) return;
+    const rows: string[][] = [];
+    rows.push(['module', 'calls', 'wenai_cost_cny', 'replacement_cost_cny', 'saved_cny', 'replacement_strategy']);
+    for (const m of data.byModule) {
+      rows.push([
+        m.id,
+        String(m.calls),
+        m.wenaiCostCny.toFixed(2),
+        m.altCostCny.toFixed(2),
+        m.savedCny.toFixed(2),
+        m.alt,
+      ]);
+    }
+    rows.push([]);
+    rows.push(['summary']);
+    rows.push(['windowDays', String(data.days)]);
+    rows.push(['totalCalls', String(data.totalCalls)]);
+    rows.push(['totalWenaiCostCny', data.totalWenaiCostCny.toFixed(2)]);
+    rows.push(['totalAltCostCny', data.totalAltCostCny.toFixed(2)]);
+    rows.push(['replacementSavedCny', data.replacementSavedCny.toFixed(2)]);
+    rows.push(['cacheSavedCny', data.cacheSavedCny.toFixed(2)]);
+    rows.push(['grandTotalSavedCny', data.grandTotalSavedCny.toFixed(2)]);
+    const csv = rows.map(r => r.map(escapeCsv).join(',')).join('\n');
+    // BOM 让 Excel 中文不乱码
+    const blob = new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8' });
+    triggerDownload(blob, `wenai-savings-${data.days}days-${todayStr()}.csv`);
+  };
+
+  const downloadMd = () => {
+    if (!data) return;
+    const lines: string[] = [];
+    lines.push(`# wenai 省钱报告 · 近 ${data.days} 天`);
+    lines.push('');
+    lines.push(`**累计节省**: ¥${data.grandTotalSavedCny.toLocaleString('zh-CN', { minimumFractionDigits: 2 })}`);
+    lines.push(`**替代真人/外包省**: ¥${data.replacementSavedCny.toLocaleString('zh-CN', { minimumFractionDigits: 2 })}`);
+    lines.push(`**缓存红利**: ¥${data.cacheSavedCny.toLocaleString('zh-CN', { minimumFractionDigits: 2 })}`);
+    lines.push(`**实际 wenai 花费**: ¥${data.totalWenaiCostCny.toLocaleString('zh-CN', { minimumFractionDigits: 2 })} (原本要 ¥${data.totalAltCostCny.toLocaleString('zh-CN')})`);
+    lines.push(`**比真人/外包便宜**: ${ratio}%`);
+    lines.push('');
+    lines.push('## 按模块拆分');
+    lines.push('');
+    lines.push('| 模块 | 调用次数 | wenai 实际 | 替代成本 | 节省 ¥ | 替代方案 |');
+    lines.push('|------|--------|-----------|--------|-------|--------|');
+    for (const m of data.byModule) {
+      lines.push(`| ${m.label} | ${m.calls} | ¥${m.wenaiCostCny.toFixed(2)} | ¥${m.altCostCny.toFixed(2)} | ¥${m.savedCny.toFixed(2)} | ${m.alt} |`);
+    }
+    lines.push('');
+    lines.push(`*由 wenai 自动生成 · ${new Date().toLocaleString('zh-CN')}*`);
+    const blob = new Blob([lines.join('\n')], { type: 'text/markdown;charset=utf-8' });
+    triggerDownload(blob, `wenai-savings-${data.days}days-${todayStr()}.md`);
+  };
+
   return (
     <div className="min-h-screen bg-bg-root">
       <div className="max-w-[1100px] mx-auto px-6 py-8">
@@ -169,6 +223,34 @@ export default function SavingsPage() {
               </div>
             </section>
 
+            {/* 给 CFO/财务的导出 */}
+            <section className="mt-5 border border-cat-content/30 bg-cat-content/5 rounded-lg p-4">
+              <div className="flex items-center justify-between flex-wrap gap-2">
+                <div>
+                  <div className="text-[12px] font-bold text-text-primary">
+                    📥 给财务/CFO 看
+                  </div>
+                  <div className="text-[10px] font-mono text-text-tertiary mt-0.5">
+                    导出后塞进对账表 · 含每个模块的真实/替代成本
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={downloadCsv}
+                    className="text-[11px] font-mono text-cat-content border border-cat-content/40 hover:bg-cat-content/10 rounded px-3 py-1.5"
+                  >
+                    ⬇ CSV
+                  </button>
+                  <button
+                    onClick={downloadMd}
+                    className="text-[11px] font-mono text-cat-content border border-cat-content/40 hover:bg-cat-content/10 rounded px-3 py-1.5"
+                  >
+                    ⬇ Markdown
+                  </button>
+                </div>
+              </div>
+            </section>
+
             {/* 分享 / 推介 */}
             <section className="mt-5 border border-accent/30 bg-accent/5 rounded-lg p-4 text-center">
               <p className="text-[12px] text-text-primary mb-2">
@@ -225,4 +307,27 @@ function EmptyState() {
       </div>
     </div>
   );
+}
+
+function escapeCsv(v: string): string {
+  if (v == null) return '';
+  const s = String(v);
+  if (s.includes(',') || s.includes('"') || s.includes('\n')) {
+    return '"' + s.replace(/"/g, '""') + '"';
+  }
+  return s;
+}
+
+function todayStr(): string {
+  const d = new Date();
+  return `${d.getFullYear()}${String(d.getMonth() + 1).padStart(2, '0')}${String(d.getDate()).padStart(2, '0')}`;
+}
+
+function triggerDownload(blob: Blob, filename: string) {
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(url);
 }
