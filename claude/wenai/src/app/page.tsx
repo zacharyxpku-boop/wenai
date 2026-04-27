@@ -496,18 +496,26 @@ export default function Dashboard() {
 
           {/* 工作流可视化 · 一条流水线 */}
           <div className="border border-border-subtle/60 bg-bg-root/40 rounded p-4 mb-5">
-            <div className="text-[10px] font-mono text-text-tertiary uppercase tracking-wider mb-3">
-              典型工作流 · 一个 SKU 一晚走完
+            <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
+              <div className="text-[10px] font-mono text-text-tertiary uppercase tracking-wider">
+                完整商业闭环 · SKU 全生命周期 9 步
+              </div>
+              <div className="text-[9px] font-mono text-success/80 uppercase tracking-wider">
+                ↺ 数据回流 → 回选品起新一轮
+              </div>
             </div>
             <div className="flex flex-wrap items-center gap-2 text-[11px]">
               {[
-                { num: '1', name: '反向意图', href: '/pipelines/intent-mining', cn: '挖出非显然客群' },
-                { num: '2', name: '爆款拆解', href: '/pipelines/video-teardown', cn: '扔 TikTok 出分镜' },
-                { num: '3', name: 'AI 影棚', href: '/pipelines/ai-photoshoot', cn: '8 模式生静态图' },
-                { num: '4', name: 'AI 视频', href: '/pipelines/ai-video', cn: '一图变 5s 短片' },
-                { num: '5', name: '上新流水线', href: '/pipelines/new-listing', cn: '翻译+文案+合规' },
-                { num: '6', name: '询盘对接', href: '/inquire?from=hero', cn: '24h 内联系' },
-              ].map((step, i) => (
+                { num: '1', name: '选品发现', href: '/pipelines/product-discovery', cn: 'AI 推 5-8 个候选' },
+                { num: '2', name: '反向意图', href: '/pipelines/intent-mining', cn: '挖非显然客群' },
+                { num: '3', name: '爆款拆解', href: '/pipelines/video-teardown', cn: 'TikTok 出分镜' },
+                { num: '4', name: 'AI 影棚', href: '/pipelines/ai-photoshoot', cn: '8 模式生图' },
+                { num: '5', name: 'AI 视频', href: '/pipelines/ai-video', cn: '一图变 5s 短片' },
+                { num: '6', name: '测款 A-B', href: '/pipelines/ab-test', cn: '9 张测点击率' },
+                { num: '7', name: '上新流水线', href: '/pipelines/new-listing', cn: '翻译/文案/合规' },
+                { num: '8', name: '数据洞察', href: '/pipelines/data-insights', cn: '诊断 + 行动' },
+                { num: '9', name: '询盘对接', href: '/inquire?from=hero', cn: '24h 内联系' },
+              ].map((step, i, arr) => (
                 <div key={i} className="flex items-center gap-1.5">
                   <a
                     href={step.href}
@@ -519,7 +527,7 @@ export default function Dashboard() {
                     <span className="text-text-primary font-semibold">{step.name}</span>
                     <span className="text-text-tertiary text-[10px] hidden lg:inline">{step.cn}</span>
                   </a>
-                  {i < 5 && <span className="text-accent/40 text-[10px]">→</span>}
+                  {i < arr.length - 1 && <span className="text-accent/40 text-[10px]">→</span>}
                 </div>
               ))}
             </div>
@@ -557,10 +565,80 @@ export default function Dashboard() {
       {/* Pipelines 完整网格 · 新老 7 条横向并列 */}
       <div className="mb-6 animate-fade-up stagger-4">
         <div className="flex items-center gap-2 mb-3">
-          <span className="label-mono text-[10px] font-semibold text-accent">PIPELINES · 7 条流水线</span>
+          <span className="label-mono text-[10px] font-semibold text-accent">PIPELINES · 10 条流水线</span>
           <div className="flex-1 h-px bg-accent/20" />
-          <span className="text-[9px] font-mono text-text-tertiary">每条都可独立跑,也可串成上面那条工作流</span>
+          <span className="text-[9px] font-mono text-text-tertiary">每条都可独立跑,也可串成上面那条 9 步闭环</span>
         </div>
+
+        {/* 决策层 · 选品 + 测款 + 数据洞察 (新增) */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-3">
+          <a
+            href="/pipelines/product-discovery"
+            className="group block border border-cat-content/40 bg-bg-surface rounded-md p-4 hover:border-cat-content/70 hover:-translate-y-0.5 hover:shadow-[0_6px_20px_rgba(110,168,215,0.15)] transition-all"
+            style={{ borderLeftWidth: '2px', borderLeftColor: '#6ea8d7' }}
+          >
+            <div className="flex items-center gap-2 mb-1.5">
+              <span className="px-1.5 py-0.5 bg-cat-content/15 text-cat-content text-[9px] font-mono uppercase rounded">决策</span>
+              <span className="text-[9px] font-mono text-success">痛点 #1</span>
+            </div>
+            <div className="text-[14px] font-semibold text-text-primary mb-1 group-hover:text-cat-content transition-colors font-[family-name:var(--font-outfit)]">
+              🎯 AI 选品发现
+            </div>
+            <p className="text-[11px] text-text-secondary leading-relaxed mb-2">
+              平台 + 类目 + 预算 → AI 推 5-8 个候选 SKU + 利润 + 风险
+            </p>
+            <div className="flex items-center gap-1.5 text-[9px] font-mono">
+              <span className="text-text-tertiary">拍脑袋选</span>
+              <span className="text-text-tertiary/50">→</span>
+              <span className="text-success font-semibold">数据驱动</span>
+            </div>
+          </a>
+
+          <a
+            href="/pipelines/ab-test"
+            className="group block border border-cat-content/40 bg-bg-surface rounded-md p-4 hover:border-cat-content/70 hover:-translate-y-0.5 transition-all"
+            style={{ borderLeftWidth: '2px', borderLeftColor: '#6ea8d7' }}
+          >
+            <div className="flex items-center gap-2 mb-1.5">
+              <span className="px-1.5 py-0.5 bg-cat-content/15 text-cat-content text-[9px] font-mono uppercase rounded">决策</span>
+              <span className="text-[9px] font-mono text-success">痛点 #11</span>
+            </div>
+            <div className="text-[14px] font-semibold text-text-primary mb-1 group-hover:text-cat-content transition-colors font-[family-name:var(--font-outfit)]">
+              ⚗️ 测款 A-B 实验室
+            </div>
+            <p className="text-[11px] text-text-secondary leading-relaxed mb-2">
+              一图变 9 张 (3 钩子 × 3 配色) + 杀/留硬指标 + 数据回流 SOP
+            </p>
+            <div className="flex items-center gap-1.5 text-[9px] font-mono">
+              <span className="text-text-tertiary">看图直觉</span>
+              <span className="text-text-tertiary/50">→</span>
+              <span className="text-success font-semibold">3×3 矩阵</span>
+            </div>
+          </a>
+
+          <a
+            href="/pipelines/data-insights"
+            className="group block border border-cat-content/40 bg-bg-surface rounded-md p-4 hover:border-cat-content/70 hover:-translate-y-0.5 transition-all"
+            style={{ borderLeftWidth: '2px', borderLeftColor: '#6ea8d7' }}
+          >
+            <div className="flex items-center gap-2 mb-1.5">
+              <span className="px-1.5 py-0.5 bg-cat-content/15 text-cat-content text-[9px] font-mono uppercase rounded">决策</span>
+              <span className="text-[9px] font-mono text-success">痛点 #10</span>
+            </div>
+            <div className="text-[14px] font-semibold text-text-primary mb-1 group-hover:text-cat-content transition-colors font-[family-name:var(--font-outfit)]">
+              📊 数据洞察
+            </div>
+            <p className="text-[11px] text-text-secondary leading-relaxed mb-2">
+              贴销售数据 → AI 诊断 4-8 条 P0/P1/P2 行动建议 + killList
+            </p>
+            <div className="flex items-center gap-1.5 text-[9px] font-mono">
+              <span className="text-text-tertiary">下滑不知因</span>
+              <span className="text-text-tertiary/50">→</span>
+              <span className="text-success font-semibold">根因 + 动作</span>
+            </div>
+          </a>
+        </div>
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 mb-3">
           {/* AI 影棚 · 旗舰新增 */}
           <a
