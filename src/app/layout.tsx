@@ -6,6 +6,7 @@ import { readFile } from "fs/promises";
 import { join } from "path";
 import Sidebar from "@/components/Layout/Sidebar";
 import { CommandPalette } from "@/components/CommandPalette";
+import { KeyboardShortcutsHelp } from "@/components/KeyboardShortcutsHelp";
 import modulesConfig from "@/config/modules.json";
 import { verifyToken, getCookieName } from "@/lib/auth";
 
@@ -139,6 +140,7 @@ export default async function RootLayout({
           {children}
         </main>
         {showChrome && <CommandPalette />}
+        {showChrome && <KeyboardShortcutsHelp />}
       </body>
     </html>
   );
