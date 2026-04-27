@@ -80,6 +80,7 @@ export default function SkuDetailPage() {
   const [savingNotes, setSavingNotes] = useState(false);
   const [costSummary, setCostSummary] = useState<CostSummary | null>(null);
   const [skuCost, setSkuCost] = useState<{ totalCny: number; callCount: number; byModule: Record<string, { cents: number; count: number }> } | null>(null);
+  const [neighbors, setNeighbors] = useState<{ prev: Sku | null; next: Sku | null; pos: number; total: number } | null>(null);
 
   useEffect(() => {
     fetch('/api/user/cost-summary')
@@ -101,12 +102,19 @@ export default function SkuDetailPage() {
     fetch('/api/user/sku-history?limit=200')
       .then(r => r.json())
       .then(d => {
-        const found = (d.skus || []).find((s: Sku) => s.id === params.id);
-        if (!found) {
+        const list = (d.skus || []) as Sku[];
+        const idx = list.findIndex(s => s.id === params.id);
+        if (idx < 0) {
           setError('找不到这个 SKU (可能已删或换 org 了)');
         } else {
-          setSku(found);
-          setNotesDraft(found.notes || '');
+          setSku(list[idx]);
+          setNotesDraft(list[idx].notes || '');
+          setNeighbors({
+            prev: idx > 0 ? list[idx - 1] : null,
+            next: idx < list.length - 1 ? list[idx + 1] : null,
+            pos: idx + 1,
+            total: list.length,
+          });
         }
         setLoading(false);
       })
@@ -115,6 +123,26 @@ export default function SkuDetailPage() {
         setLoading(false);
       });
   }, [params.id]);
+
+  // 键盘快捷键 j/k 跳上下 SKU (vim 风格 · 不抢 textarea 焦点)
+  useEffect(() => {
+    if (!neighbors) return;
+    const handler = (e: KeyboardEvent) => {
+      // 输入框/文本框聚焦时不响应
+      const tag = (e.target as HTMLElement)?.tagName;
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+      if (e.metaKey || e.ctrlKey || e.altKey) return;
+      if (e.key === 'j' && neighbors.next) {
+        e.preventDefault();
+        router.push(`/me/skus/${neighbors.next.id}`);
+      } else if (e.key === 'k' && neighbors.prev) {
+        e.preventDefault();
+        router.push(`/me/skus/${neighbors.prev.id}`);
+      }
+    };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, [neighbors, router]);
 
   const updateField = async (patch: Partial<Sku>) => {
     if (!sku) return;
@@ -165,10 +193,49 @@ export default function SkuDetailPage() {
   return (
     <div className="max-w-[1000px] mx-auto py-8 px-6">
       {/* 面包屑 + 删除 */}
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex items-center justify-between mb-4 gap-3 flex-wrap">
         <Link href="/me/skus" className="text-[11px] font-mono text-text-tertiary hover:text-accent">
           ← 我的 SKU 库
         </Link>
+        {neighbors && (
+          <div className="flex items-center gap-1 text-[10px] font-mono">
+            <Link
+              href={neighbors.prev ? `/me/skus/${neighbors.prev.id}` : '#'}
+              className={`px-2 py-1 rounded border ${
+                neighbors.prev
+                  ? 'border-border-subtle text-text-secondary hover:border-accent/40 hover:text-accent'
+                  : 'border-border-subtle/50 text-text-tertiary/50 pointer-events-none'
+              }`}
+              title={neighbors.prev ? `上一个: ${neighbors.prev.name} (k)` : '已是第一个'}
+            >
+              ← <span className="text-[9px]">k</span>
+              {neighbors.prev && (
+                <span className="ml-1 max-w-[120px] inline-block truncate align-middle">
+                  {neighbors.prev.name.length > 12 ? neighbors.prev.name.slice(0, 12) + '…' : neighbors.prev.name}
+                </span>
+              )}
+            </Link>
+            <span className="text-text-tertiary px-1 tabular-nums">
+              {neighbors.pos}/{neighbors.total}
+            </span>
+            <Link
+              href={neighbors.next ? `/me/skus/${neighbors.next.id}` : '#'}
+              className={`px-2 py-1 rounded border ${
+                neighbors.next
+                  ? 'border-border-subtle text-text-secondary hover:border-accent/40 hover:text-accent'
+                  : 'border-border-subtle/50 text-text-tertiary/50 pointer-events-none'
+              }`}
+              title={neighbors.next ? `下一个: ${neighbors.next.name} (j)` : '已是最后一个'}
+            >
+              {neighbors.next && (
+                <span className="mr-1 max-w-[120px] inline-block truncate align-middle">
+                  {neighbors.next.name.length > 12 ? neighbors.next.name.slice(0, 12) + '…' : neighbors.next.name}
+                </span>
+              )}
+              <span className="text-[9px]">j</span> →
+            </Link>
+          </div>
+        )}
         <button
           onClick={deleteSku}
           className="text-[10px] font-mono text-text-tertiary hover:text-error border border-border-subtle hover:border-error/40 rounded px-2 py-1"
