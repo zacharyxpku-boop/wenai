@@ -131,6 +131,9 @@ export default function SettingsPage() {
               </div>
             </section>
 
+            {/* API Key */}
+            <ApiKeySection />
+
             {/* 行业 */}
             <section className="border border-border-subtle rounded-lg p-5 bg-bg-surface/30 space-y-3">
               <div className="text-[10px] font-mono text-text-tertiary uppercase tracking-wider">
@@ -176,5 +179,185 @@ export default function SettingsPage() {
         )}
       </div>
     </div>
+  );
+}
+
+interface KeyMeta {
+  prefix: string;
+  createdAt: string;
+  lastUsedAt: string | null;
+  label: string | null;
+}
+
+function ApiKeySection() {
+  const [meta, setMeta] = useState<KeyMeta | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [issuing, setIssuing] = useState(false);
+  const [revoking, setRevoking] = useState(false);
+  const [rawKey, setRawKey] = useState<string | null>(null); // 仅签发时短暂展示
+  const [label, setLabel] = useState('');
+  const [copied, setCopied] = useState(false);
+
+  const load = () => {
+    setLoading(true);
+    fetch('/api/user/api-key')
+      .then(r => r.json())
+      .then(d => { setMeta(d.key); setLoading(false); })
+      .catch(() => setLoading(false));
+  };
+  useEffect(load, []);
+
+  const issue = async () => {
+    if (!confirm(meta ? '签发新 key 会让旧 key 立即失效, 继续?' : '签发 API key?')) return;
+    setIssuing(true);
+    try {
+      const r = await fetch('/api/user/api-key', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ label: label.trim() || undefined }),
+      });
+      const d = await r.json();
+      if (r.ok && d.rawKey) {
+        setRawKey(d.rawKey);
+        load();
+      }
+    } finally {
+      setIssuing(false);
+    }
+  };
+
+  const revoke = async () => {
+    if (!confirm('⚠️ 撤销当前 API key 后, 所有用它调 wenai 的脚本/系统会失败. 确认?')) return;
+    setRevoking(true);
+    try {
+      await fetch('/api/user/api-key', { method: 'DELETE' });
+      setMeta(null);
+      setRawKey(null);
+    } finally {
+      setRevoking(false);
+    }
+  };
+
+  const copy = async () => {
+    if (!rawKey) return;
+    await navigator.clipboard.writeText(rawKey);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1500);
+  };
+
+  return (
+    <section className="border border-border-subtle rounded-lg p-5 bg-bg-surface/30 space-y-3">
+      <div className="flex items-center justify-between flex-wrap gap-2">
+        <div className="text-[10px] font-mono text-text-tertiary uppercase tracking-wider">
+          🔑 API Key · ERP / Webhook / 脚本接入
+        </div>
+        <a
+          href="https://github.com/zacharyxpku-boop/wenai"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-[10px] font-mono text-accent hover:underline"
+        >
+          看 API 文档 →
+        </a>
+      </div>
+
+      {rawKey && (
+        <div className="border border-warning/40 bg-warning/5 rounded p-3 space-y-2">
+          <div className="text-[11px] font-bold text-warning">
+            ⚠️ 这是你的新 API key · 关页后无法再看, 立即复制保存
+          </div>
+          <div className="flex items-center gap-2">
+            <code className="flex-1 text-[11px] font-mono bg-bg-root px-2 py-1.5 rounded border border-border-default break-all">
+              {rawKey}
+            </code>
+            <button
+              onClick={copy}
+              className={`text-[10px] font-mono px-2.5 py-1.5 rounded ${
+                copied ? 'bg-success/20 text-success' : 'bg-accent text-bg-root hover:bg-accent-hover'
+              }`}
+            >
+              {copied ? '✓ 已复制' : '📋 复制'}
+            </button>
+          </div>
+          <button
+            onClick={() => setRawKey(null)}
+            className="text-[10px] font-mono text-text-tertiary hover:text-text-primary"
+          >
+            我已保存 →
+          </button>
+        </div>
+      )}
+
+      {loading ? (
+        <div className="text-[11px] font-mono text-text-tertiary py-3 text-center">加载中...</div>
+      ) : meta ? (
+        <>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-2 text-[11px] font-mono">
+            <div>
+              <div className="text-[9px] text-text-tertiary uppercase mb-0.5">Key 前缀</div>
+              <div className="text-text-primary tabular-nums">{meta.prefix}…</div>
+            </div>
+            <div>
+              <div className="text-[9px] text-text-tertiary uppercase mb-0.5">签发于</div>
+              <div className="text-text-primary">{new Date(meta.createdAt).toLocaleDateString('zh-CN')}</div>
+            </div>
+            <div>
+              <div className="text-[9px] text-text-tertiary uppercase mb-0.5">最近使用</div>
+              <div className="text-text-primary">
+                {meta.lastUsedAt ? new Date(meta.lastUsedAt).toLocaleString('zh-CN') : '从未'}
+              </div>
+            </div>
+          </div>
+          {meta.label && (
+            <div className="text-[10px] font-mono text-text-tertiary">
+              标签: <span className="text-text-secondary">{meta.label}</span>
+            </div>
+          )}
+          <div className="flex gap-2">
+            <button
+              onClick={issue}
+              disabled={issuing}
+              className="text-[11px] font-mono px-3 py-1.5 border border-accent/40 text-accent hover:bg-accent/10 rounded disabled:opacity-40"
+            >
+              {issuing ? '签发中...' : '↻ 重新签发 (旧 key 失效)'}
+            </button>
+            <button
+              onClick={revoke}
+              disabled={revoking}
+              className="text-[11px] font-mono px-3 py-1.5 border border-error/40 text-error hover:bg-error/10 rounded disabled:opacity-40"
+            >
+              {revoking ? '撤销中...' : '🗑️ 撤销当前 key'}
+            </button>
+          </div>
+        </>
+      ) : (
+        <div className="space-y-2">
+          <div className="text-[12px] text-text-secondary">
+            还没签发 API key. 配上后能从你自己的 ERP / Shopify webhook / 抖店脚本 直接 push 数据进 wenai SKU 库.
+          </div>
+          <input
+            type="text"
+            value={label}
+            onChange={e => setLabel(e.target.value)}
+            placeholder="标签 (可选): 例 '生产 ERP' / '测试'"
+            className="w-full px-3 py-2 bg-bg-surface border border-border-default rounded text-[12px]"
+            maxLength={80}
+          />
+          <button
+            onClick={issue}
+            disabled={issuing}
+            className="text-[11px] font-mono px-4 py-1.5 bg-accent text-bg-root rounded hover:bg-accent-hover disabled:opacity-40"
+          >
+            {issuing ? '签发中...' : '签发 API key'}
+          </button>
+        </div>
+      )}
+
+      <div className="text-[10px] font-mono text-text-tertiary leading-relaxed border-t border-border-subtle pt-2">
+        用法示例: <code className="text-text-secondary">curl -H &quot;Authorization: Bearer wn_xxx&quot; https://wenai-deploy.vercel.app/api/v1/skus</code>
+        <br />
+        当前可用端点: GET / POST <code className="text-accent">/api/v1/skus</code> · 更多接口逐步开放
+      </div>
+    </section>
   );
 }
