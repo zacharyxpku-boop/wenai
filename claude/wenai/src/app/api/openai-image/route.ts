@@ -297,11 +297,21 @@ export async function POST(request: NextRequest) {
       ? body.referenceImages
       : (body.referenceImage ? [body.referenceImage] : []);
 
-    // Provider 选择:
-    //   - HappyHorse 仅支持 1 张 base64File (多图要 imageUrls 公网 URL,本地 base64 不便)
-    //   - 双图垫图 (outfit-swap / hot-clone) 必须走 OpenAI 直连 multipart
-    const useHappyhorse = happyhorseKey && refList.length <= 1;
-    if (useHappyhorse) {
+    // Provider 选择 (OpenAI 直连优先 · 原生 b64 输出无中转压缩, gpt-image-1 完整能力):
+    //   1. OPENAI_API_KEY 存在 → 走官方 /v1/images/generations | /v1/images/edits
+    //   2. 否则 HAPPYHORSE_API_KEY 存在 → 走国内中转 (单图 base64File, 双图模式受限)
+    //   3. 都没有 → 503
+    if (!openaiKey && happyhorseKey) {
+      // 退回 HappyHorse · 仅当 OpenAI key 缺失时
+      if (refList.length > 1) {
+        return NextResponse.json(
+          {
+            error: '双图垫图模式需要 OPENAI_API_KEY 直连 (HappyHorse 中转单图模式)',
+            code: 'OPENAI_REQUIRED',
+          },
+          { status: 503 }
+        );
+      }
       return await viaHappyhorse({
         apiKey: happyhorseKey,
         prompt: body.prompt,
@@ -313,11 +323,7 @@ export async function POST(request: NextRequest) {
 
     if (!openaiKey) {
       return NextResponse.json(
-        {
-          error: '双图垫图模式需要 OPENAI_API_KEY (HappyHorse 国内中转暂只支持单图)',
-          code: 'OPENAI_REQUIRED',
-          notice: '配 OPENAI_API_KEY 或先用单张垫图试',
-        },
+        { error: 'OPENAI_API_KEY 未配置', code: 'NO_KEY' },
         { status: 503 }
       );
     }
