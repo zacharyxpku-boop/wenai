@@ -117,3 +117,5 @@ T+60 可分享 /share/[id] 给朋友 (品牌曝光) + /benchmark 自动加进池
 - 不锁定模型: ai/route.ts 抽 endpoint + key, 切 Qwen / DeepSeek / OpenAI 改 env
 - 不接队列 (BullMQ): vercel serverless 不适合长 worker, 改前端分片调 chunk
 - 不绑库 cookie/Auth: x-tenant-id + JWT 二层兼容, demo 也能跑
+
+# Marketing rewrite shipped at 18b5562
