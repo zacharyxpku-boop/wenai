@@ -225,6 +225,20 @@ export default function CasesPage() {
               </Link>
             </div>
 
+            {/* 产品场景 hero */}
+            <div className="aspect-[16/6] bg-bg-surface border-b border-border-subtle overflow-hidden relative">
+              <span className="absolute inset-0 flex items-center justify-center text-text-tertiary text-xs font-mono z-0">
+                {c.category} · 产品场景
+              </span>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={`/seed/case-${c.slug}.jpg`}
+                alt={`${c.customer} ${c.scenario}`}
+                className="absolute inset-0 w-full h-full object-cover z-10"
+                loading="lazy"
+              />
+            </div>
+
             {/* 场景 */}
             <div className="px-6 py-3 border-b border-border-subtle bg-bg-surface/30">
               <div className="text-[10px] font-mono text-text-tertiary uppercase mb-1">场景</div>

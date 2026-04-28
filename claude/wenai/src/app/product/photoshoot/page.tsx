@@ -40,19 +40,26 @@ export default function PhotoshootPage() {
             </div>
             <div className="grid grid-cols-4 gap-2">
               {Array.from({ length: 8 }).map((_, i) => {
-                const shades = [
-                  'from-bg-surface to-bg-raised',
-                  'from-bg-raised to-bg-surface',
-                  'from-bg-surface via-bg-raised to-bg-surface',
-                  'from-bg-raised via-bg-surface to-bg-raised',
-                ];
+                const slug = `0${i + 1}`;
+                const labels = ['模特', '白底', '生活', '节日', '汽摩', '数码', '家居', '美妆'];
                 return (
                   <div
                     key={i}
-                    className={`aspect-square rounded-md bg-gradient-to-br ${shades[i % shades.length]} border border-border-subtle flex items-center justify-center`}
+                    className="aspect-square rounded-md bg-bg-surface border border-border-subtle overflow-hidden relative group"
                   >
-                    <span className="text-xs text-text-tertiary font-mono">
-                      0{i + 1}
+                    <span className="absolute inset-0 flex items-center justify-center text-xs text-text-tertiary font-mono z-0">
+                      {slug}
+                    </span>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={`/seed/photoshoot-mode-${slug}.jpg`}
+                      alt={`${labels[i]}场景`}
+                      className="absolute inset-0 w-full h-full object-cover z-10"
+                      loading="lazy"
+                    />
+                    <span className="absolute bottom-1 left-1.5 right-1.5 text-[10px] font-mono text-white/95 bg-black/40 backdrop-blur-sm rounded-sm px-1.5 py-0.5 z-20 leading-none flex items-center justify-between">
+                      <span>{slug}</span>
+                      <span>{labels[i]}</span>
                     </span>
                   </div>
                 );

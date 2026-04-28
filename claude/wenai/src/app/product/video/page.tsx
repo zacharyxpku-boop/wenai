@@ -47,24 +47,42 @@ export default function VideoPage() {
             {data.modesTitle}
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-            {data.modes.map((m) => (
-              <div
-                key={m.title}
-                className="bg-bg-surface border border-border-subtle rounded-lg p-6 flex flex-col"
-              >
-                <div className="aspect-video rounded-md bg-gradient-to-br from-bg-raised to-bg-surface mb-5 flex items-center justify-center border border-border-subtle">
-                  <span className="text-text-tertiary text-sm font-mono">
+            {data.modes.map((m, i) => {
+              const slug = `0${i + 1}`;
+              return (
+                <div
+                  key={m.title}
+                  className="bg-bg-surface border border-border-subtle rounded-lg p-6 flex flex-col"
+                >
+                  <div className="aspect-video rounded-md bg-bg-raised mb-5 overflow-hidden relative border border-border-subtle">
+                    <span className="absolute inset-0 flex items-center justify-center text-text-tertiary text-sm font-mono z-0">
+                      {m.title}
+                    </span>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={`/seed/video-scenario-${slug}.jpg`}
+                      alt={`${m.title} 视频场景`}
+                      className="absolute inset-0 w-full h-full object-cover z-10"
+                      loading="lazy"
+                    />
+                    {/* 播放按钮叠层 · 纯视觉, 无功能 */}
+                    <span className="absolute inset-0 z-20 flex items-center justify-center pointer-events-none">
+                      <span className="w-12 h-12 rounded-full bg-black/30 backdrop-blur-sm flex items-center justify-center border border-white/30">
+                        <svg width="18" height="18" viewBox="0 0 18 18" fill="white" aria-hidden>
+                          <path d="M5 3l10 6-10 6V3z" />
+                        </svg>
+                      </span>
+                    </span>
+                  </div>
+                  <div className="font-bold text-text-primary text-lg mb-2">
                     {m.title}
-                  </span>
+                  </div>
+                  <div className="text-text-secondary text-sm leading-relaxed">
+                    {m.desc}
+                  </div>
                 </div>
-                <div className="font-bold text-text-primary text-lg mb-2">
-                  {m.title}
-                </div>
-                <div className="text-text-secondary text-sm leading-relaxed">
-                  {m.desc}
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </Container>
       </Section>

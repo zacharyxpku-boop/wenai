@@ -38,6 +38,20 @@ export default function PipelinePage() {
               </PrimaryButton>
             </div>
           </div>
+
+          {/* 三联拼贴 · 主图 / 视频 / 详情页 */}
+          <div className="mt-12 max-w-4xl mx-auto aspect-[16/9] rounded-lg bg-bg-surface border border-border-subtle overflow-hidden relative">
+            <span className="absolute inset-0 flex items-center justify-center text-text-tertiary text-sm font-mono z-0">
+              主图 · 视频 · 详情页 三件套
+            </span>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/seed/pipeline-hero-collage.jpg"
+              alt="全流水线三件套产出物拼贴"
+              className="absolute inset-0 w-full h-full object-cover z-10"
+              loading="eager"
+            />
+          </div>
         </Container>
       </Section>
 
