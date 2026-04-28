@@ -189,6 +189,15 @@ export default function Dashboard() {
           </div>
           <div className="flex items-center gap-3 lg:gap-6 flex-shrink-0">
             <a
+              href="/tools"
+              className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded border border-accent/40 bg-accent/5 hover:bg-accent/15 transition-colors"
+              title="免费工具 · Hook 打分 / AIGC 合规 / 库存监控"
+            >
+              <span className="text-[12px]">🧰</span>
+              <span className="text-[10px] lg:text-[11px] font-mono text-accent tabular-nums">免费工具</span>
+              <span className="text-[8px] font-mono text-accent/60 px-1 py-0.5 rounded bg-accent/10">FREE</span>
+            </a>
+            <a
               href="/status"
               className="text-right hover:opacity-80 transition-opacity"
               title="系统状态"
@@ -986,6 +995,41 @@ export default function Dashboard() {
         <a href="/cases" className="text-[11px] font-mono text-accent hover:underline">
           看案例 →
         </a>
+      </div>
+
+      {/* 免费工具入口 strip · 跑前先用免费的, 高分再去付费 pipeline */}
+      <div className="mt-6 mb-6 border border-accent/30 bg-gradient-to-r from-accent/5 via-accent/10 to-bg-surface rounded-md p-4 lg:p-5">
+        <div className="flex items-baseline justify-between flex-wrap gap-2 mb-3">
+          <div>
+            <div className="text-[10px] font-mono text-accent uppercase tracking-wider">🧰 免费工具 · 跑前先用</div>
+            <div className="text-[13px] font-semibold text-text-primary mt-0.5">
+              0 LLM 调用 · 不烧 quota · 给你算账后再决定要不要花钱跑
+            </div>
+          </div>
+          <a href="/tools" className="text-[11px] font-mono text-accent hover:underline">
+            看全部 →
+          </a>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+          <a href="/tools/hook-score" className="block border border-border-subtle bg-bg-surface/40 rounded p-3 hover:border-accent/40 hover:bg-bg-surface/70 transition-colors">
+            <div className="text-[11px] font-semibold text-text-primary mb-1">🎯 Hook 跑前打分</div>
+            <div className="text-[10px] font-mono text-text-tertiary leading-relaxed">
+              粘文案 → 0-100 分 + 预估 CTR 区间 · 低分先重写, 别白烧主图费
+            </div>
+          </a>
+          <a href="/tools/aigc-compliance" className="block border border-border-subtle bg-bg-surface/40 rounded p-3 hover:border-accent/40 hover:bg-bg-surface/70 transition-colors">
+            <div className="text-[11px] font-semibold text-text-primary mb-1">🛡️ AIGC 合规速查</div>
+            <div className="text-[10px] font-mono text-text-tertiary leading-relaxed">
+              抖音 / TikTok / 视频号 / 小红书 / YT / IG · 披露规则 + 一键复制披露语
+            </div>
+          </a>
+          <a href="/me/inventory" className="block border border-border-subtle bg-bg-surface/40 rounded p-3 hover:border-accent/40 hover:bg-bg-surface/70 transition-colors">
+            <div className="text-[11px] font-semibold text-text-primary mb-1">📦 库存监控</div>
+            <div className="text-[10px] font-mono text-text-tertiary leading-relaxed">
+              ERP cron POST 库存数 → 断货 / 低位 自动推飞书 + 邮件 + alerts inbox
+            </div>
+          </a>
+        </div>
       </div>
 
       {/* ROI 计算器 */}
