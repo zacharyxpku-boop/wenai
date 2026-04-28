@@ -184,6 +184,14 @@ export default function Sidebar({ modules, categories, clientName, userRole }: S
           <span>⚙️</span>
           <span>设置</span>
         </a>
+        <a
+          href="/tools"
+          className="flex items-center gap-2 px-2.5 py-1.5 rounded text-[12px] font-mono text-text-secondary hover:text-accent hover:bg-bg-surface transition-colors"
+        >
+          <span>🧰</span>
+          <span>免费工具</span>
+          <span className="text-[8px] font-mono text-accent border border-accent/40 px-1 rounded">FREE</span>
+        </a>
       </div>
 
       {/* Pipeline 导航区 · 首屏焦点 */}
