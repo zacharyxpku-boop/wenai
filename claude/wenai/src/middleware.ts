@@ -58,7 +58,11 @@ export async function middleware(request: NextRequest) {
     PUBLIC_PAGE_PREFIXES.some(p => p !== '/' && pathname.startsWith(p));
 
   if (isPageRoute && isPublicPage && !pathname.startsWith('/admin')) {
-    return NextResponse.next();
+    const publicHeaders = new Headers(request.headers);
+    publicHeaders.set('x-pathname', pathname);
+    return NextResponse.next({
+      request: { headers: publicHeaders },
+    });
   }
 
   const token = request.cookies.get(getCookieName())?.value;
@@ -92,6 +96,7 @@ export async function middleware(request: NextRequest) {
   requestHeaders.set('x-tenant-id', payload.tenantId);
   requestHeaders.set('x-user-role', payload.role);
   requestHeaders.set('x-username', payload.username);
+  requestHeaders.set('x-pathname', pathname);
 
   return NextResponse.next({
     request: { headers: requestHeaders },

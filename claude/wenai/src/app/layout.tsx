@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Outfit, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
 import { readFile } from "fs/promises";
 import { join } from "path";
 import Sidebar from "@/components/Layout/Sidebar";
@@ -103,8 +103,24 @@ export default async function RootLayout({
 }>) {
   const session = await getSessionInfo();
 
+  // 当前路径 · middleware 注入的 x-pathname header
+  const headersList = await headers();
+  const pathname = headersList.get('x-pathname') || '';
+
+  // Marketing 路由: 不挂 dashboard chrome (sidebar / footer / palette / shortcuts / mobile bar)
+  // 各 marketing page.tsx 自己 import TopNav + MarketingFooter 渲染
+  const isMarketingRoute =
+    pathname === '/' ||
+    pathname.startsWith('/about') ||
+    pathname.startsWith('/product/') ||
+    pathname.startsWith('/pricing') ||
+    pathname.startsWith('/contact') ||
+    pathname.startsWith('/resources') ||
+    pathname.startsWith('/cases');
+
   // If no session (not logged in), render without sidebar
-  const showChrome = !!session;
+  // Marketing 路由也不挂 chrome (即使已登录访客逛首页, 也走 marketing 版式)
+  const showChrome = !!session && !isMarketingRoute;
   const tenantConfig = session?.tenant;
   const userRole = session?.role;
 
