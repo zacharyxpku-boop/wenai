@@ -13,6 +13,8 @@ const PUBLIC_PATHS = [
   '/privacy',
   '/legal',
   '/api/sales/inquiry', // ToB 询盘提交 (POST) 必须开放给未登录访客
+  '/api/health',        // 健康检查 (status 页 + 外部监控)
+  '/api/unsubscribe',   // 邮件一键退订 (HMAC token, 不要登录)
 ];
 
 // 营销/演示前端页面 · 访客可看 hero/价值主张,但调 AI 接口仍需登录
@@ -32,6 +34,9 @@ const PUBLIC_PAGE_PREFIXES = [
   '/share', // 公开分享页
   '/invite', // 邀请码兑换
   '/me', // 个人中心 (SKU 库) · 匿名用户用 IP 当 orgId
+  '/tools', // 免费工具集 · hook-score / aigc-compliance · 公开引流
+  '/benchmark', // 跨 org CTR/CPC benchmark 公共 SEO 页
+  '/unsubscribed', // 一键退订成功页
 ];
 
 export async function middleware(request: NextRequest) {
