@@ -37,6 +37,10 @@ const PUBLIC_PAGE_PREFIXES = [
   '/tools', // 免费工具集 · hook-score / aigc-compliance · 公开引流
   '/benchmark', // 跨 org CTR/CPC benchmark 公共 SEO 页
   '/unsubscribed', // 一键退订成功页
+  '/about', // 关于页 · marketing 二级
+  '/product/', // 产品详情 · photoshoot / video / pipeline
+  '/contact', // 联系页
+  '/resources', // 资源中心
 ];
 
 export async function middleware(request: NextRequest) {
