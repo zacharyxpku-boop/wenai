@@ -7,6 +7,8 @@ import { join } from "path";
 import Sidebar from "@/components/Layout/Sidebar";
 import { CommandPalette } from "@/components/CommandPalette";
 import { KeyboardShortcutsHelp } from "@/components/KeyboardShortcutsHelp";
+import { MobileToolsBar } from "@/components/MobileToolsBar";
+import { SiteFooter } from "@/components/SiteFooter";
 import modulesConfig from "@/config/modules.json";
 import { verifyToken, getCookieName } from "@/lib/auth";
 
@@ -138,9 +140,11 @@ export default async function RootLayout({
         )}
         <main className={showChrome ? "lg:ml-[240px] min-h-screen p-4 lg:p-8" : "min-h-screen"}>
           {children}
+          {showChrome && <SiteFooter />}
         </main>
         {showChrome && <CommandPalette />}
         {showChrome && <KeyboardShortcutsHelp />}
+        {showChrome && <MobileToolsBar />}
       </body>
     </html>
   );
