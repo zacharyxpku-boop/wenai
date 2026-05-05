@@ -12,6 +12,7 @@ import {
   serializeInquiryActivity,
   type InquiryStatus,
 } from '@/lib/inquiry-activity';
+import { syncExternalCrm } from '@/lib/external-crm-sync';
 
 interface Inquiry {
   company: string;
@@ -620,5 +621,47 @@ export async function PATCH(req: NextRequest) {
     return NextResponse.json({ ok: true, updatedAt });
   } catch (error) {
     return NextResponse.json({ error: error instanceof Error ? error.message : '更新失败' }, { status: 500 });
+  }
+}
+
+export async function PUT(req: NextRequest) {
+  if (!authed(req)) return NextResponse.json({ error: '未授权' }, { status: 401 });
+  if (!redis) return NextResponse.json({ error: 'Redis 未配置' }, { status: 503 });
+
+  const body = await req.json().catch(() => ({}));
+  const id = str(body.id);
+  if (!id) return NextResponse.json({ error: 'id 必填' }, { status: 400 });
+
+  try {
+    const raw = await redis.hgetall<Record<string, unknown>>(`wenai:inquiry:${id}`);
+    if (!raw || Object.keys(raw).length === 0) {
+      return NextResponse.json({ error: '未找到该询盘' }, { status: 404 });
+    }
+
+    const normalized = normalizeInquiryRow(raw);
+    const record = buildExternalCrmRecord(normalized);
+    const result = await syncExternalCrm(record);
+    const syncedAt = new Date().toISOString();
+    const patch = {
+      crmSyncStatus: result.status,
+      crmSyncAt: syncedAt,
+      crmSyncNote: result.note.slice(0, 240),
+      ...(result.externalId ? { externalCrmId: result.externalId.slice(0, 120) } : {}),
+      ...(result.externalUrl ? { externalCrmUrl: result.externalUrl.slice(0, 300) } : {}),
+    };
+    await redis.hset(`wenai:inquiry:${id}`, {
+      ...patch,
+      activityLog: appendInquiryActivity(normalized.activityLog, [
+        buildOpsActivity({
+          previous: normalized,
+          patch,
+          at: syncedAt,
+        }),
+      ].filter((item): item is NonNullable<typeof item> => Boolean(item))),
+    });
+
+    return NextResponse.json({ ok: result.ok, sync: result, record });
+  } catch (error) {
+    return NextResponse.json({ error: error instanceof Error ? error.message : '外部 CRM 同步失败' }, { status: 500 });
   }
 }

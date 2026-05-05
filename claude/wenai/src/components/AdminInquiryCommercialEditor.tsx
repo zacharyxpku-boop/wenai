@@ -53,6 +53,7 @@ type InquiryPatch = {
 export default function AdminInquiryCommercialEditor({ initial }: { initial: InquiryPatch }) {
   const [draft, setDraft] = useState<InquiryPatch>(initial);
   const [saving, setSaving] = useState(false);
+  const [syncing, setSyncing] = useState(false);
   const [message, setMessage] = useState('');
 
   function update(patch: Partial<InquiryPatch>) {
@@ -82,6 +83,40 @@ export default function AdminInquiryCommercialEditor({ initial }: { initial: Inq
     }
   }
 
+  async function syncExternalCrm() {
+    setSyncing(true);
+    setMessage('');
+    try {
+      const adminKey = sessionStorage.getItem('wenai_admin_key') || '';
+      const res = await fetch('/api/sales/inquiry', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(adminKey ? { 'x-admin-key': adminKey } : {}),
+        },
+        body: JSON.stringify({ id: draft.id }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
+      if (data.sync) {
+        update({
+          crmSyncStatus: data.sync.status,
+          crmSyncAt: new Date().toISOString(),
+          crmSyncNote: data.sync.note,
+          externalCrmId: data.sync.externalId || draft.externalCrmId,
+          externalCrmUrl: data.sync.externalUrl || draft.externalCrmUrl,
+        });
+        setMessage(data.sync.note || '外部 CRM 同步已执行。');
+      } else {
+        setMessage('外部 CRM 同步已执行。');
+      }
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : '外部 CRM 同步失败');
+    } finally {
+      setSyncing(false);
+    }
+  }
+
   return (
     <section className="rounded-md border border-accent/30 bg-accent/5 p-4">
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
@@ -91,14 +126,24 @@ export default function AdminInquiryCommercialEditor({ initial }: { initial: Inq
             维护线索状态、客户账户、联系人、商机、合同、付款、SLA 和外部 CRM 同步映射。
           </p>
         </div>
-        <button
-          type="button"
-          onClick={save}
-          disabled={saving}
-          className="rounded-md bg-accent px-4 py-2 text-[12px] font-semibold text-bg-root hover:bg-accent-hover disabled:opacity-50"
-        >
-          {saving ? '保存中...' : '保存 CRM 记录'}
-        </button>
+        <div className="flex flex-wrap items-center gap-2">
+          <button
+            type="button"
+            onClick={save}
+            disabled={saving}
+            className="rounded-md bg-accent px-4 py-2 text-[12px] font-semibold text-bg-root hover:bg-accent-hover disabled:opacity-50"
+          >
+            {saving ? '保存中...' : '保存 CRM 记录'}
+          </button>
+          <button
+            type="button"
+            onClick={syncExternalCrm}
+            disabled={syncing}
+            className="rounded-md border border-accent/50 px-4 py-2 text-[12px] font-semibold text-accent hover:bg-accent/10 disabled:opacity-50"
+          >
+            {syncing ? '同步中...' : '同步外部 CRM'}
+          </button>
+        </div>
       </div>
 
       <Panel title="推进状态">
