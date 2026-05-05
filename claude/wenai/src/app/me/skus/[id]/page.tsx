@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { buildStandardPackRoute } from '@/lib/standard-pack-routing';
 
 interface StatusEvent {
   status: Sku['status'];
@@ -64,6 +65,7 @@ const MODULE_META: Record<string, { txt: string; href: string; icon: string }> =
   'ab-test': { txt: '测款 A-B', href: '/pipelines/ab-test', icon: '⚗️' },
   'data-insights': { txt: '数据洞察', href: '/pipelines/data-insights', icon: '📊' },
   'batch-launch': { txt: '批量上架', href: '/pipelines/batch-launch', icon: '🏭' },
+  'standard-pack': { txt: 'SOP 标品交付包', href: '/modules/standard-pack', icon: '📦' },
   'new-listing': { txt: '上新流水线', href: '/pipelines/new-listing', icon: '📋' },
   'influencer-outbound': { txt: '达人外联', href: '/pipelines/influencer-outbound', icon: '📨' },
   'customer-service': { txt: '销售转化客服', href: '/pipelines/customer-service', icon: '🤝' },
@@ -213,6 +215,7 @@ export default function SkuDetailPage() {
 
   const currentStatusIdx = STATUS_FLOW.findIndex(s => s.key === sku.status);
   const ranModules = sku.modules || [];
+  const standardPackHref = buildStandardPackHrefForSku(sku);
 
   return (
     <div className="max-w-[1000px] mx-auto py-8 px-6">
@@ -308,6 +311,21 @@ export default function SkuDetailPage() {
           ) : (
             <Stat label="" value="" />
           )}
+        </div>
+
+        <div className="mt-4 flex flex-wrap gap-2">
+          <Link
+            href={standardPackHref}
+            className="text-[11px] font-mono px-3 py-1.5 bg-accent text-bg-root rounded hover:bg-accent-hover"
+          >
+            📦 生成 SOP 标品交付包 →
+          </Link>
+          <Link
+            href={`/pipelines/marketing-campaign?sku=${encodeURIComponent(sku.name)}`}
+            className="text-[11px] font-mono px-3 py-1.5 border border-accent/35 text-accent rounded hover:bg-accent/10"
+          >
+            进入宣传工作台 →
+          </Link>
         </div>
 
         {/* 实战数据详情 (只有 testedAt 才显示) */}
@@ -762,14 +780,27 @@ function nextStepHint(status: Sku['status']): string {
 
 function nextModuleSuggestions(status: Sku['status']): string[] {
   switch (status) {
-    case 'idea': return ['product-discovery', 'intent-mining'];
-    case 'discovery-done': return ['ai-photoshoot', 'video-teardown'];
-    case 'photoshoot-done': return ['ab-test', 'ai-video'];
-    case 'abtest-done': return ['new-listing', 'batch-launch'];
-    case 'launched': return ['data-insights'];
-    case 'paused': return ['data-insights', 'ab-test'];
-    case 'killed': return ['product-discovery'];
+    case 'idea': return ['standard-pack', 'product-discovery', 'intent-mining'];
+    case 'discovery-done': return ['standard-pack', 'ai-photoshoot', 'video-teardown'];
+    case 'photoshoot-done': return ['standard-pack', 'ab-test', 'ai-video'];
+    case 'abtest-done': return ['standard-pack', 'new-listing', 'batch-launch'];
+    case 'launched': return ['standard-pack', 'data-insights'];
+    case 'paused': return ['standard-pack', 'data-insights', 'ab-test'];
+    case 'killed': return ['standard-pack', 'product-discovery'];
   }
+}
+
+function buildStandardPackHrefForSku(sku: Sku): string {
+  const goal = '为这个 SKU 生成市场宣传与内容测试标准交付包';
+  const brand = [sku.category, sku.platform, sku.priceCny ? `价格 ${sku.priceCny}` : '', sku.notes || '']
+    .filter(Boolean)
+    .join(' / ');
+  return buildStandardPackRoute({
+    workflow: 'benchmark',
+    goal,
+    brand: brand || sku.category,
+    sku: `${sku.name}${sku.notes ? ` / ${sku.notes}` : ''}`,
+  });
 }
 
 function fmtRelTime(d: Date): string {

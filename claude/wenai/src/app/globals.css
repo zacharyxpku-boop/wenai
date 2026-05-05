@@ -1,5 +1,10 @@
 @import "tailwindcss";
 
+:root {
+  --font-outfit: "Aptos", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  --font-ibm-plex-mono: "Cascadia Mono", "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+}
+
 @theme inline {
   --color-bg-root: #0e0e11;
   --color-bg-surface: #16161a;
@@ -296,3 +301,66 @@ button {
   z-index: 0;
 }
 .hero-breathing > * { position: relative; z-index: 1; }
+
+@media print {
+  :root {
+    --color-bg-root: #ffffff;
+    --color-bg-surface: #ffffff;
+    --color-bg-raised: #f5f5f5;
+    --color-border-subtle: #d4d4d8;
+    --color-border-default: #a1a1aa;
+    --color-text-primary: #111111;
+    --color-text-secondary: #27272a;
+    --color-text-tertiary: #52525b;
+    --color-accent: #8a5b21;
+  }
+
+  body {
+    background: #ffffff !important;
+    color: #111111 !important;
+  }
+
+  .noise-overlay::before,
+  .print-hide {
+    display: none !important;
+  }
+
+  .print-share-shell {
+    max-width: none !important;
+    padding: 0 !important;
+  }
+
+  .print-share-card {
+    background: #ffffff !important;
+    color: #111111 !important;
+    border-color: #d4d4d8 !important;
+    box-shadow: none !important;
+  }
+
+  .print-share-shell a {
+    color: #8a5b21 !important;
+    text-decoration: none !important;
+  }
+
+  .print-share-shell .prose,
+  .print-share-shell .prose * {
+    color: #111111 !important;
+  }
+
+  .print-share-shell .prose code,
+  .print-share-shell .prose pre,
+  .print-share-shell .prose th {
+    background: #f5f5f5 !important;
+    border-color: #d4d4d8 !important;
+  }
+
+  .print-break-before {
+    break-before: page;
+    page-break-before: always;
+  }
+
+  .print-avoid-break {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+}

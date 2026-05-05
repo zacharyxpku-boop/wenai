@@ -242,6 +242,7 @@ export default function MeDashboardPage() {
               { href: '/pipelines/ai-photoshoot', label: '🎬 AI 影棚', desc: '8 模式生图' },
               { href: '/pipelines/ai-video', label: '🎞️ AI 视频', desc: '一图变 5s 短片' },
               { href: '/pipelines/video-teardown', label: '🔬 拆爆款', desc: 'TikTok 出分镜' },
+              { href: '/modules/standard-pack', label: '📦 SOP 标品', desc: '一键生成交付包' },
               { href: '/pipelines/ab-test', label: '⚗️ 测款 A-B', desc: '9 张测点击率' },
               { href: '/pipelines/data-insights', label: '📊 数据洞察', desc: '诊断 + 行动' },
               { href: '/pipelines/customer-service', label: '🤝 客服转化', desc: '三版回复推单' },

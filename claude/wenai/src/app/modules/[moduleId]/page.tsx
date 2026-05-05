@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation';
 import AIWorkspace from '@/components/AIWorkspace';
 import VideoWorkspace from '@/components/VideoWorkspace';
 import TranslateWorkspace from '@/components/TranslateWorkspace';
+import StandardPackWorkspace from '@/components/StandardPackWorkspace';
 import modulesConfig from '@/config/modules.json';
 import clientConfig from '@/config/client.json';
 
@@ -92,6 +93,14 @@ export default async function ModulePage({ params }: PageProps) {
     return (
       <div className="h-[calc(100vh-4rem)]">
         <VideoWorkspace />
+      </div>
+    );
+  }
+
+  if (moduleId === 'standard-pack') {
+    return (
+      <div className="h-[calc(100vh-4rem)]">
+        <StandardPackWorkspace compact />
       </div>
     );
   }
