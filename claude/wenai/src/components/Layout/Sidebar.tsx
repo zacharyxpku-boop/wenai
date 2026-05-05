@@ -294,7 +294,7 @@ export default function Sidebar({ modules, categories, clientName, userRole }: S
         })}
       </nav>
 
-      {/* Beta 剩余天数 + 升级入口 */}
+      {/* Beta 剩余天数 + 接入入口 */}
       <div className="px-3.5 pt-2 pb-1 space-y-1.5">
         {/* 剩余天数卡 (仅邀请用户显示) */}
         {me && typeof me.daysLeft === 'number' && me.daysLeft < 3650 && (
@@ -309,7 +309,7 @@ export default function Sidebar({ modules, categories, clientName, userRole }: S
           }`}>
             <div className="flex items-center justify-between mb-1">
               <span className="text-[9px] font-mono text-text-tertiary uppercase tracking-wider">
-                {me.tier === 'team' ? 'Team' : me.tier === 'enterprise' ? 'Ent' : 'Beta'}
+                {me.tier === 'team' ? 'POC' : me.tier === 'enterprise' ? 'Ent' : 'Beta'}
               </span>
               <span className={`text-[10px] font-mono tabular-nums font-semibold ${
                 me.daysLeft < 0 ? 'text-error'
@@ -330,13 +330,13 @@ export default function Sidebar({ modules, categories, clientName, userRole }: S
                 href="/pricing"
                 className="block mt-1.5 text-[10px] font-mono text-accent hover:underline"
               >
-                {me.daysLeft < 0 ? '联系作者续期 →' : '提前升级 Team →'}
+                {me.daysLeft < 0 ? '联系作者续期 →' : '提交 POC 需求 →'}
               </Link>
             )}
           </div>
         )}
 
-        {/* Pricing · 升级入口 */}
+        {/* Pricing · 接入入口 */}
         <Link
           href="/pricing"
           className={`flex items-center gap-2.5 px-3 py-2 rounded-md text-[11px] transition-all group ${
@@ -346,8 +346,8 @@ export default function Sidebar({ modules, categories, clientName, userRole }: S
           }`}
         >
           <span className="text-[12px]">💎</span>
-          <span className="font-[family-name:var(--font-outfit)] font-semibold">升级</span>
-          <span className="ml-auto text-[9px] font-mono opacity-60">Team · ¥499/月</span>
+          <span className="font-[family-name:var(--font-outfit)] font-semibold">接入</span>
+          <span className="ml-auto text-[9px] font-mono opacity-60">POC / Enterprise</span>
         </Link>
       </div>
 

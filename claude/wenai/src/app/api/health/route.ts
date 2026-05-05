@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { Redis } from '@upstash/redis';
 
 /**
- * 健康检查 · 对外 SLA 验证入口
+ * 健康检查 · 对外状态验证入口
  * GET /api/health
  *
  * 返回 3 个核心依赖的状态:
@@ -10,7 +10,7 @@ import { Redis } from '@upstash/redis';
  *   redis   · Upstash 连通性 (实际 PING)
  *   wanx    · 图片生成配置状态 (基于 AI_API_KEY 和 WANX_DISABLED)
  *
- * Team SLA 99.5% / Enterprise SLA 99.9% · /status 页消费此接口
+ * /status 页消费此接口。正式 SLA 以主站订单或合同为准。
  */
 
 interface Status {

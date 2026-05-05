@@ -7,6 +7,7 @@ import { useActiveSkuId } from '@/lib/use-active-sku';
 import { ActiveSkuBadge } from '@/components/ActiveSkuBadge';
 import { ShareButton } from '@/components/ShareButton';
 import { IndustryHint } from '@/components/IndustryHint';
+import { buildAbTestStandardPackRoute } from '@/lib/standard-pack-routing';
 
 /**
  * 测款 A-B 实验室 (痛点 #11)
@@ -41,6 +42,22 @@ interface AbTestResult {
   rollupSop: string;             // 数据回流 SOP
 }
 
+function buildAbTestResultSummary(result: AbTestResult): string {
+  const variantSummary = result.variants.slice(0, 4).map(variant =>
+    `${variant.id}: ${variant.hookType} / ${variant.paletteType} / CTR ${variant.predictedCtr} / ${variant.whyHook}`,
+  );
+
+  return [
+    `product summary: ${result.productSummary}`,
+    `test strategy: ${result.testStrategy}`,
+    `recommended first 3: ${result.recommendedFirst3.join(' / ')}`,
+    `budget allocation: ${result.budgetAllocation}`,
+    `kill criteria: ${result.killCriteria}`,
+    variantSummary.join('\n'),
+    `rollup sop: ${result.rollupSop}`,
+  ].join('\n');
+}
+
 const PLATFORM_LABELS: Record<Platform, string> = {
   amazon: '🟧 Amazon (主图点击率)',
   tmall: '🟦 淘宝/天猫 (展现点击率)',
@@ -66,6 +83,22 @@ export default function AbTestPage() {
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [rawDebug, setRawDebug] = useState('');
   const [showRaw, setShowRaw] = useState(false);
+  const dimensionLabel = primaryDimension === 'hook' ? '钩子文字' : primaryDimension === 'palette' ? '配色风格' : primaryDimension === 'composition' ? '构图视角' : '模特/无模特';
+  const standardPackHref = buildAbTestStandardPackRoute({
+    platformLabel: PLATFORM_LABELS[platform],
+    productHint,
+    dailyBudget,
+    primaryDimension: dimensionLabel,
+  });
+  const resultStandardPackHref = result
+    ? buildAbTestStandardPackRoute({
+        platformLabel: PLATFORM_LABELS[platform],
+        productHint,
+        dailyBudget,
+        primaryDimension: dimensionLabel,
+        resultSummary: buildAbTestResultSummary(result),
+      })
+    : '';
 
   const buildPrompt = () => `
 你是一个跨境/本土电商 10 年实战的投放操盘手, 帮助商家做 A-B 测款主图变体规划。
@@ -74,7 +107,7 @@ export default function AbTestPage() {
 - 平台: ${PLATFORM_LABELS[platform]}
 - 产品: ${productHint}
 - 日预算: ¥${dailyBudget}
-- 主测维度: ${primaryDimension === 'hook' ? '钩子文字' : primaryDimension === 'palette' ? '配色风格' : primaryDimension === 'composition' ? '构图视角' : '模特/无模特'}
+- 主测维度: ${dimensionLabel}
 
 【任务】
 为该产品生成 9 个主图 prompt 变体 (3 钩子方向 × 3 配色方向 = 3x3 矩阵), 并给完整测款 SOP。
@@ -177,7 +210,7 @@ export default function AbTestPage() {
           <p className="text-[13px] lg:text-[14px] text-text-secondary leading-relaxed max-w-[800px]">
             投不出爆款 = 没测款数据 → 不敢加预算 → 死循环。
             wenai 一次给 <span className="text-accent">3 钩子 × 3 配色 = 9 个变体 prompt + 推荐先投哪 3 张 + 杀/留硬指标</span>,
-            把"看图直觉"换成"数据驱动"。
+            把&quot;看图直觉&quot;换成&quot;数据驱动&quot;。
           </p>
         </div>
       </div>
@@ -259,13 +292,25 @@ export default function AbTestPage() {
             </div>
           </section>
 
-          <button
-            onClick={handleRun}
-            disabled={running || productHint.length < 10}
-            className="w-full py-3.5 bg-accent text-bg-root rounded-lg text-[14px] font-bold hover:bg-accent-hover disabled:opacity-40"
-          >
-            {running ? '生成中... (8-15 秒)' : '⚗️ 生 9 个测款变体 + SOP'}
-          </button>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            <button
+              onClick={handleRun}
+              disabled={running || productHint.length < 10}
+              className="w-full py-3.5 bg-accent text-bg-root rounded-lg text-[14px] font-bold hover:bg-accent-hover disabled:opacity-40"
+            >
+              {running ? '生成中... (8-15 秒)' : '⚗️ 生 9 个测款变体 + SOP'}
+            </button>
+            <Link
+              href={standardPackHref}
+              className={`w-full py-3.5 rounded-lg text-[12px] font-bold text-center border transition-colors ${
+                productHint.trim().length
+                  ? 'border-cat-content/40 text-cat-content hover:bg-cat-content/10'
+                  : 'border-border-subtle text-text-tertiary pointer-events-none opacity-50'
+              }`}
+            >
+              生成测款假设标品包
+            </Link>
+          </div>
 
           {error && (
             <div className="p-3 border border-error/40 bg-error/5 rounded text-[11px] text-error">
@@ -291,7 +336,7 @@ export default function AbTestPage() {
               <div className="text-4xl mb-2">⚗️</div>
               <h3 className="text-[16px] font-bold text-text-primary mb-1">为啥要 A-B 测款</h3>
               <p className="text-[12px] text-text-tertiary mb-5">
-                数据决策 · 不靠"我觉得这张图好看"那种自欺
+                数据决策 · 不靠&quot;我觉得这张图好看&quot;那种自欺
               </p>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-left">
                 <Tip emoji="🎯" title="3x3 矩阵" desc="3 钩子方向 × 3 配色, 覆盖所有点击诱因" />
@@ -321,6 +366,7 @@ export default function AbTestPage() {
                 copiedId={copiedId}
                 productHint={productHint}
                 platformLabel={PLATFORM_LABELS[platform]}
+                standardPackHref={resultStandardPackHref}
               />
               {activeSkuId && (
                 <PerformanceWriteback
@@ -368,12 +414,14 @@ function ResultView({
   copiedId,
   productHint,
   platformLabel,
+  standardPackHref,
 }: {
   result: AbTestResult;
   copyPrompt: (id: string, p: string) => void;
   copiedId: string | null;
   productHint: string;
   platformLabel: string;
+  standardPackHref: string;
 }) {
   const [savingSku, setSavingSku] = useState(false);
   const [savedSku, setSavedSku] = useState(false);
@@ -438,7 +486,7 @@ function ResultView({
       result.rollupSop,
       ``,
       `---`,
-      `*由 [wenai 测款实验室](https://wenai-deploy.vercel.app/pipelines/ab-test) 生成 · 想测你自己的产品?*`,
+      `*由 wenai SKU 增长演示流程生成 · 准备真实 SKU 时, 请通过 /inquire 提交 POC 需求。*`,
     ].join('\n'),
     source: 'module' as const,
   });
@@ -449,19 +497,25 @@ function ResultView({
         <div className="flex items-center justify-between gap-2 flex-wrap">
           <div className="text-[10px] font-mono text-accent uppercase tracking-wider">核心策略</div>
           <div className="flex items-center gap-2 flex-wrap">
-          <ShareButton buildPayload={buildSharePayload} />
-          <button
-            onClick={saveToLibrary}
-            disabled={savingSku || savedSku}
-            className={`text-[10px] font-mono px-2.5 py-1 rounded border transition-colors ${
-              savedSku
-                ? 'border-success/40 bg-success/10 text-success'
-                : 'border-accent/40 text-accent hover:bg-accent/10'
-            }`}
-            title="保存到我的 SKU 库, 数据洞察会基于此分析"
-          >
-            {savedSku ? '✓ 已入库 SKU 历史' : savingSku ? '保存中…' : '📦 保存到 SKU 库'}
-          </button>
+            <ShareButton buildPayload={buildSharePayload} />
+            <Link
+              href={standardPackHref}
+              className="text-[10px] font-mono px-2.5 py-1 rounded border border-cat-content/40 text-cat-content hover:bg-cat-content/10"
+            >
+              生成测款验收标品包
+            </Link>
+            <button
+              onClick={saveToLibrary}
+              disabled={savingSku || savedSku}
+              className={`text-[10px] font-mono px-2.5 py-1 rounded border transition-colors ${
+                savedSku
+                  ? 'border-success/40 bg-success/10 text-success'
+                  : 'border-accent/40 text-accent hover:bg-accent/10'
+              }`}
+              title="保存到我的 SKU 库, 数据洞察会基于此分析"
+            >
+              {savedSku ? '✓ 已入库 SKU 历史' : savingSku ? '保存中…' : '📦 保存到 SKU 库'}
+            </button>
           </div>
         </div>
         <p className="text-[13px] text-text-primary leading-relaxed">{result.productSummary}</p>

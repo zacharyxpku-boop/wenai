@@ -13,6 +13,12 @@ describe('getModuleLimit', () => {
   it('returns default for unknown modules', () => {
     expect(getModuleLimit('unknown-module')).toBe(50);
   });
+
+  it('returns plan-specific limits', () => {
+    expect(getModuleLimit('openai-image', 'free')).toBe(3);
+    expect(getModuleLimit('openai-image', 'team')).toBe(50);
+    expect(getModuleLimit('openai-image', 'enterprise')).toBe(200);
+  });
 });
 
 describe('checkRateLimit (in-memory fallback)', () => {

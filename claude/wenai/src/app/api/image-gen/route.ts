@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { checkRateLimit } from '@/lib/ratelimit';
 import { verifyToken, getCookieName } from '@/lib/auth';
+import { inferPlanFromUser } from '@/lib/entitlements';
 
 /**
  * AI 电商主图生成 · Pipeline 03 后端
@@ -222,11 +223,15 @@ export async function POST(request: NextRequest) {
 
   // 速率限制（Pipeline 级配额）
   let rateKey = request.headers.get('x-tenant-id') || 'default';
+  let plan = 'free';
   try {
     const token = request.cookies.get(getCookieName())?.value;
     if (token) {
       const payload = await verifyToken(token);
-      if (payload?.username) rateKey = payload.username;
+      if (payload?.username) {
+        rateKey = payload.username;
+        plan = inferPlanFromUser(payload.role);
+      }
     }
   } catch {}
 
@@ -234,7 +239,7 @@ export async function POST(request: NextRequest) {
   const fromPipeline = (body as unknown as { fromPipeline?: boolean }).fromPipeline === true
     || request.headers.get('x-from-pipeline') === '1';
   if (!fromPipeline) {
-    const limit = await checkRateLimit('pipeline:product-image', rateKey);
+    const limit = await checkRateLimit('pipeline:product-image', rateKey, plan);
     if (!limit.allowed) {
       return NextResponse.json(
         { error: '图片生成配额已达上限', resetAt: limit.resetAt },

@@ -1,5 +1,6 @@
 import type { NextRequest } from 'next/server';
 import { verifyToken, getCookieName } from '@/lib/auth';
+import { inferPlanFromUser, type PlanId } from './entitlements';
 
 /**
  * 统一 orgId 解析口径 · 跨 API 路由保持一致
@@ -48,6 +49,22 @@ export async function resolveOrgId(req: NextRequest): Promise<string> {
 
   // 5. anon
   return 'anon';
+}
+
+export async function resolveOrgContext(req: NextRequest): Promise<{ orgId: string; plan: PlanId }> {
+  try {
+    const token = req.cookies.get(getCookieName())?.value;
+    if (token) {
+      const payload = await verifyToken(token);
+      if (payload?.username) {
+        return { orgId: payload.username, plan: inferPlanFromUser(payload.role) };
+      }
+    }
+  } catch {
+    // token 损坏忽略, 继续 fallback
+  }
+
+  return { orgId: resolveOrgIdSync(req), plan: 'free' };
 }
 
 /** 同步版本 · 不解析 token, 仅用 header / ip (供不需要 token 的快路径) */

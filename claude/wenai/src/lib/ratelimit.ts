@@ -7,43 +7,16 @@
 
 import { Ratelimit } from '@upstash/ratelimit';
 import { Redis } from '@upstash/redis';
-
-const LIMITS: Record<string, number> = {
-  default: 50,
-  translate: 100,
-  reviews: 80,
-  copywriting: 80,
-  outreach: 60,
-  'ip-compliance': 60,
-  // Pipeline 独立配额 · 1 次 Pipeline 触发 = 消耗 1 次（内部 3 路不扣单模块额）
-  'pipeline:new-listing': 10,
-  'pipeline:influencer-outbound': 10,
-  'pipeline:product-image': 5, // 生图单次成本高,配额更紧
-  pipeline: 10,
-  share: 30, // 公开分享链接生成 30 次/天/用户,防灌垃圾
-  inquiry: 5, // ToB 询盘 · 同 IP 每天 5 次,防 spam
-  'openai-image': 10, // gpt-image-1 单次最贵 $0.17,严控 10/d/用户
-  'intent-mining': 30, // 反向意图扩客 · 每次 ~2K token,30 次/天够测多个产品
-  'video-gen': 8, // wanx i2v · 5s 视频 ~¥3.5,8 条/天/用户
-  'video-teardown': 15, // Gemini Vision 拆解 · 8MB 视频 ~$0.01-0.05,15 次/天
-  'product-discovery': 20, // AI 选品 · 一次 ~3K token,20 次/天
-  'ab-test': 25, // 测款 A-B · 一次 ~3K token (9 个 prompt + SOP),25 次/天
-  'data-insights': 30, // 数据洞察 · 文本驱动 · 商家高频用,30 次/天
-  'batch-launch': 8, // 批量上架计划 · 一次 SKU × 工序 矩阵 ~5K token,8 次/天
-};
+import { getModuleLimitForPlan } from './entitlements';
 
 // --- Upstash Redis backend ---
-let redisRatelimit: Ratelimit | null = null;
+let redis: Redis | null = null;
+const redisRatelimits = new Map<string, Ratelimit>();
 
 if (process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN) {
-  const redis = new Redis({
+  redis = new Redis({
     url: process.env.UPSTASH_REDIS_REST_URL,
     token: process.env.UPSTASH_REDIS_REST_TOKEN,
-  });
-  redisRatelimit = new Ratelimit({
-    redis,
-    limiter: Ratelimit.slidingWindow(50, '1 d'),
-    prefix: 'wenai:rl',
   });
 }
 
@@ -76,14 +49,25 @@ function checkMemoryLimit(key: string, limit: number): { allowed: boolean; remai
 // --- Public API ---
 export async function checkRateLimit(
   moduleId: string,
-  tenantId: string
+  tenantId: string,
+  plan?: string | null
 ): Promise<{ allowed: boolean; remaining: number; resetAt: number }> {
   const key = `${tenantId}:${moduleId}`;
-  const limit = LIMITS[moduleId] || LIMITS.default;
+  const limit = getModuleLimitForPlan(moduleId, plan);
 
-  if (redisRatelimit) {
+  if (redis) {
     try {
-      const result = await redisRatelimit.limit(key);
+      const limiterKey = `${plan || 'free'}:${moduleId}:${limit}`;
+      let limiter = redisRatelimits.get(limiterKey);
+      if (!limiter) {
+        limiter = new Ratelimit({
+          redis,
+          limiter: Ratelimit.slidingWindow(limit, '1 d'),
+          prefix: `wenai:rl:${plan || 'free'}:${moduleId}`,
+        });
+        redisRatelimits.set(limiterKey, limiter);
+      }
+      const result = await limiter.limit(key);
       return {
         allowed: result.success,
         remaining: result.remaining,
@@ -97,6 +81,6 @@ export async function checkRateLimit(
   return checkMemoryLimit(key, limit);
 }
 
-export function getModuleLimit(moduleId: string): number {
-  return LIMITS[moduleId] || LIMITS.default;
+export function getModuleLimit(moduleId: string, plan?: string | null): number {
+  return getModuleLimitForPlan(moduleId, plan);
 }

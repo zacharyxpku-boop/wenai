@@ -3,7 +3,7 @@ import { SignJWT, jwtVerify } from 'jose';
 const DEFAULT_SECRET = 'wenai-default-secret-change-in-production';
 const secretValue = process.env.JWT_SECRET || DEFAULT_SECRET;
 
-if (secretValue === DEFAULT_SECRET) {
+if (secretValue === DEFAULT_SECRET && process.env.NODE_ENV === 'production' && process.env.NEXT_PHASE !== 'phase-production-build') {
   console.warn('[AUTH] ⚠️ 使用默认JWT密钥，请在环境变量中设置 JWT_SECRET');
 }
 
@@ -54,7 +54,7 @@ export function getCookieName(): string {
 const DEFAULT_SALT = 'wenai-salt-2026';
 const PASSWORD_SALT = process.env.PASSWORD_SALT || DEFAULT_SALT;
 
-if (PASSWORD_SALT === DEFAULT_SALT && process.env.NODE_ENV === 'production') {
+if (PASSWORD_SALT === DEFAULT_SALT && process.env.NODE_ENV === 'production' && process.env.NEXT_PHASE !== 'phase-production-build') {
   console.warn('[AUTH] ⚠️ 使用默认PASSWORD_SALT，请在环境变量中设置');
 }
 

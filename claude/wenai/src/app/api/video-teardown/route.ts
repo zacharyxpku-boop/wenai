@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { checkRateLimit } from '@/lib/ratelimit';
 import { verifyToken, getCookieName } from '@/lib/auth';
-import { resolveOrgId } from '@/lib/org-id';
+import { resolveOrgContext } from '@/lib/org-id';
 import { checkCostCap, recordCostWithDetail } from '@/lib/cost-cap';
 import { hashVideoBase64, getTeardownCache, setTeardownCache } from '@/lib/teardown-cache';
 import { recordCacheEvent } from '@/lib/cache-stats';
@@ -116,16 +116,20 @@ export async function POST(request: NextRequest) {
 
   // 限流
   let rateKey = request.headers.get('x-tenant-id') || 'default';
+  let plan = 'free';
   try {
     const token = request.cookies.get(getCookieName())?.value;
     if (token) {
       const payload = await verifyToken(token);
-      if (payload?.username) rateKey = payload.username;
+      if (payload?.username) {
+        rateKey = payload.username;
+        plan = payload.role === 'admin' ? 'enterprise' : payload.role === 'editor' ? 'team' : 'free';
+      }
     }
   } catch {}
 
   if (!body.fromPipeline) {
-    const limit = await checkRateLimit('video-teardown', rateKey);
+    const limit = await checkRateLimit('video-teardown', rateKey, plan);
     if (!limit.allowed) {
       return NextResponse.json(
         { error: '视频拆解配额已达上限,明日再试', resetAt: limit.resetAt },
@@ -135,7 +139,7 @@ export async function POST(request: NextRequest) {
   }
 
   // 成本闸 · video-teardown 比纯 chat 贵一些 (Gemini Vision 处理视频), 估 4 cents
-  const orgId = await resolveOrgId(request);
+  const { orgId } = await resolveOrgContext(request);
   const VIDEO_TEARDOWN_COST_CENTS = 4;
 
   // 内容哈希缓存 · 同 orgId 重复上传同视频直接返回缓存 storyboard (省钱)

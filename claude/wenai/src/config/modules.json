@@ -1,6 +1,17 @@
 {
   "modules": [
     {
+      "id": "standard-pack",
+      "name": "SOP 标品引擎",
+      "nameEn": "Standard Pack Engine",
+      "description": "把 SOP / skills 变成用户可直接执行的标准交付包",
+      "category": "content",
+      "categoryLabel": "内容工厂",
+      "icon": "sparkles",
+      "enabled": true,
+      "prompt": ""
+    },
+    {
       "id": "translate",
       "name": "批量翻译",
       "nameEn": "Batch Translate",

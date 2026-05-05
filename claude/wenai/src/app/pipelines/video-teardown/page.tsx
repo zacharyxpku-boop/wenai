@@ -6,9 +6,10 @@ import { useActiveSkuId } from '@/lib/use-active-sku';
 import { ActiveSkuBadge } from '@/components/ActiveSkuBadge';
 import { useMySkus } from '@/lib/use-my-skus';
 import { ShareButton } from '@/components/ShareButton';
+import { buildVideoTeardownStandardPackRoute } from '@/lib/standard-pack-routing';
 
 /**
- * 爆款视频拆解 · /pipelines/video-teardown
+ * 高转化视频结构拆解 · /pipelines/video-teardown
  * 借鉴 clico/worker/workers/analysis.worker.ts 的 storyboard schema 简化版
  *
  * 用户流程:
@@ -16,7 +17,7 @@ import { ShareButton } from '@/components/ShareButton';
  *   2. 上传 mp4 (≤8MB,≤30s)
  *   3. 输入"我的产品" hint
  *   4. Gemini 2.5 Flash 拆出 storyboard
- *   5. 每个 scene 的 prompt 带"复制去 AI 影棚生图"按钮
+ *   5. 每个 scene 的 prompt 可带到 AI 影棚生成候选图
  */
 
 interface Scene {
@@ -46,8 +47,8 @@ interface TeardownResult {
   contentHash?: string;
 }
 
-// 行业爆款模板 · 让没有视频上传经验的商家也能跑起来
-// 选一个模板会预填 productHint, 引导他们去想"我的产品怎么蹭这个结构"
+// 行业高转化模板 · 让没有视频上传经验的商家也能跑起来
+// 选一个模板会预填 productHint, 引导他们参考结构并生成差异化脚本
 const INDUSTRY_TEMPLATES: { id: string; emoji: string; title: string; subtitle: string; hint: string }[] = [
   {
     id: 'beauty',
@@ -61,35 +62,35 @@ const INDUSTRY_TEMPLATES: { id: string; emoji: string; title: string; subtitle: 
     emoji: '🏠',
     title: '家居生活',
     subtitle: '场景沉浸 + 痛点演示',
-    hint: '我的产品是 [家居物件], 解决 [具体痛点]。复刻原视频的家居场景, 替换主体产品, 保留"问题→产品出现→生活变好"的叙事结构。',
+    hint: '我的产品是 [家居物件], 解决 [具体痛点]。参考原视频的家居场景节奏, 重新设计主体产品呈现, 保留"问题→产品出现→生活变好"的叙事结构。',
   },
   {
     id: 'food',
     emoji: '🥘',
     title: '食品零食',
     subtitle: 'ASMR 特写 + 满足感',
-    hint: '我的产品是 [食品/零食], 主打 [口感/原料/场景]。复刻原视频的近景特写和 ASMR 节奏, 主体替换为我的产品, 保持咀嚼/拆封的真实质感。',
+    hint: '我的产品是 [食品/零食], 主打 [口感/原料/场景]。参考原视频的近景特写和 ASMR 节奏, 为我的产品重新设计拆封/品尝镜头。',
   },
   {
     id: 'fashion',
     emoji: '👗',
     title: '服饰穿搭',
     subtitle: '一秒变装 + 多场景',
-    hint: '我的产品是 [服饰品类], 风格 [都市/田园/学院/法式]。复刻原视频的"快速换装/多场景"结构, 主体换我的服饰, 保留转场的视觉冲击。',
+    hint: '我的产品是 [服饰品类], 风格 [都市/田园/学院/法式]。参考"快速换装/多场景"结构, 为我的服饰重新设计转场和场景。',
   },
   {
     id: '3c',
     emoji: '📱',
     title: '3C 数码',
     subtitle: '上手开箱 + 参数对比',
-    hint: '我的产品是 [3C 品类], 卖点是 [参数/功能差异]。复刻原视频的开箱流程, 主体换我的产品, 强化参数特写镜头, 节奏保持原视频。',
+    hint: '我的产品是 [3C 品类], 卖点是 [参数/功能差异]。参考原视频的开箱流程, 重新设计我的产品参数特写和节奏。',
   },
   {
     id: 'pet',
     emoji: '🐶',
     title: '宠物用品',
     subtitle: '萌宠互动 + 治愈感',
-    hint: '我的产品是 [宠物品类], 解决 [喂养/出行/健康] 痛点。复刻原视频的萌宠互动场景, 主体换我的产品, 保留宠物自然反应的真实感。',
+    hint: '我的产品是 [宠物品类], 解决 [喂养/出行/健康] 痛点。参考萌宠互动场景, 为我的产品重新设计互动镜头。',
   },
 ];
 
@@ -111,6 +112,24 @@ const CTA_LABEL: Record<Storyboard['cta_position'], string> = {
   end: '结尾 CTA',
 };
 
+function buildVideoTeardownResultSummary(result: TeardownResult): string {
+  const sb = result.storyboard;
+  const sceneLines = sb.scenes.slice(0, 5).map((scene, index) => {
+    const caption = scene.caption_text ? ` / caption: ${scene.caption_text}` : '';
+    return `scene ${index + 1}: ${scene.duration_seconds.toFixed(1)}s / ${scene.description}${caption} / prompt: ${scene.prompt}`;
+  });
+
+  return [
+    `hook: ${HOOK_LABEL[sb.hook_type].txt}`,
+    `pacing: ${PACING_LABEL[sb.pacing]}`,
+    `CTA: ${CTA_LABEL[sb.cta_position]}`,
+    `scene count: ${sb.scene_count}`,
+    `emotional arc: ${sb.emotional_arc.join(' -> ')}`,
+    result.fromCache ? 'cost: cache hit' : result.costUsd !== null ? `cost: $${result.costUsd.toFixed(4)} / model: ${result.model}` : `model: ${result.model}`,
+    ...sceneLines,
+  ].join('\n');
+}
+
 export default function VideoTeardownPage() {
   const activeSkuId = useActiveSkuId();
   const { skus: mySkus } = useMySkus(20);
@@ -129,6 +148,22 @@ export default function VideoTeardownPage() {
   const [savingToSku, setSavingToSku] = useState(false);
 
   const fileRef = useRef<HTMLInputElement>(null);
+  const activeTemplateLabel = activeTemplate ? INDUSTRY_TEMPLATES.find(t => t.id === activeTemplate)?.title : undefined;
+  const preRunStandardPackHref = buildVideoTeardownStandardPackRoute({
+    productHint,
+    templateLabel: activeTemplateLabel,
+    videoContext: videoBase64
+      ? `uploaded reference video ${(videoSize / 1024 / 1024).toFixed(2)}MB`
+      : 'reference video not uploaded yet',
+  });
+  const resultStandardPackHref = result
+    ? buildVideoTeardownStandardPackRoute({
+        productHint,
+        templateLabel: activeTemplateLabel,
+        videoContext: videoSize ? `uploaded reference video ${(videoSize / 1024 / 1024).toFixed(2)}MB` : undefined,
+        resultSummary: buildVideoTeardownResultSummary(result),
+      })
+    : undefined;
 
   const pickTemplate = (id: string) => {
     const t = INDUSTRY_TEMPLATES.find(x => x.id === id);
@@ -142,7 +177,7 @@ export default function VideoTeardownPage() {
   const pickFromSku = (skuId: string) => {
     const sku = mySkus.find(s => s.id === skuId);
     if (!sku) return;
-    const hint = `我的产品是 "${sku.name}" (品类: ${sku.category}${sku.priceCny ? ', 价位 ' + sku.priceCny : ''})${sku.notes ? '。卖点: ' + sku.notes.slice(0, 100) : ''}。请把原视频中的产品替换成我的, 复刻原节奏和钩子。`;
+    const hint = `我的产品是 "${sku.name}" (品类: ${sku.category}${sku.priceCny ? ', 价位 ' + sku.priceCny : ''})${sku.notes ? '。卖点: ' + sku.notes.slice(0, 100) : ''}。请参考原视频的节奏和钩子, 为我的产品生成差异化脚本。`;
     setProductHint(hint);
   };
 
@@ -202,7 +237,7 @@ export default function VideoTeardownPage() {
     try {
       const sb = result.storyboard;
       const name = activeTemplate
-        ? `${INDUSTRY_TEMPLATES.find(t => t.id === activeTemplate)?.title} 爆款蓝图 ${new Date().toLocaleDateString('zh-CN')}`
+        ? `${INDUSTRY_TEMPLATES.find(t => t.id === activeTemplate)?.title} 视频结构蓝图 ${new Date().toLocaleDateString('zh-CN')}`
         : `视频拆解 ${new Date().toLocaleDateString('zh-CN')}`;
       const notes = `钩子: ${HOOK_LABEL[sb.hook_type].txt} · 节奏: ${PACING_LABEL[sb.pacing]} · CTA: ${CTA_LABEL[sb.cta_position]} · ${sb.scenes.length} 镜头\n\n${productHint.slice(0, 200)}`;
       const res = await fetch('/api/user/sku-history', {
@@ -249,7 +284,7 @@ export default function VideoTeardownPage() {
     if (!result) return '';
     const sb = result.storyboard;
     const lines: string[] = [];
-    lines.push(`# 爆款视频拆解 · ${sb.scene_count} 个镜头`);
+    lines.push(`# 高转化视频结构拆解 · ${sb.scene_count} 个镜头`);
     lines.push('');
     lines.push(`**钩子**: ${HOOK_LABEL[sb.hook_type].txt} · ${HOOK_LABEL[sb.hook_type].tip}`);
     lines.push(`**节奏**: ${PACING_LABEL[sb.pacing]}`);
@@ -276,7 +311,7 @@ export default function VideoTeardownPage() {
     });
     lines.push('---');
     lines.push('');
-    lines.push('*由 [wenai 跨境代运营 AI](https://wenai-deploy.vercel.app) 自动拆解 · 想拆你自己的视频?*');
+    lines.push('*由 wenai 视频拆解演示流程生成 · 准备真实 SKU 时, 请通过 /inquire 提交 POC 需求。*');
     return lines.join('\n');
   };
 
@@ -284,7 +319,7 @@ export default function VideoTeardownPage() {
     if (!result) return 'wenai 视频拆解';
     const sb = result.storyboard;
     const tplName = activeTemplate ? INDUSTRY_TEMPLATES.find(t => t.id === activeTemplate)?.title : null;
-    return `${tplName ? tplName + ' · ' : ''}${sb.scene_count} 镜头爆款拆解 (${HOOK_LABEL[sb.hook_type].txt})`;
+    return `${tplName ? tplName + ' · ' : ''}${sb.scene_count} 镜头结构拆解 (${HOOK_LABEL[sb.hook_type].txt})`;
   };
 
 
@@ -302,12 +337,12 @@ export default function VideoTeardownPage() {
             </span>
           </div>
           <h1 className="text-3xl lg:text-4xl font-bold text-text-primary mb-3 font-[family-name:var(--font-outfit)]">
-            爆款视频 → 结构化分镜
+            高转化视频 → 结构化分镜
             <ActiveSkuBadge skuId={activeSkuId} />
           </h1>
           <p className="text-[13px] lg:text-[14px] text-text-secondary leading-relaxed max-w-[760px]">
-            扔一个 TikTok/抖音/小红书 爆款视频上来,Gemini 拆出钩子类型、节奏、情绪曲线、CTA 位置和每个镜头的图像 prompt。
-            <span className="text-accent">每个镜头的 prompt 一键带去 AI 影棚生同款</span>,蹭爆款流量结构。
+            扔一个 TikTok/抖音/小红书 视频上来,Gemini 拆出钩子类型、节奏、情绪曲线、CTA 位置和每个镜头的图像 prompt。
+            <span className="text-accent">每个镜头的 prompt 可带去 AI 影棚生成候选图</span>,再由运营做差异化终审。
           </p>
 
           {/* 工作流提示 */}
@@ -331,7 +366,7 @@ export default function VideoTeardownPage() {
           {/* Upload */}
           <section className="border border-border-subtle rounded-lg p-4 bg-bg-surface/30 space-y-2">
             <div className="text-[10px] font-mono text-text-tertiary uppercase tracking-wider">
-              ① 爆款视频 <span className="text-error">*</span>
+              ① 参考视频 <span className="text-error">*</span>
             </div>
             {videoPreview ? (
               <div className="relative">
@@ -382,11 +417,11 @@ export default function VideoTeardownPage() {
             )}
           </section>
 
-          {/* 行业爆款模板 · 6 选 1 一键填 */}
+          {/* 行业高转化模板 · 6 选 1 一键填 */}
           <section className="border border-cat-content/30 bg-cat-content/5 rounded-lg p-3 space-y-2">
             <div className="flex items-center justify-between">
               <div className="text-[10px] font-mono text-cat-content uppercase tracking-wider">
-                🎬 行业爆款模板 (一键填)
+                🎬 行业结构模板 (一键填)
               </div>
               {activeTemplate && (
                 <button
@@ -455,18 +490,35 @@ export default function VideoTeardownPage() {
               className="w-full px-3 py-2 bg-bg-surface border border-border-default rounded text-[12px] resize-none focus:border-accent/60 outline-none"
             />
             <p className="text-[10px] font-mono text-text-tertiary leading-relaxed">
-              填了之后, scene 的 prompt 会自动把原视频产品换成你的货, 直接能去影棚生图
+              填了之后, scene 的 prompt 会参考原视频结构, 为你的产品生成候选图方向
             </p>
           </section>
 
           {/* CTA */}
-          <button
-            onClick={handleTeardown}
-            disabled={running || !videoBase64}
-            className="w-full py-3.5 bg-accent text-bg-root rounded-lg text-[14px] font-bold hover:bg-accent-hover disabled:opacity-40 disabled:cursor-not-allowed"
-          >
-            {running ? '拆解中... (15-30 秒)' : '🔬 开始拆解'}
-          </button>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            <button
+              onClick={handleTeardown}
+              disabled={running || !videoBase64}
+              className="w-full py-3.5 bg-accent text-bg-root rounded-lg text-[14px] font-bold hover:bg-accent-hover disabled:opacity-40 disabled:cursor-not-allowed"
+            >
+              {running ? '拆解中... (15-30 秒)' : '🔬 开始拆解'}
+            </button>
+            {productHint.trim() || videoBase64 ? (
+              <Link
+                href={preRunStandardPackHref}
+                className="w-full py-3.5 border border-accent/40 text-accent rounded-lg text-center text-[12px] font-bold hover:bg-accent/10"
+              >
+                生成视频拆解 SOP 标品包
+              </Link>
+            ) : (
+              <button
+                disabled
+                className="w-full py-3.5 border border-border-subtle text-text-tertiary rounded-lg text-[12px] font-bold opacity-50 cursor-not-allowed"
+              >
+                生成视频拆解 SOP 标品包
+              </button>
+            )}
+          </div>
 
           {error && (
             <div className="p-3 border border-error/40 bg-error/5 rounded text-[11px] text-error">
@@ -498,7 +550,7 @@ export default function VideoTeardownPage() {
             <div className="border border-dashed border-border-default rounded-lg p-8 text-center">
               <div className="text-4xl mb-2">🎯</div>
               <h3 className="text-[15px] font-bold text-text-primary mb-1">拆解后你会拿到</h3>
-              <p className="text-[12px] text-text-tertiary mb-4">不是简单"分析",是可执行的复刻蓝图</p>
+              <p className="text-[12px] text-text-tertiary mb-4">不是简单分析，而是可执行的差异化脚本蓝图</p>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-left">
                 <Tip
                   emoji="🎣"
@@ -508,12 +560,12 @@ export default function VideoTeardownPage() {
                 <Tip
                   emoji="⚡"
                   title="节奏 + 情绪曲线"
-                  desc="每秒切几个镜头、情绪怎么递进、什么节点上 CTA"
+                  desc={'每秒切几个镜头、情绪怎么递进、什么节点上 CTA'}
                 />
                 <Tip
                   emoji="🎬"
                   title="每个镜头的图像 prompt"
-                  desc="80-150 字详细描述,直接拷去 AI 影棚就能生同款静态图"
+                  desc="80-150 字详细描述,可带到 AI 影棚生成候选静态图"
                 />
                 <Tip
                   emoji="🔄"
@@ -536,6 +588,7 @@ export default function VideoTeardownPage() {
               savedSkuId={savedSkuId}
               buildShareMarkdown={buildShareMarkdown}
               buildShareTitle={buildShareTitle}
+              resultStandardPackHref={resultStandardPackHref}
             />
           )}
         </main>
@@ -548,7 +601,7 @@ export default function VideoTeardownPage() {
         </div>
         <div className="flex flex-wrap gap-2">
           <Link href="/pipelines/ai-photoshoot" className="px-3 py-1.5 border border-accent/30 rounded text-[11px] font-mono text-accent hover:bg-accent/10">
-            🎬 用拆解 prompt 去 AI 影棚生图 →
+            🎬 用拆解 prompt 去 AI 影棚生成候选图 →
           </Link>
           <Link href="/pipelines/ai-video" className="px-3 py-1.5 border border-border-subtle rounded text-[11px] font-mono text-text-secondary hover:border-accent/40 hover:text-accent">
             🎞️ 静态图 → AI 视频 →
@@ -586,6 +639,7 @@ function TeardownResultView({
   savedSkuId,
   buildShareMarkdown,
   buildShareTitle,
+  resultStandardPackHref,
 }: {
   result: TeardownResult;
   copyPrompt: (idx: number, p: string) => void;
@@ -597,6 +651,7 @@ function TeardownResultView({
   savedSkuId: string | null;
   buildShareMarkdown: () => string;
   buildShareTitle: () => string;
+  resultStandardPackHref?: string;
 }) {
   const sb = result.storyboard;
   const totalDuration = sb.scenes.reduce((sum, s) => sum + s.duration_seconds, 0);
@@ -662,6 +717,14 @@ function TeardownResultView({
           >
             ⬇ 导出 JSON
           </button>
+          {resultStandardPackHref && (
+            <Link
+              href={resultStandardPackHref}
+              className="text-[11px] font-mono text-accent border border-accent/30 hover:bg-accent/10 rounded px-3 py-1.5"
+            >
+              生成视频拆解验收标品包
+            </Link>
+          )}
           <ShareButton
             buildPayload={() => ({
               moduleId: 'video-teardown',
@@ -718,9 +781,9 @@ function TeardownResultView({
                   <Link
                     href={`/pipelines/ai-photoshoot?prompt=${encodeURIComponent(scene.prompt)}${activeSkuId ? `&skuId=${activeSkuId}` : ''}`}
                     className="text-[10px] font-mono px-2 py-0.5 rounded border border-cat-execution/40 text-cat-execution hover:bg-cat-execution/10"
-                    title="带 prompt 跳到 AI 影棚直接生图"
+                    title="带 prompt 跳到 AI 影棚生成候选图"
                   >
-                    🎬 去影棚生图 →
+                    🎬 去影棚生成候选图 →
                   </Link>
                 </div>
               </div>

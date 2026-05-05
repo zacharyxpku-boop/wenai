@@ -7,6 +7,7 @@ import { ActiveSkuBadge } from '@/components/ActiveSkuBadge';
 import { useMySkus } from '@/lib/use-my-skus';
 import { ShareButton } from '@/components/ShareButton';
 import { IndustryHint } from '@/components/IndustryHint';
+import { buildDataInsightsStandardPackRoute } from '@/lib/standard-pack-routing';
 
 /**
  * 数据洞察 (痛点 #10) · STRATEGY_DEEP L4 列的核心钩子
@@ -63,6 +64,26 @@ const TYPE_META: Record<Insight['type'], { icon: string; cls: string }> = {
   risk: { icon: '⚠️', cls: 'border-accent/40 bg-accent/5' },
   opportunity: { icon: '🟡', cls: 'border-cat-content/40 bg-cat-content/5' },
 };
+
+function buildDataInsightsResultSummary(result: DataInsightsResult): string {
+  const topInsights = result.insights.slice(0, 4).map((insight, index) =>
+    `${index + 1}. [${insight.priority}] ${insight.type}: ${insight.headline} | evidence: ${insight.evidence} | action: ${insight.action}`,
+  );
+
+  const killListSummary = result.killList?.length
+    ? `kill list: ${result.killList.slice(0, 4).join(' ; ')}`
+    : '';
+
+  return [
+    `overall verdict: ${result.overallVerdict}`,
+    `trend summary: ${result.trendSummary}`,
+    topInsights.join('\n'),
+    `next round playbook: ${result.nextRoundPlaybook}`,
+    killListSummary,
+  ]
+    .filter(Boolean)
+    .join('\n');
+}
 
 // 把 SKU 列表按 category 聚合, 返回每品类的 avg CTR + 样本数 · benchmark 用
 function aggregateByCategory(skus: { name: string; category: string; ctr: number; cpc: number }[]): string {
@@ -330,7 +351,7 @@ ${data}
         ? [`## ⛔ 立即停掉`, ``, ...result.killList.map(k => `- ${k}`), ``]
         : []),
       `---`,
-      `*由 [wenai 数据洞察](https://wenai-deploy.vercel.app/pipelines/data-insights) 生成 · 想分析你的数据?*`,
+      `*由 wenai 数据复盘演示流程生成 · 准备真实 SKU 时, 请通过 /inquire 提交 POC 需求。*`,
     ].join('\n');
   };
 
@@ -372,6 +393,23 @@ ${data}
     a.click();
     URL.revokeObjectURL(url);
   };
+
+  const standardPackHref = buildDataInsightsStandardPackRoute({
+    channelLabel: CHANNEL_LABELS[channel],
+    period: period === 'day' ? 'day report' : period === 'week' ? 'week report' : 'month report',
+    dataInput: data,
+    context,
+  });
+
+  const reportStandardPackHref = result
+    ? buildDataInsightsStandardPackRoute({
+        channelLabel: CHANNEL_LABELS[channel],
+        period: period === 'day' ? 'day report' : period === 'week' ? 'week report' : 'month report',
+        dataInput: data,
+        context,
+        resultSummary: buildDataInsightsResultSummary(result),
+      })
+    : '';
 
   return (
     <div className="min-h-screen bg-bg-root">
@@ -479,13 +517,25 @@ ${data}
             </div>
           </section>
 
-          <button
-            onClick={handleAnalyze}
-            disabled={running || data.length < 30}
-            className="w-full py-3.5 bg-accent text-bg-root rounded-lg text-[14px] font-bold hover:bg-accent-hover disabled:opacity-40"
-          >
-            {running ? '诊断中... (10-20 秒)' : '🔬 诊断这组数据'}
-          </button>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            <button
+              onClick={handleAnalyze}
+              disabled={running || data.length < 30}
+              className="w-full py-3.5 bg-accent text-bg-root rounded-lg text-[14px] font-bold hover:bg-accent-hover disabled:opacity-40"
+            >
+              {running ? '诊断中... (10-20 秒)' : '🔬 诊断这组数据'}
+            </button>
+            <Link
+              href={standardPackHref}
+              className={`w-full py-3.5 rounded-lg text-[12px] font-bold text-center border transition-colors ${
+                data.trim().length
+                  ? 'border-cat-content/40 text-cat-content hover:bg-cat-content/10'
+                  : 'border-border-subtle text-text-tertiary pointer-events-none opacity-50'
+              }`}
+            >
+              生成复盘 SOP 标品包
+            </Link>
+          </div>
 
           {error && (
             <div className="p-3 border border-error/40 bg-error/5 rounded text-[11px] text-error">
@@ -526,7 +576,7 @@ ${data}
             </div>
           )}
 
-          {!running && result && <Report result={result} exportMd={exportMd} channel={CHANNEL_LABELS[channel]} context={context} buildShareMarkdown={buildShareMarkdown} period={period} />}
+          {!running && result && <Report result={result} exportMd={exportMd} channel={CHANNEL_LABELS[channel]} context={context} buildShareMarkdown={buildShareMarkdown} period={period} standardPackHref={reportStandardPackHref} />}
         </main>
       </div>
 
@@ -585,7 +635,7 @@ function Tip({ emoji, title, desc }: { emoji: string; title: string; desc: strin
   );
 }
 
-function Report({ result, exportMd, channel, context, buildShareMarkdown, period }: { result: DataInsightsResult; exportMd: () => void; channel: string; context: string; buildShareMarkdown: () => string; period: Period }) {
+function Report({ result, exportMd, channel, context, buildShareMarkdown, period, standardPackHref }: { result: DataInsightsResult; exportMd: () => void; channel: string; context: string; buildShareMarkdown: () => string; period: Period; standardPackHref: string }) {
   const [savingSku, setSavingSku] = useState(false);
   const [savedSku, setSavedSku] = useState(false);
 
@@ -637,6 +687,12 @@ function Report({ result, exportMd, channel, context, buildShareMarkdown, period
                 source: 'module' as const,
               })}
             />
+            <Link
+              href={standardPackHref}
+              className="text-[10px] font-mono px-2.5 py-1 rounded border border-cat-content/40 text-cat-content hover:bg-cat-content/10"
+            >
+              生成复盘验收标品包
+            </Link>
             <button
               onClick={saveToLibrary}
               disabled={savingSku || savedSku}

@@ -14,6 +14,7 @@ import {
 } from '@/lib/ecom-prompts';
 import { useActiveSkuId } from '@/lib/use-active-sku';
 import { ActiveSkuBadge } from '@/components/ActiveSkuBadge';
+import { buildAIVideoStandardPackRoute } from '@/lib/standard-pack-routing';
 
 /**
  * AI 视频 · wanx2.1 i2v · 一张图 → 5s 带货短视频
@@ -102,6 +103,26 @@ interface VideoResult {
   cacheHash?: string;
 }
 
+function buildAIVideoResultSummary(input: {
+  result: VideoResult;
+  scenarioLabel: string;
+  productHint: string;
+  imageUrl: string;
+  prompt: string;
+}): string {
+  return [
+    `scenario: ${input.scenarioLabel}`,
+    `duration: ${input.result.duration}s`,
+    `resolution: ${input.result.resolution}`,
+    `model: ${input.result.model}`,
+    input.result.fromCache ? 'cost: cache hit' : `cost: ¥${input.result.cost?.totalCny || '?'}`,
+    `source image: ${input.imageUrl.trim() || 'not provided'}`,
+    input.productHint.trim() ? `product hint: ${input.productHint.trim()}` : '',
+    `video url: ${input.result.videoUrl}`,
+    `prompt: ${input.prompt}`,
+  ].filter(Boolean).join('\n');
+}
+
 export default function AIVideoPage() {
   const activeSkuId = useActiveSkuId();
   const [scenario, setScenario] = useState<Scenario>('model-display');
@@ -117,8 +138,6 @@ export default function AIVideoPage() {
   const [ecomVideoScenario, setEcomVideoScenario] = useState<EcomScenario>('video-display');
   const [ecomStyle, setEcomStyle] = useState<EcomStyle>('taobao');
   const [productHint, setProductHint] = useState('');
-
-  const VIDEO_SCENARIOS: EcomScenario[] = ['video-display', 'video-usage', 'video-lifestyle'];
 
   // 视频 SOP 一键预设 · 选完自动 set 品类 + 默认场景
   const applySop = (sop: SopPreset) => {
@@ -155,6 +174,33 @@ export default function AIVideoPage() {
   const meta = SCENARIOS[scenario];
   const finalPrompt = meta.promptTemplate(extraPrompt.trim());
   const estCny = (model.includes('plus') ? 1.4 : 0.7) * duration;
+  const standardPackHref = buildAIVideoStandardPackRoute({
+    scenarioLabel: meta.title,
+    productHint,
+    imageUrl,
+    prompt: finalPrompt,
+    duration,
+    resolution,
+    model,
+  });
+  const resultStandardPackHref = result
+    ? buildAIVideoStandardPackRoute({
+        scenarioLabel: meta.title,
+        productHint,
+        imageUrl,
+        prompt: finalPrompt,
+        duration: result.duration,
+        resolution: result.resolution,
+        model: result.model,
+        resultSummary: buildAIVideoResultSummary({
+          result,
+          scenarioLabel: meta.title,
+          productHint,
+          imageUrl,
+          prompt: finalPrompt,
+        }),
+      })
+    : undefined;
 
   const handleGenerate = async () => {
     if (!imageUrl.trim() || !/^https?:\/\//.test(imageUrl)) {
@@ -475,13 +521,21 @@ export default function AIVideoPage() {
           </section>
 
           {/* CTA */}
-          <button
-            onClick={handleGenerate}
-            disabled={running || !imageUrl.trim()}
-            className="w-full py-3.5 bg-accent text-bg-root rounded-lg text-[14px] font-bold hover:bg-accent-hover disabled:opacity-40 disabled:cursor-not-allowed"
-          >
-            {running ? '生成中... (60-120 秒)' : '🎬 生成视频'}
-          </button>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            <button
+              onClick={handleGenerate}
+              disabled={running || !imageUrl.trim()}
+              className="w-full py-3.5 bg-accent text-bg-root rounded-lg text-[14px] font-bold hover:bg-accent-hover disabled:opacity-40 disabled:cursor-not-allowed"
+            >
+              {running ? '生成中... (60-120 秒)' : '🎬 生成视频'}
+            </button>
+            <Link
+              href={standardPackHref}
+              className="w-full py-3.5 rounded-lg text-[12px] font-bold text-center border border-cat-content/40 text-cat-content hover:bg-cat-content/10 transition-colors"
+            >
+              生成视频 SOP 标品包
+            </Link>
+          </div>
 
           {error && (
             <div className="p-3 border border-error/40 bg-error/5 rounded text-[11px] text-error">
@@ -537,7 +591,15 @@ export default function AIVideoPage() {
                     }
                   </div>
                 </div>
-                <div className="flex gap-2">
+                <div className="flex gap-2 flex-wrap">
+                  {resultStandardPackHref && (
+                    <Link
+                      href={resultStandardPackHref}
+                      className="px-3 py-1.5 border border-cat-content/40 text-cat-content text-[11px] font-mono rounded hover:bg-cat-content/10"
+                    >
+                      生成视频验收标品包
+                    </Link>
+                  )}
                   <button
                     onClick={downloadVideo}
                     className="px-3 py-1.5 bg-accent text-bg-root text-[11px] font-mono rounded hover:bg-accent-hover"

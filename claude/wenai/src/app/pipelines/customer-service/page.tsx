@@ -7,6 +7,7 @@ import { ActiveSkuBadge } from '@/components/ActiveSkuBadge';
 import { useMySkus } from '@/lib/use-my-skus';
 import { ShareButton } from '@/components/ShareButton';
 import { IndustryHint } from '@/components/IndustryHint';
+import { buildCustomerServiceStandardPackRoute } from '@/lib/standard-pack-routing';
 
 /**
  * 销售转化 Agent · /pipelines/customer-service
@@ -37,6 +38,20 @@ interface ServiceResult {
   hooks: { trigger: string; reply: string }[];
   upsells: { product: string; pitch: string }[];
   forbidden: string[];
+}
+
+function buildCustomerServiceResultSummary(result: ServiceResult): string {
+  return [
+    `intent: ${result.intentDetected}`,
+    `emotion: ${result.emotion}`,
+    `urgency: ${result.urgency}`,
+    `safe reply: ${result.replies.safe.text.slice(0, 180)} / expected: ${result.replies.safe.expected}`,
+    `convert reply: ${result.replies.convert.text.slice(0, 180)} / expected: ${result.replies.convert.expected}`,
+    `empathy reply: ${result.replies.empathy.text.slice(0, 180)} / expected: ${result.replies.empathy.expected}`,
+    `next-step hooks: ${result.hooks?.slice(0, 3).map(h => `${h.trigger} -> ${h.reply}`).join(' | ') || 'none'}`,
+    `upsells: ${result.upsells?.slice(0, 3).map(u => `${u.product}: ${u.pitch}`).join(' | ') || 'none'}`,
+    `forbidden: ${result.forbidden?.join(' | ') || 'none'}`,
+  ].join('\n');
 }
 
 const INTENT_LABELS: Record<Intent, { txt: string; emoji: string; tip: string }> = {
@@ -84,6 +99,25 @@ export default function CustomerServicePage() {
   const [error, setError] = useState('');
   const [copied, setCopied] = useState<string | null>(null);
   const [rawDebug, setRawDebug] = useState('');
+  const intentLabel = INTENT_LABELS[intent].txt;
+  const languageLabel = LANG_LABELS[lang];
+  const standardPackHref = buildCustomerServiceStandardPackRoute({
+    intentLabel,
+    customerMessage: customerMsg,
+    languageLabel,
+    shopContext: shopInfo,
+    orderContext: orderId,
+  });
+  const resultStandardPackHref = result
+    ? buildCustomerServiceStandardPackRoute({
+        intentLabel,
+        customerMessage: customerMsg,
+        languageLabel,
+        shopContext: shopInfo,
+        orderContext: orderId,
+        resultSummary: buildCustomerServiceResultSummary(result),
+      })
+    : '';
 
   // 从 ?skuId= 进来时, 自动锁定该 SKU
   useEffect(() => {
@@ -220,7 +254,7 @@ ${customerMsg}
           </h1>
           <div className="mb-3"><IndustryHint /></div>
           <p className="text-[13px] lg:text-[14px] text-text-secondary leading-relaxed max-w-[820px]">
-            把"客户咨询"变"主动成交": 8 类典型意图自动识别, 三版回复(保守/转化/共情)直接发,
+            把&quot;客户咨询&quot;变&quot;主动成交&quot;: 8 类典型意图自动识别, 三版回复(保守/转化/共情)直接发,
             <span className="text-accent">下一步话术钩子提前备好</span>,
             升单/挽留机会自动出。SKU 关联让客服互动反向沉淀到产品档案。
           </p>
@@ -365,6 +399,17 @@ ${customerMsg}
             {running ? '生成中... (8-15 秒)' : `🤝 出三版回复 · ${INTENT_LABELS[intent].txt}`}
           </button>
 
+          <Link
+            href={standardPackHref}
+            className={`block w-full py-3 text-center rounded-lg text-[12px] font-bold border transition-colors ${
+              customerMsg.trim().length
+                ? 'border-cat-content/40 text-cat-content hover:bg-cat-content/10'
+                : 'border-border-subtle text-text-tertiary pointer-events-none opacity-50'
+            }`}
+          >
+            生成客服 SOP 标品包
+          </Link>
+
           {error && (
             <div className="p-3 border border-error/40 bg-error/5 rounded text-[11px] text-error">
               ✗ {error}
@@ -397,7 +442,15 @@ ${customerMsg}
           )}
 
           {!running && result && (
-            <ResultView result={result} copyText={copyText} copied={copied} intent={intent} customerMsg={customerMsg} lang={lang} />
+            <ResultView
+              result={result}
+              copyText={copyText}
+              copied={copied}
+              intent={intent}
+              customerMsg={customerMsg}
+              lang={lang}
+              standardPackHref={resultStandardPackHref}
+            />
           )}
         </main>
       </div>
@@ -433,7 +486,7 @@ function Tip({ emoji, title, desc }: { emoji: string; title: string; desc: strin
 }
 
 function ResultView({
-  result, copyText, copied, intent, customerMsg, lang,
+  result, copyText, copied, intent, customerMsg, lang, standardPackHref,
 }: {
   result: ServiceResult;
   copyText: (k: string, text: string) => void;
@@ -441,6 +494,7 @@ function ResultView({
   intent: Intent;
   customerMsg: string;
   lang: Lang;
+  standardPackHref: string;
 }) {
   const buildShareMd = () => {
     const lines: string[] = [];
@@ -485,7 +539,7 @@ function ResultView({
       lines.push('');
     }
     lines.push('---');
-    lines.push('*由 [wenai 销售转化客服](https://wenai-deploy.vercel.app/pipelines/customer-service) 生成 · 想拿你自己的客服对话?*');
+    lines.push('*由 wenai 客服话术演示流程生成 · 准备真实 SKU 时, 请通过 /inquire 提交 POC 需求。*');
     return lines.join('\n');
   };
 
@@ -499,6 +553,12 @@ function ResultView({
     <>
       {/* 分享按钮 */}
       <div className="flex justify-end">
+        <Link
+          href={standardPackHref}
+          className="mr-2 text-[10px] font-mono px-2.5 py-1 rounded border border-cat-content/40 text-cat-content hover:bg-cat-content/10"
+        >
+          生成客服验收标品包
+        </Link>
         <ShareButton
           buildPayload={() => ({
             moduleId: 'customer-service',

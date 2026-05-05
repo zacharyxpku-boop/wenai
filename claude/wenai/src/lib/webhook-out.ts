@@ -32,7 +32,7 @@ interface DigestPayloadLike {
 }
 
 const FETCH_TIMEOUT_MS = 5000;
-const DASHBOARD_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://wenai-deploy.vercel.app';
+const DASHBOARD_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://wenai-one.vercel.app';
 
 function severityEmoji(sev: 'critical' | 'warning' | 'info'): string {
   return sev === 'critical' ? '🚨' : sev === 'warning' ? '⚠️' : '💡';

@@ -315,7 +315,7 @@ export default function AIWorkspace({
     const shareText = `${excerpt}${result.length > 280 ? '...' : ''}
 
 — 用 wenai · ${moduleName.split(' · ')[0]}生成
-试一下：${origin}/invite?code=demo`;
+试一下：${origin}/demo`;
 
     // 生成动态分享卡 URL（别人转发时微信/Twitter 抓这个图）
     const shareImageUrl = `${origin}/api/og?${new URLSearchParams({
@@ -330,7 +330,7 @@ export default function AIWorkspace({
         await navigator.share({
           title: `wenai · ${moduleName}`,
           text: shareText,
-          url: `${origin}/invite?code=demo`,
+          url: `${origin}/demo`,
         });
         return;
       } catch {

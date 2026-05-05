@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { checkRateLimit } from '@/lib/ratelimit';
 import { checkCostCap, recordCostWithDetail, COST_ESTIMATE_CENTS } from '@/lib/cost-cap';
-import { resolveOrgId } from '@/lib/org-id';
+import { resolveOrgContext } from '@/lib/org-id';
 import { buildImageCacheKey, getImageCache, setImageCache } from '@/lib/image-cache';
 import { recordCacheEvent } from '@/lib/cache-stats';
 
@@ -295,10 +295,10 @@ export async function POST(request: NextRequest) {
   }
 
   // 限流 · orgId 走统一 helper
-  const rateKey = await resolveOrgId(request);
+  const { orgId: rateKey, plan } = await resolveOrgContext(request);
 
   if (!body.fromPipeline) {
-    const limit = await checkRateLimit('video-gen', rateKey);
+    const limit = await checkRateLimit('video-gen', rateKey, plan);
     if (!limit.allowed) {
       return NextResponse.json(
         { error: 'AI 视频配额已达上限,明日再试', resetAt: limit.resetAt },
