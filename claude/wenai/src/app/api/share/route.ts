@@ -18,7 +18,7 @@ interface SharePayload {
   moduleId: string;
   title: string;
   content: string;
-  source?: 'pipeline-01' | 'pipeline-02' | 'pipeline-03' | 'module';
+  source?: 'pipeline-01' | 'pipeline-02' | 'pipeline-03' | 'poc-report' | 'module';
 }
 
 let redis: Redis | null = null;
