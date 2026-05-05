@@ -1,62 +1,47 @@
 import { COPY, PLACEHOLDER } from '@/i18n/zh';
 import { Container, Section, SecondaryButton } from './Container';
 
-/**
- * 3 家客户案例卡片 section
- * id="cases" 供 Hero 次 CTA #cases 锚定
- */
 export function CaseCards() {
   return (
     <Section>
       <Container>
         <div id="cases" className="scroll-mt-20" />
 
-        <h2 className="text-3xl md:text-4xl font-bold font-[family-name:var(--font-outfit)] text-text-primary text-center mb-12">
+        <h2 className="mb-12 text-center text-3xl font-bold text-text-primary md:text-4xl font-[family-name:var(--font-outfit)]">
           {COPY.caseSection.title}
         </h2>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {PLACEHOLDER.cases.map((c) => (
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+          {PLACEHOLDER.cases.map((item) => (
             <div
-              key={c.slug}
-              className="bg-bg-surface border border-border-default rounded-lg p-6 hover:border-accent/40 transition-colors flex flex-col"
+              key={item.slug}
+              className="flex flex-col rounded-md border border-border-default bg-bg-surface p-6 transition-colors hover:border-accent/40"
             >
-              {/* logo + 行业 + 公司 */}
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-12 h-12 rounded-full bg-bg-raised border border-border-subtle flex items-center justify-center text-text-secondary text-base font-medium font-[family-name:var(--font-outfit)]">
-                  {c.industry.charAt(0)}
+              <div className="mb-4 flex items-center gap-3">
+                <div className="flex size-12 items-center justify-center rounded-md border border-border-subtle bg-bg-raised text-base font-medium text-text-secondary font-[family-name:var(--font-outfit)]">
+                  {item.industry.charAt(0)}
                 </div>
                 <div className="flex flex-col">
-                  <span className="text-sm text-text-primary font-medium">
-                    {c.industry}
-                  </span>
-                  <span className="text-xs text-text-tertiary">
-                    {c.brandPlaceholder}
-                  </span>
+                  <span className="text-sm font-medium text-text-primary">{item.industry}</span>
+                  <span className="text-xs text-text-tertiary">{item.brandPlaceholder}</span>
                 </div>
               </div>
 
-              {/* headline */}
-              <p className="text-base font-medium text-text-primary leading-relaxed mb-5">
-                「{c.headline}」
-              </p>
+              <p className="mb-5 text-base font-medium leading-relaxed text-text-primary">&quot;{item.headline}&quot;</p>
 
-              {/* metrics 表格 */}
-              <ul className="flex flex-col gap-2 text-xs mb-5">
-                {c.metrics.map((m, i) => (
+              <ul className="mb-5 flex flex-col gap-2 text-xs">
+                {item.metrics.map((metric) => (
                   <li
-                    key={i}
-                    className="flex items-center justify-between gap-2 py-1 border-b border-border-subtle last:border-0"
+                    key={`${metric.label}-${metric.to}`}
+                    className="flex items-center justify-between gap-2 border-b border-border-subtle py-1 last:border-0"
                   >
-                    <span className="text-text-tertiary shrink-0">
-                      {m.label}
+                    <span className="shrink-0 text-text-tertiary">{metric.label}</span>
+                    <span className="font-mono text-text-secondary tabular-nums">
+                      {metric.from} -&gt; {metric.to}
                     </span>
-                    <span className="text-text-secondary font-mono tabular-nums">
-                      {m.from} → {m.to}
-                    </span>
-                    {m.multiple ? (
-                      <span className="text-accent font-mono tabular-nums shrink-0 w-10 text-right">
-                        {m.multiple}
+                    {metric.multiple ? (
+                      <span className="w-10 shrink-0 text-right font-mono text-accent tabular-nums">
+                        {metric.multiple}
                       </span>
                     ) : (
                       <span className="w-10" />
@@ -65,18 +50,14 @@ export function CaseCards() {
                 ))}
               </ul>
 
-              {/* 看完整复盘 */}
-              <a
-                href={`/cases/${c.slug}`}
-                className="text-sm text-accent hover:text-accent-hover transition-colors mt-auto"
-              >
-                {COPY.caseSection.fullCaseLink} →
+              <a href={`/cases/${item.slug}`} className="mt-auto text-sm text-accent transition-colors hover:text-accent-hover">
+                {COPY.caseSection.fullCaseLink} -&gt;
               </a>
             </div>
           ))}
         </div>
 
-        <div className="flex justify-center mt-12">
+        <div className="mt-12 flex justify-center">
           <SecondaryButton href={COPY.caseSection.moreLink.href}>
             {COPY.caseSection.moreLink.label}
           </SecondaryButton>

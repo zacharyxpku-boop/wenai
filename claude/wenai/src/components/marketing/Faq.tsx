@@ -4,44 +4,36 @@ import { useState } from 'react';
 import { COPY } from '@/i18n/zh';
 import { Container, Section } from './Container';
 
-/**
- * FAQ 折叠面板 · client component
- */
 export function Faq() {
-  const [openIdx, setOpenIdx] = useState<number | null>(null);
+  const [openIdx, setOpenIdx] = useState<number | null>(0);
 
   return (
     <Section>
       <Container className="max-w-[800px]">
         <div id="faq" className="scroll-mt-20" />
 
-        <h2 className="text-3xl md:text-4xl font-bold font-[family-name:var(--font-outfit)] text-text-primary text-center mb-10">
+        <h2 className="mb-10 text-center text-3xl font-bold text-text-primary md:text-4xl font-[family-name:var(--font-outfit)]">
           {COPY.faq.title}
         </h2>
 
         <ul className="flex flex-col">
-          {COPY.faq.items.map((item, i) => {
-            const isOpen = openIdx === i;
-            const panelId = `faq-panel-${i}`;
-            const buttonId = `faq-trigger-${i}`;
+          {COPY.faq.items.map((item, index) => {
+            const isOpen = openIdx === index;
+            const panelId = `faq-panel-${index}`;
+            const buttonId = `faq-trigger-${index}`;
             return (
-              <li key={i} className="border-b border-border-subtle">
+              <li key={item.q} className="border-b border-border-subtle">
                 <button
                   type="button"
                   id={buttonId}
                   aria-expanded={isOpen}
                   aria-controls={panelId}
-                  onClick={() => setOpenIdx(isOpen ? null : i)}
-                  className="w-full flex items-center justify-between gap-4 py-5 text-left text-text-primary hover:text-accent transition-colors"
+                  onClick={() => setOpenIdx(isOpen ? null : index)}
+                  className="flex w-full items-center justify-between gap-4 py-5 text-left text-text-primary transition-colors hover:text-accent"
                 >
-                  <span className="text-base font-medium leading-relaxed">
-                    {item.q}
-                  </span>
-                  <span
-                    aria-hidden
-                    className="font-mono text-xl text-accent shrink-0 w-6 text-center"
-                  >
-                    {isOpen ? '−' : '+'}
+                  <span className="text-base font-medium leading-relaxed">{item.q}</span>
+                  <span aria-hidden className="w-6 shrink-0 text-center font-mono text-xl text-accent">
+                    {isOpen ? '-' : '+'}
                   </span>
                 </button>
                 {isOpen && (
@@ -49,7 +41,7 @@ export function Faq() {
                     id={panelId}
                     role="region"
                     aria-labelledby={buttonId}
-                    className="pb-5 pr-10 text-sm text-text-secondary leading-relaxed"
+                    className="pb-5 pr-10 text-sm leading-relaxed text-text-secondary"
                   >
                     {item.a}
                   </div>

@@ -21,29 +21,32 @@ interface ParsedClaim {
 }
 
 export default function AdminPaymentsPage() {
-  const [authed, setAuthed] = useState(false);
+  const [authed, setAuthed] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    const saved = sessionStorage.getItem('wenai_admin_key');
+    return Boolean(saved && saved.length >= 6);
+  });
   const [key, setKey] = useState('');
   const [entries, setEntries] = useState<PaymentClaim[]>([]);
   const [loading, setLoading] = useState(true);
-  const [processed, setProcessed] = useState<Set<string>>(new Set());
-
-  useEffect(() => {
-    const saved = sessionStorage.getItem('wenai_admin_key');
-    if (saved && saved.length >= 6) setAuthed(true);
-  }, []);
+  const [processed, setProcessed] = useState<Set<string>>(() => {
+    if (typeof window === 'undefined') return new Set();
+    try {
+      return new Set(JSON.parse(localStorage.getItem('wenai_payment_processed') || '[]') as string[]);
+    } catch {
+      return new Set();
+    }
+  });
 
   useEffect(() => {
     if (!authed) return;
     fetch('/api/feedback?type=feedback&moduleId=payment-claim')
       .then(r => r.json())
-      .then(d => {
-        setEntries(d.entries || []);
+      .then(data => {
+        setEntries(data.entries || []);
         setLoading(false);
       })
       .catch(() => setLoading(false));
-    // 加载已处理列表
-    const p = localStorage.getItem('wenai_payment_processed');
-    if (p) setProcessed(new Set(JSON.parse(p)));
   }, [authed]);
 
   const handleAuth = () => {
@@ -54,16 +57,16 @@ export default function AdminPaymentsPage() {
   };
 
   const markProcessed = (id: string) => {
-    const newSet = new Set(processed);
-    newSet.add(id);
-    setProcessed(newSet);
-    localStorage.setItem('wenai_payment_processed', JSON.stringify([...newSet]));
+    const next = new Set(processed);
+    next.add(id);
+    setProcessed(next);
+    localStorage.setItem('wenai_payment_processed', JSON.stringify([...next]));
   };
 
-  const parseEntry = (e: PaymentClaim): ParsedClaim | null => {
-    if (!e.inputSample) return null;
+  const parseEntry = (entry: PaymentClaim): ParsedClaim | null => {
+    if (!entry.inputSample) return null;
     try {
-      const data = JSON.parse(e.inputSample);
+      const data = JSON.parse(entry.inputSample);
       return {
         plan: data.plan || '',
         method: data.method || '',
@@ -71,7 +74,7 @@ export default function AdminPaymentsPage() {
         amount: data.amount || '',
         time: data.time || '',
         note: data.note || '',
-        originalTimestamp: e.timestamp,
+        originalTimestamp: entry.timestamp,
       };
     } catch {
       return null;
@@ -81,13 +84,13 @@ export default function AdminPaymentsPage() {
   if (!authed) {
     return (
       <div className="max-w-md mx-auto py-20 px-6">
-        <h1 className="text-lg font-semibold mb-6">管理员 · 付款审核</h1>
+        <h1 className="text-lg font-semibold mb-6">后台 / 付款审核</h1>
         <p className="text-[12px] text-text-secondary mb-4">
-          查看所有 &ldquo;付款声明&rdquo; 并手动开通订阅。口令 6 位以上。
+          审核客户付款认领，财务确认后手动开通权限。
         </p>
         <input
           type="password"
-          placeholder="输入口令"
+          placeholder="输入后台口令"
           value={key}
           onChange={e => setKey(e.target.value)}
           onKeyDown={e => e.key === 'Enter' && handleAuth()}
@@ -98,99 +101,83 @@ export default function AdminPaymentsPage() {
           disabled={key.length < 6}
           className="w-full py-2 bg-accent hover:bg-accent-hover disabled:bg-border-subtle text-bg-root text-[13px] font-semibold rounded-md"
         >
-          进入
+          进入后台
         </button>
       </div>
     );
   }
 
-  const parsed = entries.map(e => ({ raw: e, parsed: parseEntry(e) })).filter(p => p.parsed);
-  const pending = parsed.filter(p => !processed.has(p.raw.timestamp || ''));
-  const done = parsed.filter(p => processed.has(p.raw.timestamp || ''));
+  const parsed = entries.map(entry => ({ raw: entry, parsed: parseEntry(entry) })).filter(item => item.parsed);
+  const pending = parsed.filter(item => !processed.has(item.raw.timestamp || ''));
+  const done = parsed.filter(item => processed.has(item.raw.timestamp || ''));
 
   return (
     <div className="max-w-[1000px] mx-auto py-8 px-6">
       <AdminHeader
-        subtitle={`付款声明 · 待处理 ${pending.length} / 已处理 ${done.length}`}
+        subtitle={`Payment claims. Pending ${pending.length} / processed ${done.length}.`}
         onLogout={() => { sessionStorage.removeItem('wenai_admin_key'); setAuthed(false); }}
       />
 
       {loading ? (
-        <div className="text-center py-12 text-text-tertiary font-mono text-[12px]">加载中...</div>
+        <div className="text-center py-12 text-text-tertiary font-mono text-[12px]">Loading payment claims...</div>
       ) : parsed.length === 0 ? (
         <div className="text-center py-12 border border-border-subtle rounded-md">
-          <p className="text-text-tertiary text-[13px] mb-2">还没有付款声明</p>
+          <p className="text-text-tertiary text-[13px] mb-2">No payment claims yet.</p>
           <p className="text-text-tertiary text-[11px] font-mono">
-            用户在 /pricing/checkout 提交付款后会出现在这里
+            Claims submitted from /pricing/checkout will appear here.
           </p>
         </div>
       ) : (
         <div className="space-y-6">
-          {/* Pending */}
           {pending.length > 0 && (
             <div>
               <h2 className="text-[13px] font-mono text-accent uppercase tracking-wider mb-3">
-                待处理 ({pending.length})
+                Pending ({pending.length})
               </h2>
               <div className="space-y-2">
-                {pending.map(p => (
-                  <div key={p.raw.timestamp} className="border border-accent/30 bg-accent/5 rounded-md p-4">
-                    <div className="flex items-start justify-between mb-3">
+                {pending.map(item => (
+                  <div key={item.raw.timestamp} className="border border-accent/30 bg-accent/5 rounded-md p-4">
+                    <div className="flex items-start justify-between mb-3 gap-3">
                       <div>
-                        <div className="flex items-center gap-2 mb-1">
+                        <div className="flex items-center gap-2 mb-1 flex-wrap">
                           <span className="text-[13px] font-semibold text-text-primary">
-                            订阅 · {p.parsed!.plan.toUpperCase()}
+                            Subscription / {item.parsed!.plan.toUpperCase()}
                           </span>
                           <span className="text-[10px] font-mono text-text-tertiary">
-                            {p.parsed!.method}
+                            {item.parsed!.method}
                           </span>
                         </div>
                         <div className="text-[11px] font-mono text-text-tertiary">
-                          提交于 {p.raw.timestamp ? new Date(p.raw.timestamp).toLocaleString('zh-CN') : '-'}
+                          Submitted {item.raw.timestamp ? new Date(item.raw.timestamp).toLocaleString('en-US') : '-'}
                         </div>
                       </div>
                       <button
-                        onClick={() => markProcessed(p.raw.timestamp || '')}
+                        onClick={() => markProcessed(item.raw.timestamp || '')}
                         className="px-3 py-1.5 bg-success/10 border border-success/40 text-success text-[11px] font-semibold rounded-md hover:bg-success/20"
                       >
-                        ✓ 已核对 → 标记开通
+                        Mark verified
                       </button>
                     </div>
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-[11px]">
-                      <div>
-                        <div className="text-text-tertiary font-mono uppercase text-[9px] mb-0.5">联系</div>
-                        <div className="text-text-primary font-mono">{p.parsed!.contact || '-'}</div>
-                      </div>
-                      <div>
-                        <div className="text-text-tertiary font-mono uppercase text-[9px] mb-0.5">金额</div>
-                        <div className="text-text-primary font-mono">{p.parsed!.amount || '-'}</div>
-                      </div>
-                      <div>
-                        <div className="text-text-tertiary font-mono uppercase text-[9px] mb-0.5">付款时间</div>
-                        <div className="text-text-primary font-mono">{p.parsed!.time || '-'}</div>
-                      </div>
-                      <div>
-                        <div className="text-text-tertiary font-mono uppercase text-[9px] mb-0.5">方式</div>
-                        <div className="text-text-primary font-mono">{p.parsed!.method}</div>
-                      </div>
+                      <ClaimField label="Contact" value={item.parsed!.contact || '-'} />
+                      <ClaimField label="Amount" value={item.parsed!.amount || '-'} />
+                      <ClaimField label="Paid at" value={item.parsed!.time || '-'} />
+                      <ClaimField label="Method" value={item.parsed!.method || '-'} />
                     </div>
-                    {p.parsed!.note && (
+                    {item.parsed!.note && (
                       <div className="mt-3 pt-3 border-t border-border-subtle text-[11px]">
-                        <div className="text-text-tertiary font-mono uppercase text-[9px] mb-1">备注</div>
-                        <div className="text-text-secondary">{p.parsed!.note}</div>
+                        <div className="text-text-tertiary font-mono uppercase text-[9px] mb-1">Note</div>
+                        <div className="text-text-secondary">{item.parsed!.note}</div>
                       </div>
                     )}
-                    <div className="mt-3 pt-3 border-t border-border-subtle text-[10px] text-text-tertiary font-mono">
-                      下一步手动操作：
+                    <div className="mt-3 pt-3 border-t border-border-subtle text-[10px] text-text-tertiary font-mono leading-relaxed">
+                      Manual activation checklist:
                       <br />
-                      1. 核对 {p.parsed!.method} 账户是否实到 {p.parsed!.amount || '¥X'}
+                      1. Confirm the payment arrived in the {item.parsed!.method} account for {item.parsed!.amount || 'the claimed amount'}.
                       <br />
-                      2. 到 Vercel → Environment Variables 改 INVITE_ROSTER，
-                      加 <code className="bg-bg-raised px-1">&quot;{p.parsed!.contact}&quot;: {'{'} &quot;name&quot;: &quot;...&quot;, &quot;expiresAt&quot;: &quot;2026-05-18&quot;, &quot;tier&quot;: &quot;{p.parsed!.plan}&quot; {'}'}</code>
+                      2. Add or update access in Vercel environment variables or the invite roster for {item.parsed!.contact || 'this customer'}.
                       <br />
-                      3. Vercel redeploy，发邮件通知用户
-                      <br />
-                      4. 回到这里点"已核对"
+                      3. Redeploy if required, notify the customer, then mark this claim verified.
                     </div>
                   </div>
                 ))}
@@ -198,17 +185,16 @@ export default function AdminPaymentsPage() {
             </div>
           )}
 
-          {/* Done */}
           {done.length > 0 && (
             <div>
               <h2 className="text-[13px] font-mono text-text-tertiary uppercase tracking-wider mb-3">
-                已处理 ({done.length})
+                Processed ({done.length})
               </h2>
               <div className="space-y-1">
-                {done.map(p => (
-                  <div key={p.raw.timestamp} className="border border-border-subtle rounded px-4 py-2 flex items-center justify-between text-[11px] font-mono text-text-tertiary opacity-70">
-                    <span>{p.parsed!.plan.toUpperCase()} · {p.parsed!.contact} · {p.parsed!.amount}</span>
-                    <span>{p.raw.timestamp ? new Date(p.raw.timestamp).toLocaleDateString('zh-CN') : ''}</span>
+                {done.map(item => (
+                  <div key={item.raw.timestamp} className="border border-border-subtle rounded px-4 py-2 flex items-center justify-between gap-3 text-[11px] font-mono text-text-tertiary opacity-70">
+                    <span>{item.parsed!.plan.toUpperCase()} / {item.parsed!.contact} / {item.parsed!.amount}</span>
+                    <span>{item.raw.timestamp ? new Date(item.raw.timestamp).toLocaleDateString('en-US') : ''}</span>
                   </div>
                 ))}
               </div>
@@ -216,6 +202,15 @@ export default function AdminPaymentsPage() {
           )}
         </div>
       )}
+    </div>
+  );
+}
+
+function ClaimField({ label, value }: { label: string; value: string }) {
+  return (
+    <div>
+      <div className="text-text-tertiary font-mono uppercase text-[9px] mb-0.5">{label}</div>
+      <div className="text-text-primary font-mono">{value}</div>
     </div>
   );
 }

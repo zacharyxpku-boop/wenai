@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import AdminHeader from '@/components/AdminHeader';
 
 interface Invite {
@@ -26,29 +26,41 @@ export default function AdminInvitesPage() {
   const [form, setForm] = useState({ ...DEFAULT_NEW });
   const [editingCode, setEditingCode] = useState<string | null>(null);
   const [saveMsg, setSaveMsg] = useState('');
+  const [saveOk, setSaveOk] = useState(true);
+
+  const adminHeaders = useCallback((): Record<string, string> => {
+    const saved = sessionStorage.getItem('wenai_admin_key') || key;
+    return saved ? { 'x-admin-key': saved } : {};
+  }, [key]);
 
   useEffect(() => {
     const saved = sessionStorage.getItem('wenai_admin_key');
     if (saved && saved.length >= 6) setAuthed(true);
   }, []);
 
-  const fetchInvites = async () => {
+  const fetchInvites = useCallback(async () => {
     try {
-      const res = await fetch('/api/admin/invites');
+      const res = await fetch('/api/admin/invites', { headers: adminHeaders() });
       if (!res.ok) {
         setInvites({});
         return;
       }
-      const d = await res.json();
-      setInvites(d.invites || {});
+      const data = await res.json();
+      setInvites(data.invites || {});
     } finally {
       setLoading(false);
     }
-  };
+  }, [adminHeaders]);
 
   useEffect(() => {
     if (authed) fetchInvites();
-  }, [authed]);
+  }, [authed, fetchInvites]);
+
+  const flash = (message: string, ok = true) => {
+    setSaveMsg(message);
+    setSaveOk(ok);
+    setTimeout(() => setSaveMsg(''), 3000);
+  };
 
   const handleAuth = () => {
     if (key.length >= 6) {
@@ -59,67 +71,67 @@ export default function AdminInvitesPage() {
 
   const handleSave = async () => {
     if (!form.code || !form.name || !form.expiresAt) {
-      setSaveMsg('code/name/到期日 必填');
+      flash('Code, display name, and expiry date are required.', false);
       return;
     }
     const res = await fetch('/api/admin/invites', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', ...adminHeaders() },
       body: JSON.stringify(form),
     });
-    const d = await res.json();
+    const data = await res.json();
     if (res.ok) {
-      setSaveMsg(`✓ ${form.code} 已${editingCode ? '更新' : '新增'}`);
+      flash(`${form.code} ${editingCode ? 'updated' : 'created'}.`);
       setForm({ ...DEFAULT_NEW });
       setEditingCode(null);
       fetchInvites();
     } else {
-      setSaveMsg(`✗ ${d.error}`);
+      flash(data.error || 'Failed to save invite.', false);
     }
-    setTimeout(() => setSaveMsg(''), 3000);
   };
 
-  const handleEdit = (code: string, inv: Invite) => {
+  const handleEdit = (code: string, invite: Invite) => {
     setForm({
       code,
-      name: inv.name,
-      expiresAt: inv.expiresAt,
-      tenantId: inv.tenantId || 'default',
-      tier: inv.tier || 'free',
+      name: invite.name,
+      expiresAt: invite.expiresAt,
+      tenantId: invite.tenantId || 'default',
+      tier: invite.tier || 'free',
     });
     setEditingCode(code);
   };
 
   const handleDelete = async (code: string) => {
-    if (!confirm(`删除邀请码 "${code}"? 用户将无法登录`)) return;
-    const res = await fetch(`/api/admin/invites?code=${encodeURIComponent(code)}`, { method: 'DELETE' });
-    const d = await res.json();
+    if (!confirm(`Delete invite code "${code}"? The invite link will stop working.`)) return;
+    const res = await fetch(`/api/admin/invites?code=${encodeURIComponent(code)}`, {
+      method: 'DELETE',
+      headers: adminHeaders(),
+    });
+    const data = await res.json();
     if (res.ok) {
-      setSaveMsg(`✓ ${code} 已删除`);
+      flash(`${code} deleted.`);
       fetchInvites();
     } else {
-      setSaveMsg(`✗ ${d.error}`);
+      flash(data.error || '删除邀请码失败。', false);
     }
-    setTimeout(() => setSaveMsg(''), 3000);
   };
 
   const handleCopyLink = (code: string) => {
     const url = `${window.location.origin}/invite?code=${code}`;
     navigator.clipboard.writeText(url);
-    setSaveMsg(`✓ 复制 ${url}`);
-    setTimeout(() => setSaveMsg(''), 2000);
+    flash(`已复制 ${url}`);
   };
 
   if (!authed) {
     return (
       <div className="max-w-md mx-auto py-20 px-6">
-        <h1 className="text-lg font-semibold mb-6">管理员 · 邀请码面板</h1>
+        <h1 className="text-lg font-semibold mb-6">后台 / 邀请码</h1>
         <p className="text-[12px] text-text-secondary mb-4">
-          共享 /admin 口令 (6 位+)
+          使用共享后台口令管理客户邀请码。
         </p>
         <input
           type="password"
-          placeholder="口令"
+          placeholder="输入后台口令"
           value={key}
           onChange={e => setKey(e.target.value)}
           onKeyDown={e => e.key === 'Enter' && handleAuth()}
@@ -130,7 +142,7 @@ export default function AdminInvitesPage() {
           disabled={key.length < 6}
           className="w-full py-2 bg-accent hover:bg-accent-hover disabled:bg-border-subtle text-bg-root text-[13px] font-semibold rounded-md"
         >
-          进入
+          进入后台
         </button>
       </div>
     );
@@ -141,19 +153,18 @@ export default function AdminInvitesPage() {
   return (
     <div className="max-w-[1000px] mx-auto py-8 px-6">
       <AdminHeader
-        subtitle={`Redis + env + 内置 三级合并 · 共 ${sorted.length} 码`}
+        subtitle={`已合并 Redis、环境变量和内置默认值。当前 ${sorted.length} 个有效邀请码。`}
         onLogout={() => { sessionStorage.removeItem('wenai_admin_key'); setAuthed(false); }}
       />
 
-      {/* 新增/编辑表单 */}
       <div className="mb-6 p-4 border border-border-subtle rounded-md bg-bg-surface">
         <div className="text-[11px] font-mono text-text-tertiary uppercase tracking-wider mb-3">
-          {editingCode ? `编辑 · ${editingCode}` : '新增邀请码'}
+          {editingCode ? `编辑 ${editingCode}` : '创建邀请码'}
         </div>
         <div className="grid grid-cols-1 md:grid-cols-5 gap-2 mb-3">
           <input
             type="text"
-            placeholder="code (2-32 位字母/数字/-_)"
+            placeholder="code (2-32 chars)"
             value={form.code}
             onChange={e => setForm({ ...form, code: e.target.value })}
             disabled={!!editingCode}
@@ -161,7 +172,7 @@ export default function AdminInvitesPage() {
           />
           <input
             type="text"
-            placeholder="显示名"
+            placeholder="display name"
             value={form.name}
             onChange={e => setForm({ ...form, name: e.target.value })}
             className="px-2 py-1.5 bg-bg-raised border border-border-default rounded text-[12px]"
@@ -185,7 +196,7 @@ export default function AdminInvitesPage() {
             onClick={handleSave}
             className="px-3 py-1.5 bg-accent hover:bg-accent-hover text-bg-root text-[12px] font-semibold rounded"
           >
-            {editingCode ? '更新' : '新增'}
+            {editingCode ? 'Update' : 'Create'}
           </button>
         </div>
         {editingCode && (
@@ -193,77 +204,65 @@ export default function AdminInvitesPage() {
             onClick={() => { setForm({ ...DEFAULT_NEW }); setEditingCode(null); }}
             className="text-[10px] font-mono text-text-tertiary hover:text-accent"
           >
-            取消编辑
+            Cancel edit
           </button>
         )}
         {saveMsg && (
-          <div className={`mt-2 text-[11px] font-mono ${saveMsg.startsWith('✓') ? 'text-success' : 'text-error'}`}>
+          <div className={`mt-2 text-[11px] font-mono ${saveOk ? 'text-success' : 'text-error'}`}>
             {saveMsg}
           </div>
         )}
       </div>
 
-      {/* 名册列表 */}
       {loading ? (
-        <div className="text-center py-12 text-text-tertiary font-mono text-[12px]">加载中...</div>
+        <div className="text-center py-12 text-text-tertiary font-mono text-[12px]">Loading invite codes...</div>
       ) : sorted.length === 0 ? (
         <div className="text-center py-12 border border-border-subtle rounded-md text-text-tertiary text-[13px]">
-          暂无邀请码
+          No invite codes yet.
         </div>
       ) : (
-        <div className="border border-border-subtle rounded-md overflow-hidden">
-          <div className="px-3 py-2 bg-bg-raised/50 border-b border-border-subtle grid grid-cols-12 gap-2 text-[9px] font-mono text-text-tertiary uppercase">
-            <div className="col-span-3">Code</div>
-            <div className="col-span-3">Name</div>
-            <div className="col-span-2">到期</div>
-            <div className="col-span-1">Tier</div>
-            <div className="col-span-3 text-right">操作</div>
-          </div>
-          <div className="divide-y divide-border-subtle">
-            {sorted.map(([code, inv]) => {
-              const daysLeft = Math.ceil((new Date(inv.expiresAt + 'T23:59:59').getTime() - Date.now()) / 86400000);
-              const expired = daysLeft < 0;
-              return (
-                <div key={code} className="px-3 py-2.5 grid grid-cols-12 gap-2 items-center text-[12px] hover:bg-bg-surface/50">
-                  <div className="col-span-3 font-mono text-accent truncate">{code}</div>
-                  <div className="col-span-3 truncate">{inv.name}</div>
-                  <div className={`col-span-2 font-mono text-[11px] ${expired ? 'text-error' : daysLeft <= 7 ? 'text-accent' : 'text-text-secondary'}`}>
-                    {inv.expiresAt}
-                    <span className="block text-[9px] opacity-60">
-                      {expired ? '已过期' : `剩 ${daysLeft} 天`}
-                    </span>
-                  </div>
-                  <div className="col-span-1 font-mono text-[10px] text-text-tertiary">{inv.tier || 'free'}</div>
-                  <div className="col-span-3 flex justify-end gap-1.5">
-                    <button
-                      onClick={() => handleCopyLink(code)}
-                      className="text-[10px] font-mono text-text-tertiary hover:text-accent px-2 py-1"
-                    >
-                      复制链接
-                    </button>
-                    <button
-                      onClick={() => handleEdit(code, inv)}
-                      className="text-[10px] font-mono text-text-tertiary hover:text-accent px-2 py-1"
-                    >
-                      编辑
-                    </button>
-                    <button
-                      onClick={() => handleDelete(code)}
-                      className="text-[10px] font-mono text-text-tertiary hover:text-error px-2 py-1"
-                    >
-                      删除
-                    </button>
-                  </div>
+        <div className="space-y-2">
+          {sorted.map(([code, invite]) => (
+            <div key={code} className="border border-border-subtle rounded-md p-4 flex items-center justify-between gap-4">
+              <div className="min-w-0">
+                <div className="flex items-center gap-2 mb-1 flex-wrap">
+                  <span className="font-mono text-[14px] font-bold text-accent">{code}</span>
+                  <span className="text-[10px] font-mono text-text-tertiary px-1.5 py-0.5 border border-border-subtle rounded">
+                    {invite.tier || 'free'}
+                  </span>
+                  <span className="text-[10px] font-mono text-text-tertiary">
+                    tenant: {invite.tenantId || 'default'}
+                  </span>
                 </div>
-              );
-            })}
-          </div>
+                <div className="text-[13px] text-text-primary">{invite.name}</div>
+                <div className="text-[11px] font-mono text-text-tertiary mt-1">
+                  Expires {invite.expiresAt}
+                </div>
+              </div>
+              <div className="flex items-center gap-2 flex-shrink-0">
+                <button
+                  onClick={() => handleCopyLink(code)}
+                  className="px-2 py-1 text-[11px] font-mono text-accent border border-accent/30 rounded hover:bg-accent/10"
+                >
+                  Copy link
+                </button>
+                <button
+                  onClick={() => handleEdit(code, invite)}
+                  className="px-2 py-1 text-[11px] font-mono text-text-secondary border border-border-subtle rounded hover:border-accent/40"
+                >
+                  Edit
+                </button>
+                <button
+                  onClick={() => handleDelete(code)}
+                  className="px-2 py-1 text-[11px] font-mono text-error border border-error/30 rounded hover:bg-error/10"
+                >
+                  Delete
+                </button>
+              </div>
+            </div>
+          ))}
         </div>
       )}
-
-      <div className="mt-6 text-[10px] font-mono text-text-tertiary">
-        内置名册 (alice/bob/charlie/demo/wzqfriend) 不可删除,修改需改 env INVITE_ROSTER
-      </div>
     </div>
   );
 }
