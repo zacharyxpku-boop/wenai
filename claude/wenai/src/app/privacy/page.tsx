@@ -150,13 +150,13 @@ export default function PrivacyPage() {
         <p>不使用追踪 Cookie、不使用第三方分析工具（Google Analytics / Mixpanel / Hotjar 等均未接入）。</p>
 
         <h2>10. 儿童隐私</h2>
-        <p>wenai 为面向企业用户的 B2B SaaS，不面向 18 岁以下未成年人。我们不会故意收集未成年人的个人信息。</p>
+        <p>wenai 为面向企业用户的 SKU 上新工作流子站，不面向 18 岁以下未成年人。我们不会故意收集未成年人的个人信息。</p>
 
         <h2>11. 政策变更</h2>
         <p>本政策如有重大变更（含子处理者清单扩展、数据保留周期调整、跨境传输范围变化等），我们将至少提前 14 天通过站内公告及注册邮箱通知。继续使用即视为接受变更。</p>
 
         <h2>12. DPA（数据处理协议）</h2>
-        <p>Team 与 Enterprise 订阅支持签署标准数据处理协议（DPA），遵循 GDPR 第 28 条。请邮件 <code>zachary.x.pku@gmail.com</code> 索取 DPA 模板。</p>
+        <p>POC 与 Enterprise 接入可按主站订单或双方合同签署数据处理协议（DPA），遵循 GDPR 第 28 条。请邮件 <code>zachary.x.pku@gmail.com</code> 索取 DPA 模板。</p>
 
         <h2>联系方式</h2>
         <p>数据保护相关问题：<code>zachary.x.pku@gmail.com</code>（主题：数据保护 / DPA / 子处理者变更订阅）</p>

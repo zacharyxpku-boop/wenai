@@ -96,15 +96,15 @@ export default function StatusPage() {
             </p>
           </div>
           <div>
-            <div className="text-[13px] font-semibold text-text-primary mb-1">Team</div>
+            <div className="text-[13px] font-semibold text-text-primary mb-1">POC</div>
             <p className="text-[11px] text-text-secondary leading-relaxed">
-              <span className="text-accent font-mono">99.5%</span> 月度可用性，故障 48 小时内响应。
+              演示环境 best effort，正式额度和响应窗口以接入订单为准。
             </p>
           </div>
           <div>
             <div className="text-[13px] font-semibold text-text-primary mb-1">Enterprise</div>
             <p className="text-[11px] text-text-secondary leading-relaxed">
-              <span className="text-accent font-mono">99.9%</span> 合同约定，含 SLA 赔偿条款。
+              SLA、赔偿、响应等级和例外情况按双方合同约定。
             </p>
           </div>
         </div>
