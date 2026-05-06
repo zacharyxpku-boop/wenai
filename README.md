@@ -1,6 +1,6 @@
-# wenai · 跨境代运营流水线 OS
+# wenai · SKU 上新物料包子站
 
-> 代运营日均重复劳动，用 3 条 Pipeline 吃掉。不做大平台，做流水线。
+> 输入 SKU 信息，生成上新 SOP、主图方向、详情页文案、合规提醒、客服话术和复评 checklist。本仓库作为独立主站里的产品介绍 + 演示 + 线索承接子站，不在这里完成收款。
 
 [![Next.js](https://img.shields.io/badge/Next.js-16-black?logo=next.js)](https://nextjs.org)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
@@ -8,37 +8,79 @@
 [![Vercel](https://img.shields.io/badge/Vercel-000?logo=vercel)](https://wenai-one.vercel.app)
 [![License](https://img.shields.io/badge/License-proprietary-red)](#license)
 
-五大品类（家居 / 汽摩 / 数码 / 工具 / 生活百货）各有专属 prompt 调教，比通用 GPT 懂 FCC、BPA-Free、CAT III、LFGB。
+当前商业化主线不是“19 个工具集合”，而是一个可解释、可交付、可验收的 SKU 上新工作流。正式收费、合同、发票和支付由独立主站或线下订单承接。
 
 ## 快速体验
 
 | 入口 | URL | 说明 |
 |---|---|---|
-| 🏠 工作台 | [wenai-one.vercel.app](https://wenai-one.vercel.app) | 登录后看到 3 Pipeline + Toolbox |
-| 🎟️ Demo 邀请 | [/invite?code=demo](https://wenai-one.vercel.app/invite?code=demo) | 无需注册直接进 |
-| ⚡ 15 秒 demo | [/pipelines/new-listing?demo=1](https://wenai-one.vercel.app/pipelines/new-listing?demo=1) | 零输入看真 AI 输出 |
-| 📊 案例 | [/cases](https://wenai-one.vercel.app/cases) | 4 条 Before/After 对比 |
-| 💎 定价 | [/pricing](https://wenai-one.vercel.app/pricing) | Free / Team ¥499 / Ent |
+| 🏠 子站首页 | [wenai-one.vercel.app](https://wenai-one.vercel.app) | 产品定位、样例、接入入口 |
+| ⚡ 演示入口 | [/demo](https://wenai-one.vercel.app/demo) | 自动进入 5 个演示 SKU 的批量上新流程 |
+| 🏭 批量上新 | [/pipelines/batch-launch?demo=1](https://wenai-one.vercel.app/pipelines/batch-launch?demo=1) | 预填样例 SKU，生成批量上新 SOP |
+| 📊 样例 | [/cases](https://wenai-one.vercel.app/cases) | 内测样例，不包装成客户业绩证明 |
+| 💎 接入方案 | [/pricing](https://wenai-one.vercel.app/pricing) | 演示 / 10 SKU POC / 企业接入 |
+| 📝 接入需求 | [/inquire](https://wenai-one.vercel.app/inquire) | 收集 POC 和企业接入线索 |
 | 🟢 状态 | [/status](https://wenai-one.vercel.app/status) | SLA 可观测 |
+
+## POC 交付 SOP
+
+商业化交付不靠临场发挥。正式 POC 按 [docs/POC_DELIVERY_SOP.md](docs/POC_DELIVERY_SOP.md) 执行:
+
+1. 先资格判断: 10 个真实 SKU、目标平台、素材状态、验收口径。
+2. 再生成交付包: SKU 简报、主图方向、详情页文案、合规提醒、客服话术、30 天复评 checklist。
+3. 增加内容拆解与增长测试包: 产品读图、搜索地图、benchmark 拆解、hook、首帧、脚本、素材清单、7 天测试排期。
+4. 高阶项目增加创意生产包: Podcast UGC / Street Interview / Batch UGC / Slideshow / Animated Ads / Editing。
+5. 最后复盘决策: 验收分、返工点、benchmark 证据、内容测试信号、是否进入主站合同/支付流程。
+
+后台 `/admin/inquiries` 负责沉淀负责人、下一动作、跟进日期、验收分和复盘结论。
+
+## 标品化 SOP 内核
+
+wenai 不要求用户理解内部 skills。SOP 已经沉到代码层:
+
+- `src/lib/sop-workflows.ts`: workflow 模板、推荐逻辑、缺料清单、验收标准、人工终审边界、Markdown 交付包。
+- `/pipelines/marketing-campaign`: 面向用户的市场宣传工作台, 自然语言输入后输出稳定标品。
+- `/api/standard-pack`: 标准交付包 API, 后续可被批量上新、询盘后台、主站合同流复用。
+
+原则: 用户只填业务信息, 系统负责选择 workflow、暴露缺料、生成可执行交付包。
+
+## 最终目标
+
+wenai 的最终目标已经收敛为一个非常具体的商业结果:
+
+**把这个子站做成能稳定承接并推进 `10 SKU POC -> 复盘 -> 主站合同/支付` 的成交前台。**
+
+北极星指标不是流量，不是工具数量，而是:
+
+**每月进合同的合格 POC 数**
+
+这意味着我们优先优化四件事:
+
+1. 线索质量，而不是粗暴放大询盘数
+2. POC 交付率，而不是做一堆无法验收的演示
+3. 复盘率，而不是交付完就断掉
+4. 合同推进率，而不是停留在“客户觉得不错”
+
+完整定义见 [docs/FINAL_GOAL.md](docs/FINAL_GOAL.md)。
+
+PostPlus 的 agent workflow 可作为参考，但 wenai 不做泛社媒 OS。融合方案见 [docs/POSTPLUS_ECOMMERCE_INTEGRATION.md](docs/POSTPLUS_ECOMMERCE_INTEGRATION.md)，TikTok / Instagram 内容营销 SOP 见 [docs/CONTENT_BENCHMARK_SOP.md](docs/CONTENT_BENCHMARK_SOP.md)，创意生产层见 [docs/CREATIVE_PRODUCTION_PACK.md](docs/CREATIVE_PRODUCTION_PACK.md)。
 
 ## 架构
 
 ```
-┌─── 3 Pipeline (旗舰) ────────────────────┐
-│  01 新品上新      → 翻译 + 文案 + 合规    │
-│  02 达人冷启      → 批量个性化邮件        │
-│  03 AI 电商主图   → 5 张图组合 · 通义万相 │
-└──────────────────────────────────────────┘
-              ↓ 联动 + 分享
-┌─── 19 Toolbox (单点工具) ────────────────┐
-│  执行: 翻译/评论/外联/视频/OCR          │
-│  内容: 文案/种草/主图/直播/定位          │
-│  情报: 竞品/选品/运营/合规/数据/投流     │
-│  服务: 客服转化/获客/私域                │
+┌─── 子站公开层 ───────────────────────────┐
+│ 首页 / 样例 / 接入方案 / 询盘 / 分享卡    │
 └──────────────────────────────────────────┘
               ↓
-        公开分享 /share/<id>
-        (7 天 TTL · 自动 OG 图)
+┌─── SKU 上新工作流 ───────────────────────┐
+│ 输入 SKU 列表 + 平台 + 品牌上下文          │
+│ 输出 SOP / Prompt / 参数 / 验收标准        │
+│ 附带合规提醒 / 客服话术 / 复评 checklist  │
+└──────────────────────────────────────────┘
+              ↓
+┌─── 商业承接 ─────────────────────────────┐
+│ 演示免费看形态 → 10 SKU POC → 主站支付/合同 │
+└──────────────────────────────────────────┘
 ```
 
 **决策留痕** (`.planning/`)：
@@ -87,17 +129,17 @@ Pipeline 是编排，Toolbox 是零件。两者共存：
 
 ---
 
-## 定价（2026-04）
+## 商业承接（2026-05）
 
-| 档 | 价 | Pipeline 配额 | Toolbox 配额 | 特征 |
+| 档 | 收费位置 | 交付范围 | 特征 |
 |---|---|---|---|---|
-| Free | ¥0 · 7 天 | 10 次/天 | 50 次/天 单模块 | 邀请码激活 |
-| Team | ¥499/月 | 500 次/天 | — | 5 席 · Excel 导出 · 邮件客服 |
-| Enterprise | 面议 | 无限 | — | 本地部署 · 品类深度定制 · SLA 99.9% |
+| 演示 | 子站免费 | 5 个样例 SKU | 看输出形态，不承诺真实业务效果 |
+| 10 SKU POC | 主站支付/合同 | 真实 SKU 上新物料包 | 验证复改边界、验收标准、复评节奏 |
+| Enterprise | 合同定价 | API / ERP / 独立站嵌入 | SLA、发票、数据边界按合同约定 |
 
 见 `/pricing`
 
-*按分层逻辑详见 `.planning/DECISION.md`*
+*当前代码作为主站子站使用，不在本仓库内完成扣款。*
 
 ---
 
@@ -112,7 +154,7 @@ cp .env.example .env.local
 npm run dev
 ```
 
-访问 http://localhost:3000 → 用 `/invite?code=demo` 激活体验。
+访问 http://localhost:3000 → 打开 `/demo`，会自动进入 5 个演示 SKU 的批量上新流程。
 
 ### 必填环境变量
 

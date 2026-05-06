@@ -43,7 +43,7 @@ const PUBLIC_PAGE_PREFIXES = [
   '/resources', // 资源中心
 ];
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // 完全公开 (含 API)

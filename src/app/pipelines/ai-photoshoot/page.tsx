@@ -6,6 +6,7 @@ import JSZip from 'jszip';
 import { applyImageWatermark } from '@/lib/aigc';
 import { useActiveSkuId } from '@/lib/use-active-sku';
 import { ActiveSkuBadge } from '@/components/ActiveSkuBadge';
+import { buildPhotoshootStandardPackRoute } from '@/lib/standard-pack-routing';
 import {
   resolvePrompt,
   CATEGORY_LABELS,
@@ -56,6 +57,27 @@ interface ModeMeta {
   cost: string;
   refSlots: { label: string; required: boolean; hint: string }[];
   promptHint: string;
+}
+
+function buildPhotoshootResultSummary(input: {
+  images: GenImage[];
+  modeLabel: string;
+  productHint: string;
+  quality: Quality;
+  size: Size;
+  fromCache: boolean;
+  cost: CostInfo | null;
+}): string {
+  return [
+    `mode: ${input.modeLabel}`,
+    `product: ${input.productHint || '(not specified)'}`,
+    `generated images: ${input.images.length}`,
+    `quality: ${input.quality}`,
+    `size: ${input.size}`,
+    `cache: ${input.fromCache ? 'hit' : 'miss'}`,
+    input.cost ? `cost usd: ${input.cost.totalUsd}` : '',
+    `acceptance checklist: image count, platform fit, product fidelity, AIGC watermark, download/share readiness`,
+  ].filter(Boolean).join('\n');
 }
 
 // ============================================================
@@ -132,15 +154,15 @@ const MODES: Record<Mode, ModeMeta> = {
     promptHint: '可补充: 卖点 / 核心参数 / 目标平台。AI 自动分配 12 个机位。',
   },
   'hot-clone': {
-    title: '爆款复刻',
+    title: '高转化结构参考',
     icon: '🔥',
-    desc: '你的产品 + 竞品爆款截图 → 1:1 复刻构图/光影/排版',
-    cost: '蹭爆款流量 · 替代美工拆解 ¥1-3K/次',
+    desc: '你的产品 + 参考截图 → 提炼构图逻辑, 生成差异化主图方案',
+    cost: '参考行业结构 · 替代美工初稿拆解 ¥1-3K/次',
     refSlots: [
       { label: '你的产品图', required: true, hint: '白底/带背景都行' },
-      { label: '竞品爆款图', required: true, hint: '截图淘宝/Amazon/拼多多的爆款主图' },
+      { label: '参考主图', required: true, hint: '可用行业样例或竞品截图, 仅提炼结构' },
     ],
-    promptHint: '默认: 完整借用图二的构图、光影、配色、排版,把图一产品换上去。可强调要不要保留竞品的促销贴/文字。',
+    promptHint: '默认: 分析图二的构图逻辑、光影方向和信息层级, 为图一产品生成差异化主图。不要照抄品牌、文案、价格或独特装饰元素。',
   },
 };
 
@@ -214,10 +236,10 @@ const PROMPT_TEMPLATES: Record<Mode, (extra: string) => string> = {
   ].filter(Boolean).join(' '),
 
   'hot-clone': extra => [
-    '生成一张电商主图,核心要求: 完整借用图二(竞品爆款)的画面构图、镜头角度、光影方向、色调氛围、文字排版位置、装饰元素分布,',
-    '把图一(我的产品)替换到图二原产品所在位置,产品本体特征(形状/颜色/材质)严格保留图一不变。',
-    '注意: 不要照抄竞品的品牌名、logo、促销价格数字,这些必须替换为通用占位或留空,避免侵权。',
-    '其他视觉语言(布景/道具/光线/风格)与竞品高度一致,目标是"换品不换感",蹭爆款流量。',
+    '生成一张电商主图,核心要求: 参考图二的信息层级、镜头距离、光影方向和卖点表达方式, 但重新设计构图、道具、色彩和文字排版。',
+    '把图一(我的产品)作为主角,产品本体特征(形状/颜色/材质)严格保留图一不变。',
+    '注意: 不要照抄竞品的品牌名、logo、促销价格数字、独特装饰元素或可识别版式,这些必须替换为原创表达或留空。',
+    '目标是生成同类目高转化候选方案, 与参考图保持明显差异, 便于人工终审。',
     '8K 超清,电商主图规范。',
     extra ? `特殊要求: ${extra}` : '',
   ].filter(Boolean).join(' '),
@@ -237,7 +259,6 @@ export default function AIPhotoshootPage() {
 
   // 从 ?prompt= 预填 (从 video-teardown 跳过来时带着 scene prompt)
   // 只在 mount 时读一次, 不依赖 query 变化
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     const sp = new URLSearchParams(window.location.search);
     const incoming = sp.get('prompt');
@@ -460,7 +481,7 @@ export default function AIPhotoshootPage() {
         '',
         '---',
         '',
-        '> 由 [wenai AI 影棚](/pipelines/ai-photoshoot) 生成 · GPT Image 2 同款 OpenAI 模型 · 7 天有效',
+        '> 由 [wenai AI 影棚](/pipelines/ai-photoshoot) 生成候选图 · 7 天有效',
       ].filter(Boolean).join('\n');
 
       const res = await fetch('/api/share', {
@@ -532,6 +553,33 @@ export default function AIPhotoshootPage() {
 
   const finalPrompt = PROMPT_TEMPLATES[mode](extraPrompt.trim());
   const estCostUsd = ({ low: 0.011, medium: 0.042, high: 0.167 }[quality] * n);
+  const standardPackHref = buildPhotoshootStandardPackRoute({
+    modeLabel: meta.title,
+    productHint,
+    prompt: finalPrompt,
+    quality,
+    size,
+    count: n,
+  });
+  const resultStandardPackHref = images.length > 0
+    ? buildPhotoshootStandardPackRoute({
+        modeLabel: meta.title,
+        productHint,
+        prompt: finalPrompt,
+        quality,
+        size,
+        count: images.length,
+        resultSummary: buildPhotoshootResultSummary({
+          images,
+          modeLabel: meta.title,
+          productHint,
+          quality,
+          size,
+          fromCache,
+          cost,
+        }),
+      })
+    : '';
 
   return (
     <div className="min-h-screen bg-bg-root">
@@ -832,13 +880,21 @@ export default function AIPhotoshootPage() {
           </section>
 
           {/* CTA */}
-          <button
-            onClick={handleGenerate}
-            disabled={running}
-            className="w-full py-3.5 bg-accent text-bg-root rounded-lg text-[14px] font-bold hover:bg-accent-hover disabled:opacity-40 disabled:cursor-not-allowed transition-all"
-          >
-            {running ? '生成中... (15-40 秒)' : `🎬 开始生成 · ${n} 张`}
-          </button>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            <button
+              onClick={handleGenerate}
+              disabled={running}
+              className="w-full py-3.5 bg-accent text-bg-root rounded-lg text-[14px] font-bold hover:bg-accent-hover disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+            >
+              {running ? '生成中... (15-40 秒)' : `🎬 开始生成 · ${n} 张`}
+            </button>
+            <Link
+              href={standardPackHref}
+              className="w-full py-3.5 rounded-lg text-[12px] font-bold text-center border border-cat-content/40 text-cat-content hover:bg-cat-content/10 transition-colors"
+            >
+              生成影棚 SOP 标品包
+            </Link>
+          </div>
 
           {error && (
             <div className="p-3 border border-error/40 bg-error/5 rounded text-[11px] text-error">
@@ -928,6 +984,12 @@ export default function AIPhotoshootPage() {
                   )}
                 </div>
                 <div className="flex gap-2 flex-wrap">
+                  <Link
+                    href={resultStandardPackHref}
+                    className="px-3 py-1.5 border border-cat-content/40 text-cat-content text-[11px] font-mono rounded hover:bg-cat-content/10"
+                  >
+                    生成素材验收标品包
+                  </Link>
                   <button
                     onClick={saveToSkuLibrary}
                     disabled={savingSku || savedSku}
@@ -1209,9 +1271,9 @@ function EmptyState({ mode }: { mode: Mode }) {
       { emoji: '⑫', title: '参数包装组', desc: '参数标注 + 包装外观 + 拆箱内含' },
     ],
     'hot-clone': [
-      { emoji: '🔥', title: '蹭爆款流量', desc: '把竞品热销主图的构图直接换上你的货' },
-      { emoji: '🎯', title: '换品不换感', desc: '产品本体保留,光影/排版/道具沿用爆款' },
-      { emoji: '⚖️', title: '避商标雷区', desc: '自动替换竞品 logo/品牌名/促销价数字' },
+      { emoji: '🔥', title: '参考高转化结构', desc: '提炼同类目主图的信息层级和卖点表达' },
+      { emoji: '🎯', title: '生成差异化方案', desc: '产品本体保留,构图/排版/道具重新设计' },
+      { emoji: '⚖️', title: '保留终审边界', desc: '避免照抄 logo/品牌名/促销价和独特版式' },
     ],
   };
   const meta = MODES[mode];
@@ -1244,7 +1306,7 @@ function NextStepHint({ mode, onSwitch }: { mode: Mode; onSwitch: (m: Mode) => v
     'scene-change': { mode: 'ootd-flatlay', cta: '场景拍完 → 去 OOTD 拆解一套出 8 张单品图' },
     'ootd-flatlay': { mode: 'platform-style', cta: '单品出齐 → 去平台调性按 Amazon/淘宝/拼多多重做主图' },
     'platform-style': { mode: 'full-detail-set', cta: '主图选定 → 去全套详情一键生成 12 张完整详情页' },
-    'full-detail-set': { mode: 'hot-clone', cta: '想蹭爆款 → 去爆款复刻拿竞品爆图换上你的货' },
+    'full-detail-set': { mode: 'hot-clone', cta: '参考行业结构 → 生成差异化主图候选' },
     'hot-clone': null,
   };
   const n = next[mode];

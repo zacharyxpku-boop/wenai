@@ -12,7 +12,7 @@ export default function DemoPage() {
     try {
       const res = await fetch('/api/auth/demo', { method: 'POST' });
       if (res.ok) {
-        router.push('/');
+        router.push('/pipelines/batch-launch?demo=1');
         router.refresh();
       }
     } catch {
@@ -36,7 +36,7 @@ export default function DemoPage() {
             Wenai Demo
           </h1>
           <p className="text-text-tertiary text-[11px] font-mono tracking-wide">
-            AI跨境电商员工系统 · 体验模式
+            SKU 上新工作流 · 演示模式
           </p>
         </div>
 
@@ -44,15 +44,15 @@ export default function DemoPage() {
           <div className="space-y-3">
             <div className="flex items-start gap-3 text-[12px] text-text-secondary">
               <span className="text-accent mt-0.5">01</span>
-              <span>15个AI员工模块，覆盖翻译、文案、竞品、合规等全链路</span>
+              <span>从 5 个演示 SKU 开始, 生成批量上架 SOP 和复评 checklist</span>
             </div>
             <div className="flex items-start gap-3 text-[12px] text-text-secondary">
               <span className="text-accent mt-0.5">02</span>
-              <span>5个真实SKU demo数据，含合规标签和供应链信息</span>
+              <span>演示数据用于看输出形态, 不作为客户业绩证明</span>
             </div>
             <div className="flex items-start gap-3 text-[12px] text-text-secondary">
               <span className="text-accent mt-0.5">03</span>
-              <span>体验模式下所有功能可用，数据不保存</span>
+              <span>正式收费和合同走独立主站, 子站只承接试跑和接入需求</span>
             </div>
           </div>
 

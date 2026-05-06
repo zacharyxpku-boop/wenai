@@ -7,6 +7,7 @@ import { checkRateLimit } from '@/lib/ratelimit';
 import { verifyToken, getCookieName } from '@/lib/auth';
 import { checkCostCap, recordCostWithDetail } from '@/lib/cost-cap';
 import { getCategoryPrefix, CATEGORIES } from '@/lib/category-prompts';
+import { inferPlanFromUser } from '@/lib/entitlements';
 
 const CATEGORY_WHITELIST: Set<string> = new Set(CATEGORIES.map(c => c.id));
 import { extractBrandKeywords, queryTrademark } from '@/app/api/trademark/route';
@@ -161,18 +162,22 @@ export async function POST(request: NextRequest) {
   // 速率限制检查 — 优先按 JWT 用户名隔离，避免所有 beta 用户共享配额
   const tenantId = request.headers.get('x-tenant-id') || 'default';
   let rateKey: string = tenantId;
+  let plan = 'free';
   try {
     const token = request.cookies.get(getCookieName())?.value;
     if (token) {
       const payload = await verifyToken(token);
-      if (payload?.username) rateKey = payload.username; // 例：beta_alice / beta_wzqfriend
+      if (payload?.username) {
+        rateKey = payload.username; // 例：beta_alice / beta_wzqfriend
+        plan = inferPlanFromUser(payload.role);
+      }
     }
   } catch { /* ignore, fallback to tenant-id */ }
 
   // Pipeline 触发的请求已在 Pipeline 级别预占配额，跳过 per-module 限额
   // fromPipeline 已在 body 层读取 (含 header 向后兼容)
   if (moduleId && !fromPipeline) {
-    const limit = await checkRateLimit(moduleId, rateKey);
+    const limit = await checkRateLimit(moduleId, rateKey, plan);
     if (!limit.allowed) {
       return NextResponse.json(
         { error: `今日调用次数已达上限，将于 ${new Date(limit.resetAt).toLocaleString('zh-CN')} 重置` },

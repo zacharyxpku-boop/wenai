@@ -3,6 +3,7 @@
   "industry": "跨境出海电商",
   "languages": ["en", "ja", "ko", "es", "fr", "de", "pt", "ar", "th", "vi"],
   "enabledModules": [
+    "standard-pack",
     "translate", "outreach", "reviews", "video",
     "ocr-translate",
     "copywriting", "content", "images", "livestream", "positioning",

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { checkRateLimit } from '@/lib/ratelimit';
 import { verifyToken, getCookieName } from '@/lib/auth';
+import { inferPlanFromUser } from '@/lib/entitlements';
 
 /**
  * Pipeline 级别配额检查
@@ -16,15 +17,19 @@ export async function POST(request: NextRequest) {
 
   // 按 JWT 用户名隔离
   let rateKey = request.headers.get('x-tenant-id') || 'default';
+  let plan = 'free';
   try {
     const token = request.cookies.get(getCookieName())?.value;
     if (token) {
       const payload = await verifyToken(token);
-      if (payload?.username) rateKey = payload.username;
+      if (payload?.username) {
+        rateKey = payload.username;
+        plan = inferPlanFromUser(payload.role);
+      }
     }
   } catch {}
 
-  const limit = await checkRateLimit(kind, rateKey);
+  const limit = await checkRateLimit(kind, rateKey, plan);
   return NextResponse.json({
     allowed: limit.allowed,
     remaining: limit.remaining,

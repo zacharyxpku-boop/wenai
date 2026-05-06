@@ -1,14 +1,9 @@
 'use client';
 
+import Link from 'next/link';
 import { useState } from 'react';
 import { COPY } from '@/i18n/zh';
 
-/**
- * Marketing 顶导 · sticky + backdrop blur
- *
- * 桌面: logo · 中央导航 (产品 ▼ / 案例 / 定价 / 资源 ▼ / 关于) · 右 CTA (登录 + 免费开始)
- * 移动: logo · hamburger → 全屏菜单
- */
 export default function TopNav() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<'product' | 'resource' | null>(null);
@@ -16,234 +11,91 @@ export default function TopNav() {
   const closeMobile = () => setMobileOpen(false);
 
   return (
-    <header className="sticky top-0 z-50 bg-bg-root/85 backdrop-blur-md border-b border-border-subtle">
-      <div className="max-w-[1200px] mx-auto px-5 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
-          {/* Logo */}
-          <a
+    <header className="sticky top-0 z-50 border-b border-border-subtle bg-bg-root/85 backdrop-blur-md">
+      <div className="mx-auto max-w-[1200px] px-5 sm:px-6 lg:px-8">
+        <div className="flex h-16 items-center justify-between">
+          <Link
             href="/"
-            className="text-xl font-bold text-accent font-[family-name:var(--font-outfit)] tracking-tight"
+            className="text-xl font-bold tracking-tight text-accent font-[family-name:var(--font-outfit)]"
           >
             {COPY.brand.name}
-          </a>
+          </Link>
 
-          {/* Desktop nav */}
-          <nav className="hidden md:flex items-center gap-1">
-            {/* 产品 dropdown */}
-            <div
-              className="relative"
-              onMouseEnter={() => setOpenDropdown('product')}
-              onMouseLeave={() => setOpenDropdown(null)}
-            >
-              <button
-                type="button"
-                aria-haspopup="true"
-                aria-expanded={openDropdown === 'product'}
-                className="px-3 py-2 text-[14px] text-text-secondary hover:text-text-primary transition-colors flex items-center gap-1"
-              >
-                {COPY.nav.products}
-                <span className="text-[10px] opacity-60">⌄</span>
-              </button>
-              {openDropdown === 'product' && (
-                <div className="absolute left-0 top-full pt-2 w-[320px]">
-                  <div className="bg-bg-raised border border-border-default rounded-lg shadow-2xl overflow-hidden">
-                    {COPY.nav.productItems.map((item) => (
-                      <a
-                        key={item.href}
-                        href={item.href}
-                        className="block px-4 py-3 hover:bg-bg-surface transition-colors border-b border-border-subtle last:border-b-0"
-                      >
-                        <div className="text-[14px] font-semibold text-text-primary">
-                          {item.label}
-                        </div>
-                        <div className="text-[12px] text-text-tertiary mt-0.5">
-                          {item.desc}
-                        </div>
-                      </a>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
+          <nav className="hidden items-center gap-1 md:flex">
+            <Dropdown
+              label={COPY.nav.products}
+              open={openDropdown === 'product'}
+              onOpen={() => setOpenDropdown('product')}
+              onClose={() => setOpenDropdown(null)}
+              items={COPY.nav.productItems}
+            />
 
-            <a
-              href="/cases"
-              className="px-3 py-2 text-[14px] text-text-secondary hover:text-text-primary transition-colors"
-            >
-              {COPY.nav.cases}
-            </a>
+            <NavLink href="/cases">{COPY.nav.cases}</NavLink>
+            <NavLink href="/pricing">{COPY.nav.pricing}</NavLink>
 
-            <a
-              href="/pricing"
-              className="px-3 py-2 text-[14px] text-text-secondary hover:text-text-primary transition-colors"
-            >
-              {COPY.nav.pricing}
-            </a>
+            <Dropdown
+              label={COPY.nav.resources}
+              open={openDropdown === 'resource'}
+              onOpen={() => setOpenDropdown('resource')}
+              onClose={() => setOpenDropdown(null)}
+              items={COPY.nav.resourceItems}
+            />
 
-            {/* 资源 dropdown */}
-            <div
-              className="relative"
-              onMouseEnter={() => setOpenDropdown('resource')}
-              onMouseLeave={() => setOpenDropdown(null)}
-            >
-              <button
-                type="button"
-                aria-haspopup="true"
-                aria-expanded={openDropdown === 'resource'}
-                className="px-3 py-2 text-[14px] text-text-secondary hover:text-text-primary transition-colors flex items-center gap-1"
-              >
-                {COPY.nav.resources}
-                <span className="text-[10px] opacity-60">⌄</span>
-              </button>
-              {openDropdown === 'resource' && (
-                <div className="absolute left-0 top-full pt-2 w-[320px]">
-                  <div className="bg-bg-raised border border-border-default rounded-lg shadow-2xl overflow-hidden">
-                    {COPY.nav.resourceItems.map((item) => (
-                      <a
-                        key={item.label}
-                        href={item.href}
-                        className="block px-4 py-3 hover:bg-bg-surface transition-colors border-b border-border-subtle last:border-b-0"
-                      >
-                        <div className="text-[14px] font-semibold text-text-primary">
-                          {item.label}
-                        </div>
-                        <div className="text-[12px] text-text-tertiary mt-0.5">
-                          {item.desc}
-                        </div>
-                      </a>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-
-            <a
-              href="/about"
-              className="px-3 py-2 text-[14px] text-text-secondary hover:text-text-primary transition-colors"
-            >
-              {COPY.nav.about}
-            </a>
+            <NavLink href="/about">{COPY.nav.about}</NavLink>
           </nav>
 
-          {/* Desktop CTAs */}
-          <div className="hidden md:flex items-center gap-2">
+          <div className="hidden items-center gap-2 md:flex">
             <a
               href="/login"
-              className="px-4 py-2 text-[13px] font-medium text-text-secondary hover:text-text-primary transition-colors"
+              className="px-4 py-2 text-[13px] font-medium text-text-secondary transition-colors hover:text-text-primary"
             >
               {COPY.nav.login}
             </a>
             <a
-              href="/me/skus"
-              className="px-4 py-2 text-[13px] font-semibold rounded-md bg-accent text-bg-root hover:bg-accent-hover transition-colors"
+              href="/demo"
+              className="rounded-md bg-accent px-4 py-2 text-[13px] font-semibold text-bg-root transition-colors hover:bg-accent-hover"
             >
               {COPY.nav.cta}
             </a>
           </div>
 
-          {/* Mobile hamburger */}
           <button
             type="button"
             aria-label={mobileOpen ? '关闭菜单' : '打开菜单'}
             aria-expanded={mobileOpen}
-            onClick={() => setMobileOpen((v) => !v)}
-            className="md:hidden text-text-primary text-2xl w-10 h-10 flex items-center justify-center hover:text-accent transition-colors"
+            onClick={() => setMobileOpen((value) => !value)}
+            className="flex size-10 items-center justify-center text-2xl text-text-primary transition-colors hover:text-accent md:hidden"
           >
-            {mobileOpen ? '✕' : '☰'}
+            {mobileOpen ? 'x' : '='}
           </button>
         </div>
       </div>
 
-      {/* Mobile fullscreen menu */}
       {mobileOpen && (
-        <div className="md:hidden fixed inset-0 top-16 bg-bg-root z-40 overflow-y-auto">
-          <div className="px-5 py-6 space-y-6">
-            {/* 产品 */}
-            <div>
-              <div className="text-[11px] uppercase tracking-wider text-text-tertiary mb-2 px-3">
-                {COPY.nav.products}
-              </div>
-              <div className="space-y-1">
-                {COPY.nav.productItems.map((item) => (
-                  <a
-                    key={item.href}
-                    href={item.href}
-                    onClick={closeMobile}
-                    className="block px-3 py-3 rounded-md hover:bg-bg-surface transition-colors"
-                  >
-                    <div className="text-[15px] font-semibold text-text-primary">
-                      {item.label}
-                    </div>
-                    <div className="text-[12px] text-text-tertiary mt-0.5">
-                      {item.desc}
-                    </div>
-                  </a>
-                ))}
-              </div>
-            </div>
+        <div className="fixed inset-0 top-16 z-40 overflow-y-auto bg-bg-root md:hidden">
+          <div className="space-y-6 px-5 py-6">
+            <MobileGroup label={COPY.nav.products} items={COPY.nav.productItems} onClick={closeMobile} />
 
-            {/* 案例 / 定价 / 关于 */}
             <div className="space-y-1">
-              <a
-                href="/cases"
-                onClick={closeMobile}
-                className="block px-3 py-3 rounded-md hover:bg-bg-surface text-[15px] font-semibold text-text-primary transition-colors"
-              >
-                {COPY.nav.cases}
-              </a>
-              <a
-                href="/pricing"
-                onClick={closeMobile}
-                className="block px-3 py-3 rounded-md hover:bg-bg-surface text-[15px] font-semibold text-text-primary transition-colors"
-              >
-                {COPY.nav.pricing}
-              </a>
-              <a
-                href="/about"
-                onClick={closeMobile}
-                className="block px-3 py-3 rounded-md hover:bg-bg-surface text-[15px] font-semibold text-text-primary transition-colors"
-              >
-                {COPY.nav.about}
-              </a>
+              <MobileNavLink href="/cases" onClick={closeMobile}>{COPY.nav.cases}</MobileNavLink>
+              <MobileNavLink href="/pricing" onClick={closeMobile}>{COPY.nav.pricing}</MobileNavLink>
+              <MobileNavLink href="/about" onClick={closeMobile}>{COPY.nav.about}</MobileNavLink>
             </div>
 
-            {/* 资源 */}
-            <div>
-              <div className="text-[11px] uppercase tracking-wider text-text-tertiary mb-2 px-3">
-                {COPY.nav.resources}
-              </div>
-              <div className="space-y-1">
-                {COPY.nav.resourceItems.map((item) => (
-                  <a
-                    key={item.label}
-                    href={item.href}
-                    onClick={closeMobile}
-                    className="block px-3 py-3 rounded-md hover:bg-bg-surface transition-colors"
-                  >
-                    <div className="text-[15px] font-semibold text-text-primary">
-                      {item.label}
-                    </div>
-                    <div className="text-[12px] text-text-tertiary mt-0.5">
-                      {item.desc}
-                    </div>
-                  </a>
-                ))}
-              </div>
-            </div>
+            <MobileGroup label={COPY.nav.resources} items={COPY.nav.resourceItems} onClick={closeMobile} />
 
-            {/* CTAs */}
-            <div className="pt-4 border-t border-border-subtle space-y-3">
+            <div className="space-y-3 border-t border-border-subtle pt-4">
               <a
                 href="/login"
                 onClick={closeMobile}
-                className="block w-full text-center px-5 py-3 rounded-md border border-border-default text-text-primary font-semibold text-[14px] hover:border-accent hover:text-accent transition-colors"
+                className="block w-full rounded-md border border-border-default px-5 py-3 text-center text-[14px] font-semibold text-text-primary transition-colors hover:border-accent hover:text-accent"
               >
                 {COPY.nav.login}
               </a>
               <a
-                href="/me/skus"
+                href="/demo"
                 onClick={closeMobile}
-                className="block w-full text-center px-5 py-3 rounded-md bg-accent text-bg-root font-semibold text-[14px] hover:bg-accent-hover transition-colors"
+                className="block w-full rounded-md bg-accent px-5 py-3 text-center text-[14px] font-semibold text-bg-root transition-colors hover:bg-accent-hover"
               >
                 {COPY.nav.cta}
               </a>
@@ -252,5 +104,106 @@ export default function TopNav() {
         </div>
       )}
     </header>
+  );
+}
+
+function Dropdown({
+  label,
+  open,
+  onOpen,
+  onClose,
+  items,
+}: {
+  label: string;
+  open: boolean;
+  onOpen: () => void;
+  onClose: () => void;
+  items: readonly { label: string; desc: string; href: string }[];
+}) {
+  return (
+    <div className="relative" onMouseEnter={onOpen} onMouseLeave={onClose}>
+      <button
+        type="button"
+        aria-haspopup="true"
+        aria-expanded={open}
+        className="flex items-center gap-1 px-3 py-2 text-[14px] text-text-secondary transition-colors hover:text-text-primary"
+      >
+        {label}
+        <span className="text-[10px] opacity-60">v</span>
+      </button>
+      {open && (
+        <div className="absolute left-0 top-full w-[320px] pt-2">
+          <div className="overflow-hidden rounded-lg border border-border-default bg-bg-raised">
+            {items.map((item) => (
+              <a
+                key={item.href}
+                href={item.href}
+                className="block border-b border-border-subtle px-4 py-3 transition-colors last:border-b-0 hover:bg-bg-surface"
+              >
+                <div className="text-[14px] font-semibold text-text-primary">{item.label}</div>
+                <div className="mt-0.5 text-[12px] text-text-tertiary">{item.desc}</div>
+              </a>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function NavLink({ href, children }: { href: string; children: React.ReactNode }) {
+  return (
+    <a href={href} className="px-3 py-2 text-[14px] text-text-secondary transition-colors hover:text-text-primary">
+      {children}
+    </a>
+  );
+}
+
+function MobileGroup({
+  label,
+  items,
+  onClick,
+}: {
+  label: string;
+  items: readonly { label: string; desc: string; href: string }[];
+  onClick: () => void;
+}) {
+  return (
+    <div>
+      <div className="mb-2 px-3 text-[11px] uppercase tracking-wider text-text-tertiary">{label}</div>
+      <div className="space-y-1">
+        {items.map((item) => (
+          <a
+            key={item.href}
+            href={item.href}
+            onClick={onClick}
+            className="block rounded-md px-3 py-3 transition-colors hover:bg-bg-surface"
+          >
+            <div className="text-[15px] font-semibold text-text-primary">{item.label}</div>
+            <div className="mt-0.5 text-[12px] text-text-tertiary">{item.desc}</div>
+          </a>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function MobileNavLink({
+  href,
+  onClick,
+  children,
+}: {
+  href: string;
+  onClick: () => void;
+  children: React.ReactNode;
+}) {
+  return (
+    <a
+      href={href}
+      onClick={onClick}
+      className="block rounded-md px-3 py-3 text-[15px] font-semibold text-text-primary transition-colors hover:bg-bg-surface"
+    >
+      {children}
+    </a>
   );
 }

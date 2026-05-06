@@ -93,10 +93,10 @@ export default function AdminFeedbackPage() {
     return 'text-text-tertiary';
   };
   const verdictLabel = (v?: string) => {
-    if (v === 'good') return '👍 有用';
-    if (v === 'bad') return '👎 不准';
-    if (v === 'rant') return '💬 吐槽';
-    return `⭐ ${v || '-'}`;
+    if (v === 'good') return '有用';
+    if (v === 'bad') return '不准';
+    if (v === 'rant') return '吐槽';
+    return v || '-';
   };
 
   return (

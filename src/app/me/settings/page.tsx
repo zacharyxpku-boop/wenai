@@ -357,7 +357,7 @@ function ApiKeySection() {
       )}
 
       <div className="text-[10px] font-mono text-text-tertiary leading-relaxed border-t border-border-subtle pt-2">
-        用法示例: <code className="text-text-secondary">curl -H &quot;Authorization: Bearer wn_xxx&quot; https://wenai-deploy.vercel.app/api/v1/skus</code>
+        用法示例: <code className="text-text-secondary">curl -H &quot;Authorization: Bearer wn_xxx&quot; https://wenai-one.vercel.app/api/v1/skus</code>
         <br />
         当前可用端点: GET / POST <code className="text-accent">/api/v1/skus</code> · 更多接口逐步开放
       </div>

@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { IndustryHint } from '@/components/IndustryHint';
+import { buildIntentMiningStandardPackRoute } from '@/lib/standard-pack-routing';
 
 /**
  * 反向意图扩客 · 跳出固有客群标签
@@ -51,6 +52,23 @@ const EXAMPLES = [
   },
 ];
 
+function buildIntentMiningResultSummary(result: MiningResult): string {
+  const segmentSummary = result.newSegments
+    .slice(0, 6)
+    .map((segment, index) => {
+      const channels = segment.channels.slice(0, 3).join(', ');
+      const queries = segment.searchQueries.slice(0, 3).join(', ');
+      return `${index + 1}. ${segment.name} / insight: ${segment.insight} / angle: ${segment.translation} / channels: ${channels} / queries: ${queries}`;
+    })
+    .join('\n');
+
+  return [
+    `product summary: ${result.productSummary}`,
+    result.defaultSegments.length ? `default segments avoided: ${result.defaultSegments.join(', ')}` : '',
+    `new audience segments:\n${segmentSummary}`,
+  ].filter(Boolean).join('\n\n');
+}
+
 export default function IntentMiningPage() {
   const [product, setProduct] = useState('');
   const [knownSegments, setKnownSegments] = useState('');
@@ -59,6 +77,17 @@ export default function IntentMiningPage() {
   const [error, setError] = useState('');
   const [rawDebug, setRawDebug] = useState('');
   const [showRaw, setShowRaw] = useState(false);
+  const standardPackHref = buildIntentMiningStandardPackRoute({
+    product,
+    knownSegments,
+  });
+  const resultStandardPackHref = result
+    ? buildIntentMiningStandardPackRoute({
+        product,
+        knownSegments,
+        resultSummary: buildIntentMiningResultSummary(result),
+      })
+    : '';
 
   const loadExample = (idx: number) => {
     const e = EXAMPLES[idx];
@@ -195,12 +224,12 @@ ${knownSegments || '无'}
             INTENT MINING · 反向意图扩客
           </div>
           <h1 className="text-3xl lg:text-4xl font-bold text-text-primary mb-3 font-[family-name:var(--font-outfit)]">
-            跳出固有客群,挖出"美甲师→电子锁"
+            跳出固有客群,挖出&quot;美甲师→电子锁&quot;
           </h1>
           <div className="mb-3"><IndustryHint /></div>
           <p className="text-[13px] lg:text-[14px] text-text-secondary leading-relaxed max-w-[760px]">
             阿里妈妈 LMA3 / AI 万相同款方法论。
-            产品描述丢进来,DeepSeek 跳出"装修业主"这种显然标签,
+            产品描述丢进来,DeepSeek 跳出&quot;装修业主&quot;这种显然标签,
             <span className="text-accent">挖出 5-8 个非显然但高转化的新人群</span>,带卖点翻译 + 触达渠道 + 示例文案 + 搜索词清单。
           </p>
 
@@ -262,6 +291,13 @@ ${knownSegments || '无'}
             {running ? '挖掘中... (8-15 秒)' : '🔍 挖掘 5-8 个非显然客群'}
           </button>
 
+          <Link
+            href={standardPackHref}
+            className="block w-full text-center py-2.5 border border-accent/35 text-accent rounded-lg text-[12px] font-mono hover:bg-accent/10"
+          >
+            生成人群洞察 SOP 标品包 →
+          </Link>
+
           {error && (
             <div className="p-3 border border-error/40 bg-error/5 rounded text-[11px] text-error">
               ✗ {error}
@@ -299,7 +335,7 @@ ${knownSegments || '无'}
               </div>
             </section>
 
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between gap-3 flex-wrap">
               <div>
                 <div className="text-[14px] font-bold text-text-primary">
                   挖出 {result.newSegments.length} 个新客群
@@ -308,12 +344,22 @@ ${knownSegments || '无'}
                   按转化潜力排序 · 越靠前越值得测试
                 </div>
               </div>
-              <button
-                onClick={exportMarkdown}
-                className="text-[11px] font-mono text-accent border border-accent/30 hover:bg-accent/10 rounded px-3 py-1.5"
-              >
-                ⬇ 导出 Markdown
-              </button>
+              <div className="flex gap-2 flex-wrap">
+                {resultStandardPackHref && (
+                  <Link
+                    href={resultStandardPackHref}
+                    className="text-[11px] font-mono text-accent border border-accent/30 hover:bg-accent/10 rounded px-3 py-1.5"
+                  >
+                    生成内容测试验收标品包
+                  </Link>
+                )}
+                <button
+                  onClick={exportMarkdown}
+                  className="text-[11px] font-mono text-accent border border-accent/30 hover:bg-accent/10 rounded px-3 py-1.5"
+                >
+                  ⬇ 导出 Markdown
+                </button>
+              </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -334,7 +380,7 @@ ${knownSegments || '无'}
 
                     <div>
                       <span className="text-[10px] font-mono text-text-tertiary uppercase">卖点翻译</span>
-                      <p className="text-accent leading-relaxed mt-0.5 font-medium">"{seg.translation}"</p>
+                      <p className="text-accent leading-relaxed mt-0.5 font-medium">{seg.translation}</p>
                     </div>
 
                     <div>
@@ -399,7 +445,7 @@ ${knownSegments || '无'}
           <div className="border border-dashed border-border-default rounded-lg p-8 text-center">
             <div className="text-4xl mb-2">🔍</div>
             <h3 className="text-[15px] font-bold text-text-primary mb-1">先试一个案例</h3>
-            <p className="text-[12px] text-text-tertiary mb-4">点上方"智能电子锁/加湿器/溯溪鞋"任一,看 AI 怎么挖出非显然客群</p>
+            <p className="text-[12px] text-text-tertiary mb-4">点上方&quot;智能电子锁/加湿器/溯溪鞋&quot;任一,看 AI 怎么挖出非显然客群</p>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-left">
               <div className="border border-border-subtle rounded p-3 bg-bg-surface/30">
                 <div className="text-[12px] font-semibold text-text-primary mb-1">🔐 电子锁</div>

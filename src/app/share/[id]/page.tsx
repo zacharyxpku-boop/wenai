@@ -2,152 +2,274 @@ import Link from 'next/link';
 import ReactMarkdown from 'react-markdown';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { Redis } from '@upstash/redis';
-
-interface ShareData {
-  moduleId: string;
-  title: string;
-  content: string;
-  source: string;
-  createdAt: string;
-}
-
-async function getShare(id: string): Promise<ShareData | null> {
-  if (!process.env.UPSTASH_REDIS_REST_URL || !process.env.UPSTASH_REDIS_REST_TOKEN) {
-    // Serverless: 无 Redis 就不能读 memStore（因为 share/[id] 是 SSR 独立路由的 instance）
-    return null;
-  }
-  try {
-    const redis = new Redis({
-      url: process.env.UPSTASH_REDIS_REST_URL,
-      token: process.env.UPSTASH_REDIS_REST_TOKEN,
-    });
-    const raw = await redis.hgetall(`wenai:share:${id}`);
-    if (!raw || Object.keys(raw).length === 0) return null;
-    return raw as unknown as ShareData;
-  } catch {
-    return null;
-  }
-}
+import SharePageActions from '@/components/SharePageActions';
+import {
+  buildExecutiveRecap,
+  type CommercialBriefingSnapshot,
+  excerpt,
+  getShare,
+  readCommercialBriefing,
+  SHARE_LABELS,
+} from '@/lib/share-readonly';
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
   const { id } = await params;
   const data = await getShare(id);
-  if (!data) return { title: '分享已过期 · wenai' };
+  if (!data) return { title: 'Share expired · wenai' };
 
   const ogParams = new URLSearchParams({
-    title: (data.title || 'wenai · 跨境代运营 AI').slice(0, 60),
-    excerpt: data.content.replace(/[#*`>\-|]+/g, ' ').slice(0, 140),
-    module: PIPELINE_LABELS[data.source] || data.moduleId || '',
+    title: (data.title || 'wenai shared output').slice(0, 60),
+    excerpt: excerpt(data.content, 140),
+    module: SHARE_LABELS[data.source] || data.moduleId || '',
   });
 
   return {
-    title: `${data.title || 'AI 产出分享'} · wenai`,
-    description: data.content.slice(0, 140),
+    title: `${data.title || 'Shared output'} · wenai`,
+    description: excerpt(data.content, 140),
     openGraph: {
-      title: data.title || 'wenai · AI 产出分享',
-      description: data.content.slice(0, 140),
+      title: data.title || 'wenai shared output',
+      description: excerpt(data.content, 140),
       images: [{ url: `/api/og?${ogParams.toString()}`, width: 1200, height: 630 }],
     },
     twitter: {
       card: 'summary_large_image',
-      title: data.title || 'wenai · AI 产出分享',
-      description: data.content.slice(0, 140),
+      title: data.title || 'wenai shared output',
+      description: excerpt(data.content, 140),
       images: [`/api/og?${ogParams.toString()}`],
     },
   };
 }
 
-const PIPELINE_LABELS: Record<string, string> = {
-  'pipeline-01': '新品上新 Pipeline',
-  'pipeline-02': '达人批量冷启',
-  'pipeline-03': 'AI 电商主图',
-  'module': '单点工具',
-};
-
 export default async function SharePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const data = await getShare(id);
   if (!data) notFound();
+  const isPocReport = data.source === 'poc-report';
+  const brief = isPocReport ? readCommercialBriefing(data.content) : null;
+  const executiveRecap = brief ? buildExecutiveRecap(data.title || 'wenai POC recap', brief) : '';
 
   return (
-    <div className="max-w-[960px] mx-auto py-10 px-6">
-      {/* 头部身份 */}
-      <div className="mb-6 pb-5 border-b border-border-subtle">
-        <div className="flex items-center gap-2 mb-2">
-          <Link href="/" className="text-[10px] font-mono text-accent uppercase tracking-[0.15em] hover:underline">
+    <div className="print-share-shell mx-auto max-w-[960px] px-6 py-10">
+      <div className="print-share-card mb-6 border-b border-border-subtle pb-5">
+        <div className="mb-2 flex flex-wrap items-center gap-2">
+          <Link href="/" className="text-[10px] font-mono uppercase tracking-[0.15em] text-accent hover:underline">
             wenai
           </Link>
-          <span className="text-text-tertiary text-[10px]">/</span>
+          <span className="text-[10px] text-text-tertiary">/</span>
           <span className="text-[10px] font-mono text-text-tertiary">
-            {PIPELINE_LABELS[data.source] || '产出分享'}
+            {SHARE_LABELS[data.source] || data.moduleId || 'Shared output'}
           </span>
-          <span className="text-text-tertiary text-[10px]">/</span>
-          <span className="text-[10px] font-mono text-text-tertiary">只读分享</span>
+          <span className="text-[10px] text-text-tertiary">/</span>
+          <span className="text-[10px] font-mono text-text-tertiary">read-only</span>
         </div>
         {data.title && (
-          <h1 className="text-xl lg:text-2xl font-bold text-text-primary font-[family-name:var(--font-outfit)] leading-tight">
+          <h1 className="font-[family-name:var(--font-outfit)] text-xl font-bold leading-tight text-text-primary lg:text-2xl">
             {data.title}
           </h1>
         )}
-        <div className="mt-3 flex items-center gap-3 text-[10px] font-mono text-text-tertiary">
-          <span>生成于 {new Date(data.createdAt).toLocaleString('zh-CN')}</span>
-          <span>·</span>
-          <span>7 天后过期</span>
+        <div className="mt-3 flex flex-wrap items-center gap-3 text-[10px] font-mono text-text-tertiary">
+          <span>Generated {new Date(data.createdAt).toLocaleString('zh-CN')}</span>
+          <span>/</span>
+          <span>Expires in 7 days</span>
+          {isPocReport && (
+            <>
+              <span>/</span>
+              <span className="text-accent">Boss-ready POC recap</span>
+            </>
+          )}
         </div>
       </div>
 
-      {/* Pipeline 03 图片 TTL 警告 */}
-      {data.source === 'pipeline-03' && (
-        <div className="mb-5 px-4 py-3 border border-accent/40 bg-accent/5 rounded-md flex items-start gap-3">
-          <span className="text-accent text-[14px] flex-shrink-0">⏳</span>
-          <div className="flex-1 text-[11px] text-text-secondary leading-relaxed">
-            <strong className="text-accent">图片 24 小时有效</strong> ·
-            wanx 返回的图 URL 是临时签名,超时会 404。
-            如看到图已失效,联系生成者重新跑即可。长期交付建议下载原图存档。
+      {isPocReport && (
+        <div className="print-share-card mb-5 rounded-md border border-accent/40 bg-accent/5 px-4 py-3">
+          <div className="mb-1 text-[10px] font-mono uppercase tracking-wider text-accent">Acceptance Note</div>
+          <div className="text-[12px] leading-relaxed text-text-secondary">
+            This read-only page is meant for review, contract judgment, and internal alignment. Edit the source report when metrics change.
           </div>
         </div>
       )}
 
-      {/* 内容 */}
-      <article className="prose prose-invert prose-sm max-w-none text-[13px] leading-[1.8] text-text-secondary [&_table]:border-collapse [&_th]:border [&_th]:border-border-subtle [&_th]:px-2 [&_th]:py-1 [&_th]:bg-bg-raised [&_th]:text-[11px] [&_td]:border [&_td]:border-border-subtle [&_td]:px-2 [&_td]:py-1 [&_td]:text-[12px] [&_strong]:text-text-primary [&_h2]:text-[16px] [&_h2]:text-text-primary [&_h2]:font-semibold [&_h2]:mt-6 [&_h2]:mb-2 [&_h3]:text-[14px] [&_h3]:text-text-primary [&_h3]:mt-4 [&_h3]:mb-1.5 [&_ul]:pl-5 [&_ol]:pl-5 [&_li]:mb-1 [&_code]:bg-bg-raised [&_code]:px-1 [&_code]:rounded [&_code]:text-[11px] [&_code]:font-mono [&_img]:rounded-md [&_img]:border [&_img]:border-border-subtle [&_img]:my-3">
+      <SharePageActions isPocReport={isPocReport} executiveRecap={executiveRecap} />
+
+      {brief && <PocDecisionCover title={data.title || 'wenai POC recap'} brief={brief} />}
+      {brief && <PocBossBrief brief={brief} />}
+
+      <article className="print-share-card print-break-before prose prose-invert prose-sm max-w-none text-[13px] leading-[1.8] text-text-secondary [&_code]:rounded [&_code]:bg-bg-raised [&_code]:px-1 [&_code]:font-mono [&_code]:text-[11px] [&_h2]:mb-2 [&_h2]:mt-6 [&_h2]:text-[16px] [&_h2]:font-semibold [&_h2]:text-text-primary [&_h3]:mb-1.5 [&_h3]:mt-4 [&_h3]:text-[14px] [&_h3]:text-text-primary [&_img]:my-3 [&_img]:rounded-md [&_img]:border [&_img]:border-border-subtle [&_li]:mb-1 [&_ol]:pl-5 [&_strong]:text-text-primary [&_table]:border-collapse [&_td]:border [&_td]:border-border-subtle [&_td]:px-2 [&_td]:py-1 [&_td]:text-[12px] [&_th]:border [&_th]:border-border-subtle [&_th]:bg-bg-raised [&_th]:px-2 [&_th]:py-1 [&_th]:text-[11px] [&_ul]:pl-5">
         <ReactMarkdown>{data.content}</ReactMarkdown>
       </article>
 
-      {/* 底部 CTA */}
-      <div className="mt-10 pt-6 border-t border-border-subtle">
-        <div className="p-5 border border-accent/30 rounded-md bg-accent/5 text-center">
-          <div className="text-[10px] font-mono text-accent uppercase tracking-wider mb-2">
-            这是 wenai 的真实 Pipeline 产出
+      <div className="print-hide mt-10 border-t border-border-subtle pt-6">
+        <div className="rounded-md border border-accent/30 bg-accent/5 p-5 text-center">
+          <div className="mb-2 text-[10px] font-mono uppercase tracking-wider text-accent">
+            {isPocReport ? 'Need the next commercial step?' : 'Want to run this workflow?'}
           </div>
-          <h3 className="text-[14px] font-semibold text-text-primary mb-2 font-[family-name:var(--font-outfit)]">
-            想自己跑一个？Free 版 7 天免费，10 次 Pipeline / 天
+          <h3 className="mb-2 font-[family-name:var(--font-outfit)] text-[14px] font-semibold text-text-primary">
+            {isPocReport ? 'Turn this POC recap into a paid contract handoff.' : 'Start from a real SKU and generate a delivery pack.'}
           </h3>
-          <p className="text-[11px] text-text-secondary mb-4">
-            从贴 SKU 到出多语言翻译 / 文案 / 合规 / 生图，30 秒闭环。
-          </p>
-          <div className="flex gap-2 justify-center flex-wrap">
+          <div className="mt-4 flex flex-wrap justify-center gap-2">
             <Link
-              href="/invite?code=demo"
-              className="px-4 py-2 bg-accent text-bg-root text-[12px] font-semibold rounded-md hover:bg-accent-hover"
+              href={isPocReport ? '/inquire?from=share-poc-report' : '/demo'}
+              className="rounded-md bg-accent px-4 py-2 text-[12px] font-semibold text-bg-root hover:bg-accent-hover"
             >
-              申请邀请码 →
+              {isPocReport ? 'Submit POC request' : 'Run demo'}
+            </Link>
+            <Link
+              href="/poc"
+              className="rounded-md border border-border-default px-4 py-2 text-[12px] font-mono text-text-primary hover:border-accent/40"
+            >
+              View POC standard
             </Link>
             <Link
               href="/cases"
-              className="px-4 py-2 border border-border-default text-[12px] font-mono text-text-primary hover:border-accent/40 rounded-md"
+              className="rounded-md border border-border-default px-4 py-2 text-[12px] font-mono text-text-primary hover:border-accent/40"
             >
-              看 4 个真实案例
-            </Link>
-            <Link
-              href="/pricing"
-              className="px-4 py-2 border border-border-default text-[12px] font-mono text-text-primary hover:border-accent/40 rounded-md"
-            >
-              定价
+              View cases
             </Link>
           </div>
         </div>
       </div>
+    </div>
+  );
+}
+
+function PocDecisionCover({
+  title,
+  brief,
+}: {
+  title: string;
+  brief: CommercialBriefingSnapshot;
+}) {
+  const firstAction = brief.nextActions[0] || 'Review the source report and confirm the next commercial milestone.';
+  const firstProof = brief.proofPoints[0] || 'No decisive proof point extracted yet.';
+  const firstRisk = brief.conversionRisks[0] || 'No major conversion risk extracted yet.';
+
+  return (
+    <section className="print-share-card print-avoid-break mb-6 rounded-md border border-accent/35 bg-accent/5 p-5">
+      <div className="flex flex-wrap items-start justify-between gap-4 border-b border-border-subtle pb-4">
+        <div className="max-w-2xl">
+          <div className="mb-1 text-[10px] font-mono uppercase tracking-wider text-accent">Decision cover</div>
+          <h2 className="font-[family-name:var(--font-outfit)] text-[22px] font-semibold leading-tight text-text-primary">
+            {brief.commercialMotion || brief.decision || 'Commercial decision brief'}
+          </h2>
+          <p className="mt-2 text-[12px] leading-relaxed text-text-secondary">
+            {brief.packageRecommendation || 'Use this recap to decide whether the POC should close, expand, or be repaired before a contract motion.'}
+          </p>
+          <div className="mt-3 text-[10px] font-mono uppercase tracking-wider text-text-tertiary">
+            {title}
+          </div>
+        </div>
+        <div className="grid grid-cols-2 gap-2 md:grid-cols-4">
+          <MetricPill label="Acceptance" value={brief.acceptanceScore || '--'} />
+          <MetricPill label="Commercial" value={brief.commercialScore || '--'} />
+          <BriefField label="Contract" value={brief.contractStatus || 'not specified'} />
+          <BriefField label="Price signal" value={brief.priceSignal || 'not specified'} />
+        </div>
+      </div>
+
+      <div className="mt-4 grid grid-cols-1 gap-3 lg:grid-cols-3">
+        <CoverPanel
+          label="What should happen now"
+          value={firstAction}
+          tone="next"
+        />
+        <CoverPanel
+          label="Why this can sell"
+          value={firstProof}
+          tone="good"
+        />
+        <CoverPanel
+          label="What can still block close"
+          value={firstRisk}
+          tone="risk"
+        />
+      </div>
+    </section>
+  );
+}
+
+function PocBossBrief({ brief }: { brief: CommercialBriefingSnapshot }) {
+  const proofPoints = brief.proofPoints.length > 0 ? brief.proofPoints : ['No decisive proof point extracted yet.'];
+  const conversionRisks = brief.conversionRisks.length > 0 ? brief.conversionRisks : ['No major conversion risk extracted yet.'];
+  const nextActions = brief.nextActions.length > 0 ? brief.nextActions : ['Review the source report before the next commercial step.'];
+
+  return (
+    <section className="print-share-card print-avoid-break mb-6 rounded-md border border-accent/35 bg-bg-surface p-4">
+      <div className="mb-4 flex flex-wrap items-start justify-between gap-3 border-b border-border-subtle pb-4">
+        <div>
+          <div className="mb-1 text-[10px] font-mono uppercase tracking-wider text-accent">Operator brief</div>
+          <h2 className="font-[family-name:var(--font-outfit)] text-[18px] font-semibold text-text-primary">
+            {brief.commercialMotion || brief.decision || 'Commercial decision brief'}
+          </h2>
+          <p className="mt-1 max-w-2xl text-[12px] leading-relaxed text-text-secondary">
+            {brief.packageRecommendation || 'Use this read-only recap to align on whether the POC should close, expand, or be repaired before contract motion.'}
+          </p>
+        </div>
+        <div className="grid grid-cols-2 gap-2 text-right">
+          <MetricPill label="Acceptance" value={brief.acceptanceScore || '--'} />
+          <MetricPill label="Commercial" value={brief.commercialScore || '--'} />
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
+        <BriefField label="Contract status" value={brief.contractStatus || 'not specified'} />
+        <BriefField label="Price signal" value={brief.priceSignal || 'not specified'} />
+        <BriefField label="Decision" value={brief.decision || 'not specified'} />
+      </div>
+
+      {brief.ownerMessage && (
+        <div className="mt-3 rounded-md border border-border-subtle bg-bg-root/45 p-3">
+          <div className="mb-1 text-[10px] font-mono uppercase tracking-wider text-text-tertiary">Owner message</div>
+          <div className="text-[12px] leading-relaxed text-text-primary">{brief.ownerMessage}</div>
+        </div>
+      )}
+
+      <div className="mt-3 grid grid-cols-1 gap-3 lg:grid-cols-3">
+        <BriefList title="Proof to use" items={proofPoints} tone="good" />
+        <BriefList title="Risks to watch" items={conversionRisks} tone="risk" />
+        <BriefList title="Next actions" items={nextActions} tone="next" />
+      </div>
+    </section>
+  );
+}
+
+function MetricPill({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="rounded-md border border-border-subtle bg-bg-root/45 px-3 py-2">
+      <div className="font-mono text-[18px] font-semibold tabular-nums text-text-primary">{value}</div>
+      <div className="text-[10px] font-mono uppercase tracking-wider text-text-tertiary">{label}</div>
+    </div>
+  );
+}
+
+function BriefField({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="rounded-md border border-border-subtle bg-bg-root/45 p-3">
+      <div className="mb-1 text-[10px] font-mono uppercase tracking-wider text-text-tertiary">{label}</div>
+      <div className="text-[12px] font-semibold text-text-primary">{value}</div>
+    </div>
+  );
+}
+
+function BriefList({ title, items, tone }: { title: string; items: string[]; tone: 'good' | 'risk' | 'next' }) {
+  const color = tone === 'good' ? 'text-success' : tone === 'risk' ? 'text-error' : 'text-accent';
+  return (
+    <div className="rounded-md border border-border-subtle bg-bg-root/45 p-3">
+      <div className={`mb-2 text-[10px] font-mono uppercase tracking-wider ${color}`}>{title}</div>
+      <ul className="space-y-1.5">
+        {items.map(item => (
+          <li key={item} className="text-[11px] leading-relaxed text-text-secondary">{item}</li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+function CoverPanel({ label, value, tone }: { label: string; value: string; tone: 'good' | 'risk' | 'next' }) {
+  const color = tone === 'good' ? 'text-success' : tone === 'risk' ? 'text-error' : 'text-accent';
+  return (
+    <div className="rounded-md border border-border-subtle bg-bg-root/45 p-4">
+      <div className={`mb-2 text-[10px] font-mono uppercase tracking-wider ${color}`}>{label}</div>
+      <div className="text-[12px] leading-relaxed text-text-primary">{value}</div>
     </div>
   );
 }

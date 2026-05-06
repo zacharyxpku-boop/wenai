@@ -1,15 +1,13 @@
 import { ImageResponse } from 'next/og';
 import { NextRequest } from 'next/server';
 
-export const runtime = 'edge';
-
 // 动态分享卡生成：/api/og?title=xxx&excerpt=xxx&module=xxx
 // 用于微信分享预览图、Twitter/OG meta、站内分享卡
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
-  const title = (searchParams.get('title') || 'wenai · 跨境电商 AI 工作台').slice(0, 40);
-  const excerpt = (searchParams.get('excerpt') || '19 个 AI 模块 · 让跨境电商团队少做 70% 重复劳动').slice(0, 140);
-  const moduleLabel = searchParams.get('module') || '';
+  const title = (searchParams.get('title') || 'wenai · SKU 上新物料包').slice(0, 40);
+  const excerpt = (searchParams.get('excerpt') || '输入 SKU 信息, 生成上新 SOP、合规提醒、客服话术和复评 checklist').slice(0, 140);
+  const moduleLabel = (searchParams.get('module') || 'SKU 工作流').slice(0, 24);
 
   return new ImageResponse(
     (
@@ -20,8 +18,8 @@ export async function GET(req: NextRequest) {
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'space-between',
-          padding: '80px',
-          background: 'linear-gradient(135deg, #0f0f1e 0%, #1a1a2e 100%)',
+          padding: '72px',
+          background: '#101018',
           color: '#ffffff',
           fontFamily: 'sans-serif',
         }}
@@ -46,26 +44,24 @@ export async function GET(req: NextRequest) {
               W
             </div>
             <div style={{ display: 'flex', flexDirection: 'column' }}>
-              <span style={{ fontSize: 22, fontWeight: 700, letterSpacing: '-0.02em' }}>wenai</span>
+              <span style={{ fontSize: 22, fontWeight: 700 }}>wenai</span>
               <span style={{ fontSize: 14, color: '#888', marginTop: 2 }}>
-                跨境电商 AI 工作台
+                SKU 上新物料包
               </span>
             </div>
           </div>
-          {moduleLabel && (
-            <div
-              style={{
-                padding: '8px 20px',
-                border: '1px solid #c8975a',
-                borderRadius: 999,
-                fontSize: 18,
-                color: '#c8975a',
-                display: 'flex',
-              }}
-            >
-              {moduleLabel}
-            </div>
-          )}
+          <div
+            style={{
+              padding: '8px 18px',
+              border: '1px solid #c8975a',
+              borderRadius: 12,
+              fontSize: 18,
+              color: '#c8975a',
+              display: 'flex',
+            }}
+          >
+            {moduleLabel}
+          </div>
         </div>
 
         {/* Middle: title + excerpt */}
@@ -74,7 +70,6 @@ export async function GET(req: NextRequest) {
             style={{
               fontSize: 56,
               fontWeight: 700,
-              letterSpacing: '-0.03em',
               lineHeight: 1.15,
               maxWidth: 900,
             }}
@@ -87,10 +82,7 @@ export async function GET(req: NextRequest) {
               lineHeight: 1.5,
               color: '#c0c0c8',
               maxWidth: 900,
-              display: '-webkit-box',
-              WebkitLineClamp: 3,
-              WebkitBoxOrient: 'vertical',
-              overflow: 'hidden',
+              display: 'flex',
             }}
           >
             {excerpt}
@@ -119,7 +111,7 @@ export async function GET(req: NextRequest) {
               gap: 8,
             }}
           >
-            /invite?code=demo · 7 天免费体验 →
+            /demo · 试跑演示 SKU →
           </div>
         </div>
       </div>

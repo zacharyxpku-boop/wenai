@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 type TabKey = 'metrics' | 'feedback' | 'payments' | 'invites' | 'inquiries' | 'cost' | 'cache' | 'alerts';
+
 interface Tab {
   key: TabKey;
   href: string;
@@ -13,14 +14,14 @@ interface Tab {
 }
 
 const TABS: Tab[] = [
-  { key: 'metrics', href: '/admin/metrics', label: '总览', icon: '📊' },
-  { key: 'feedback', href: '/admin/feedback', label: '反馈', icon: '💬' },
-  { key: 'payments', href: '/admin/payments', label: '付款', icon: '💰' },
-  { key: 'invites', href: '/admin/invites', label: '邀请码', icon: '🎟️' },
-  { key: 'inquiries', href: '/admin/inquiries', label: '询盘', icon: '📨' },
-  { key: 'cost', href: '/admin/cost', label: '成本', icon: '💸' },
-  { key: 'cache', href: '/admin/cache', label: '缓存', icon: '⚡' },
-  { key: 'alerts', href: '/admin/alerts', label: '信号', icon: '🔔' },
+  { key: 'metrics', href: '/admin/metrics', label: '总览', icon: '总览' },
+  { key: 'feedback', href: '/admin/feedback', label: '反馈', icon: '反馈' },
+  { key: 'payments', href: '/admin/payments', label: '付款', icon: '付款' },
+  { key: 'invites', href: '/admin/invites', label: '邀请', icon: '邀请' },
+  { key: 'inquiries', href: '/admin/inquiries', label: 'CRM', icon: '商机' },
+  { key: 'cost', href: '/admin/cost', label: '成本', icon: '成本' },
+  { key: 'cache', href: '/admin/cache', label: '缓存', icon: '缓存' },
+  { key: 'alerts', href: '/admin/alerts', label: '告警', icon: '告警' },
 ];
 
 interface Notifications {
@@ -38,17 +39,20 @@ interface Props {
 export default function AdminHeader({ onLogout, subtitle }: Props) {
   const pathname = usePathname();
   const [notif, setNotif] = useState<Notifications>({});
-  const [paymentProcessed, setPaymentProcessed] = useState(0);
+  const [paymentProcessed] = useState(() => {
+    if (typeof window === 'undefined') return 0;
+    try {
+      return (JSON.parse(localStorage.getItem('wenai_payment_processed') || '[]') as string[]).length;
+    } catch {
+      return 0;
+    }
+  });
 
   useEffect(() => {
     fetch('/api/admin/notifications')
-      .then(r => r.json())
+      .then(response => response.json())
       .then(setNotif)
       .catch(() => {});
-    try {
-      const p = JSON.parse(localStorage.getItem('wenai_payment_processed') || '[]') as string[];
-      setPaymentProcessed(p.length);
-    } catch {}
   }, [pathname]);
 
   const getBadge = (key: TabKey): number | null => {
@@ -61,12 +65,13 @@ export default function AdminHeader({ onLogout, subtitle }: Props) {
     if (key === 'inquiries') return notif.inquiriesNew && notif.inquiriesNew > 0 ? notif.inquiriesNew : null;
     return null;
   };
+
   return (
     <div className="mb-6">
       <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
         <div>
           <div className="text-[10px] font-mono text-accent uppercase tracking-[0.15em]">
-            WENAI ADMIN
+            WENAI 后台
           </div>
           {subtitle && (
             <div className="text-[11px] font-mono text-text-tertiary mt-0.5">{subtitle}</div>
@@ -77,29 +82,28 @@ export default function AdminHeader({ onLogout, subtitle }: Props) {
             onClick={onLogout}
             className="text-[11px] font-mono text-text-tertiary hover:text-accent border border-border-subtle rounded px-3 py-1.5"
           >
-            登出
+            退出
           </button>
         )}
       </div>
 
-      {/* Tabs */}
       <div className="flex items-center gap-1 border-b border-border-subtle overflow-x-auto">
-        {TABS.map(t => {
-          const active = pathname === t.href;
-          const badge = getBadge(t.key);
-          const isUrgent = t.key === 'payments' || (t.key === 'invites' && badge) || (t.key === 'inquiries' && badge);
+        {TABS.map(tab => {
+          const active = pathname === tab.href;
+          const badge = getBadge(tab.key);
+          const isUrgent = tab.key === 'payments' || (tab.key === 'invites' && badge) || (tab.key === 'inquiries' && badge);
           return (
             <Link
-              key={t.href}
-              href={t.href}
+              key={tab.href}
+              href={tab.href}
               className={`flex items-center gap-1.5 px-3 py-2 text-[12px] font-mono border-b-2 transition-all flex-shrink-0 ${
                 active
                   ? 'border-accent text-accent'
                   : 'border-transparent text-text-secondary hover:text-text-primary hover:border-border-default'
               }`}
             >
-              <span>{t.icon}</span>
-              <span>{t.label}</span>
+              <span className="text-[9px] uppercase tracking-wider opacity-70">{tab.icon}</span>
+              <span>{tab.label}</span>
               {badge !== null && (
                 <span className={`text-[9px] font-mono font-semibold tabular-nums px-1.5 py-0.5 rounded-full min-w-[18px] text-center ${
                   isUrgent ? 'bg-error/20 text-error' : 'bg-accent/20 text-accent'

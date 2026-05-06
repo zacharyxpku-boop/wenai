@@ -1,10 +1,12 @@
 'use client';
 
 import { Suspense, useEffect, useRef, useState } from 'react';
+import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import ReactMarkdown from 'react-markdown';
 import * as XLSX from 'xlsx';
 import { exportFilename } from '@/lib/export-filename';
+import { buildInfluencerOutboundStandardPackRoute } from '@/lib/standard-pack-routing';
 
 interface Influencer {
   id: string;
@@ -46,6 +48,22 @@ const TEMPLATE_PRODUCT: ProductContext = {
   budget: '寄样 + 15% 佣金 + 视频通过后另付 $100-200 创意费',
   cta: '希望达人拍摄厨房/储物间整理场景，至少 1 条 Reels + 1 张 Carousel',
 };
+
+function buildInfluencerOutboundResultSummary(rows: Influencer[]): string {
+  const done = rows.filter(row => row.status === 'done');
+  const failed = rows.filter(row => row.status === 'error');
+  const preview = done.slice(0, 6).map(row =>
+    `${row.name} / ${row.platform} / ${row.followers} / subject: ${row.subject || '(missing)'}`,
+  );
+
+  return [
+    `completed creators: ${done.length}`,
+    `failed creators: ${failed.length}`,
+    failed.length ? `error summary: ${failed.slice(0, 4).map(row => `${row.name}: ${row.error || 'unknown'}`).join(' | ')}` : 'error summary: none',
+    preview.join('\n'),
+    'acceptance checklist: creator-fit evidence, personalized subject, clear collaboration terms, mail-merge readiness, reply-rate review',
+  ].join('\n');
+}
 
 // Parse tab-separated or pipe-separated rows: name | platform | followers | niche
 function parseInfluencerInput(text: string): Influencer[] {
@@ -274,7 +292,7 @@ ${inf.email ? `- 邮箱：${inf.email}` : ''}
         });
         if (!check.ok) {
           const data = await check.json().catch(() => ({}));
-          alert(`第 ${i + 1} 位达人前触发配额上限\n已完成 ${i} 条\n${data.resetAtText ? '将于 ' + data.resetAtText + ' 重置' : ''}\n升级 Team 至 500/天`);
+          alert(`第 ${i + 1} 位达人前触发配额上限\n已完成 ${i} 条\n${data.resetAtText ? '将于 ' + data.resetAtText + ' 重置' : ''}\n准备跑真实批次请提交 10 SKU POC 需求`);
           break;
         }
       } catch {}
@@ -419,6 +437,25 @@ PantryPerfection | YouTube | 85K | 家居生活 vlog | contact@pantryperfection.
   };
 
   const doneCount = rows.filter(r => r.status === 'done').length;
+  const standardPackHref = buildInfluencerOutboundStandardPackRoute({
+    brand: product.brand,
+    productName: product.productName,
+    price: product.price,
+    usp: product.usp,
+    budget: product.budget,
+    cta: product.cta,
+    influencerInput: rawInput,
+  });
+  const resultStandardPackHref = buildInfluencerOutboundStandardPackRoute({
+    brand: product.brand,
+    productName: product.productName,
+    price: product.price,
+    usp: product.usp,
+    budget: product.budget,
+    cta: product.cta,
+    influencerInput: rows.map(row => `${row.name} | ${row.platform} | ${row.followers} | ${row.niche}`).join('\n') || rawInput,
+    resultSummary: buildInfluencerOutboundResultSummary(rows),
+  });
 
   return (
     <div className="max-w-[1400px] mx-auto p-4 lg:p-6">
@@ -604,6 +641,12 @@ PantryPerfection | YouTube | 85K | 家居生活 vlog | contact@pantryperfection.
           {running && <button onClick={handleStop} className="px-3 py-2 border border-border-default text-[11px] font-mono text-text-secondary rounded-md hover:border-error/40 hover:text-error">停止</button>}
           {doneCount > 0 && !running && (
             <>
+              <a
+                href={resultStandardPackHref}
+                className="px-3 py-2 border border-cat-content/40 bg-cat-content/10 text-cat-content text-[11px] font-mono rounded-md hover:bg-cat-content/20"
+              >
+                生成达人验收标品包
+              </a>
               <button onClick={handleExport} className="px-4 py-2 border border-accent/40 bg-accent/10 text-accent text-[12px] font-mono rounded-md hover:bg-accent/20">
                 ⬇ Excel（Mail Merge）
               </button>
@@ -617,6 +660,16 @@ PantryPerfection | YouTube | 85K | 家居生活 vlog | contact@pantryperfection.
               </button>
             </>
           )}
+          <a
+            href={standardPackHref}
+            className={`px-3 py-2 border text-[11px] font-mono rounded-md transition-colors ${
+              product.productName.trim() && rawInput.trim()
+                ? 'border-cat-content/40 text-cat-content hover:bg-cat-content/10'
+                : 'border-border-subtle text-text-tertiary pointer-events-none opacity-50'
+            }`}
+          >
+            生成达人外联 SOP 标品包
+          </a>
           <button
             onClick={handleStart}
             disabled={!readyToRun}
@@ -707,7 +760,7 @@ PantryPerfection | YouTube | 85K | 家居生活 vlog | contact@pantryperfection.
       {/* 案例引导 */}
       <div className="mt-4 flex items-center justify-between px-3 py-2 text-[10px] font-mono text-text-tertiary border border-border-subtle/60 rounded-md bg-bg-surface/30">
         <span>M 工厂 · 回复率 4% → 11% · 8× 达人日均触达</span>
-        <a href="/cases#micro-audio" className="text-accent hover:underline">看 Before/After →</a>
+        <Link href="/cases/micro-audio" className="text-accent hover:underline">看 Before/After →</Link>
       </div>
     </div>
   );

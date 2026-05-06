@@ -4,11 +4,11 @@ import { useState } from 'react';
 import Link from 'next/link';
 
 /**
- * ROI 计算器 · 说服新访客 "wenai 一个月能省多少钱"
+ * ROI 计算器 · 估算 POC 是否值得跑
  * 纯客户端 state,无 API 调用
  *
  * 输入 : 日均新品 SKU 数 + 日均达人触达数
- * 输出 : 每月节省的人力成本 vs Team ¥499/月 = ROI 倍数
+ * 输出 : 每月可节省的人力成本, 用来判断是否进入 10 SKU POC
  */
 
 interface Calc {
@@ -28,7 +28,7 @@ const WORK_DAYS = 22;
 // 每月工作分钟数 (8 小时/天 * 60)
 const MIN_PER_MONTH = WORK_DAYS * 8 * 60;
 
-const TEAM_PRICE = 499;
+const POC_REFERENCE_VALUE = 5000;
 
 export default function ROICalculator() {
   const [calc, setCalc] = useState<Calc>(DEFAULTS);
@@ -37,7 +37,7 @@ export default function ROICalculator() {
   const monthlyMinutes = (calc.skuPerDay * MIN_PER_SKU + calc.influencerPerDay * MIN_PER_INFLUENCER) * WORK_DAYS;
   const personMonths = monthlyMinutes / MIN_PER_MONTH;
   const monthlySavings = Math.round(personMonths * calc.salary);
-  const roiMultiple = monthlySavings > 0 ? Math.round(monthlySavings / TEAM_PRICE) : 0;
+  const pocSignal = monthlySavings > 0 ? Math.round(monthlySavings / POC_REFERENCE_VALUE) : 0;
 
   return (
     <div className="mt-6 border border-border-subtle rounded-md bg-bg-surface/50 overflow-hidden">
@@ -50,10 +50,10 @@ export default function ROICalculator() {
         </div>
         <div className="flex-1 min-w-0">
           <div className="text-[12px] font-semibold text-text-primary">
-            ROI 计算器 · 算你公司能省多少
+            POC 计算器 · 算是否值得跑 10 个 SKU
           </div>
           <div className="text-[10px] font-mono text-text-tertiary">
-            输入日均 SKU 和达人量,秒算每月人力节省 vs Team ¥499
+            输入日均 SKU 和达人量,估算每月可节省的人力成本
           </div>
         </div>
         <span className="text-[11px] font-mono text-accent flex-shrink-0">
@@ -128,24 +128,23 @@ export default function ROICalculator() {
               </div>
             </div>
             <div className="p-3 border border-accent/40 bg-accent/10 rounded">
-              <div className="text-[9px] font-mono text-accent uppercase mb-1">ROI 倍数</div>
+              <div className="text-[9px] font-mono text-accent uppercase mb-1">POC 信号</div>
               <div className="text-[16px] font-bold text-accent tabular-nums">
-                {roiMultiple > 0 ? `${roiMultiple}×` : '—'}
+                {pocSignal > 0 ? `${pocSignal}×` : '—'}
               </div>
             </div>
           </div>
 
           {/* Interpretation */}
           <div className="text-[11px] text-text-secondary leading-relaxed mb-3">
-            {roiMultiple >= 50 ? (
-              <><strong className="text-accent">极高 ROI</strong>. Team ¥499/月 仅占节省的 {(100 / roiMultiple).toFixed(1)}%,
-              上 Enterprise 本地部署可能更合适 → <Link href="/enterprise" className="text-accent underline">看企业方案</Link></>
-            ) : roiMultiple >= 10 ? (
-              <><strong className="text-success">强 ROI</strong>. Team ¥499/月 仅占节省的 {(100 / roiMultiple).toFixed(1)}%,立刻签约。</>
-            ) : roiMultiple >= 2 ? (
-              <><strong className="text-text-primary">正 ROI</strong>. Team 覆盖成本的 {roiMultiple} 倍,建议 Free 跑一周再定。</>
+            {pocSignal >= 10 ? (
+              <><strong className="text-accent">POC 优先级高</strong>. 当前重复工时足够大, 建议直接提交接入需求, 用 10 个真实 SKU 验证交付边界 → <Link href="/inquire?from=roi" className="text-accent underline">提交需求</Link></>
+            ) : pocSignal >= 3 ? (
+              <><strong className="text-success">值得试跑</strong>. 先用 10 个 SKU 看上新物料包能否减少返工, 再决定是否进入主站支付/合同流程。</>
+            ) : pocSignal >= 1 ? (
+              <><strong className="text-text-primary">可以观望</strong>. 先跑演示 SKU 看输出形态, 不急着进入 POC。</>
             ) : (
-              <><strong className="text-text-tertiary">规模偏小</strong>. 日均 SKU/达人加起来不够,Free 档 (¥0 · 10 次 Pipeline/天) 就够用。</>
+              <><strong className="text-text-tertiary">规模偏小</strong>. 当前重复工时不高, 演示模式足够判断方向。</>
             )}
           </div>
 
@@ -154,13 +153,13 @@ export default function ROICalculator() {
               href="/pricing"
               className="inline-flex items-center gap-1.5 px-3 py-2 bg-accent hover:bg-accent-hover text-bg-root text-[11px] font-semibold rounded"
             >
-              {roiMultiple >= 10 ? '订阅 Team →' : '看详细定价'}
+              {pocSignal >= 3 ? '提交接入需求 →' : '看接入方案'}
             </Link>
             <Link
-              href="/invite?code=demo"
+              href="/demo"
               className="inline-flex items-center gap-1.5 px-3 py-2 border border-border-default text-[11px] font-mono text-text-primary hover:border-accent/40 rounded"
             >
-              免费试 7 天
+              试跑演示 SKU
             </Link>
             <Link
               href="/cases"

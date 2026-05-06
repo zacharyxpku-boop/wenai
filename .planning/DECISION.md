@@ -81,9 +81,9 @@ video / customer-service / livestream / content / private-domain / ad-optimizer
 
 ## 新定位
 
-旧 slogan：**"19 个 AI 模块覆盖跨境电商全链路"**（空洞）
+旧 slogan：**"19 个 AI 模块覆盖跨境电商全链路"**（空洞，已废弃）
 
-新 slogan：**"让跨境代运营的重复劳动变成 3 个按钮：翻译、评论、外联"**
+新 slogan：**"把一个 SKU 跑成可上架物料包"**
 
 ---
 

@@ -25,13 +25,14 @@ import { logUsageEntry } from '@/lib/usage';
  *   skuId?: string (如果商家是从某个 SKU 详情页跳进来, 关联成本)
  */
 
-type Stage = 'discovery' | 'photoshoot' | 'video' | 'abtest' | 'listing' | 'insights';
+type Stage = 'discovery' | 'photoshoot' | 'video' | 'social' | 'abtest' | 'listing' | 'insights';
 type Platform = 'amazon' | 'tmall' | 'pdd' | 'tiktok' | 'douyin' | 'xiaohongshu' | 'shopify' | 'mixed';
 
 const STAGE_TXT: Record<Stage, string> = {
   discovery: '选品验证',
   photoshoot: 'AI 影棚',
   video: 'AI 视频',
+  social: '内容拆解包',
   abtest: '测款 A-B',
   listing: '上新流水线',
   insights: '数据洞察',
@@ -224,6 +225,7 @@ function buildOverallPrompt(totalCount: number, stages: Stage[], platform: Platf
 3. estimatedDuration: 总耗时
 4. globalChecklist (4-7 条): 全局必做 (合规 / 商标 / AIGC 标识 / 平台规则)
 5. riskFlags (2-4 条): 风险预警
+6. 如果包含内容拆解包, overallStrategy 需要说明哪些 SKU 先做 benchmark-to-campaign 测试, 哪些 SKU 等待素材补齐
 
 【硬要求】
 - 数字必须具体: ¥80-150 / 1-2 天 / CTR > 3% 这种, 不接受空话
@@ -272,6 +274,9 @@ ${skus.join('\n')}
 - params 要具体 (1024x1536 / n=2 / quality=medium 这种)
 - checkCriteria 要数字化
 - positioning 给真实定位判断, 不是空话
+- 如果 stage=social, 必须按 benchmark-to-campaign 输出: 产品读图、搜索地图、benchmark 方向、Audience/Product/Context/Hook/Timeline/CTA 拆解模板、产品改编脚本、素材 manifest、7 天测试排期和复盘指标
+- 如果没有真实参考链接, social 的 checkCriteria 必须标注"待补 benchmark URL / 竞品账号 / 真实评论证据", 不能伪装成已调研
+- social 的验收标准不能写"爆款", 必须写 CTR、3 秒停留、完播率、save rate、valuable comments、加购或询盘等可复盘指标
 
 【输出严格 JSON】
 {

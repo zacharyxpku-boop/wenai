@@ -34,6 +34,7 @@ if (process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN) 
 const STALE_DAYS = 30;
 const COST_CAP_CENTS = parseInt(process.env.COST_CAP_DAILY_CENTS || '5000', 10);
 const DIGEST_TTL_SEC = 30 * 24 * 3600;
+const PUBLIC_BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://wenai-one.vercel.app';
 
 interface DigestPayload {
   orgId: string;
@@ -297,11 +298,11 @@ function renderDigestHtml(digest: DigestPayload, unsubToken?: string): string {
   <table style="width:100%;border-collapse:collapse;font-size:13px;">${rows}</table>
   <div style="padding:16px 24px;border-top:1px solid #e5e7eb;">
     <div style="font-size:11px;color:#666;margin-bottom:8px;">SKU ${digest.metrics.skuCount} 个 · 上架 ${digest.metrics.launchedCount} · 今日花费 ¥${digest.metrics.todayCny.toFixed(2)}${digest.metrics.cacheRate7d !== null ? ' · 缓存命中率 ' + (digest.metrics.cacheRate7d * 100).toFixed(1) + '%' : ''}</div>
-    <a href="https://wenai-deploy.vercel.app/me/alerts" style="display:inline-block;padding:10px 20px;background:#3b82f6;color:#fff;text-decoration:none;border-radius:6px;font-size:13px;">看完整信号 →</a>
+    <a href="${PUBLIC_BASE_URL}/me/alerts" style="display:inline-block;padding:10px 20px;background:#3b82f6;color:#fff;text-decoration:none;border-radius:6px;font-size:13px;">看完整信号 →</a>
   </div>
   <div style="padding:12px 24px;font-size:10px;color:#aaa;border-top:1px solid #e5e7eb;">
     不想再收? ${unsubToken
-      ? `<a href="https://wenai-deploy.vercel.app/api/unsubscribe?token=${unsubToken}" style="color:#888;text-decoration:underline;">一键退订</a> · `
+      ? `<a href="${PUBLIC_BASE_URL}/api/unsubscribe?token=${unsubToken}" style="color:#888;text-decoration:underline;">一键退订</a> · `
       : ''}去 /me/settings 改邮件设置
   </div>
 </div>

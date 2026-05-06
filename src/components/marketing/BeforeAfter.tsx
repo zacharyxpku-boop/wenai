@@ -1,75 +1,85 @@
 import { COPY, PLACEHOLDER } from '@/i18n/zh';
 import { Container, Section } from './Container';
 
-/**
- * 真人摄影 vs wenai 生成 对比 section
- * 三组占位卡片 + 引言 · 客户授权图待业主上传
- */
 export function BeforeAfter() {
   return (
     <Section>
       <Container>
-        <h2 className="text-3xl md:text-4xl font-bold font-[family-name:var(--font-outfit)] text-text-primary text-center mb-12">
+        <h2 className="mb-12 text-center text-3xl font-bold text-text-primary md:text-4xl font-[family-name:var(--font-outfit)]">
           {COPY.beforeAfter.title}
         </h2>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {PLACEHOLDER.beforeAfter.map((item, idx) => (
-            <div key={idx} className="flex flex-col gap-4">
-              {/* 真人摄影 */}
-              <div className="flex flex-col gap-2">
-                <span className="text-xs font-medium text-text-tertiary uppercase tracking-wide">
-                  真人摄影
-                </span>
-                <div className="aspect-[4/5] bg-bg-surface border border-border-subtle rounded-md flex items-center justify-center px-4 text-center">
-                  <span className="text-xs text-text-tertiary leading-relaxed">
-                    {item.industry} 占位 · 客户授权图待业主上传
-                  </span>
-                </div>
-                <p className="text-xs text-text-tertiary font-mono tabular-nums">
-                  {item.traditionalCost} · {item.traditionalDays}
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
+          {PLACEHOLDER.beforeAfter.map((item, index) => {
+            const slug = ['home', 'auto', 'digital'][index];
+            return (
+              <div key={item.industry} className="flex flex-col gap-4">
+                <ImageBlock
+                  label="Manual shoot"
+                  src={`/seed/before-${slug}.jpg`}
+                  alt={`${item.industry} manual shoot`}
+                  fallback={`${item.industry} manual shoot`}
+                />
+                <p className="font-mono text-xs text-text-tertiary tabular-nums">
+                  {item.traditionalCost} / {item.traditionalDays}
                 </p>
-              </div>
 
-              {/* wenai 生成 */}
-              <div className="flex flex-col gap-2">
-                <span className="text-xs font-medium text-accent uppercase tracking-wide">
-                  wenai 生成
-                </span>
-                <div className="aspect-[4/5] bg-accent/5 border border-accent/20 rounded-md flex items-center justify-center px-4 text-center">
-                  <span className="text-xs text-text-tertiary leading-relaxed">
-                    {item.industry} 占位 · 客户授权图待业主上传
-                  </span>
-                </div>
-                <p className="text-xs text-text-tertiary font-mono tabular-nums">
-                  {item.wenaiCost} · {item.wenaiDays}
+                <ImageBlock
+                  label="wenai direction"
+                  src={`/seed/after-${slug}.jpg`}
+                  alt={`${item.industry} wenai direction`}
+                  fallback={`${item.industry} AI direction`}
+                  accent
+                />
+                <p className="font-mono text-xs text-text-tertiary tabular-nums">
+                  {item.wenaiCost} / {item.wenaiDays}
                 </p>
-              </div>
 
-              {/* 引言 */}
-              <div className="border-l-4 border-accent pl-3 mt-2">
-                <p className="text-sm text-text-primary leading-relaxed">
-                  「{item.quote}」
-                </p>
-                <p className="text-xs text-text-tertiary mt-1">
-                  —— {item.attribution}
-                </p>
+                <div className="mt-2 border-l-4 border-accent pl-3">
+                  <p className="text-sm leading-relaxed text-text-primary">&quot;{item.quote}&quot;</p>
+                  <p className="mt-1 text-xs text-text-tertiary">- {item.attribution}</p>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
 
-        <p className="text-center text-xs text-text-tertiary mt-10">
-          {COPY.beforeAfter.note}
-          {' · '}
-          <a
-            href={COPY.beforeAfter.moreLink.href}
-            className="text-accent hover:text-accent-hover transition-colors"
-          >
+        <p className="mt-10 text-center text-xs text-text-tertiary">
+          {COPY.beforeAfter.note}{' '}
+          <a href={COPY.beforeAfter.moreLink.href} className="text-accent transition-colors hover:text-accent-hover">
             {COPY.beforeAfter.moreLink.label}
           </a>
         </p>
       </Container>
     </Section>
+  );
+}
+
+function ImageBlock({
+  label,
+  src,
+  alt,
+  fallback,
+  accent = false,
+}: {
+  label: string;
+  src: string;
+  alt: string;
+  fallback: string;
+  accent?: boolean;
+}) {
+  return (
+    <div className="flex flex-col gap-2">
+      <span className={`text-xs font-medium uppercase ${accent ? 'text-accent' : 'text-text-tertiary'}`}>
+        {label}
+      </span>
+      <div className={`relative aspect-[4/5] overflow-hidden rounded-md border ${accent ? 'border-accent/20 bg-accent/5' : 'border-border-subtle bg-bg-surface'}`}>
+        <span className="absolute inset-0 flex items-center justify-center px-4 text-center text-xs leading-relaxed text-text-tertiary">
+          {fallback}
+        </span>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={src} alt={alt} className="absolute inset-0 size-full object-cover" />
+      </div>
+    </div>
   );
 }

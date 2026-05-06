@@ -6,6 +6,7 @@ import { useMySkus } from '@/lib/use-my-skus';
 import { useActiveSkuId } from '@/lib/use-active-sku';
 import { ActiveSkuBadge } from '@/components/ActiveSkuBadge';
 import { IndustryHint } from '@/components/IndustryHint';
+import { buildProductDiscoveryStandardPackRoute } from '@/lib/standard-pack-routing';
 
 /**
  * AI 选品发现 (痛点 #1) · STRATEGY_DEEP L4 列的最大缺口
@@ -66,6 +67,31 @@ const EXAMPLES = [
   { title: '🟤 小红书 母婴', platform: 'xiaohongshu' as Platform, category: '辅食工具 / 婴儿玩具', priceMin: 50, priceMax: 300, budget: 80000, risk: 'low' as RiskAppetite },
 ];
 
+function buildDiscoverySkuContext(mySkus: Array<{ name: string; category: string; status: string }>, useSkuContext: boolean): string {
+  if (!useSkuContext || mySkus.length === 0) return '';
+  return mySkus
+    .slice(0, 10)
+    .map(sku => `${sku.name} (${sku.category}, ${sku.status})`)
+    .join('\n');
+}
+
+function buildProductDiscoveryResultSummary(result: DiscoveryResult): string {
+  const candidateSummary = result.candidates
+    .slice(0, 5)
+    .map((candidate, index) => {
+      const risks = candidate.risks.slice(0, 2).join(', ');
+      return `${index + 1}. ${candidate.name} / ${candidate.category} / ${candidate.estMargin} / ${candidate.competition} / ${candidate.trendDirection} / ${candidate.entryStrategy} / risks: ${risks}`;
+    })
+    .join('\n');
+  const rejectedSummary = result.rejectedTopics?.slice(0, 3).join(' | ');
+
+  return [
+    `market summary: ${result.marketSummary}`,
+    `top candidates:\n${candidateSummary}`,
+    rejectedSummary ? `rejected topics: ${rejectedSummary}` : '',
+  ].filter(Boolean).join('\n\n');
+}
+
 export default function ProductDiscoveryPage() {
   const [platform, setPlatform] = useState<Platform>('amazon-us');
   const [category, setCategory] = useState('');
@@ -88,6 +114,24 @@ export default function ProductDiscoveryPage() {
 
   const skuContextLine = useSkuContext && mySkus.length > 0
     ? `\n\n【商家已有 SKU(请避免重复推荐, 优先推互补/相邻品类)】\n${mySkus.slice(0, 10).map(s => `- ${s.name} (${s.category}, ${s.status})`).join('\n')}`
+    : '';
+
+  const standardPackBaseInput = {
+    platformLabel: PLATFORM_LABELS[platform],
+    category,
+    priceMin,
+    priceMax,
+    budget,
+    riskLabel: `${RISK_LABELS[risk].txt} / ${RISK_LABELS[risk].sub}`,
+    extraNote,
+    skuContext: buildDiscoverySkuContext(mySkus, useSkuContext),
+  };
+  const discoveryStandardPackHref = buildProductDiscoveryStandardPackRoute(standardPackBaseInput);
+  const resultStandardPackHref = result
+    ? buildProductDiscoveryStandardPackRoute({
+        ...standardPackBaseInput,
+        resultSummary: buildProductDiscoveryResultSummary(result),
+      })
     : '';
 
   const loadExample = (idx: number) => {
@@ -401,6 +445,13 @@ export default function ProductDiscoveryPage() {
             {running ? '选品中... (10-20 秒)' : '🎯 开始选品发现'}
           </button>
 
+          <Link
+            href={discoveryStandardPackHref}
+            className="block w-full text-center py-2.5 border border-accent/35 text-accent rounded-lg text-[12px] font-mono hover:bg-accent/10"
+          >
+            生成选品 SOP 标品包 →
+          </Link>
+
           {error && (
             <div className="p-3 border border-error/40 bg-error/5 rounded text-[11px] text-error">
               ✗ {error}
@@ -449,10 +500,18 @@ export default function ProductDiscoveryPage() {
                 <p className="text-[13px] text-text-primary leading-relaxed">{result.marketSummary}</p>
               </section>
 
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between gap-3 flex-wrap">
                 <h2 className="text-[14px] font-bold text-text-primary">
                   {result.candidates.length} 个候选 SKU · 按潜力排序
                 </h2>
+                {resultStandardPackHref && (
+                  <Link
+                    href={resultStandardPackHref}
+                    className="text-[11px] font-mono text-accent border border-accent/30 hover:bg-accent/10 rounded px-3 py-1.5"
+                  >
+                    生成选品验收标品包
+                  </Link>
+                )}
                 <button
                   onClick={exportMd}
                   className="text-[11px] font-mono text-accent border border-accent/30 hover:bg-accent/10 rounded px-3 py-1.5"

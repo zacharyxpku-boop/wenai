@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { Outfit, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
 import { cookies, headers } from "next/headers";
 import { readFile } from "fs/promises";
@@ -12,18 +11,6 @@ import { SiteFooter } from "@/components/SiteFooter";
 import modulesConfig from "@/config/modules.json";
 import { verifyToken, getCookieName } from "@/lib/auth";
 
-const outfit = Outfit({
-  variable: "--font-outfit",
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
-});
-
-const ibmPlexMono = IBM_Plex_Mono({
-  variable: "--font-ibm-plex-mono",
-  subsets: ["latin"],
-  weight: ["400", "500"],
-});
-
 export const viewport = {
   themeColor: '#c8975a',
   width: 'device-width',
@@ -32,8 +19,9 @@ export const viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "Wenai · 跨境新品上新流水线",
-  description: "选 1 个品类 → 贴 1 条 SKU → 同时跑翻译 / 文案 / 合规 → 一键打包。五大品类专属调教。",
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://wenai-one.vercel.app'),
+  title: "Wenai · SKU 上新物料包",
+  description: "输入 SKU 信息, 生成上新 SOP、主图方向、详情页文案、合规提醒、客服话术和复评 checklist。",
   manifest: '/manifest.webmanifest',
   applicationName: 'Wenai',
   appleWebApp: {
@@ -45,8 +33,8 @@ export const metadata: Metadata = {
     telephone: false,
   },
   openGraph: {
-    title: "Wenai · 跨境新品上新流水线",
-    description: "30 秒跑完一个新品的翻译 + 文案 + 合规 · 品类专属调教",
+    title: "Wenai · SKU 上新物料包",
+    description: "演示 SKU 工作流, 承接 POC 和企业接入需求。",
     url: "https://wenai-one.vercel.app",
     siteName: "wenai",
     images: [
@@ -54,7 +42,7 @@ export const metadata: Metadata = {
         url: "/api/og",
         width: 1200,
         height: 630,
-        alt: "wenai · 跨境电商 AI 工作台",
+        alt: "wenai · SKU 上新物料包",
       },
     ],
     locale: "zh_CN",
@@ -62,8 +50,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Wenai · 跨境电商 AI 工作台",
-    description: "19 个 AI 模块 · 7 天免费内测",
+    title: "Wenai · SKU 上新物料包",
+    description: "演示 SKU 工作流, 承接 POC 和企业接入需求。",
     images: ["/api/og"],
   },
 };
@@ -143,7 +131,7 @@ export default async function RootLayout({
   return (
     <html
       lang="zh-CN"
-      className={`${outfit.variable} ${ibmPlexMono.variable} h-full`}
+      className="h-full"
     >
       <body className="min-h-full noise-overlay">
         {showChrome && (

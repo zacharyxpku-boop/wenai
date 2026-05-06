@@ -32,17 +32,19 @@ export function Section({
   className = '',
   spacing = 'normal',
   as: Tag = 'section',
+  id,
 }: {
   children: ReactNode;
   className?: string;
   spacing?: 'tight' | 'normal' | 'loose';
   as?: 'section' | 'div' | 'header' | 'footer';
+  id?: string;
 }) {
   const pad =
     spacing === 'tight' ? 'py-10 lg:py-14' :
     spacing === 'loose' ? 'py-20 lg:py-28' :
     'py-14 lg:py-20';
-  return <Tag className={`${pad} ${className}`}>{children}</Tag>;
+  return <Tag id={id} className={`${pad} ${className}`}>{children}</Tag>;
 }
 
 /**

@@ -1,11 +1,13 @@
 'use client';
 
 import { Suspense, useEffect, useState } from 'react';
+import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import JSZip from 'jszip';
 import { CATEGORIES, type CategoryId } from '@/lib/category-prompts';
 import { getScenePresets } from '@/lib/scene-presets';
 import { exportFilename } from '@/lib/export-filename';
+import { buildProductImageStandardPackRoute } from '@/lib/standard-pack-routing';
 
 type OutputType = 'main' | 'scene' | 'detail' | 'lifestyle' | 'compare';
 
@@ -17,6 +19,28 @@ interface GenImage {
   width: number;
   height: number;
   provider: string;
+}
+
+function buildProductImageResultSummary(input: {
+  images: GenImage[];
+  selectedOutputs: Set<OutputType>;
+  failedTypes: OutputType[];
+  categoryLabel: string;
+  sceneLabel: string;
+}): string {
+  const delivered = input.images.map(img =>
+    `${img.label}: ${img.width}x${img.height} / ${img.provider} / ${img.prompt.slice(0, 120)}`,
+  );
+
+  return [
+    `category: ${input.categoryLabel}`,
+    `scene: ${input.sceneLabel || '(not specified)'}`,
+    `requested outputs: ${Array.from(input.selectedOutputs).join(' / ')}`,
+    `delivered images: ${input.images.length}`,
+    input.failedTypes.length ? `failed outputs: ${input.failedTypes.join(' / ')}` : 'failed outputs: none',
+    delivered.join('\n'),
+    `acceptance checklist: platform size fit, product fidelity, prompt traceability, ZIP readiness, share link TTL risk`,
+  ].join('\n');
 }
 
 const ALL_OUTPUTS: { type: OutputType; label: string; desc: string }[] = [
@@ -152,7 +176,7 @@ function ProductImagePipelineInner() {
       });
       if (!check.ok) {
         const d = await check.json().catch(() => ({}));
-        alert(`Pipeline 配额已达上限\n${d.resetAtText || ''}\n升级 Team 至 500/天`);
+        alert(`Pipeline 配额已达上限\n${d.resetAtText || ''}\n准备跑真实 SKU 请提交 10 SKU POC 需求`);
         return;
       }
     } catch {}
@@ -303,6 +327,31 @@ ${images.map((img, i) => `### ${i + 1}. ${img.label}
       setSharing(false);
     }
   };
+
+  const categoryLabel = CATEGORIES.find(c => c.id === category)?.label || '未指定品类';
+  const sceneLabel = scenePresets.find(s => s.id === scene)?.label || scene;
+  const selectedOutputLabels = ALL_OUTPUTS.filter(o => selectedOutputs.has(o.type)).map(o => o.label);
+  const standardPackHref = buildProductImageStandardPackRoute({
+    categoryLabel,
+    sceneLabel,
+    skuInput: sku,
+    outputs: selectedOutputLabels,
+  });
+  const resultStandardPackHref = images.length > 0
+    ? buildProductImageStandardPackRoute({
+        categoryLabel,
+        sceneLabel,
+        skuInput: sku,
+        outputs: selectedOutputLabels,
+        resultSummary: buildProductImageResultSummary({
+          images,
+          selectedOutputs,
+          failedTypes,
+          categoryLabel,
+          sceneLabel,
+        }),
+      })
+    : '';
 
   return (
     <div className="max-w-[1400px] mx-auto p-4 lg:p-6">
@@ -525,13 +574,25 @@ ${images.map((img, i) => `### ${i + 1}. ${img.label}
           {running && <span className="text-accent font-mono">生成中...</span>}
           {images.length > 0 && !running && <span className="text-success">✓ 生成完成</span>}
         </div>
-        <button
-          onClick={handleGenerate}
-          disabled={!category || !scene || sku.length < 10 || running}
-          className="px-5 py-2 bg-accent text-bg-root text-[12px] font-semibold rounded-md hover:bg-accent-hover disabled:opacity-40 disabled:cursor-not-allowed transition-all active:scale-95"
-        >
-          {running ? '生成中...' : '开始生成 →'}
-        </button>
+        <div className="flex items-center gap-2 flex-wrap justify-end">
+          <a
+            href={standardPackHref}
+            className={`px-4 py-2 border text-[11px] font-mono rounded-md transition-colors ${
+              sku.trim().length
+                ? 'border-cat-content/40 text-cat-content hover:bg-cat-content/10'
+                : 'border-border-subtle text-text-tertiary pointer-events-none opacity-50'
+            }`}
+          >
+            生成商品图 SOP 标品包
+          </a>
+          <button
+            onClick={handleGenerate}
+            disabled={!category || !scene || sku.length < 10 || running}
+            className="px-5 py-2 bg-accent text-bg-root text-[12px] font-semibold rounded-md hover:bg-accent-hover disabled:opacity-40 disabled:cursor-not-allowed transition-all active:scale-95"
+          >
+            {running ? '生成中...' : '开始生成 →'}
+          </button>
+        </div>
       </div>
 
       {/* Mock notice */}
@@ -566,6 +627,13 @@ ${images.map((img, i) => `### ${i + 1}. ${img.label}
               生成结果 · {images.length} 张
             </span>
             <div className="flex items-center gap-2">
+              <a
+                href={resultStandardPackHref}
+                className="px-3 py-1.5 border border-cat-content/40 bg-cat-content/10 text-cat-content text-[10px] font-mono rounded hover:bg-cat-content/20"
+                title="把本次商品图结果转成可验收的标准交付包"
+              >
+                生成商品图验收标品包
+              </a>
               <button
                 onClick={handleZipDownload}
                 disabled={zipping}
@@ -663,7 +731,7 @@ ${images.map((img, i) => `### ${i + 1}. ${img.label}
       {/* 案例引导 */}
       <div className="mt-4 flex items-center justify-between px-3 py-2 text-[10px] font-mono text-text-tertiary border border-border-subtle/60 rounded-md bg-bg-surface/30">
         <span>N 代工 · ¥3500/SKU 摄影棚 → ¥0.7/SKU wanx · 5000× 成本压缩</span>
-        <a href="/cases#novahome-image" className="text-accent hover:underline">看 Before/After →</a>
+        <Link href="/cases/novahome-image" className="text-accent hover:underline">看 Before/After →</Link>
       </div>
     </div>
   );

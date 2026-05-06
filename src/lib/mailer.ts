@@ -6,7 +6,7 @@
  *   2. SENDGRID_API_KEY 存在 → 走 SendGrid API
  *   3. 都没 → console.log (dev 干跑, 不报错)
  *
- * from 默认 'wenai <noreply@wenai-deploy.vercel.app>',可被 EMAIL_FROM 覆盖
+ * from 默认 'wenai <noreply@wenai-one.vercel.app>',可被 EMAIL_FROM 覆盖
  *
  * 不接队列 / 不重试 (cron 是幂等的, 失败下次再发)
  */
@@ -25,7 +25,7 @@ export interface SendResult {
   id?: string;
 }
 
-const FROM = process.env.EMAIL_FROM || 'wenai <noreply@wenai-deploy.vercel.app>';
+const FROM = process.env.EMAIL_FROM || 'wenai <noreply@wenai-one.vercel.app>';
 
 export async function sendEmail(args: SendArgs): Promise<SendResult> {
   const { to, subject, html, text } = args;

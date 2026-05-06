@@ -816,6 +816,9 @@ export default function MySkusPage() {
           <Link href="/pipelines/data-insights" className="px-3 py-1.5 border border-cat-content/30 rounded text-[11px] font-mono text-cat-content hover:bg-cat-content/10">
             📊 数据洞察
           </Link>
+          <Link href="/modules/standard-pack" className="px-3 py-1.5 border border-cat-content/30 rounded text-[11px] font-mono text-cat-content hover:bg-cat-content/10">
+            📦 SOP 标品
+          </Link>
           <Link href="/pipelines/batch-launch" className="px-3 py-1.5 border border-accent/30 rounded text-[11px] font-mono text-accent hover:bg-accent/10">
             🏭 批量上架
           </Link>

@@ -31,32 +31,31 @@ export default function TermsPage() {
         <p>为保障服务质量，Pipeline 和单模块均设有调用上限，具体配额如下：</p>
         <ul className="list-disc pl-5 space-y-1">
           <li><strong>Free（内测版）</strong>：10 次 Pipeline / 天；单模块 50 次 / 天</li>
-          <li><strong>Team（团队版）</strong>：500 次 Pipeline / 天 · 5 席共享</li>
+          <li><strong>10 SKU POC</strong>：以接入订单开通临时额度, 用于真实 SKU 交付验证</li>
           <li><strong>Enterprise（企业定制）</strong>：无限配额（按合同约定）</li>
         </ul>
         <p>禁止通过技术手段绕过使用限制。</p>
 
         <h2>7. 服务等级（SLA）</h2>
         <ul className="list-disc pl-5 space-y-1">
-          <li><strong>Free</strong>：按「现状」提供，不保证可用性</li>
-          <li><strong>Team</strong>：99.5% 月度可用性目标，故障 48 小时内响应</li>
-          <li><strong>Enterprise</strong>：99.9% 月度可用性，合同约定 SLA 及赔偿</li>
+          <li><strong>演示环境</strong>：按「现状」提供，不保证可用性或业务效果</li>
+          <li><strong>POC</strong>：交付窗口、响应方式、复改次数以接入订单为准</li>
+          <li><strong>Enterprise</strong>：SLA、赔偿、响应等级和例外情况按双方合同约定</li>
         </ul>
         <p>AI 模型服务可能因第三方 API 波动而暂时不可用，此时系统将返回明确错误并建议重试。仅 demo 模式（带 <code>?demo=1</code> 查询参数）会使用预缓存结果。</p>
 
         <h2>8. 责任限制</h2>
-        <p>在法律允许的最大范围内，本平台不对因使用 AI 生成内容而产生的直接或间接损失承担责任，包括但不限于因商标侵权、listing 违规、翻译错误导致的商业损失。Team 及 Enterprise 订阅的具体责任边界以订阅合同为准。</p>
+        <p>在法律允许的最大范围内，本平台不对因使用 AI 生成内容而产生的直接或间接损失承担责任，包括但不限于因商标侵权、listing 违规、翻译错误导致的商业损失。POC 及 Enterprise 的具体责任边界以接入订单或合同为准。</p>
 
-        <h2>9. 订阅与退款</h2>
+        <h2>9. 接入、合同与退款</h2>
         <ul className="list-disc pl-5 space-y-1">
-          <li>Team 订阅按月计费，支持随时取消，已付费当月仍可使用至周期末</li>
-          <li>Enterprise 订阅按年度合同约定，退款依合同条款执行</li>
-          <li>首次订阅 7 天内如不满意可全额退款，需主动联系客服邮箱</li>
-          <li>退款处理周期 3-7 个工作日</li>
+          <li>本子站用于产品介绍、演示与接入需求收集，不直接处理线上收款。</li>
+          <li>POC、企业接入、SLA、发票与退款安排，以主站或双方签署的合同/订单为准。</li>
+          <li>演示环境仅用于评估流程，不构成已购买服务、固定 SLA 或退款承诺。</li>
         </ul>
 
         <h2>10. 开票与发票</h2>
-        <p>Team 及 Enterprise 订阅支持开具增值税普通发票（6%）或增值税专用发票（13%）。需要开票请在付款后将公司全称、税号、银行账号发送至 <code>zachary.x.pku@gmail.com</code>，3 个工作日内开具。</p>
+        <p>POC 及 Enterprise 接入支持按主站订单或双方合同开具发票。需要开票请按主站支付/合同流程提交公司全称、税号和开票信息。</p>
 
         <h2>11. 数据处理边界</h2>
         <ul className="list-disc pl-5 space-y-1">

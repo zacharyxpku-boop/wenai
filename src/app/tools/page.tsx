@@ -1,74 +1,70 @@
-import { Metadata } from 'next';
+import type { Metadata } from 'next';
 import Link from 'next/link';
 
 export const metadata: Metadata = {
-  title: '免费工具 · Hook 打分 / AIGC 合规速查 | wenai',
-  description: '跨境电商开跑前用 · Hook 文案预估打分 · 多平台 AIGC 披露合规速查 · 0 LLM 成本随便用',
+  title: 'Tools | wenai',
+  description:
+    'Free and lightweight ecommerce tools for hook scoring, AIGC compliance, marketing campaign briefs, and POC preparation.',
 };
 
 const TOOLS = [
   {
+    href: '/pipelines/marketing-campaign',
+    title: 'Marketing campaign pack',
+    desc: 'Benchmark evidence, hook matrix, UGC brief, slideshow/reel plan, and recap structure.',
+    tag: 'POC',
+  },
+  {
     href: '/tools/hook-score',
-    emoji: '🎯',
-    title: 'Hook 跑前打分',
-    desc: '粘 hook 文案, 立即拿 0-100 分 + 预估 CTR 区间',
-    tag: '0 LLM',
-    free: true,
+    title: 'Hook score',
+    desc: 'Score hook copy before testing and get a simple quality estimate.',
+    tag: 'Free',
   },
   {
     href: '/tools/aigc-compliance',
-    emoji: '🛡️',
-    title: 'AIGC 合规速查',
-    desc: '6 平台 AI 内容披露规则 · 一键复制披露语',
-    tag: 'SEO',
-    free: true,
+    title: 'AIGC compliance check',
+    desc: 'Review disclosure wording, platform risk, and human approval boundaries.',
+    tag: 'Free',
   },
-] as const;
+];
 
 export default function ToolsIndex() {
   return (
     <div className="min-h-screen bg-bg-root">
-      <div className="max-w-[800px] mx-auto px-6 py-8">
-        <div className="mb-6 pb-4 border-b border-border-subtle">
-          <div className="flex items-center gap-2 mb-2">
-            <Link href="/" className="text-[10px] font-mono text-text-tertiary hover:text-accent">← 首页</Link>
-          </div>
-          <h1 className="text-2xl lg:text-3xl font-bold text-text-primary mb-1 font-[family-name:var(--font-outfit)]">
-            🧰 免费工具
+      <div className="mx-auto max-w-[800px] px-6 py-8">
+        <div className="mb-6 border-b border-border-subtle pb-4">
+          <Link href="/" className="mb-2 inline-block text-[10px] font-mono text-text-tertiary hover:text-accent">
+            &lt;- Home
+          </Link>
+          <h1 className="mb-1 text-2xl font-bold text-text-primary lg:text-3xl font-[family-name:var(--font-outfit)]">
+            Tools
           </h1>
           <p className="text-[12px] text-text-secondary">
-            开跑前用 · 不烧 quota · 不需登录, 直接干
+            Lightweight utilities that support the POC delivery system without turning wenai into a generic tool bundle.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {TOOLS.map(t => (
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+          {TOOLS.map((tool) => (
             <Link
-              key={t.href}
-              href={t.href}
-              className="block border border-border-subtle bg-bg-surface/30 rounded-lg p-5 hover:border-accent/40 transition-colors group"
+              key={tool.href}
+              href={tool.href}
+              className="group block rounded-md border border-border-subtle bg-bg-surface/30 p-5 transition-colors hover:border-accent/40"
             >
-              <div className="flex items-baseline justify-between mb-3">
-                <span className="text-3xl">{t.emoji}</span>
-                <span className="text-[9px] font-mono text-accent border border-accent/40 px-1.5 py-0.5 rounded">
-                  {t.tag}
+              <div className="mb-3 flex items-baseline justify-between">
+                <span className="text-[15px] font-bold text-text-primary group-hover:text-accent">{tool.title}</span>
+                <span className="rounded border border-accent/40 px-1.5 py-0.5 text-[9px] font-mono text-accent">
+                  {tool.tag}
                 </span>
               </div>
-              <div className="text-[15px] font-bold text-text-primary mb-1 group-hover:text-accent">
-                {t.title}
-              </div>
-              <p className="text-[12px] text-text-secondary leading-relaxed">{t.desc}</p>
-              <div className="mt-3 text-[10px] font-mono text-text-tertiary">
-                {t.free ? '免费 · 无需注册' : '需登录'} →
-              </div>
+              <p className="text-[12px] leading-relaxed text-text-secondary">{tool.desc}</p>
+              <div className="mt-3 text-[10px] font-mono text-text-tertiary">Open -&gt;</div>
             </Link>
           ))}
         </div>
 
-        <div className="mt-8 p-4 border border-border-subtle rounded-lg bg-bg-surface/20 text-[11px] text-text-secondary leading-relaxed">
-          这些工具会持续加 · 想要哪个? 邮件 <code className="text-accent">hello@wenai</code> 留言
-          <br />
-          完整 SKU 库 / AI 主图 / 视频拆解在 <Link href="/me/skus" className="text-accent hover:underline">/me/skus</Link>
+        <div className="mt-8 rounded-md border border-border-subtle bg-bg-surface/20 p-4 text-[11px] leading-relaxed text-text-secondary">
+          Full SKU workspace, reports, and CRM motion live in the POC and inquiry flows.
         </div>
       </div>
     </div>

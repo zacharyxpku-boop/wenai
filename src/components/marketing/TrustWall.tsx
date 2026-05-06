@@ -4,7 +4,7 @@ import { Container, Section } from '@/components/marketing/Container';
 /**
  * TrustWall · 信任墙
  *
- * 顶部小标题 + 8 个 logo 占位 (4×2 / 2×4) + 4 项数据条
+ * 子站信任说明 · 不使用虚构客户 logo 或未验证业绩数
  */
 export function TrustWall() {
   const { trust } = COPY;
@@ -17,17 +17,10 @@ export function TrustWall() {
           <p className="text-sm text-text-tertiary">{trust.headline}</p>
         </div>
 
-        {/* Logo 墙 */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mb-12">
-          {Array.from({ length: trust.logoCount }).map((_, i) => (
-            <div
-              key={i}
-              title="logo placeholder"
-              className="aspect-[3/1] rounded-md bg-bg-surface border border-border-subtle flex items-center justify-center text-text-tertiary hover:text-accent hover:border-border-default transition-colors"
-            >
-              <span className="text-xs font-mono tracking-[0.2em]">CLIENT</span>
-            </div>
-          ))}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4 mb-12">
+          <TrustNote label="定位" value="SKU 上新子站" />
+          <TrustNote label="用途" value="演示工作流 / 承接线索" />
+          <TrustNote label="收费" value="主站合同和支付" />
         </div>
 
         {/* 数据条 */}
@@ -45,5 +38,18 @@ export function TrustWall() {
         </div>
       </Container>
     </Section>
+  );
+}
+
+function TrustNote({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="rounded-md bg-bg-surface border border-border-subtle p-4">
+      <div className="text-[10px] font-mono uppercase tracking-wider text-text-tertiary mb-1">
+        {label}
+      </div>
+      <div className="text-sm font-semibold text-text-primary">
+        {value}
+      </div>
+    </div>
   );
 }

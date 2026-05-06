@@ -1,9 +1,12 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import CaseLibraryExplorer from '@/components/CaseLibraryExplorer';
+import { getCaseLibraryEntries } from '@/lib/case-library';
+import { POC_EVIDENCE_CASES } from '@/lib/poc-case-studies';
 
 export const metadata: Metadata = {
   title: 'Wenai · 案例 · 代运营三件事被 wenai 吃掉的样子',
-  description: '家居 / 汽摩 / 数码三个品类的真实 Pipeline 产出对比：手工几小时 vs wenai 几十秒',
+  description: '家居 / 汽摩 / 数码案例的 POC 交付、验收和复盘样例：不仅看效率，也看是否值得继续接入。',
 };
 
 interface Case {
@@ -26,6 +29,13 @@ interface Case {
   };
   outcome: string[];
   sampleOutput: { step: string; preview: string }[];
+  pocReview: {
+    readiness: string;
+    acceptanceScore: string;
+    decision: string;
+    nextStep: string;
+    guardrail: string;
+  };
   quote: { text: string; author: string };
 }
 
@@ -63,6 +73,13 @@ const CASES: Case[] = [
       { step: '文案 · 标题', preview: 'HOMELODY Stackable Airtight Storage Bins, 6-Pack — BPA-Free PP, 3 Sizes, Save 40% Space' },
       { step: '合规', preview: '必要认证：US FDA 21 CFR · Prop 65 · 欧盟 LFGB · EU 10/2011 · REACH SVHC。商标冲突：未检出。' },
     ],
+    pocReview: {
+      readiness: '线索分 84 / 验收准备 82 / 合同准备 76',
+      acceptanceScore: '83/100',
+      decision: '扩 SKU',
+      nextStep: '把合规 checklist 和批量上新 Excel 模板扩到下一批 20 个家居 SKU。',
+      guardrail: '效率数字来自 demo 流程测算, 不作为真实客户 ROI 承诺。',
+    },
     quote: {
       text: '以前主管一天审 6 个 SKU，现在审 40 个。合规点自动带出来，不再返工。',
       author: 'H 代运营 · 运营主管',
@@ -93,7 +110,7 @@ const CASES: Case[] = [
     },
     outcome: [
       '车型清单从 200 款乱序改为按年份分组可扫描表格',
-      '客户下单前主动点击查看兼容表（退货率 -12%，数据来自客户方）',
+      '样例展示了兼容表结构如何降低误购风险，不声明真实退货率',
       '合规描述独立生成，不再挪用竞品文案，降低侵权风险',
     ],
     sampleOutput: [
@@ -101,6 +118,13 @@ const CASES: Case[] = [
       { step: '文案 · 兼容车型段', preview: '兼容车型：2018-2024 丰田 Camry / RAV4 / Highlander · 2019-2024 本田 Civic / CR-V / Pilot · 2020-2024 特斯拉 Model 3 / Y（完整 200 款见详情页表格）' },
       { step: '合规', preview: 'US FCC Part 15 Subpart B (含电子元件) · CE RED · RoHS · 车规 SAE J1455 参考。商标：避免 "Apple Compatible" 表述，改用 "Works with MagSafe devices"。' },
     ],
+    pocReview: {
+      readiness: '线索分 82 / 验收准备 79 / 合同准备 77',
+      acceptanceScore: '80/100',
+      decision: '推进主站合同',
+      nextStep: '把车型兼容结构、商标词边界和安装场景脚本纳入长期车品上新 SOP。',
+      guardrail: '兼容车型和第三方商标引用必须由客户负责人终审。',
+    },
     quote: {
       text: '以前媒介一天能上 3 个新车品，现在上 18 个。车型清单自动对齐客户搜索习惯。',
       author: 'V 独立站 · 品牌负责人',
@@ -138,6 +162,13 @@ const CASES: Case[] = [
       { step: '达人 PantryPerfection（YouTube 85K）', preview: 'Subject: A weatherproof speaker for your garden shed build series\n\nHi, your wooden shed time-lapse last month hit me...' },
       { step: '达人 @trailrunner_kai（Instagram 48K）', preview: 'Subject: Swim-proof speaker for your trail sunrise Reels\n\nHi Kai, your 5 AM trail Reels set a mood...' },
     ],
+    pocReview: {
+      readiness: '线索分 78 / 验收准备 75 / 合同准备 71',
+      acceptanceScore: '76/100',
+      decision: '继续迭代 POC',
+      nextStep: '先补达人筛选口径、合作条款和回复归因表, 再决定是否扩到完整外联包。',
+      guardrail: '回复率样例只展示个性化邮件结构, 不承诺具体达人回复结果。',
+    },
     quote: {
       text: '以前媒介一周发 50 封邮件，现在一天发 80 封，而且被标垃圾的次数反而变少。个性化是关键。',
       author: 'M 工厂 · 达人 BD 主管',
@@ -172,18 +203,27 @@ const CASES: Case[] = [
       '商标前置过滤避免 "AirPods Style" 类近似词生成，降低 Amazon listing 被 IP takedown 风险',
     ],
     sampleOutput: [
-      { step: '主图 · 白底 45°', preview: '纯白背景，产品 80% 占画幅，柔和投影，Amazon listing 规范 2000×2000 直接上架' },
+      { step: '主图 · 白底 45°', preview: '纯白背景，产品 80% 占画幅，柔和投影，Amazon listing 候选图规格 2000×2000，需人工终审' },
       { step: '场景图 · 厨房台面', preview: '干净白色厨房台面，晨光从左侧射入，极简北欧风格，浅景深，收纳盒作为前景主体' },
       { step: '细节图 · 材质微距', preview: 'BPA-Free 食品级 PP 材质表面纹理特写，影棚打光，锐利对焦，工业设计美学' },
     ],
+    pocReview: {
+      readiness: '线索分 80 / 验收准备 73 / 合同准备 69',
+      acceptanceScore: '74/100',
+      decision: '补资料再跑',
+      nextStep: '先补品牌视觉规范、禁用词和人工终审人, 再扩到批量主图生产。',
+      guardrail: 'AI 图只能作为候选图和测试素材, 最终上架必须人工终审。',
+    },
     quote: {
-      text: '以前摄影棚一次性排 5 个新品，档期要 1 个月。现在我们上午定品类，下午就出图上架。',
+      text: '以前摄影棚一次性排 5 个新品，档期很长。现在先用样例流程生成候选图，再由运营终审是否进入上架。',
       author: 'N 代工品牌 · 电商运营总监',
     },
   },
 ];
 
 export default function CasesPage() {
+  const caseLibraryEntries = getCaseLibraryEntries();
+
   return (
     <div className="max-w-[1200px] mx-auto py-10 px-6">
       <div className="mb-10 text-center">
@@ -191,12 +231,53 @@ export default function CasesPage() {
           CASES · 2026-04
         </div>
         <h1 className="text-2xl lg:text-3xl font-bold text-text-primary mb-3 font-[family-name:var(--font-outfit)]">
-          代运营三件事 被 wenai 吃掉的样子
+          不只看效率, 也看值不值得继续接入
         </h1>
         <p className="text-[13px] text-text-secondary max-w-[680px] mx-auto">
-          下面 3 个案例基于 wenai 内置 demo 商品真实跑出来。
-          客户名用化名。时间对比、Pipeline 产出、主管访谈都是真实体验过的，不是 slogan。
+          下面这些案例用于展示 wenai 的 POC 交付结构、验收边界和复盘决策。
+          它们不是客户业绩证明, 也不承诺 ROI, 但应该让你看清这套系统如何进入真实商业流程。
         </p>
+      </div>
+
+      <section className="mb-10 border border-accent/30 rounded-md bg-accent/5 p-5">
+        <div className="flex items-start justify-between gap-4 flex-wrap mb-4">
+          <div>
+            <div className="text-[10px] font-mono text-accent uppercase tracking-wider mb-2">
+              POC Evidence
+            </div>
+            <h2 className="text-[18px] font-semibold text-text-primary font-[family-name:var(--font-outfit)]">
+              匿名 POC 样例: 输入 → 标准包 → 交付 → 复盘 → 下一步
+            </h2>
+            <p className="mt-2 text-[12px] text-text-secondary leading-relaxed max-w-[760px]">
+              这里展示的是交付结构和验收逻辑, 不是业绩承诺。真正的商业价值来自每一单复盘后沉淀下来的可复用证据。
+            </p>
+          </div>
+          <Link href="/poc" className="text-[11px] font-mono text-accent border border-accent/30 rounded px-3 py-1.5 hover:bg-accent/10">
+            查看 10 SKU POC →
+          </Link>
+        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+          {POC_EVIDENCE_CASES.map(item => (
+            <article key={item.slug} className="border border-border-subtle rounded-md bg-bg-root/45 p-4">
+              <div className="text-[10px] font-mono text-accent uppercase tracking-wider mb-1">{item.segment}</div>
+              <h3 className="text-[14px] font-semibold text-text-primary">{item.title}</h3>
+              <div className="mt-3 grid grid-cols-1 md:grid-cols-3 gap-2">
+                <EvidenceMetric label="准入" value={item.standardPack.readiness} />
+                <EvidenceMetric label="复盘" value={`${item.review.acceptanceScore} · ${item.review.decision}`} />
+                <EvidenceMetric label="下一步" value={item.review.nextStep} />
+              </div>
+              <ul className="mt-3 space-y-1.5">
+                {item.evidence.map(line => (
+                  <li key={line} className="text-[11px] text-text-secondary leading-relaxed">{line}</li>
+                ))}
+              </ul>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <div className="mb-10">
+        <CaseLibraryExplorer entries={caseLibraryEntries} />
       </div>
 
       {/* 案例列表 */}
@@ -223,6 +304,20 @@ export default function CasesPage() {
               >
                 去跑同款 Pipeline →
               </Link>
+            </div>
+
+            {/* 产品场景 hero */}
+            <div className="aspect-[16/6] bg-bg-surface border-b border-border-subtle overflow-hidden relative">
+              <span className="absolute inset-0 flex items-center justify-center text-text-tertiary text-xs font-mono z-0">
+                {c.category} · 产品场景
+              </span>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={`/seed/case-${c.slug}.jpg`}
+                alt={`${c.customer} ${c.scenario}`}
+                className="absolute inset-0 w-full h-full object-cover z-10"
+                loading="lazy"
+              />
             </div>
 
             {/* 场景 */}
@@ -282,6 +377,21 @@ export default function CasesPage() {
               </div>
             </div>
 
+            <div className="px-6 py-4 border-t border-border-subtle bg-bg-surface/35">
+              <div className="flex items-end justify-between gap-3 mb-3 flex-wrap">
+                <div>
+                  <div className="text-[10px] font-mono text-accent uppercase tracking-wider mb-1">POC 验收层</div>
+                  <div className="text-[13px] font-semibold text-text-primary">{c.pocReview.readiness}</div>
+                </div>
+                <div className="text-[10px] font-mono text-text-tertiary">{c.pocReview.acceptanceScore}</div>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                <EvidenceMetric label="复盘决策" value={c.pocReview.decision} />
+                <EvidenceMetric label="下一步" value={c.pocReview.nextStep} />
+                <EvidenceMetric label="边界" value={c.pocReview.guardrail} />
+              </div>
+            </div>
+
             {/* 主管访谈 */}
             <div className="px-6 py-4 border-t border-border-subtle bg-accent/5">
               <div className="flex items-start gap-3">
@@ -302,18 +412,26 @@ export default function CasesPage() {
           想跑自己的案例？
         </div>
         <p className="text-[12px] text-text-secondary mb-4">
-          Free 版本每天 10 次 Pipeline 免费额度，够跑 2-3 个真实 SKU。
-          觉得有价值再升级 Team。
+          演示模式可先看样例输出形态。正式 POC 通过接入需求开通额度, 再跑真实 SKU。
         </p>
         <div className="flex gap-3 justify-center">
-          <Link href="/invite" className="px-4 py-2 bg-accent text-bg-root rounded-md text-[12px] font-semibold hover:bg-accent-hover">
-            获取邀请码 →
+          <Link href="/demo" className="px-4 py-2 bg-accent text-bg-root rounded-md text-[12px] font-semibold hover:bg-accent-hover">
+            试跑演示 →
           </Link>
           <Link href="/pricing" className="px-4 py-2 border border-border-default rounded-md text-[12px] font-mono text-text-primary hover:border-accent/40">
             查看定价
           </Link>
         </div>
       </div>
+    </div>
+  );
+}
+
+function EvidenceMetric({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="border border-border-subtle rounded bg-bg-surface/45 p-2">
+      <div className="text-[9px] font-mono text-text-tertiary uppercase tracking-wider mb-1">{label}</div>
+      <div className="text-[11px] text-text-primary leading-relaxed">{value}</div>
     </div>
   );
 }
