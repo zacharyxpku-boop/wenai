@@ -1,58 +1,61 @@
 import { Container, PrimaryButton, Section, SecondaryButton } from './Container';
 
-const CONTRAST = [
-  ['不做大而全 AI 平台', '不把生图、社媒、客服、达人、数据全塞进一个空壳，让客户不知道先买什么。'],
-  ['只跑能验收的 SKU POC', '围绕 10 个真实 SKU，交付能被运营、老板和采购一起复核的标准包。'],
-  ['先验收，再接入主站商业流', '用缺口、风险、通过率和下一步动作判断是否进入正式合同、付款和长期合作。'],
-] as const;
+const COMPARE_ROWS = [
+  {
+    title: '普通 AI 工具',
+    body: '给你生成结果，但不对类目规则、品牌禁区、交付验收和合同推进负责。',
+  },
+  {
+    title: 'wenai 交付系统',
+    body: '把 SKU 输入、规则护栏、营销资产、老板版报告和 CRM 下一步动作放在同一条线里。',
+  },
+];
 
 const MOATS = [
-  'SKU 级输入、输出、风险和返工原因持续沉淀',
-  '类目 SOP 和平台终审边界不断积累',
-  'POC 状态流连接线索、交付、复盘和合同推进',
-  '老板版验收报告把 AI 输出变成采购决策材料',
-] as const;
+  '类目阈值、品牌禁用词、语气规则沉淀为工作区规则',
+  'POC 输出不是散件，而是标准包、报告、复盘和推进建议',
+  '内容营销和上新共用一套 SKU 上下文，避免团队切割',
+  '从询盘到合同动作形成结构化运营层，而不是一堆聊天记录',
+];
 
 export function WhyFocused() {
   return (
-    <Section className="border-y border-border-subtle bg-bg-surface/20" spacing="tight">
+    <Section className="border-b border-border-subtle bg-bg-surface/30" spacing="tight">
       <Container>
-        <div className="grid grid-cols-1 items-start gap-8 lg:grid-cols-[0.95fr_1.05fr]">
-          <div>
-            <div className="mb-3 text-[10px] font-mono uppercase tracking-[0.22em] text-accent">
-              为什么不是另一个 AI 套壳
-            </div>
-            <h2 className="font-[family-name:var(--font-outfit)] text-3xl font-bold leading-tight text-text-primary md:text-4xl">
-              wenai 不做大而全，只做能成交的 SKU POC。
+        <div className="grid gap-8 lg:grid-cols-[0.95fr_1.05fr]">
+          <div className="space-y-5">
+            <div className="text-[11px] font-mono text-text-tertiary">为什么这不是另一个 AI 套壳</div>
+            <h2 className="max-w-2xl text-balance font-[family-name:var(--font-outfit)] text-3xl font-semibold leading-tight text-text-primary md:text-4xl">
+              客户买的不是“会生成”，而是可交付、可复核、可推进。
             </h2>
-            <p className="mt-4 text-sm leading-relaxed text-text-secondary">
-              市面上很多 AI 产品喜欢先堆功能，再慢慢解释价值。wenai 反过来做：先把 10 个真实 SKU
-              的交付线跑通，让客户能验收、能复盘、能判断要不要继续签更大的合作。
+            <p className="max-w-2xl text-pretty text-[15px] leading-7 text-text-secondary">
+              竞品常常把自己包装成内容平台、创意平台或代理人平台。wenai 更窄，但也更硬: 它盯住电商团队真正愿意付费的那段链路。
             </p>
-            <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-              <PrimaryButton href="/poc">看 POC 路径</PrimaryButton>
-              <SecondaryButton href="/poc/report">看验收报告模板</SecondaryButton>
+            <div className="flex flex-col gap-3 sm:flex-row">
+              <PrimaryButton href="/poc">看 POC 入口</PrimaryButton>
+              <SecondaryButton href="/poc/report">看老板版报告</SecondaryButton>
             </div>
           </div>
 
           <div className="space-y-4">
-            <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
-              {CONTRAST.map(([title, body]) => (
-                <div key={title} className="rounded-lg border border-border-subtle bg-bg-root/50 p-4">
-                  <div className="text-[13px] font-semibold text-text-primary">{title}</div>
-                  <p className="mt-2 text-[12px] leading-relaxed text-text-secondary">{body}</p>
+            <div className="grid gap-3 md:grid-cols-2">
+              {COMPARE_ROWS.map((row, index) => (
+                <div key={row.title} className="rounded-md border border-border-subtle bg-bg-root px-5 py-5">
+                  <div className="mb-3 flex items-center justify-between">
+                    <div className="text-base font-medium text-text-primary">{row.title}</div>
+                    <div className="font-mono text-[11px] text-text-tertiary">0{index + 1}</div>
+                  </div>
+                  <div className="text-[14px] leading-6 text-text-secondary">{row.body}</div>
                 </div>
               ))}
             </div>
-            <div className="rounded-lg border border-accent/30 bg-accent/10 p-4">
-              <div className="mb-3 text-[10px] font-mono uppercase tracking-wider text-accent">
-                真正要打的壁垒
-              </div>
-              <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
+
+            <div className="rounded-md border border-border-default bg-bg-root px-5 py-5">
+              <div className="mb-4 text-[11px] font-mono text-accent">wenai 应该打出的壁垒</div>
+              <div className="grid gap-3 md:grid-cols-2">
                 {MOATS.map((item) => (
-                  <div key={item} className="flex gap-2 text-[12px] leading-relaxed text-text-primary">
-                    <span className="text-accent">•</span>
-                    <span>{item}</span>
+                  <div key={item} className="rounded-md border border-border-subtle bg-bg-surface px-4 py-3 text-[13px] leading-6 text-text-primary">
+                    {item}
                   </div>
                 ))}
               </div>
