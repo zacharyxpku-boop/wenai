@@ -4,15 +4,15 @@ import Link from 'next/link';
 import { useState } from 'react';
 
 const PRODUCT_ITEMS = [
-  { label: '5 分钟 POC', desc: '从类目、SKU 到标准包和报告', href: '/poc' },
-  { label: '上新 SOP', desc: '翻译、文案、合规和验收打包', href: '/pipelines/new-listing' },
-  { label: '内容营销战役', desc: 'Benchmark、Hook、Brief、发布复盘', href: '/pipelines/marketing-campaign' },
+  { label: '试点流程', desc: '选类目、填商品、生成交付包', href: '/poc' },
+  { label: '商品上新', desc: '标题、卖点、详情页和合规提示', href: '/pipelines/new-listing' },
+  { label: '内容营销', desc: '短视频脚本、图文结构和发布复盘', href: '/pipelines/marketing-campaign' },
 ];
 
 const RESOURCE_ITEMS = [
-  { label: '案例库', desc: '可分享的交付案例与模块样例', href: '/cases' },
-  { label: '产品文档', desc: 'POC、SOP、交付说明和演示资料', href: '/docs' },
-  { label: '企业能力', desc: '品牌规则、权限、集成和工作区配置', href: '/enterprise' },
+  { label: '交付样例', desc: '看客户最终能拿到什么', href: '/cases' },
+  { label: '产品说明', desc: '适合谁、怎么试、怎么验收', href: '/docs' },
+  { label: '企业接入', desc: '品牌规则、团队权限和系统集成', href: '/enterprise' },
 ];
 
 export default function TopNav() {
@@ -26,8 +26,8 @@ export default function TopNav() {
       <div className="mx-auto flex h-16 max-w-[1200px] items-center justify-between px-5 sm:px-6 lg:px-8">
         <Link href="/" className="flex items-center gap-3">
           <span className="font-[family-name:var(--font-outfit)] text-xl font-semibold text-text-primary">wenai</span>
-          <span className="hidden rounded-full border border-border-default px-2.5 py-1 text-[11px] font-mono text-text-tertiary lg:inline-flex">
-            电商商业交付系统
+          <span className="hidden rounded-full border border-border-default px-2.5 py-1 text-[12px] text-text-tertiary lg:inline-flex">
+            电商交付台
           </span>
         </Link>
 
@@ -39,10 +39,10 @@ export default function TopNav() {
             onClose={() => setOpenDropdown(null)}
             items={PRODUCT_ITEMS}
           />
-          <NavLink href="/cases">案例</NavLink>
-          <NavLink href="/pricing">方案</NavLink>
+          <NavLink href="/cases">样例</NavLink>
+          <NavLink href="/pricing">价格</NavLink>
           <Dropdown
-            label="资源"
+            label="资料"
             open={openDropdown === 'resource'}
             onOpen={() => setOpenDropdown('resource')}
             onClose={() => setOpenDropdown(null)}
@@ -59,10 +59,10 @@ export default function TopNav() {
             登录
           </Link>
           <Link
-            href="/demo"
+            href="/poc"
             className="rounded-md bg-accent px-4 py-2 text-[13px] font-semibold text-bg-root transition-colors hover:bg-accent-hover"
           >
-            预约演示
+            免费试一轮
           </Link>
         </div>
 
@@ -86,17 +86,11 @@ export default function TopNav() {
           <div className="mx-auto max-w-[1200px] space-y-6 px-5 py-6 sm:px-6">
             <MobileGroup label="产品" items={PRODUCT_ITEMS} onClick={closeMobile} />
             <div className="space-y-1">
-              <MobileNavLink href="/cases" onClick={closeMobile}>
-                案例
-              </MobileNavLink>
-              <MobileNavLink href="/pricing" onClick={closeMobile}>
-                方案
-              </MobileNavLink>
-              <MobileNavLink href="/about" onClick={closeMobile}>
-                关于
-              </MobileNavLink>
+              <MobileNavLink href="/cases" onClick={closeMobile}>样例</MobileNavLink>
+              <MobileNavLink href="/pricing" onClick={closeMobile}>价格</MobileNavLink>
+              <MobileNavLink href="/about" onClick={closeMobile}>关于</MobileNavLink>
             </div>
-            <MobileGroup label="资源" items={RESOURCE_ITEMS} onClick={closeMobile} />
+            <MobileGroup label="资料" items={RESOURCE_ITEMS} onClick={closeMobile} />
             <div className="grid gap-3 border-t border-border-subtle pt-4">
               <Link
                 href="/login"
@@ -106,11 +100,11 @@ export default function TopNav() {
                 登录
               </Link>
               <Link
-                href="/demo"
+                href="/poc"
                 onClick={closeMobile}
                 className="rounded-md bg-accent px-4 py-3 text-center text-[14px] font-semibold text-bg-root"
               >
-                预约演示
+                免费试一轮
               </Link>
             </div>
           </div>
@@ -142,12 +136,10 @@ function Dropdown({
         className="flex items-center gap-2 rounded-md px-3 py-2 text-[14px] text-text-secondary transition-colors hover:text-text-primary"
       >
         {label}
-        <span aria-hidden className="text-[10px] text-text-tertiary">
-          ▾
-        </span>
+        <span aria-hidden className="text-[10px] text-text-tertiary">v</span>
       </button>
       {open && (
-        <div className="absolute left-0 top-full w-[340px] pt-2">
+        <div className="absolute left-0 top-full w-[320px] pt-2">
           <div className="overflow-hidden rounded-md border border-border-default bg-bg-surface">
             {items.map((item) => (
               <Link
@@ -185,7 +177,7 @@ function MobileGroup({
 }) {
   return (
     <div className="space-y-2">
-      <div className="text-[11px] font-mono text-text-tertiary">{label}</div>
+      <div className="text-[12px] text-text-tertiary">{label}</div>
       <div className="space-y-1">
         {items.map((item) => (
           <Link
