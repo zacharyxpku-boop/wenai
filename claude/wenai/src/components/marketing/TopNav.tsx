@@ -61,7 +61,7 @@ export default function TopNav() {
 
           <button
             type="button"
-            aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
+            aria-label={mobileOpen ? '关闭菜单' : '打开菜单'}
             aria-expanded={mobileOpen}
             onClick={() => setMobileOpen((value) => !value)}
             className="flex size-10 items-center justify-center text-2xl text-text-primary transition-colors hover:text-accent md:hidden"

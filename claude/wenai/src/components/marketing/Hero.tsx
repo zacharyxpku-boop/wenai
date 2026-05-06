@@ -1,16 +1,16 @@
 import { Container, Section, PrimaryButton, SecondaryButton } from '@/components/marketing/Container';
 
 const STATS = [
-  { value: '10 SKU', label: 'POC launch scope' },
-  { value: '5 layers', label: 'Brand, category, content, report, CRM' },
-  { value: '1 line', label: 'From intake to contract motion' },
+  { value: '10 SKU', label: 'POC 标准交付范围' },
+  { value: '5 层', label: '品牌、类目、内容、报告、CRM' },
+  { value: '1 条线', label: '从输入到合同推进' },
 ];
 
 const DELIVERY_ITEMS = [
-  'SKU intake and category acceptance rules',
-  'Brand IQ, forbidden claims, and tone guardrails',
-  'TikTok and Instagram content marketing pack',
-  'POC report, executive share, and CRM next action',
+  'SKU 输入和类目验收规则',
+  'Brand IQ、禁用词和语气护栏',
+  'TikTok / Instagram 内容营销交付包',
+  'POC 报告、老板版分享页和 CRM 下一动作',
 ];
 
 export function Hero() {
@@ -29,14 +29,14 @@ export function Hero() {
         <div className="grid grid-cols-1 items-center gap-10 md:grid-cols-5 md:gap-12">
           <div className="flex flex-col gap-7 md:col-span-3">
             <div className="text-[11px] font-mono uppercase tracking-[0.16em] text-accent">
-              Ecommerce AI commercial delivery system
+              给电商团队的 AI 商业交付系统
             </div>
             <h1 className="text-[2rem] font-bold leading-[1.1] tracking-tight text-text-primary sm:text-5xl md:text-6xl font-[family-name:var(--font-outfit)]">
-              From SKU to POC report to contract motion.
+              从 SKU 输入，到 POC 报告，再到合同推进。
             </h1>
             <p className="max-w-2xl text-base leading-relaxed text-text-secondary md:text-lg">
-              wenai turns ecommerce launch work into a standard delivery line: SKU intake, category rules,
-              Brand IQ, content marketing, executive reporting, and CRM follow-up in one customer-ready flow.
+              wenai 把电商上新和营销交付压成一条标准作业线：SKU 输入、类目规则、Brand IQ、内容营销、
+              老板版报告和 CRM 跟进，在一个客户可直接理解的流程里跑完。
             </p>
 
             <div className="grid grid-cols-1 gap-3 pt-2 sm:grid-cols-3">
@@ -52,10 +52,10 @@ export function Hero() {
 
             <div className="flex flex-col gap-3 pt-3 sm:flex-row">
               <PrimaryButton href="/poc" size="lg">
-                Run 5-minute POC
+                运行 5 分钟 POC
               </PrimaryButton>
               <SecondaryButton href="/pricing" size="lg">
-                View commercial paths
+                查看商业路径
               </SecondaryButton>
             </div>
           </div>
@@ -64,11 +64,11 @@ export function Hero() {
             <div className="rounded-md border border-border-default bg-bg-surface p-5">
               <div className="mb-4 flex items-center justify-between gap-3 border-b border-border-subtle pb-3">
                 <div>
-                  <div className="text-[10px] font-mono uppercase tracking-wider text-accent">Delivery package</div>
+                  <div className="text-[10px] font-mono uppercase tracking-wider text-accent">交付包</div>
                   <div className="mt-1 text-lg font-semibold text-text-primary">10 SKU POC</div>
                 </div>
                 <div className="rounded-md border border-accent/40 bg-accent/10 px-3 py-1 text-[11px] font-mono text-accent">
-                  READY
+                  就绪
                 </div>
               </div>
 
@@ -82,7 +82,7 @@ export function Hero() {
               </div>
 
               <div className="mt-4 rounded-md border border-border-subtle bg-bg-root/45 p-3 text-[12px] leading-relaxed text-text-secondary">
-                Output: standard pack, acceptance checklist, read-only executive report, and next commercial action.
+                产出：标准包、验收清单、只读老板版报告，以及下一步商业动作。
               </div>
             </div>
           </div>
