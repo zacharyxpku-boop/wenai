@@ -14,7 +14,7 @@ describe('case library', () => {
 
     expect(entries.length).toBeGreaterThanOrEqual(9);
     expect(campaignEntry?.lane).toBe('content-campaign');
-    expect(campaignEntry?.commercialUse).toContain('benchmark-to-campaign');
+    expect(campaignEntry?.commercialUse).toContain('参考样例到内容交付');
     expect(entries.find(item => item.slug === 'novahome-image')?.decision).toBe(
       'collect-inputs',
     );

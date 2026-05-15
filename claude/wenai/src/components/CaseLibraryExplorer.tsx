@@ -40,20 +40,20 @@ export default function CaseLibraryExplorer({
         <div className="flex items-start justify-between gap-4 flex-wrap">
           <div className="max-w-[720px]">
             <div className="text-[10px] font-mono text-accent uppercase tracking-wider mb-2">
-              Case Explorer
+              案例决策面板
             </div>
             <h2 className="text-[22px] font-semibold text-text-primary font-[family-name:var(--font-outfit)] text-balance">
               把案例库变成售前决策面板
             </h2>
             <p className="mt-3 text-[13px] text-text-secondary leading-relaxed text-pretty">
-              不只是展示“做过什么”，而是直接回答客户现在能买什么、先跑什么
-              POC、什么情况下应该推进合同。
+              不只是展示“做过什么”，而是直接回答客户现在能买什么、先跑哪一批 SKU、
+              什么情况下应该推进合同。
             </p>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 min-w-[280px]">
-            <SnapshotMetric label="Visible cases" value={String(filteredEntries.length)} />
-            <SnapshotMetric label="Contract-ready" value={String(contractReadyCount)} />
-            <SnapshotMetric label="Expansion-ready" value={String(expansionCount)} />
+            <SnapshotMetric label="可见案例" value={String(filteredEntries.length)} />
+            <SnapshotMetric label="可推进合同" value={String(contractReadyCount)} />
+            <SnapshotMetric label="可扩量" value={String(expansionCount)} />
           </div>
         </div>
       </div>
@@ -164,7 +164,7 @@ export default function CaseLibraryExplorer({
                   </div>
                   <div className="min-w-[110px] border border-border-subtle rounded-md bg-bg-surface px-3 py-2">
                     <div className="text-[9px] font-mono text-text-tertiary uppercase tracking-wider mb-1">
-                      Acceptance
+                      验收分
                     </div>
                     <div className="text-[13px] text-text-primary tabular-nums">
                       {entry.acceptanceScore}
@@ -178,18 +178,18 @@ export default function CaseLibraryExplorer({
 
                 <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-3">
                   <InfoBlock
-                    label="What this proves"
+                    label="这能证明什么"
                     value={entry.proofStatement}
                     emphasis
                   />
-                  <InfoBlock label="Commercial use" value={entry.commercialUse} />
-                  <InfoBlock label="Readiness" value={entry.readiness} />
-                  <InfoBlock label="Next step" value={entry.nextStep} />
+                  <InfoBlock label="商业用途" value={entry.commercialUse} />
+                  <InfoBlock label="当前就绪度" value={entry.readiness} />
+                  <InfoBlock label="下一步动作" value={entry.nextStep} />
                 </div>
 
                 <div className="mt-4 border border-accent/20 rounded-md bg-accent/5 p-4">
                   <div className="text-[10px] font-mono text-accent uppercase tracking-wider mb-2">
-                    Contract motion
+                    合同推进动作
                   </div>
                   <p className="text-[13px] text-text-primary leading-relaxed text-pretty">
                     {entry.contractAction}
@@ -207,7 +207,7 @@ export default function CaseLibraryExplorer({
                     href={entry.pipelineHref}
                     className="inline-flex items-center justify-center rounded-md border border-border-default px-4 py-2 text-[12px] font-semibold text-text-primary hover:border-accent hover:text-accent transition-colors"
                   >
-                    跑同款 Pipeline
+                    跑同款流程
                   </Link>
                   <Link
                     href={entry.standardPackHref}
