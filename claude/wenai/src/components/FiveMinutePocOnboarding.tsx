@@ -8,21 +8,21 @@ import { evaluatePocLaunchCheck } from '@/lib/poc-launch-check';
 import { buildPocReportRoute } from '@/lib/standard-pack-routing';
 
 const CATEGORY_OPTIONS: Array<{ key: EcommerceCategoryKey; label: string }> = [
-  { key: 'home', label: 'Home' },
-  { key: 'auto', label: 'Auto' },
-  { key: 'digital', label: 'Digital' },
-  { key: 'beauty', label: 'Beauty' },
-  { key: 'apparel', label: 'Apparel' },
-  { key: 'supplement', label: 'Health' },
-  { key: 'mixed', label: 'Mixed' },
+  { key: 'home', label: '家居' },
+  { key: 'auto', label: '汽配' },
+  { key: 'digital', label: '数码' },
+  { key: 'beauty', label: '美妆' },
+  { key: 'apparel', label: '服饰' },
+  { key: 'supplement', label: '健康' },
+  { key: 'mixed', label: '混合' },
 ];
 
 export default function FiveMinutePocOnboarding() {
   const [category, setCategory] = useState<EcommerceCategoryKey>('home');
-  const [skuInput, setSkuInput] = useState('10 SKU home storage launch batch: drawer organizer, food container, cabinet rack. Shopify + TikTok Shop.');
+  const [skuInput, setSkuInput] = useState('10 个家居收纳 SKU：抽屉分隔盒、食品密封盒、橱柜置物架。目标平台：Shopify + TikTok Shop。');
   const [platforms, setPlatforms] = useState('Shopify + TikTok Shop');
-  const [brandVoice, setBrandVoice] = useState('clean, credible, not exaggerated');
-  const [forbiddenWords, setForbiddenWords] = useState('best, cure, guaranteed, 100%');
+  const [brandVoice, setBrandVoice] = useState('干净、可信、不夸张，像专业买手在解释商品。');
+  const [forbiddenWords, setForbiddenWords] = useState('最强、治愈、保证、100%有效、永久');
   const [benchmarkReady, setBenchmarkReady] = useState(false);
   const [ownerReady, setOwnerReady] = useState(false);
   const [acceptanceReady, setAcceptanceReady] = useState(false);
@@ -47,16 +47,16 @@ export default function FiveMinutePocOnboarding() {
     brandVoice,
     forbiddenWords,
     platforms,
-    owner: ownerReady ? 'assigned in customer review' : '',
+    owner: ownerReady ? '客户已指定复核人' : '',
   }), [brandVoice, category, forbiddenWords, ownerReady, platforms]);
   const brandIq = useMemo(() => buildBrandIqProfile({
     category,
-    brandName: 'POC customer brand',
+    brandName: 'POC 客户品牌',
     brandVoice,
     forbiddenWords,
     platforms,
-    owner: ownerReady ? 'assigned in customer review' : '',
-    benchmarkLinks: benchmarkReady ? 'customer benchmark provided' : '',
+    owner: ownerReady ? '客户已指定复核人' : '',
+    benchmarkLinks: benchmarkReady ? '客户已提供参考内容或竞品链接' : '',
   }), [benchmarkReady, brandVoice, category, forbiddenWords, ownerReady, platforms]);
   const reportHref = useMemo(() => buildPocReportRoute({
     benchmarkPreset: benchmarkReady ? 'creative-test' : 'catalog-launch',
@@ -85,19 +85,18 @@ export default function FiveMinutePocOnboarding() {
       <div className="mb-5 flex flex-wrap items-start justify-between gap-4">
         <div className="max-w-2xl">
           <div className="mb-2 text-[10px] font-mono uppercase tracking-wider text-accent">
-            5-minute POC path
+            5 分钟 POC 路径
           </div>
           <h2 className="text-balance font-[family-name:var(--font-outfit)] text-2xl font-bold text-text-primary md:text-3xl">
-            Category / SKU / Standard pack / Report / POC request
+            选类目 → 填 SKU → 出标准包 → 出报告 → 提交 POC
           </h2>
           <p className="mt-2 text-pretty text-[13px] leading-relaxed text-text-secondary">
-            Customers do not need to understand prompts or SOPs. They choose a category, paste SKU context,
-            set brand rules, and get a standard delivery pack plus a decision-ready POC report.
+            客户不需要理解 prompt 或 SOP。只要选择类目、粘贴 SKU、补充品牌规则，就能拿到标准交付包和可做判断的 POC 报告。
           </p>
         </div>
         <div className="min-w-[150px] text-right">
           <div className="font-mono text-3xl font-bold tabular-nums text-accent">{readiness.score}</div>
-          <div className="text-[10px] font-mono uppercase tracking-wider text-text-tertiary">ready score</div>
+          <div className="text-[10px] font-mono text-text-tertiary">启动分</div>
         </div>
       </div>
 
@@ -121,7 +120,7 @@ export default function FiveMinutePocOnboarding() {
             ))}
           </div>
 
-          <Field label="SKU / batch context">
+          <Field label="SKU 或批次说明">
             <textarea
               value={skuInput}
               onChange={event => setSkuInput(event.target.value)}
@@ -131,14 +130,14 @@ export default function FiveMinutePocOnboarding() {
           </Field>
 
           <div className="mt-3 grid grid-cols-1 gap-3 md:grid-cols-2">
-            <Field label="Target platforms">
+            <Field label="目标平台">
               <input
                 value={platforms}
                 onChange={event => setPlatforms(event.target.value)}
                 className="w-full rounded-md border border-border-default bg-bg-surface px-3 py-2 text-[13px] text-text-primary"
               />
             </Field>
-            <Field label="Brand voice">
+            <Field label="品牌语气">
               <input
                 value={brandVoice}
                 onChange={event => setBrandVoice(event.target.value)}
@@ -147,7 +146,7 @@ export default function FiveMinutePocOnboarding() {
             </Field>
           </div>
 
-          <Field label="Forbidden words / risky claims" className="mt-3">
+          <Field label="禁用词 / 高风险宣称" className="mt-3">
             <input
               value={forbiddenWords}
               onChange={event => setForbiddenWords(event.target.value)}
@@ -156,9 +155,9 @@ export default function FiveMinutePocOnboarding() {
           </Field>
 
           <div className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-3">
-            <Toggle label="Benchmark ready" checked={benchmarkReady} onChange={setBenchmarkReady} />
-            <Toggle label="Acceptance owner" checked={ownerReady} onChange={setOwnerReady} />
-            <Toggle label="Acceptance criteria" checked={acceptanceReady} onChange={setAcceptanceReady} />
+            <Toggle label="已有参考竞品 / 内容样例" checked={benchmarkReady} onChange={setBenchmarkReady} />
+            <Toggle label="已明确最终验收人" checked={ownerReady} onChange={setOwnerReady} />
+            <Toggle label="已明确验收标准" checked={acceptanceReady} onChange={setAcceptanceReady} />
           </div>
         </div>
 
@@ -166,7 +165,7 @@ export default function FiveMinutePocOnboarding() {
           <div className="mb-3 flex flex-wrap items-start justify-between gap-3">
             <div>
               <div className="mb-1 text-[10px] font-mono uppercase tracking-wider text-accent">
-                Category guardrail
+                类目规则
               </div>
               <div className="text-[18px] font-semibold text-text-primary">{guardrail.label}</div>
               <p className="mt-1 text-pretty text-[12px] leading-relaxed text-text-secondary">
@@ -179,14 +178,14 @@ export default function FiveMinutePocOnboarding() {
           </div>
 
           <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
-            <Metric label="Review pass" value={`${guardrail.acceptanceThresholds.reviewPassRate}%`} />
-            <Metric label="Benchmark" value={`${guardrail.acceptanceThresholds.benchmarkCoverage}%`} />
-            <Metric label="Risk max" value={String(guardrail.acceptanceThresholds.maxRiskCount)} />
+            <Metric label="复核通过率" value={`${guardrail.acceptanceThresholds.reviewPassRate}%`} />
+            <Metric label="参考覆盖率" value={`${guardrail.acceptanceThresholds.benchmarkCoverage}%`} />
+            <Metric label="风险上限" value={String(guardrail.acceptanceThresholds.maxRiskCount)} />
           </div>
 
           <div className="mt-3 rounded-md border border-accent/30 bg-accent/5 p-3">
             <div className="mb-2 flex items-center justify-between gap-3">
-              <div className="text-[10px] font-mono uppercase tracking-wider text-accent">Brand IQ</div>
+              <div className="text-[10px] font-mono text-accent">品牌规则完整度</div>
               <div className="font-mono text-[18px] font-bold text-accent tabular-nums">{brandIq.readinessScore}/100</div>
             </div>
             <div className="grid grid-cols-1 gap-2 md:grid-cols-3">
@@ -198,18 +197,18 @@ export default function FiveMinutePocOnboarding() {
             </div>
             {brandIq.risks.length > 0 && (
               <div className="mt-2 text-[11px] leading-relaxed text-text-tertiary">
-                Setup risk: {brandIq.risks.join(' / ')}
+                还需补齐：{brandIq.risks.join(' / ')}
               </div>
             )}
           </div>
 
           <div className="mt-3 grid grid-cols-1 gap-3 md:grid-cols-2">
-            <ListBlock title="Required proof" items={guardrail.requiredProof} />
-            <ListBlock title="Forbidden / risky claims" items={[...guardrail.forbiddenClaims, ...forbiddenWords.split(/[,;\n]/).map(item => item.trim()).filter(Boolean)].slice(0, 7)} />
+            <ListBlock title="必须补齐的证据" items={guardrail.requiredProof} />
+            <ListBlock title="禁用 / 高风险表达" items={[...guardrail.forbiddenClaims, ...forbiddenWords.split(/[,;\n]/).map(item => item.trim()).filter(Boolean)].slice(0, 7)} />
           </div>
 
           <div className="mt-3 rounded-md border border-border-subtle bg-bg-surface p-3">
-            <div className="mb-1 text-[10px] font-mono uppercase tracking-wider text-text-tertiary">Next action</div>
+            <div className="mb-1 text-[10px] font-mono text-text-tertiary">下一步动作</div>
             <p className="text-pretty text-[12px] leading-relaxed text-text-primary">{readiness.nextStep}</p>
           </div>
 
@@ -218,26 +217,26 @@ export default function FiveMinutePocOnboarding() {
               href={readiness.standardPackHref}
               className="inline-flex min-h-[40px] items-center justify-center rounded-md bg-accent px-4 py-2 text-[12px] font-semibold text-bg-root hover:bg-accent-hover"
             >
-              Generate standard pack
+              生成标准包
             </Link>
             <Link
               href={reportHref}
               className="inline-flex min-h-[40px] items-center justify-center rounded-md border border-border-default px-4 py-2 text-[12px] font-semibold text-text-primary hover:border-accent hover:text-accent"
             >
-              Generate report
+              生成报告
             </Link>
             <Link
               href="/inquire?from=five-minute-onboarding&skuCount=10"
               className="inline-flex min-h-[40px] items-center justify-center rounded-md border border-accent/40 px-4 py-2 text-[12px] font-mono text-accent hover:bg-accent/10"
             >
-              Submit POC
+              提交 POC
             </Link>
             <button
               type="button"
               onClick={copyBrandBrief}
               className="min-h-[40px] rounded-md border border-border-default px-4 py-2 text-[12px] font-mono text-text-primary hover:border-accent/40"
             >
-              {copied ? 'Brand brief copied' : 'Copy brand brief'}
+              {copied ? '品牌规则已复制' : '复制品牌规则'}
             </button>
           </div>
         </div>
@@ -288,7 +287,7 @@ function Toggle({
 function Metric({ label, value }: { label: string; value: string }) {
   return (
     <div className="rounded-md border border-border-subtle bg-bg-surface p-3">
-      <div className="mb-1 text-[9px] font-mono uppercase tracking-wider text-text-tertiary">{label}</div>
+      <div className="mb-1 text-[9px] font-mono text-text-tertiary">{label}</div>
       <div className="text-[14px] font-semibold text-text-primary tabular-nums">{value}</div>
     </div>
   );
@@ -297,7 +296,7 @@ function Metric({ label, value }: { label: string; value: string }) {
 function ListBlock({ title, items }: { title: string; items: string[] }) {
   return (
     <div className="rounded-md border border-border-subtle bg-bg-surface p-3">
-      <div className="mb-2 text-[10px] font-mono uppercase tracking-wider text-accent">{title}</div>
+      <div className="mb-2 text-[10px] font-mono text-accent">{title}</div>
       <ul className="space-y-1.5">
         {items.map(item => (
           <li key={item} className="text-[11px] leading-relaxed text-text-secondary">

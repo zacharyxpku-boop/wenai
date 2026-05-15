@@ -109,7 +109,7 @@ export default function PocReportGenerator() {
   const [error, setError] = useState('');
   const source = params.get('from') || 'poc-report-generator';
   const inquiryId = params.get('inquiryId') || '';
-  const categoryLabel = params.get('category') || 'mixed categories';
+  const categoryLabel = params.get('category') || '混合类目';
   const result = useMemo(() => evaluatePocReport(input), [input]);
   const recommendation = useMemo(() => recommendPocBenchmarkPreset(input), [input]);
   const advisorResult = useMemo(() => buildPocReportInputFromAdvisor(advisorAnswers), [advisorAnswers]);
@@ -117,11 +117,11 @@ export default function PocReportGenerator() {
   const activeBenchmarkLane = POC_BENCHMARK_LANES.find(item => item.id === (input.benchmarkPreset || recommendation.preset.id)) || POC_BENCHMARK_LANES[0];
   const outputTabs = useMemo(
     () => [
-      { key: 'report' as const, label: 'Report', content: result.reportMarkdown, heightClass: 'max-h-[320px]' },
-      { key: 'handoff' as const, label: 'Handoff', content: result.handoffMarkdown, heightClass: 'max-h-[320px]' },
-      { key: 'board' as const, label: 'Board brief', content: result.commercial.boardMarkdown, heightClass: 'max-h-[280px]' },
-      { key: 'followup' as const, label: 'Buyer follow-up', content: result.commercial.buyerFollowupMarkdown, heightClass: 'max-h-[260px]' },
-      { key: 'sales' as const, label: 'Sales pack', content: result.commercial.salesPackMarkdown, heightClass: 'max-h-[320px]' },
+      { key: 'report' as const, label: '验收报告', content: result.reportMarkdown, heightClass: 'max-h-[320px]' },
+      { key: 'handoff' as const, label: '交接清单', content: result.handoffMarkdown, heightClass: 'max-h-[320px]' },
+      { key: 'board' as const, label: '老板摘要', content: result.commercial.boardMarkdown, heightClass: 'max-h-[280px]' },
+      { key: 'followup' as const, label: '客户跟进', content: result.commercial.buyerFollowupMarkdown, heightClass: 'max-h-[260px]' },
+      { key: 'sales' as const, label: '销售包', content: result.commercial.salesPackMarkdown, heightClass: 'max-h-[320px]' },
     ],
     [result],
   );
@@ -187,7 +187,7 @@ export default function PocReportGenerator() {
         body: JSON.stringify({
           moduleId: 'poc-report',
           source: 'poc-report',
-          title: `POC acceptance recap · ${result.label}`,
+          title: `POC 验收复盘 · ${result.label}`,
           content: `${result.reportMarkdown}\n\n${result.commercial.boardMarkdown}`,
         }),
       });
@@ -197,7 +197,7 @@ export default function PocReportGenerator() {
       setShareUrl(url);
       await navigator.clipboard.writeText(url);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to create share link');
+      setError(err instanceof Error ? err.message : '生成分享链接失败');
     } finally {
       setSharing(false);
     }
@@ -243,7 +243,7 @@ export default function PocReportGenerator() {
       if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
       setCrmSaved(true);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to save CRM record');
+      setError(err instanceof Error ? err.message : '保存 CRM 记录失败');
     } finally {
       setCrmSaving(false);
     }
@@ -254,13 +254,13 @@ export default function PocReportGenerator() {
       <div className="mb-5 flex flex-wrap items-start justify-between gap-4">
         <div>
           <div className="mb-2 text-[10px] font-mono uppercase tracking-wider text-accent">
-            Report Generator
+            报告工作台
           </div>
           <h2 className="font-[family-name:var(--font-outfit)] text-2xl font-bold text-text-primary md:text-3xl">
-            POC acceptance report
+            试跑验收报告
           </h2>
           <p className="mt-2 max-w-2xl text-[13px] leading-relaxed text-text-secondary">
-            Turn delivery coverage, review quality, risks, missing assets, rework and contract intent into a decision-ready recap.
+            把交付覆盖、复核质量、风险、缺素材、返工和合同意向整理成能做决策的复盘材料。
           </p>
         </div>
         <div className="flex flex-col items-start gap-3 sm:items-end">
@@ -270,17 +270,17 @@ export default function PocReportGenerator() {
                 key={mode}
                 type="button"
                 onClick={() => setWorkspaceMode(mode)}
-                className={`rounded px-3 py-1.5 text-[11px] font-mono capitalize transition-colors ${
+                  className={`rounded px-3 py-1.5 text-[11px] font-mono transition-colors ${
                   workspaceMode === mode ? 'bg-accent text-bg-root' : 'text-text-secondary hover:text-text-primary'
                 }`}
               >
-                {mode}
+                {mode === 'guided' ? '引导模式' : '手动调参'}
               </button>
             ))}
           </div>
           <div className="min-w-[148px] text-right">
             <div className="font-mono text-3xl font-bold tabular-nums text-accent">{result.acceptanceScore}</div>
-            <div className="text-[10px] font-mono uppercase tracking-wider text-text-tertiary">acceptance</div>
+            <div className="text-[10px] font-mono text-text-tertiary">验收分</div>
           </div>
         </div>
       </div>
@@ -288,81 +288,81 @@ export default function PocReportGenerator() {
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-[0.95fr_1.05fr]">
         <div className="rounded-md border border-border-subtle bg-bg-root/35 p-4">
           <div className="border-b border-border-subtle pb-4">
-            <div className="mb-1 text-[10px] font-mono uppercase tracking-wider text-accent">POC Advisor</div>
-            <div className="text-[16px] font-semibold text-text-primary">Start from a guided launch plan</div>
+            <div className="mb-1 text-[10px] font-mono text-accent">试跑选择器</div>
+            <div className="text-[16px] font-semibold text-text-primary">先选最接近的上新场景</div>
             <p className="mt-1 text-[12px] leading-relaxed text-text-secondary">
-              Let the customer pick goal, SKU scope, material state, benchmark strength, and risk level. wenai translates that into a usable POC scorecard.
+              客户只需要选择目标、SKU 范围、素材状态、参考内容和风险等级，系统会自动换算成试跑验收表。
             </p>
 
             <div className="mt-3 grid grid-cols-1 gap-3 md:grid-cols-2">
               <SelectField
-                label="Primary goal"
+                label="这次最想验证什么"
                 value={advisorAnswers.goal}
                 onChange={value => setAdvisorAnswers(prev => ({ ...prev, goal: value as PocAdvisorAnswers['goal'] }))}
                 options={[
-                  { value: 'launch-catalog', label: 'Launch catalog' },
-                  { value: 'fix-feed', label: 'Fix feed / listing ops' },
-                  { value: 'test-creative', label: 'Test creative angles' },
-                  { value: 'reduce-risk', label: 'Reduce launch risk' },
+                  { value: 'launch-catalog', label: '新品上架能不能跑通' },
+                  { value: 'fix-feed', label: '修 listing / 商品资料' },
+                  { value: 'test-creative', label: '测试内容创意方向' },
+                  { value: 'reduce-risk', label: '降低上新风险' },
                 ]}
               />
               <SelectField
-                label="Category"
+                label="品类"
                 value={advisorAnswers.category}
                 onChange={value => setAdvisorAnswers(prev => ({ ...prev, category: value }))}
                 options={[
-                  { value: 'home', label: 'Home' },
-                  { value: 'living', label: 'Living' },
-                  { value: 'digital', label: 'Digital' },
-                  { value: 'auto', label: 'Auto' },
-                  { value: 'tool', label: 'Tool' },
-                  { value: 'beauty', label: 'Beauty' },
-                  { value: 'apparel', label: 'Apparel' },
-                  { value: 'pet', label: 'Pet' },
-                  { value: 'outdoor', label: 'Outdoor' },
-                  { value: 'supplement', label: 'Supplement' },
-                  { value: 'mixed', label: 'Mixed' },
-                  { value: 'other', label: 'Other' },
+                  { value: 'home', label: '家居' },
+                  { value: 'living', label: '生活百货' },
+                  { value: 'digital', label: '数码' },
+                  { value: 'auto', label: '汽配' },
+                  { value: 'tool', label: '工具' },
+                  { value: 'beauty', label: '美妆' },
+                  { value: 'apparel', label: '服饰' },
+                  { value: 'pet', label: '宠物' },
+                  { value: 'outdoor', label: '户外' },
+                  { value: 'supplement', label: '健康' },
+                  { value: 'mixed', label: '混合' },
+                  { value: 'other', label: '其他' },
                 ]}
               />
               <SelectField
-                label="SKU scope"
+                label="这批 SKU 大概多大范围"
                 value={advisorAnswers.skuScope}
                 onChange={value => setAdvisorAnswers(prev => ({ ...prev, skuScope: value as PocAdvisorAnswers['skuScope'] }))}
                 options={[
-                  { value: 'small', label: '1-5 SKU' },
-                  { value: 'poc', label: '10 SKU POC' },
-                  { value: 'large', label: '20+ SKU' },
+                  { value: 'small', label: '1-5 个 SKU' },
+                  { value: 'poc', label: '10 个 SKU 试跑' },
+                  { value: 'large', label: '20 个以上 SKU' },
                 ]}
               />
               <SelectField
-                label="Material state"
+                label="素材准备情况"
                 value={advisorAnswers.materialState}
                 onChange={value => setAdvisorAnswers(prev => ({ ...prev, materialState: value as PocAdvisorAnswers['materialState'] }))}
                 options={[
-                  { value: 'ready', label: 'Ready' },
-                  { value: 'partial', label: 'Partial' },
-                  { value: 'missing', label: 'Missing' },
+                  { value: 'ready', label: '已齐全' },
+                  { value: 'partial', label: '部分齐全' },
+                  { value: 'missing', label: '明显缺失' },
                 ]}
               />
               <SelectField
-                label="Benchmark state"
+                label="参考内容准备情况"
                 value={advisorAnswers.benchmarkState}
                 onChange={value => setAdvisorAnswers(prev => ({ ...prev, benchmarkState: value as PocAdvisorAnswers['benchmarkState'] }))}
                 options={[
-                  { value: 'strong', label: 'Strong' },
-                  { value: 'some', label: 'Some' },
-                  { value: 'none', label: 'None' },
+                  { value: 'strong', label: '准备充分' },
+                  { value: 'some', label: '有一些' },
+                  { value: 'none', label: '还没有' },
                 ]}
               />
               <SelectField
-                label="Risk level"
+                label="风险等级"
                 value={advisorAnswers.riskLevel}
                 onChange={value => setAdvisorAnswers(prev => ({ ...prev, riskLevel: value as PocAdvisorAnswers['riskLevel'] }))}
                 options={[
-                  { value: 'low', label: 'Low' },
-                  { value: 'medium', label: 'Medium' },
-                  { value: 'high', label: 'High' },
+                  { value: 'low', label: '低' },
+                  { value: 'medium', label: '中' },
+                  { value: 'high', label: '高' },
                 ]}
               />
             </div>
@@ -370,7 +370,7 @@ export default function PocReportGenerator() {
             <div className="mt-3 flex flex-wrap items-center gap-2">
               <CheckBox
                 checked={advisorAnswers.contractIntent}
-                label="Customer wants contract path"
+                label="客户希望走正式合作"
                 onChange={value => setAdvisorAnswers(prev => ({ ...prev, contractIntent: value }))}
               />
               <button
@@ -378,13 +378,13 @@ export default function PocReportGenerator() {
                 onClick={() => setInput(advisorResult.input)}
                 className="rounded-md bg-accent px-4 py-2 text-[11px] font-mono text-bg-root hover:bg-accent-hover"
               >
-                Apply advisor plan
+                应用这套建议
               </button>
             </div>
 
             <div className="mt-3 rounded-md border border-border-subtle bg-bg-root/35 p-3">
               <div className="mb-2 flex items-center justify-between gap-2">
-                <div className="text-[10px] font-mono uppercase tracking-wider text-accent">Industry quick-start</div>
+                <div className="text-[10px] font-mono text-accent">类目快捷预设</div>
                 <span className="text-[10px] font-mono text-text-tertiary">{quickStartPreset.label}</span>
               </div>
               <p className="text-[11px] leading-relaxed text-text-secondary">{quickStartPreset.rationale}</p>
@@ -415,7 +415,7 @@ export default function PocReportGenerator() {
 
             <div className="mt-3 rounded-md border border-border-subtle bg-bg-root/35 p-3">
               <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
-                <div className="text-[10px] font-mono uppercase tracking-wider text-accent">Benchmark lanes</div>
+                <div className="text-[10px] font-mono text-accent">参考内容路线</div>
                 <span className="text-[10px] font-mono text-text-tertiary">{activeBenchmarkLane.label}</span>
               </div>
               <p className="text-[11px] leading-relaxed text-text-secondary">{activeBenchmarkLane.customerQuestion}</p>
@@ -440,17 +440,17 @@ export default function PocReportGenerator() {
                 })}
               </div>
               <div className="mt-3 rounded-md border border-accent/30 bg-accent/5 p-3">
-                <div className="mb-1 text-[10px] font-mono uppercase tracking-wider text-accent">Wenai moat for this lane</div>
+                <div className="mb-1 text-[10px] font-mono text-accent">这条路线里 wenai 的价值</div>
                 <p className="text-[11px] leading-relaxed text-text-primary">{activeBenchmarkLane.wenaiMoat}</p>
                 <div className="mt-3 grid grid-cols-1 gap-3 md:grid-cols-2">
-                  <MiniList title="Proof to collect" items={activeBenchmarkLane.proofToCollect} />
-                  <MiniList title="Acceptance signals" items={activeBenchmarkLane.acceptanceSignals} />
+                  <MiniList title="建议补齐的证据" items={activeBenchmarkLane.proofToCollect} />
+                  <MiniList title="建议观察的验收信号" items={activeBenchmarkLane.acceptanceSignals} />
                 </div>
               </div>
             </div>
 
             <div className="mt-3 rounded-md border border-border-subtle bg-bg-root/35 p-3">
-              <div className="mb-2 text-[10px] font-mono uppercase tracking-wider text-accent">Demo scenarios</div>
+              <div className="mb-2 text-[10px] font-mono text-accent">演示场景</div>
               <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
                 {POC_DEMO_SCENARIOS.map(item => (
                   <button
@@ -489,38 +489,38 @@ export default function PocReportGenerator() {
                   <NumberField label="Planned SKU" value={input.skuPlanned} onChange={value => setInput(prev => ({ ...prev, skuPlanned: value }))} />
                   <NumberField label="Delivered SKU" value={input.skuDelivered} onChange={value => setInput(prev => ({ ...prev, skuDelivered: value }))} />
                   <NumberField label="Final review pass %" value={input.finalReviewPassRate} onChange={value => setInput(prev => ({ ...prev, finalReviewPassRate: value }))} />
-                  <NumberField label="Benchmark coverage %" value={input.benchmarkCoverage} onChange={value => setInput(prev => ({ ...prev, benchmarkCoverage: value }))} />
+                  <NumberField label="参考覆盖率 %" value={input.benchmarkCoverage} onChange={value => setInput(prev => ({ ...prev, benchmarkCoverage: value }))} />
                   <NumberField label="Risk count" value={input.riskCount} onChange={value => setInput(prev => ({ ...prev, riskCount: value }))} />
-                  <NumberField label="Missing assets" value={input.missingAssetCount} onChange={value => setInput(prev => ({ ...prev, missingAssetCount: value }))} />
-                  <NumberField label="Rework count" value={input.reworkCount} onChange={value => setInput(prev => ({ ...prev, reworkCount: value }))} />
+                  <NumberField label="缺素材数量" value={input.missingAssetCount} onChange={value => setInput(prev => ({ ...prev, missingAssetCount: value }))} />
+                  <NumberField label="返工次数" value={input.reworkCount} onChange={value => setInput(prev => ({ ...prev, reworkCount: value }))} />
                 </div>
               </div>
 
               <div className="mt-3">
-                <label className="mb-1 block text-[11px] font-mono text-text-secondary">Category threshold</label>
+                <label className="mb-1 block text-[11px] font-mono text-text-secondary">类目阈值</label>
                 <select
                   value={input.category || ''}
                   onChange={event => setInput(prev => ({ ...prev, category: event.target.value }))}
                   className="w-full rounded-md border border-border-default bg-bg-surface px-3 py-2 text-[13px]"
                 >
-                  <option value="">Generic</option>
-                  <option value="home">Home</option>
-                  <option value="living">Living</option>
-                  <option value="digital">Digital</option>
-                  <option value="auto">Auto</option>
-                  <option value="tool">Tool</option>
-                  <option value="beauty">Beauty</option>
-                  <option value="apparel">Apparel</option>
-                  <option value="pet">Pet</option>
-                  <option value="outdoor">Outdoor</option>
-                  <option value="supplement">Supplement</option>
-                  <option value="mixed">Mixed</option>
-                  <option value="other">Other</option>
+                  <option value="">通用</option>
+                  <option value="home">家居</option>
+                  <option value="living">生活百货</option>
+                  <option value="digital">数码</option>
+                  <option value="auto">汽配</option>
+                  <option value="tool">工具</option>
+                  <option value="beauty">美妆</option>
+                  <option value="apparel">服饰</option>
+                  <option value="pet">宠物</option>
+                  <option value="outdoor">户外</option>
+                  <option value="supplement">健康</option>
+                  <option value="mixed">混合</option>
+                  <option value="other">其他</option>
                 </select>
               </div>
 
               <div className="mt-3">
-                <label className="mb-1 block text-[11px] font-mono text-text-secondary">Benchmark preset</label>
+                <label className="mb-1 block text-[11px] font-mono text-text-secondary">参考路线</label>
                 <select
                   value={input.benchmarkPreset || ''}
                   onChange={event => setInput(prev => ({ ...prev, benchmarkPreset: event.target.value as PocBenchmarkPresetId }))}
@@ -534,8 +534,8 @@ export default function PocReportGenerator() {
 
               <div className="mt-3 rounded-md border border-accent/30 bg-accent/5 p-3">
                 <div className="mb-1 flex items-center justify-between gap-2">
-                  <div className="text-[10px] font-mono uppercase tracking-wider text-accent">Recommended preset</div>
-                  <span className="text-[10px] font-mono text-text-tertiary">{recommendation.confidence}% fit</span>
+                  <div className="text-[10px] font-mono text-accent">推荐路线</div>
+                  <span className="text-[10px] font-mono text-text-tertiary">匹配度 {recommendation.confidence}%</span>
                 </div>
                 <div className="text-[13px] font-semibold text-text-primary">{recommendation.preset.label}</div>
                 <ul className="mt-2 space-y-1">
@@ -549,21 +549,21 @@ export default function PocReportGenerator() {
                   onClick={() => setInput(prev => ({ ...prev, benchmarkPreset: recommendation.preset.id }))}
                   className="mt-3 rounded-md border border-accent/40 px-3 py-1.5 text-[11px] font-mono text-accent hover:bg-accent/10"
                 >
-                  Apply recommendation
+                  应用推荐路线
                 </button>
               </div>
 
               <div className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-2">
-                <CheckBox checked={input.contentTestReady} label="Content test ready" onChange={value => setInput(prev => ({ ...prev, contentTestReady: value }))} />
-                <CheckBox checked={input.ownerReady} label="Review owner assigned" onChange={value => setInput(prev => ({ ...prev, ownerReady: value }))} />
-                <CheckBox checked={input.contractIntent} label="Contract intent exists" onChange={value => setInput(prev => ({ ...prev, contractIntent: value }))} />
+                <CheckBox checked={input.contentTestReady} label="内容测试已准备" onChange={value => setInput(prev => ({ ...prev, contentTestReady: value }))} />
+                <CheckBox checked={input.ownerReady} label="复核负责人已明确" onChange={value => setInput(prev => ({ ...prev, ownerReady: value }))} />
+                <CheckBox checked={input.contractIntent} label="客户有合作意向" onChange={value => setInput(prev => ({ ...prev, contractIntent: value }))} />
               </div>
             </>
           ) : (
             <div className="mt-4 rounded-md border border-border-subtle bg-bg-surface/35 p-3">
-              <div className="mb-1 text-[10px] font-mono uppercase tracking-wider text-accent">Guided mode</div>
+              <div className="mb-1 text-[10px] font-mono text-accent">引导模式</div>
               <p className="text-[12px] leading-relaxed text-text-secondary">
-                Metrics are generated from the advisor and industry quick-start. Switch to Expert mode when you need to manually tune review pass rate, benchmark coverage, or risk counts.
+                分数会根据上面的选择和类目预设自动生成。只有在你明确知道要手动调通过率、参考覆盖率和风险数时，才需要切到手动调参。
               </p>
             </div>
           )}
@@ -573,15 +573,15 @@ export default function PocReportGenerator() {
           <div className="flex flex-wrap items-start justify-between gap-3">
             <div>
               <div className="mb-1 text-[10px] font-mono uppercase tracking-wider text-accent">
-                Decision output
+                结论输出
               </div>
               <div className="text-[18px] font-semibold text-text-primary">{result.label}</div>
               <p className="mt-1 text-[12px] leading-relaxed text-text-secondary">{result.nextStep}</p>
               <p className="mt-1 text-[11px] font-mono text-text-tertiary">
-                Commercial: <span className="text-text-primary">{result.commercial.commercialScore}/100</span> / {result.commercial.label}
+                商业化判断：<span className="text-text-primary">{result.commercial.commercialScore}/100</span> / {result.commercial.label}
               </p>
               <p className="mt-2 text-[11px] font-mono text-text-tertiary">
-                Contract status: <span className="text-text-primary">{result.contractStatus}</span> · SLA {result.sla.dueDays} day(s)
+                合同状态：<span className="text-text-primary">{result.contractStatus}</span> · SLA {result.sla.dueDays} 天
               </p>
             </div>
             <span className="rounded border border-accent/35 px-2 py-1 text-[10px] font-mono text-accent">
@@ -591,30 +591,30 @@ export default function PocReportGenerator() {
 
           <div className="mt-4 rounded-md border border-accent/30 bg-accent/5 p-3">
             <div className="mb-2 flex items-center justify-between gap-2">
-              <div className="text-[10px] font-mono uppercase tracking-wider text-accent">Action rail</div>
-              <span className="text-[10px] font-mono text-text-tertiary">share / copy / handoff</span>
+              <div className="text-[10px] font-mono text-accent">快捷动作</div>
+              <span className="text-[10px] font-mono text-text-tertiary">复制 / 分享 / 交接</span>
             </div>
             <div className="grid grid-cols-1 gap-2 md:grid-cols-2 xl:grid-cols-3">
-              <ActionRailButton label={copied ? 'Report copied' : 'Copy report'} onClick={copyReport} tone="primary" />
-              <ActionRailButton label={copiedHandoff ? 'Handoff copied' : 'Copy handoff memo'} onClick={copyHandoff} />
-              <ActionRailButton label={copiedBoard ? 'Board brief copied' : 'Copy board brief'} onClick={copyBoard} />
-              <ActionRailButton label={copiedBuyerFollowup ? 'Buyer follow-up copied' : 'Copy buyer follow-up'} onClick={copyBuyerFollowup} />
-              <ActionRailButton label={copiedSalesPack ? 'Sales pack copied' : 'Copy sales pack'} onClick={copySalesPack} />
+              <ActionRailButton label={copied ? '已复制验收报告' : '复制验收报告'} onClick={copyReport} tone="primary" />
+              <ActionRailButton label={copiedHandoff ? '已复制交接清单' : '复制交接清单'} onClick={copyHandoff} />
+              <ActionRailButton label={copiedBoard ? '已复制老板摘要' : '复制老板摘要'} onClick={copyBoard} />
+              <ActionRailButton label={copiedBuyerFollowup ? '已复制客户跟进' : '复制客户跟进'} onClick={copyBuyerFollowup} />
+              <ActionRailButton label={copiedSalesPack ? '已复制销售包' : '复制销售包'} onClick={copySalesPack} />
               <Link
                 href={standardPackRoute}
                 className="inline-flex min-h-[42px] items-center justify-center rounded-md border border-border-default bg-bg-surface/35 px-4 py-2 text-[12px] font-mono text-text-primary hover:border-accent/40"
               >
-                Generate recap pack
+                生成复盘包
               </Link>
-              <ActionRailButton label={copiedLink ? 'Link copied' : 'Copy recap link'} onClick={copyReportLink} />
+              <ActionRailButton label={copiedLink ? '已复制复盘链接' : '复制复盘链接'} onClick={copyReportLink} />
               <ActionRailButton
-                label={sharing ? 'Sharing...' : 'Create boss page'}
+                label={sharing ? '生成中...' : '生成老板版页面'}
                 onClick={createBossShare}
                 disabled={sharing}
               />
               {inquiryId ? (
                 <ActionRailButton
-                  label={crmSaving ? 'Saving...' : crmSaved ? 'Saved to CRM' : 'Save to CRM'}
+                  label={crmSaving ? '保存中...' : crmSaved ? '已保存到 CRM' : '保存到 CRM'}
                   onClick={saveToCrm}
                   disabled={crmSaving}
                 />
@@ -623,7 +623,7 @@ export default function PocReportGenerator() {
                   href={`/inquire?from=${encodeURIComponent(source)}`}
                   className="inline-flex min-h-[42px] items-center justify-center rounded-md border border-accent/40 bg-accent/10 px-4 py-2 text-[12px] font-mono text-accent hover:bg-accent/15"
                 >
-                  Submit POC request
+                  提交试跑需求
                 </Link>
               )}
             </div>
@@ -640,36 +640,36 @@ export default function PocReportGenerator() {
           </div>
 
           <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-2">
-            <ResultCard title="Strengths" items={result.strengths} fallback="No strong acceptance signal yet." tone="good" />
-            <ResultCard title="Blockers" items={result.blockers} fallback="No critical blocker detected." tone="risk" />
+            <ResultCard title="优势信号" items={result.strengths} fallback="还没有明显验收优势。" tone="good" />
+            <ResultCard title="阻塞项" items={result.blockers} fallback="暂未发现关键阻塞。" tone="risk" />
           </div>
 
           <div className="mt-3 grid grid-cols-1 gap-3 md:grid-cols-3">
-            <SnapshotMetric label="Acceptance" value={`${result.acceptanceScore}/100`} note={result.label} />
-            <SnapshotMetric label="Commercial" value={`${result.commercial.commercialScore}/100`} note={result.commercial.label} />
-            <SnapshotMetric label="SLA" value={`${result.sla.dueDays} day(s)`} note={result.sla.severity} />
+            <SnapshotMetric label="验收" value={`${result.acceptanceScore}/100`} note={result.label} />
+            <SnapshotMetric label="商业化" value={`${result.commercial.commercialScore}/100`} note={result.commercial.label} />
+            <SnapshotMetric label="SLA" value={`${result.sla.dueDays} 天`} note={result.sla.severity} />
           </div>
 
           <div className="mt-3 grid grid-cols-1 gap-3 xl:grid-cols-[0.9fr_1.1fr]">
             <div className="space-y-3">
               <div className="rounded-md border border-border-subtle bg-bg-surface/35 p-3">
-                <div className="mb-1 text-[10px] font-mono uppercase tracking-wider text-text-tertiary">SLA Next Action</div>
+                <div className="mb-1 text-[10px] font-mono text-text-tertiary">SLA 下一步动作</div>
                 <div className="text-[12px] leading-relaxed text-text-primary">{result.sla.nextAction}</div>
               </div>
 
               <div className="rounded-md border border-accent/30 bg-accent/5 p-3">
                 <div className="mb-1 flex items-center justify-between gap-2">
-                  <div className="text-[10px] font-mono uppercase tracking-wider text-accent">Commercial briefing</div>
+                  <div className="text-[10px] font-mono text-accent">商务简报</div>
                   <span className="text-[10px] font-mono text-text-tertiary">{result.commercial.priceSignal}</span>
                 </div>
                 <div className="text-[13px] font-semibold text-text-primary">{result.commercial.packageRecommendation}</div>
                 <p className="mt-1 text-[11px] leading-relaxed text-text-secondary">{result.commercial.ownerMessage}</p>
                 <div className="mt-2 grid grid-cols-1 gap-3 md:grid-cols-2">
-                  <ResultCard title="Proof points" items={result.commercial.proofPoints} fallback="No strong proof point yet." tone="good" />
-                  <ResultCard title="Conversion risks" items={result.commercial.conversionRisks} fallback="No major conversion risk detected." tone="risk" />
+                  <ResultCard title="支撑证据" items={result.commercial.proofPoints} fallback="还没有强支撑证据。" tone="good" />
+                  <ResultCard title="转化风险" items={result.commercial.conversionRisks} fallback="暂未发现重大转化风险。" tone="risk" />
                 </div>
                 <div className="mt-3 rounded-md border border-border-subtle bg-bg-root/35 p-3">
-                  <div className="mb-2 text-[10px] font-mono uppercase tracking-wider text-text-tertiary">Proposal checklist</div>
+                  <div className="mb-2 text-[10px] font-mono text-text-tertiary">提案清单</div>
                   <ul className="space-y-1.5">
                     {result.commercial.proposalChecklist.map(item => (
                       <li key={item} className="text-[11px] leading-relaxed text-text-secondary">{item}</li>
@@ -677,7 +677,7 @@ export default function PocReportGenerator() {
                   </ul>
                 </div>
                 <div className="mt-3 rounded-md border border-border-subtle bg-bg-root/35 p-3">
-                  <div className="mb-2 text-[10px] font-mono uppercase tracking-wider text-text-tertiary">Close plan</div>
+                  <div className="mb-2 text-[10px] font-mono text-text-tertiary">成交推进计划</div>
                   <ul className="space-y-1.5">
                     {result.commercial.closePlan.map(item => (
                       <li key={`${item.day}-${item.action}`} className="text-[11px] leading-relaxed text-text-secondary">
@@ -690,14 +690,14 @@ export default function PocReportGenerator() {
 
               <div className="rounded-md border border-border-subtle bg-bg-surface/35 p-3">
                 <div className="mb-1 flex items-center justify-between gap-2">
-                  <div className="text-[10px] font-mono uppercase tracking-wider text-accent">Category playbook</div>
+                  <div className="text-[10px] font-mono text-accent">类目打法</div>
                   <span className="text-[10px] font-mono text-text-tertiary">{result.playbook.label}</span>
                 </div>
                 <p className="text-[12px] leading-relaxed text-text-primary">{result.playbook.operatorLens}</p>
                 <div className="mt-3 grid grid-cols-1 gap-3 md:grid-cols-3">
-                  <ResultCard title="Benchmark signals" items={result.playbook.benchmarkSignals} fallback="No benchmark signal configured." tone="good" />
-                  <ResultCard title="Risk checks" items={result.playbook.riskChecks} fallback="No risk check configured." tone="risk" />
-                  <ResultCard title="Proposal angles" items={result.playbook.proposalAngles} fallback="No proposal angle configured." tone="next" />
+                  <ResultCard title="参考内容信号" items={result.playbook.benchmarkSignals} fallback="还没有配置参考内容信号。" tone="good" />
+                  <ResultCard title="风险检查" items={result.playbook.riskChecks} fallback="还没有配置风险检查。" tone="risk" />
+                  <ResultCard title="提案角度" items={result.playbook.proposalAngles} fallback="还没有配置提案角度。" tone="next" />
                 </div>
               </div>
             </div>
@@ -705,11 +705,11 @@ export default function PocReportGenerator() {
             <div className="space-y-3 xl:sticky xl:top-4 xl:self-start">
               <div className="rounded-md border border-border-subtle bg-bg-surface/35 p-3">
                 <div className="mb-2 flex items-center justify-between gap-2">
-                  <div className="text-[10px] font-mono uppercase tracking-wider text-text-tertiary">Detailed outputs</div>
+                  <div className="text-[10px] font-mono text-text-tertiary">详细内容</div>
                   <span className="text-[10px] font-mono text-text-tertiary">{activeOutputTab.label}</span>
                 </div>
                 <p className="text-[11px] leading-relaxed text-text-secondary">
-                  Long-form artifacts stay here for review, export, and handoff after the action rail has done the quick work.
+                  长内容放在这里，方便复核、导出和交接。上面的快捷动作适合先把关键材料发出去。
                 </p>
               </div>
 

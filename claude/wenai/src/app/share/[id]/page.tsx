@@ -15,25 +15,25 @@ import {
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
   const { id } = await params;
   const data = await getShare(id);
-  if (!data) return { title: 'Share expired · wenai' };
+  if (!data) return { title: '分享已失效 · wenai' };
 
   const ogParams = new URLSearchParams({
-    title: (data.title || 'wenai shared output').slice(0, 60),
+    title: (data.title || 'wenai 分享内容').slice(0, 60),
     excerpt: excerpt(data.content, 140),
     module: SHARE_LABELS[data.source] || data.moduleId || '',
   });
 
   return {
-    title: `${data.title || 'Shared output'} · wenai`,
+    title: `${data.title || '分享内容'} · wenai`,
     description: excerpt(data.content, 140),
     openGraph: {
-      title: data.title || 'wenai shared output',
+      title: data.title || 'wenai 分享内容',
       description: excerpt(data.content, 140),
       images: [{ url: `/api/og?${ogParams.toString()}`, width: 1200, height: 630 }],
     },
     twitter: {
       card: 'summary_large_image',
-      title: data.title || 'wenai shared output',
+      title: data.title || 'wenai 分享内容',
       description: excerpt(data.content, 140),
       images: [`/api/og?${ogParams.toString()}`],
     },
@@ -46,7 +46,7 @@ export default async function SharePage({ params }: { params: Promise<{ id: stri
   if (!data) notFound();
   const isPocReport = data.source === 'poc-report';
   const brief = isPocReport ? readCommercialBriefing(data.content) : null;
-  const executiveRecap = brief ? buildExecutiveRecap(data.title || 'wenai POC recap', brief) : '';
+  const executiveRecap = brief ? buildExecutiveRecap(data.title || 'wenai POC 摘要', brief) : '';
 
   return (
     <div className="print-share-shell mx-auto max-w-[960px] px-6 py-10">
@@ -57,7 +57,7 @@ export default async function SharePage({ params }: { params: Promise<{ id: stri
           </Link>
           <span className="text-[10px] text-text-tertiary">/</span>
           <span className="text-[10px] font-mono text-text-tertiary">
-            {SHARE_LABELS[data.source] || data.moduleId || 'Shared output'}
+            {SHARE_LABELS[data.source] || data.moduleId || '分享内容'}
           </span>
           <span className="text-[10px] text-text-tertiary">/</span>
           <span className="text-[10px] font-mono text-text-tertiary">read-only</span>
@@ -100,30 +100,30 @@ export default async function SharePage({ params }: { params: Promise<{ id: stri
 
       <div className="print-hide mt-10 border-t border-border-subtle pt-6">
         <div className="rounded-md border border-accent/30 bg-accent/5 p-5 text-center">
-          <div className="mb-2 text-[10px] font-mono uppercase tracking-wider text-accent">
-            {isPocReport ? 'Need the next commercial step?' : 'Want to run this workflow?'}
+          <div className="mb-2 text-[10px] font-mono text-accent">
+            {isPocReport ? '想继续推进商务？' : '想亲自跑一遍这个流程？'}
           </div>
           <h3 className="mb-2 font-[family-name:var(--font-outfit)] text-[14px] font-semibold text-text-primary">
-            {isPocReport ? 'Turn this POC recap into a paid contract handoff.' : 'Start from a real SKU and generate a delivery pack.'}
+            {isPocReport ? '把这份 POC 复盘推进到正式合作。' : '从真实 SKU 开始，生成一份可交付标准包。'}
           </h3>
           <div className="mt-4 flex flex-wrap justify-center gap-2">
             <Link
               href={isPocReport ? '/inquire?from=share-poc-report' : '/demo'}
               className="rounded-md bg-accent px-4 py-2 text-[12px] font-semibold text-bg-root hover:bg-accent-hover"
             >
-              {isPocReport ? 'Submit POC request' : 'Run demo'}
+              {isPocReport ? '提交 POC 需求' : '运行演示'}
             </Link>
             <Link
               href="/poc"
               className="rounded-md border border-border-default px-4 py-2 text-[12px] font-mono text-text-primary hover:border-accent/40"
             >
-              View POC standard
+              查看 POC 标准
             </Link>
             <Link
               href="/cases"
               className="rounded-md border border-border-default px-4 py-2 text-[12px] font-mono text-text-primary hover:border-accent/40"
             >
-              View cases
+              查看案例
             </Link>
           </div>
         </div>

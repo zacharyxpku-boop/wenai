@@ -151,8 +151,8 @@ export default function ReportTemplateClient({
       track('template_copied', { source: hadLocalWorkspace ? 'report_page' : 'public_link', shareId, sourceProjectId, channel: channel || 'unknown' });
       setMessage(hadLocalWorkspace ? '已创建工作台。现在导入你的 CSV，跑第一轮实验。' : '打开 Wenai 导入你的 CSV 继续跑。已在本地创建模板工作台。');
       window.setTimeout(() => {
-        window.location.href = '/factory';
-      }, 3000);
+        window.location.assign('/factory');
+      }, 1200);
     } catch {
       setMessage('打开 Wenai 导入你的 CSV 继续跑。复制失败时，请刷新页面后重试。');
     }
@@ -216,7 +216,7 @@ export default function ReportTemplateClient({
           </div>
         )}
         <button type="button" aria-label="复制这个决策模板，创建我的工作台" onClick={copyTemplate} className="mt-4 rounded-md bg-amber-600 px-5 py-3 text-[13px] font-black text-white hover:bg-amber-700">
-          {hasLocalWorkspace ? '复制这个决策模板，创建我的工作台' : '创建我的工作台'}
+          复制这个决策模板，创建我的工作台
         </button>
         {!hasLocalWorkspace && (
           <button type="button" onClick={() => { track('template_copied', { source: 'public_link', shareId, intent: 'landing_cta' }); window.location.href = `/?template=${encodeURIComponent(parsed.platforms[0] || 'tiktok')}`; }} className="ml-0 mt-3 rounded-md border border-amber-300 bg-white px-5 py-3 text-[13px] font-black text-amber-800 hover:border-amber-600 sm:ml-3 sm:mt-4">
