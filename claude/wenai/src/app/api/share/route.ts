@@ -16,6 +16,7 @@ import { getShare, setMemoryShare, type ShareData } from '@/lib/share-readonly';
  */
 
 interface SharePayload {
+  id?: string;
   moduleId: string;
   title: string;
   content: string;
@@ -70,7 +71,7 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const id = genId();
+  const id = typeof body.id === 'string' && body.id.trim().length > 0 ? body.id.trim() : genId();
   const payload: ShareData = {
     moduleId: body.moduleId || 'unknown',
     title: (body.title || '').slice(0, 120),
