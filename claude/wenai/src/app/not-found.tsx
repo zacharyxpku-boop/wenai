@@ -20,9 +20,9 @@ export default function NotFound() {
             页面不存在
           </h1>
           <p className="text-[13px] text-text-secondary leading-relaxed">
-            这个地址没挂到任何 Pipeline / Toolbox / 文档页面。
+            该功能正在升级，请前往首页体验新功能。
             <br />
-            可能链接写错了，或者页面已经挪位置。
+            你也可以直接进入内容决策工作台，继续导入 CSV 并生成下一轮行动建议。
           </p>
         </div>
 
@@ -32,26 +32,26 @@ export default function NotFound() {
             href="/"
             className="block w-full py-3 bg-accent hover:bg-accent-hover text-bg-root text-[13px] font-semibold rounded-md transition-colors"
           >
-            回工作台 →
+            返回首页
           </Link>
           <div className="grid grid-cols-3 gap-2">
             <Link
-              href="/pipelines/new-listing"
+              href="/dashboard"
               className="py-2 text-[11px] font-mono text-text-secondary hover:text-accent border border-border-default rounded-md hover:border-accent/40 transition-colors"
             >
-              01 新品
+              工作台
             </Link>
             <Link
-              href="/pipelines/influencer-outbound"
+              href="/factory"
               className="py-2 text-[11px] font-mono text-text-secondary hover:text-accent border border-border-default rounded-md hover:border-accent/40 transition-colors"
             >
-              02 达人
+              导入 CSV
             </Link>
             <Link
-              href="/pipelines/product-image"
+              href="/pricing"
               className="py-2 text-[11px] font-mono text-text-secondary hover:text-accent border border-border-default rounded-md hover:border-accent/40 transition-colors"
             >
-              03 主图
+              定价
             </Link>
           </div>
         </div>
