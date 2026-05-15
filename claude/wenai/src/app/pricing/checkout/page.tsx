@@ -7,12 +7,13 @@ export const metadata: Metadata = {
   description: 'Starter 和 Growth 付费通道开放前，留下邮箱获取上线通知与早鸟优惠。',
 };
 
-export default function PricingCheckoutPage({
+export default async function PricingCheckoutPage({
   searchParams,
 }: {
-  searchParams?: { plan?: string };
+  searchParams?: Promise<{ plan?: string }>;
 }) {
-  const requestedPlan = searchParams?.plan === 'growth' ? 'Growth' : searchParams?.plan === 'starter' ? 'Starter' : 'Starter/Growth';
+  const params = await searchParams;
+  const requestedPlan = params?.plan === 'growth' ? 'Growth' : params?.plan === 'starter' ? 'Starter' : 'Starter/Growth';
 
   return (
     <main className="min-h-screen bg-bg-root px-5 py-10 text-text-primary">
