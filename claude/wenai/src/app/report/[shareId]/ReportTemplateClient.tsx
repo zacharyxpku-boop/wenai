@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
+import { readJsonStorage, writeJsonStorage } from '@/lib/browser-storage';
 import { track } from '@/lib/local-analytics';
 import {
   buildDeliveryPackage,
@@ -81,8 +82,8 @@ function parseDecisionReport(content: string, templateSnapshot: string) {
 }
 
 function recordConversion(event: Record<string, unknown>) {
-  const existing = JSON.parse(window.localStorage.getItem(TEMPLATE_CONVERSION_KEY) || '[]') as Array<Record<string, unknown>>;
-  window.localStorage.setItem(TEMPLATE_CONVERSION_KEY, JSON.stringify([event, ...existing].slice(0, 100)));
+  const existing = readJsonStorage<Array<Record<string, unknown>>>(TEMPLATE_CONVERSION_KEY, []);
+  writeJsonStorage(TEMPLATE_CONVERSION_KEY, [event, ...existing].slice(0, 100));
 }
 
 export default function ReportTemplateClient({

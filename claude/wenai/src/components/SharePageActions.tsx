@@ -11,17 +11,25 @@ export default function SharePageActions({
   isPocReport: boolean;
   executiveRecap?: string;
 }) {
-  const [copiedState, setCopiedState] = useState<'idle' | 'link' | 'recap' | 'pdf'>('idle');
+  const [copiedState, setCopiedState] = useState<'idle' | 'link' | 'recap' | 'pdf' | 'error'>('idle');
+  const [copyError, setCopyError] = useState('');
   const pathname = usePathname();
   const executiveHref = `${pathname}/executive`;
 
   async function copyValue(value: string, mode: 'link' | 'recap' | 'pdf') {
     try {
+      if (!navigator.clipboard?.writeText) throw new Error('Clipboard API unavailable');
       await navigator.clipboard.writeText(value);
+      setCopyError('');
       setCopiedState(mode);
       window.setTimeout(() => setCopiedState('idle'), 2000);
     } catch {
-      setCopiedState('idle');
+      setCopiedState('error');
+      setCopyError('复制失败，请手动选中文本或使用浏览器分享功能。');
+      window.setTimeout(() => {
+        setCopiedState('idle');
+        setCopyError('');
+      }, 3200);
     }
   }
 
@@ -72,6 +80,11 @@ export default function SharePageActions({
             {copiedState === 'recap' ? '老板摘要已复制' : '复制老板摘要'}
           </button>
         </>
+      )}
+      {copiedState === 'error' && copyError && (
+        <div role="status" className="w-full rounded-md border border-amber-300 bg-amber-50 px-3 py-2 text-[12px] font-bold text-amber-800">
+          {copyError}
+        </div>
       )}
     </div>
   );

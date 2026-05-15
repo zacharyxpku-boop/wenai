@@ -1,3 +1,5 @@
+import { readBrowserStorage, writeBrowserStorage } from '@/lib/browser-storage';
+
 export type LocalAnalyticsEventName =
   | 'page_view'
   | 'csv_import'
@@ -50,14 +52,9 @@ const EVENT_NAMES: LocalAnalyticsEventName[] = [
   'kuaizi_error',
 ];
 
-function canUseStorage() {
-  return typeof window !== 'undefined' && typeof window.localStorage !== 'undefined';
-}
-
 function safeReadEvents(): LocalAnalyticsEvent[] {
-  if (!canUseStorage()) return [];
   try {
-    const parsed = JSON.parse(window.localStorage.getItem(EVENTS_KEY) || '[]') as LocalAnalyticsEvent[];
+    const parsed = JSON.parse(readBrowserStorage(EVENTS_KEY, '[]')) as LocalAnalyticsEvent[];
     return Array.isArray(parsed) ? parsed.filter(event => EVENT_NAMES.includes(event.event_name)) : [];
   } catch {
     return [];
@@ -65,25 +62,21 @@ function safeReadEvents(): LocalAnalyticsEvent[] {
 }
 
 function safeWriteEvents(events: LocalAnalyticsEvent[]) {
-  if (!canUseStorage()) return;
-  try {
-    window.localStorage.setItem(EVENTS_KEY, JSON.stringify(events.slice(-MAX_EVENTS)));
-  } catch {
-    window.localStorage.setItem(EVENTS_KEY, JSON.stringify(events.slice(-300)));
+  const ok = writeBrowserStorage(EVENTS_KEY, JSON.stringify(events.slice(-MAX_EVENTS)));
+  if (!ok) {
+    writeBrowserStorage(EVENTS_KEY, JSON.stringify(events.slice(-300)));
   }
 }
 
 export function getSessionId() {
-  if (!canUseStorage()) return 'memory-session';
-  const existing = window.localStorage.getItem(SESSION_KEY);
+  const existing = readBrowserStorage(SESSION_KEY, '');
   if (existing) return existing;
   const next = `session-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
-  window.localStorage.setItem(SESSION_KEY, next);
+  writeBrowserStorage(SESSION_KEY, next);
   return next;
 }
 
 export function track(eventName: LocalAnalyticsEventName, properties: Record<string, unknown> = {}) {
-  if (!canUseStorage()) return;
   const event: LocalAnalyticsEvent = {
     id: `event-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`,
     timestamp: new Date().toISOString(),

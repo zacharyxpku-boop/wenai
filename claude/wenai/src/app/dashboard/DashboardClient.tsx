@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import OnboardingChecklist from '@/components/OnboardingChecklist';
+import { readJsonStorage, writeJsonStorage } from '@/lib/browser-storage';
 import { saveEarlyBirdLead } from '@/lib/early-bird';
 import { track } from '@/lib/local-analytics';
 import {
@@ -106,25 +107,17 @@ function currentMonthKey() {
 }
 
 function loadUsage() {
-  try {
-    const parsed = JSON.parse(window.localStorage.getItem(USAGE_KEY) || 'null') as { month?: string; csvImports?: number } | null;
-    return parsed?.month === currentMonthKey() ? { month: parsed.month, csvImports: parsed.csvImports || 0 } : { month: currentMonthKey(), csvImports: 0 };
-  } catch {
-    return { month: currentMonthKey(), csvImports: 0 };
-  }
+  const parsed = readJsonStorage<{ month?: string; csvImports?: number } | null>(USAGE_KEY, null);
+  return parsed?.month === currentMonthKey() ? { month: parsed.month, csvImports: parsed.csvImports || 0 } : { month: currentMonthKey(), csvImports: 0 };
 }
 
 function loadConversions(): Array<Record<string, unknown>> {
-  try {
-    return JSON.parse(window.localStorage.getItem(TEMPLATE_CONVERSION_KEY) || '[]') as Array<Record<string, unknown>>;
-  } catch {
-    return [];
-  }
+  return readJsonStorage<Array<Record<string, unknown>>>(TEMPLATE_CONVERSION_KEY, []);
 }
 
 function saveConversion(event: Record<string, unknown>) {
   const existing = loadConversions();
-  window.localStorage.setItem(TEMPLATE_CONVERSION_KEY, JSON.stringify([event, ...existing].slice(0, 100)));
+  writeJsonStorage(TEMPLATE_CONVERSION_KEY, [event, ...existing].slice(0, 100));
 }
 
 function createWorkspaceFromTemplate(template: IndustryTemplate) {

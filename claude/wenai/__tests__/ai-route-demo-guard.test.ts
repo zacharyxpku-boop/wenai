@@ -24,6 +24,10 @@ describe('/api/ai demo guard', () => {
   it('does not return demo content outside local development when AI key is missing', async () => {
     vi.stubEnv('NODE_ENV', 'test');
     vi.stubEnv('AI_API_KEY', '');
+    const fetchSpy = vi.fn(async () => {
+      throw new Error('AI guard test must not call provider fetch');
+    });
+    vi.stubGlobal('fetch', fetchSpy);
 
     const { POST } = await import('@/app/api/ai/route');
     const response = await POST(aiRequest() as never);
@@ -33,5 +37,6 @@ describe('/api/ai demo guard', () => {
     expect(body.code).toBe('AI_API_KEY_MISSING');
     expect(body.demo).toBeUndefined();
     expect(body.content).toBeUndefined();
-  });
+    expect(fetchSpy).not.toHaveBeenCalled();
+  }, 15000);
 });

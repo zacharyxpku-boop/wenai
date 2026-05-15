@@ -17,7 +17,7 @@ function Invoke-Step {
 }
 
 Invoke-Step "Vitest focused suite" {
-  npm.cmd run test -- __tests__/standard-pack-routing.test.ts __tests__/sop-workflows.test.ts __tests__/poc-launch-check.test.ts __tests__/poc-report-evaluator.test.ts __tests__/poc-report-generator.test.ts __tests__/inquiry-activity.test.ts __tests__/ratelimit.test.ts __tests__/ai-route-demo-guard.test.ts __tests__/ocr-route.test.ts __tests__/case-library.test.ts __tests__/ecommerce-guardrails.test.ts __tests__/content-marketing-pack.test.ts __tests__/brand-iq.test.ts __tests__/crm-pipeline.test.ts __tests__/share-readonly.test.ts __tests__/listing-factory-demo.test.ts __tests__/listing-factory-engine.test.ts __tests__/listing-factory-engine-samples.test.ts __tests__/listing-factory-workbench.test.ts __tests__/listing-factory-production-layer.test.ts __tests__/listing-factory-asset-layer.test.ts __tests__/listing-factory-batch-production.test.ts __tests__/listing-factory-production-rc.test.ts __tests__/listing-factory-core-capabilities.test.ts __tests__/listing-factory-real-provider.test.ts __tests__/listing-factory-video-assembly.test.ts __tests__/listing-factory-performance-feedback.test.ts __tests__/listing-factory-experiment-orchestration.test.ts
+  npm.cmd run test -- __tests__/standard-pack-routing.test.ts __tests__/sop-workflows.test.ts __tests__/poc-launch-check.test.ts __tests__/poc-report-evaluator.test.ts __tests__/poc-report-generator.test.ts __tests__/inquiry-activity.test.ts __tests__/ratelimit.test.ts __tests__/ai-route-demo-guard.test.ts __tests__/ocr-route.test.ts __tests__/browser-storage.test.ts __tests__/case-library.test.ts __tests__/ecommerce-guardrails.test.ts __tests__/content-marketing-pack.test.ts __tests__/brand-iq.test.ts __tests__/crm-pipeline.test.ts __tests__/share-readonly.test.ts __tests__/listing-factory-demo.test.ts __tests__/listing-factory-engine.test.ts __tests__/listing-factory-engine-samples.test.ts __tests__/listing-factory-workbench.test.ts __tests__/listing-factory-production-layer.test.ts __tests__/listing-factory-asset-layer.test.ts __tests__/listing-factory-batch-production.test.ts __tests__/listing-factory-production-rc.test.ts __tests__/listing-factory-core-capabilities.test.ts __tests__/listing-factory-real-provider.test.ts __tests__/listing-factory-video-assembly.test.ts __tests__/listing-factory-performance-feedback.test.ts __tests__/listing-factory-experiment-orchestration.test.ts
 }
 
 Invoke-Step "TypeScript noEmit" {
@@ -53,6 +53,7 @@ Invoke-Step "ESLint" {
     __tests__/inquiry-activity.test.ts `
     __tests__/ai-route-demo-guard.test.ts `
     __tests__/ocr-route.test.ts `
+    __tests__/browser-storage.test.ts `
     __tests__/case-library.test.ts `
     __tests__/ecommerce-guardrails.test.ts `
     __tests__/content-marketing-pack.test.ts `
@@ -79,6 +80,7 @@ Invoke-Step "ESLint" {
     src/components/PocLaunchChecklist.tsx `
     src/components/PocReportGenerator.tsx `
     src/components/SharePageActions.tsx `
+    src/components/OnboardingChecklist.tsx `
     src/components/AdminInquiryCommercialEditor.tsx `
     src/components/marketing/TopNav.tsx `
     src/components/marketing/MarketingFooter.tsx `
@@ -121,6 +123,8 @@ Invoke-Step "ESLint" {
     src/app/insights/page.tsx `
     src/app/poc/page.tsx `
     src/app/poc/report/page.tsx `
+    src/app/dashboard/DashboardClient.tsx `
+    src/app/report/[shareId]/ReportTemplateClient.tsx `
     src/app/share/[id]/page.tsx `
     src/app/share/[id]/executive/page.tsx `
     src/app/cases/page.tsx `
@@ -130,7 +134,9 @@ Invoke-Step "ESLint" {
     src/app/admin/metrics/page.tsx `
     src/app/api/ai/route.ts `
     src/app/api/ocr/route.ts `
-    src/app/api/sales/inquiry/route.ts
+    src/app/api/sales/inquiry/route.ts `
+    src/lib/browser-storage.ts `
+    src/lib/local-analytics.ts
 }
 
 Invoke-Step "Next build" {

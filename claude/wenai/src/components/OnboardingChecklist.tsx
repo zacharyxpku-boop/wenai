@@ -1,7 +1,8 @@
 'use client';
 
-import { useEffect, useMemo, useRef, useState } from 'react';
-import { getStats } from '@/lib/local-analytics';
+import { useEffect, useRef, useState } from 'react';
+import { readBrowserStorage, writeBrowserStorage } from '@/lib/browser-storage';
+import { getStats, type LocalAnalyticsStats } from '@/lib/local-analytics';
 
 type ChecklistStep = {
   id: string;
@@ -12,9 +13,9 @@ type ChecklistStep = {
 const DISMISS_KEY = 'wenai_onboarding_checklist_collapsed_v1';
 
 export default function OnboardingChecklist({ projectCount }: { projectCount: number }) {
-  const [collapsed, setCollapsed] = useState(() => typeof window !== 'undefined' && window.localStorage.getItem(DISMISS_KEY) === 'true');
+  const [collapsed, setCollapsed] = useState(() => readBrowserStorage(DISMISS_KEY, '') === 'true');
   const [toast, setToast] = useState('');
-  const stats = useMemo(() => (typeof window === 'undefined' ? null : getStats()), []);
+  const [stats] = useState<LocalAnalyticsStats | null>(() => getStats());
   const steps: ChecklistStep[] = [
     { id: 'project', label: '创建第一个项目', done: projectCount > 0 },
     { id: 'csv', label: '导入 CSV 数据', done: (stats?.totals.csv_import || 0) > 0 },
@@ -40,7 +41,7 @@ export default function OnboardingChecklist({ projectCount }: { projectCount: nu
     if (doneCount === steps.length) {
       const timer = window.setTimeout(() => {
         setCollapsed(true);
-        window.localStorage.setItem(DISMISS_KEY, 'true');
+        writeBrowserStorage(DISMISS_KEY, 'true');
       }, 1600);
       return () => window.clearTimeout(timer);
     }
