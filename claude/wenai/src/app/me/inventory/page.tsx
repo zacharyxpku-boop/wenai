@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import Link from 'next/link';
 
 /**
@@ -31,14 +31,33 @@ export default function InventoryPage() {
   const [editing, setEditing] = useState<string | null>(null);
   const [editValue, setEditValue] = useState('');
 
-  const load = () => {
-    setLoading(true);
+  const refresh = useCallback(async (showLoading = true) => {
+    if (showLoading) setLoading(true);
+    try {
+      const response = await fetch('/api/user/inventory');
+      const data = await response.json();
+      setItems(data.inventory || []);
+      setLoading(false);
+    } catch {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
     fetch('/api/user/inventory')
-      .then(r => r.json())
-      .then(d => { setItems(d.inventory || []); setLoading(false); })
-      .catch(() => setLoading(false));
-  };
-  useEffect(load, []);
+      .then(response => response.json())
+      .then(data => {
+        if (cancelled) return;
+        setItems(data.inventory || []);
+        setLoading(false);
+      })
+      .catch(() => {
+        if (cancelled) return;
+        setLoading(false);
+      });
+    return () => { cancelled = true; };
+  }, []);
 
   const visible = filter === 'all' ? items : items.filter(r => r.status === filter);
   const counts = {
@@ -59,7 +78,7 @@ export default function InventoryPage() {
     });
     setEditing(null);
     setEditValue('');
-    load();
+    refresh();
   };
 
   return (

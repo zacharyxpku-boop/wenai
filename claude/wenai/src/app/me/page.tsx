@@ -87,7 +87,7 @@ export default function MeDashboardPage() {
         {/* 头 */}
         <div className="mb-6 pb-4 border-b border-border-subtle">
           <div className="text-[10px] font-mono text-accent uppercase tracking-[0.2em] mb-1">
-            MY DASHBOARD
+            商家工作台
           </div>
           <h1 className="text-2xl lg:text-3xl font-bold text-text-primary mb-1 font-[family-name:var(--font-outfit)]">
             欢迎回来 · 你的状态总览
@@ -268,7 +268,7 @@ export default function MeDashboardPage() {
               <div>
                 <div className="text-[12px] font-bold text-cat-content">💡 让 AI 推荐更贴你的实际盘子</div>
                 <div className="text-[11px] text-text-secondary mt-1">
-                  花 30 秒填一句"你做的什么生意" → 决策类模块会基于这个上下文给建议
+                  花 30 秒填一句“你做的什么生意” → 决策类模块会基于这个上下文给建议
                 </div>
               </div>
               <Link href="/me/settings" className="text-[11px] font-mono text-cat-content border border-cat-content/40 hover:bg-cat-content/10 rounded px-3 py-1.5">

@@ -40,18 +40,25 @@ export default function SavingsPage() {
   const [days, setDays] = useState<1 | 3 | 7>(7);
   const [loading, setLoading] = useState(true);
 
-  const load = (n: number) => {
-    setLoading(true);
-    fetch(`/api/user/savings-summary?days=${n}`)
-      .then(r => r.json())
-      .then(d => {
-        setData(d);
-        setLoading(false);
-      })
-      .catch(() => setLoading(false));
+  const selectDays = (n: 1 | 3 | 7) => {
+    setDays(n);
   };
 
-  useEffect(() => { load(days); }, [days]);
+  useEffect(() => {
+    let cancelled = false;
+    fetch(`/api/user/savings-summary?days=${days}`)
+      .then(response => response.json())
+      .then(data => {
+        if (cancelled) return;
+        setData(data);
+        setLoading(false);
+      })
+      .catch(() => {
+        if (cancelled) return;
+        setLoading(false);
+      });
+    return () => { cancelled = true; };
+  }, [days]);
 
   const ratio = data && data.totalAltCostCny > 0
     ? Math.round((1 - data.totalWenaiCostCny / data.totalAltCostCny) * 100)
@@ -135,7 +142,7 @@ export default function SavingsPage() {
           {([1, 3, 7] as const).map(n => (
             <button
               key={n}
-              onClick={() => setDays(n)}
+              onClick={() => selectDays(n)}
               className={`text-[11px] font-mono px-3 py-1 rounded border ${
                 days === n
                   ? 'border-accent bg-accent/10 text-accent'

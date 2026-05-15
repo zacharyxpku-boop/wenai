@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 /**
  * 公共 hook: 拉当前用户的 SKU 库 (最近 N 个)
@@ -41,21 +41,37 @@ export function useMySkus(limit = 20) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const refresh = () => {
+  const refresh = useCallback(async () => {
     setLoading(true);
+    setError(null);
+    try {
+      const response = await fetch(`/api/user/sku-history?limit=${limit}`);
+      const data = await response.json();
+      setSkus((data.skus || []) as MySku[]);
+      setLoading(false);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'load failed');
+      setLoading(false);
+    }
+  }, [limit]);
+
+  useEffect(() => {
+    let cancelled = false;
     fetch(`/api/user/sku-history?limit=${limit}`)
-      .then(r => r.json())
-      .then(d => {
-        setSkus((d.skus || []) as MySku[]);
+      .then(response => response.json())
+      .then(data => {
+        if (cancelled) return;
+        setSkus((data.skus || []) as MySku[]);
+        setError(null);
         setLoading(false);
       })
-      .catch(e => {
+      .catch((e) => {
+        if (cancelled) return;
         setError(e instanceof Error ? e.message : 'load failed');
         setLoading(false);
       });
-  };
-
-  useEffect(() => { refresh(); /* eslint-disable-next-line */ }, [limit]);
+    return () => { cancelled = true; };
+  }, [limit]);
 
   return { skus, loading, error, refresh };
 }

@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 /**
  * 公共 hook: 从 URL ?skuId= 读取当前关联的 SKU
@@ -16,12 +16,10 @@ import { useEffect, useState } from 'react';
  * 不用 next/navigation 的 useSearchParams 因为它要 Suspense, 直接读 window 简单
  */
 export function useActiveSkuId(): string | null {
-  const [skuId, setSkuId] = useState<string | null>(null);
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
+  const [skuId] = useState<string | null>(() => {
+    if (typeof window === 'undefined') return null;
     const sp = new URLSearchParams(window.location.search);
-    const sid = sp.get('skuId');
-    if (sid) setSkuId(sid);
-  }, []);
+    return sp.get('skuId');
+  });
   return skuId;
 }
