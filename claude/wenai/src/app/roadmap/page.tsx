@@ -2,46 +2,46 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 
 export const metadata: Metadata = {
-  title: 'Roadmap | wenai',
+  title: '路线图 | wenai',
   description:
-    'The next milestones for wenai: launch POC, content marketing, CRM-lite, Brand IQ, and enterprise handoff.',
+    'wenai 的产品路线图：POC 交付、内容营销、CRM、Brand IQ 和企业交接。',
 };
 
 const QUARTERS = [
   {
-    label: 'Now',
-    period: 'POC-ready closeout',
-    theme: 'Make the customer-facing path commercial-ready.',
+    label: '现在',
+    period: 'POC 可交付',
+    theme: '把客户第一条路径做成能演示、能验收、能推进。',
     items: [
-      '5-minute POC onboarding',
-      'Brand IQ and category guardrails',
-      'Executive read-only report',
-      'CRM-lite inquiry and contract motion',
-      'Marketing benchmark to creative brief',
+      '5 分钟 POC onboarding',
+      'Brand IQ 和类目护栏',
+      '老板版只读报告',
+      '询盘、合同、SLA 和下一步动作',
+      '内容 benchmark 到创意 brief',
     ],
   },
   {
-    label: 'Next',
-    period: 'Launch preparation',
-    theme: 'Prepare the subsite for real customers and main-site payment handoff.',
+    label: '上架前',
+    period: '真实客户准备',
+    theme: '把演示子站接到主站付款、合同和真实服务流程。',
     items: [
-      'Production env checklist',
-      'Demo seed data and sample reports',
-      'Mobile visual QA',
-      'Main-site contract and payment routing',
-      'Authorized case library',
+      '生产环境检查清单',
+      '演示数据和样例报告',
+      '移动端视觉验收',
+      '主站合同和支付跳转',
+      '客户授权案例库',
     ],
   },
   {
-    label: 'Later',
-    period: 'Enterprise depth',
-    theme: 'Turn repeatable POCs into account-specific operating systems.',
+    label: '企业化',
+    period: '客户专属规则',
+    theme: '把可复用 POC 变成客户自己的电商操作系统。',
     items: [
-      'Workspace-specific Brand IQ',
-      'Category threshold presets',
-      'Persistent delivery history',
-      'Private deployment package',
-      'API and ERP handoff',
+      '工作区专属 Brand IQ',
+      '类目验收阈值模板',
+      '长期交付历史',
+      '私有部署包',
+      'API / ERP 交接',
     ],
   },
 ];
@@ -50,12 +50,12 @@ export default function RoadmapPage() {
   return (
     <div className="mx-auto max-w-[960px] px-6 py-10">
       <div className="mb-8 text-center">
-        <div className="mb-3 text-[10px] font-mono uppercase tracking-[0.2em] text-accent">Roadmap</div>
+        <div className="mb-3 text-[10px] font-mono text-accent">路线图</div>
         <h1 className="mb-3 text-2xl font-bold text-text-primary lg:text-3xl font-[family-name:var(--font-outfit)]">
-          From POC system to commercial operating layer
+          先把 POC 做硬，再扩成商业操作系统。
         </h1>
         <p className="mx-auto max-w-[660px] text-[13px] leading-relaxed text-text-secondary">
-          The roadmap stays focused: make ecommerce SKU work repeatable, reviewable, shareable, and contract-ready.
+          路线图只围绕一件事：让电商 SKU 工作可复用、可复核、可分享、可推进合同。
         </p>
       </div>
 
@@ -69,8 +69,8 @@ export default function RoadmapPage() {
                     {quarter.label}
                   </span>
                   {index === 0 && (
-                    <span className="rounded-md bg-accent/10 px-2 py-0.5 text-[9px] font-mono uppercase tracking-wider text-accent">
-                      Current
+                    <span className="rounded-md bg-accent/10 px-2 py-0.5 text-[9px] font-mono text-accent">
+                      当前
                     </span>
                   )}
                 </div>
@@ -91,17 +91,17 @@ export default function RoadmapPage() {
 
       <div className="mt-8 flex flex-wrap items-center justify-between gap-3 border-t border-border-subtle pt-6">
         <Link href="/changelog" className="text-[12px] font-semibold text-accent hover:underline">
-          View changelog
+          查看更新记录
         </Link>
         <div className="flex flex-wrap gap-2">
           <Link href="/poc" className="rounded-md border border-border-default px-3 py-1.5 text-[11px] font-mono text-text-secondary hover:border-accent/40">
             POC
           </Link>
           <Link href="/pricing" className="rounded-md border border-border-default px-3 py-1.5 text-[11px] font-mono text-text-secondary hover:border-accent/40">
-            Plans
+            方案
           </Link>
           <Link href="/enterprise" className="rounded-md border border-border-default px-3 py-1.5 text-[11px] font-mono text-text-secondary hover:border-accent/40">
-            Enterprise
+            企业版
           </Link>
         </div>
       </div>

@@ -5,9 +5,9 @@ import TopNav from '@/components/marketing/TopNav';
 import MarketingFooter from '@/components/marketing/MarketingFooter';
 
 export const metadata: Metadata = {
-  title: 'About | wenai ecommerce AI delivery system',
+  title: '关于 | wenai 电商 AI 商业交付系统',
   description:
-    'wenai turns SKU intake, Brand IQ, content marketing, POC reports, and contract motion into one ecommerce operating line.',
+    'wenai 把 SKU 输入、Brand IQ、内容营销、POC 报告和合同推进变成一条电商交付线。',
 };
 
 export default function AboutPage() {
@@ -23,7 +23,7 @@ export default function AboutPage() {
         <Section spacing="loose">
           <Container>
             <div className="text-center">
-              <div className="mb-6 text-xs uppercase tracking-[0.2em] text-text-tertiary">Our mission</div>
+              <div className="mb-6 text-xs text-text-tertiary">我们为什么做 wenai</div>
               <p className="mx-auto max-w-[820px] text-3xl font-medium leading-relaxed text-text-primary md:text-4xl">
                 {COPY.about.mission}
               </p>
@@ -109,7 +109,7 @@ export default function AboutPage() {
               ))}
             </ul>
             <div className="mt-8 text-sm text-text-secondary">
-              Send a note to{' '}
+              联系我们：{' '}
               <a href={`mailto:${COPY.about.careers.contact}`} className="font-semibold text-accent hover:underline">
                 {COPY.about.careers.contact}
               </a>
