@@ -110,14 +110,14 @@ function InfluencerOutboundInner() {
         budget: '寄样 + 15% 佣金',
         cta: '希望拍摄产品使用场景，至少 1 条短视频 + 1 张静态图',
       });
-      setHandoff('已从 Pipeline 01 带入产品信息，补全品牌名 / 价格 / 预算即可');
+      setHandoff('已从上新流程带入产品信息，补全品牌名、价格和预算即可');
     } else if (isDemo) {
       // Demo 路径: 灌入完整示例并自动触发 (限 3 条达人省 token)
       setProduct(TEMPLATE_PRODUCT);
       setRawInput(`@homestorage_sara | Instagram | 48K | 家居收纳 Reels | sara@example.com
 @kitchen.tara | Instagram | 120K | 厨房整理 | hi@tara.com
 @organize.mike | TikTok | 320K | 断舍离教程 | mike@gmail.com`);
-      setHandoff('Demo 模式 · 已灌入 HOMELODY 示例 + 3 位家居达人，自动生成个性化邮件');
+      setHandoff('演示模式 · 已灌入 HOMELODY 示例 + 3 位家居达人，自动生成个性化邮件');
       setTimeout(() => {
         const parsed = parseInfluencerInput(`@homestorage_sara | Instagram | 48K | 家居收纳 Reels | sara@example.com
 @kitchen.tara | Instagram | 120K | 厨房整理 | hi@tara.com
@@ -459,13 +459,13 @@ PantryPerfection | YouTube | 85K | 家居生活 vlog | contact@pantryperfection.
 
   return (
     <div className="max-w-[1400px] mx-auto p-4 lg:p-6">
-      {/* Handoff banner · 从 Pipeline 01 带入 */}
+      {/* 交接提示 · 从上新流水线带入 */}
       {handoff && (
         <div className="mb-4 p-3 border border-accent/40 bg-accent/10 rounded-md flex items-center gap-3">
           <span className="text-accent text-[14px]">↳</span>
           <div className="flex-1">
             <div className="text-[11px] font-semibold text-accent">{handoff}</div>
-            <div className="text-[10px] font-mono text-text-tertiary mt-0.5">Pipeline 01 → 02 联动</div>
+            <div className="text-[10px] font-mono text-text-tertiary mt-0.5">从上新资料直接进入达人触达</div>
           </div>
           <button
             onClick={() => { setHandoff(''); setProduct(EMPTY_PRODUCT); }}

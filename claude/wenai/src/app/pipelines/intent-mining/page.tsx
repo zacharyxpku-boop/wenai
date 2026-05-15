@@ -166,7 +166,7 @@ ${knownSegments || '无'}
 
       // 容错解析 (AI 可能输出有前后赘述)
       const jsonMatch = raw.match(/\{[\s\S]*\}/);
-      if (!jsonMatch) throw new Error('AI 输出不是 JSON,见调试');
+      if (!jsonMatch) throw new Error('结果格式暂时不可用，请重试或导出当前输入交给团队处理');
       const parsed = JSON.parse(jsonMatch[0]) as MiningResult;
       if (!parsed.newSegments || parsed.newSegments.length === 0) {
         throw new Error('AI 未返回新客群,试试丰富产品描述');

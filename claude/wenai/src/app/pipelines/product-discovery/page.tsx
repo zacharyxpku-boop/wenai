@@ -217,7 +217,7 @@ export default function ProductDiscoveryPage() {
       const raw = data.content || '';
       setRawDebug(raw);
       const m = raw.match(/\{[\s\S]*\}/);
-      if (!m) throw new Error('AI 输出非 JSON,见调试');
+      if (!m) throw new Error('结果格式暂时不可用，请重试或导出当前输入交给团队处理');
       const parsed = JSON.parse(m[0]) as DiscoveryResult;
       if (!parsed.candidates || parsed.candidates.length === 0) {
         throw new Error('AI 没返回候选 SKU,试试改类目描述');

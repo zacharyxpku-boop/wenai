@@ -44,7 +44,7 @@ const platformCsvCases = [
 
 async function clearApp(page: Page) {
   await page.context().clearCookies();
-  await page.goto('/');
+  await page.goto('/dashboard', { waitUntil: 'domcontentloaded', timeout: 20_000 });
   await page.evaluate(() => window.localStorage.clear());
 }
 
