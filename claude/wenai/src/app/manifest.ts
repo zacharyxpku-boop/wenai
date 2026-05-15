@@ -2,9 +2,9 @@ import type { MetadataRoute } from 'next';
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: 'Wenai · 跨境代运营流水线 OS',
+    name: 'Wenai · 电商内容实验决策中枢',
     short_name: 'Wenai',
-    description: '3 条 Pipeline 吃掉代运营日均重复劳动 · 五品类专属调教',
+    description: '导入平台 CSV，生成下一轮内容实验决策、脱敏报告和生产需求 Brief。',
     start_url: '/',
     display: 'standalone',
     background_color: '#0e0e11',
@@ -34,22 +34,22 @@ export default function manifest(): MetadataRoute.Manifest {
     ],
     shortcuts: [
       {
-        name: 'Pipeline 01 · 新品上新',
-        short_name: '新品',
-        description: '翻译 / 文案 / 合规 并行',
-        url: '/pipelines/new-listing',
+        name: '实验项目',
+        short_name: '项目',
+        description: '创建项目或从行业模板开始',
+        url: '/dashboard',
       },
       {
-        name: 'Pipeline 02 · 达人冷启',
-        short_name: '达人',
-        description: '批量个性化邮件',
-        url: '/pipelines/influencer-outbound',
+        name: '导入 CSV',
+        short_name: '导入',
+        description: '上传平台表现数据并生成决策',
+        url: '/factory',
       },
       {
-        name: 'Pipeline 03 · AI 主图',
-        short_name: '主图',
-        description: 'wanx 生图',
-        url: '/pipelines/product-image',
+        name: '定价',
+        short_name: '定价',
+        description: '查看 Free、Starter 和 Growth 权益',
+        url: '/pricing',
       },
     ],
   };

@@ -313,4 +313,17 @@ test.describe.serial('Wenai 完整用户旅程', () => {
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth);
     expect(overflow).toBe(false);
   });
+
+  test('测试 I：旧公开功能入口统一承接到升级页', async ({ page }) => {
+    const legacyPaths = ['/demo', '/tools', '/cases', '/docs', '/status', '/roadmap', '/enterprise', '/inquire', '/pipelines/product-image', '/product/video', '/me'];
+
+    for (const legacyPath of legacyPaths) {
+      await page.goto(legacyPath);
+      await expect(page).toHaveURL(/\/upgrade\?from=/);
+      await expect(page.getByRole('heading', { name: '该功能正在升级，请前往首页体验新功能。' })).toBeVisible();
+      const upgradePanel = page.getByTestId('upgrade-panel');
+      await expect(upgradePanel.getByRole('link', { name: '进入工作台' })).toBeVisible();
+      await expect(upgradePanel.getByRole('link', { name: '导入 CSV' })).toBeVisible();
+    }
+  });
 });

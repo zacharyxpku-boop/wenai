@@ -5,12 +5,18 @@ export default function robots(): MetadataRoute.Robots {
     rules: [
       {
         userAgent: '*',
-        allow: ['/', '/pricing', '/cases', '/pipelines/*', '/invite', '/status', '/privacy', '/terms', '/legal/*'],
+        allow: ['/', '/pricing', '/dashboard', '/factory', '/poc/report', '/report/*', '/invite', '/settings/kuaizi', '/privacy', '/terms', '/legal/*'],
         disallow: [
           '/api/*',
           '/admin/*',
           '/settings',
-          '/modules/*', // 工具箱页面需登录
+          '/modules/*',
+          '/pipelines/*',
+          '/tools/*',
+          '/cases/*',
+          '/product/*',
+          '/me/*',
+          '/benchmark/*',
           '/pricing/checkout*',
         ],
       },

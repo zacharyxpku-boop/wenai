@@ -14,9 +14,9 @@ import {
 
 type SubscriptionTier = 'Free' | 'Starter' | 'Growth';
 
-const SUBSCRIPTION_KEY = 'wenai_subscription_state_v1';
 const USAGE_KEY = 'wenai_usage_state_v1';
 const TEMPLATE_CONVERSION_KEY = 'wenai_template_conversions_v1';
+const EARLY_BIRD_KEY = 'wenai_early_bird_emails';
 
 type IndustryTemplate = {
   id: string;
@@ -104,15 +104,6 @@ function currentMonthKey() {
   return new Date().toISOString().slice(0, 7);
 }
 
-function loadSubscription(): { tier: SubscriptionTier; updatedAt: string } {
-  try {
-    const parsed = JSON.parse(window.localStorage.getItem(SUBSCRIPTION_KEY) || 'null') as { tier?: SubscriptionTier; updatedAt?: string } | null;
-    return parsed?.tier ? { tier: parsed.tier, updatedAt: parsed.updatedAt || new Date().toISOString() } : { tier: 'Free', updatedAt: new Date().toISOString() };
-  } catch {
-    return { tier: 'Free', updatedAt: new Date().toISOString() };
-  }
-}
-
 function loadUsage() {
   try {
     const parsed = JSON.parse(window.localStorage.getItem(USAGE_KEY) || 'null') as { month?: string; csvImports?: number } | null;
@@ -133,6 +124,14 @@ function loadConversions(): Array<Record<string, unknown>> {
 function saveConversion(event: Record<string, unknown>) {
   const existing = loadConversions();
   window.localStorage.setItem(TEMPLATE_CONVERSION_KEY, JSON.stringify([event, ...existing].slice(0, 100)));
+}
+
+function saveEarlyBirdEmail(tier: SubscriptionTier, email: string) {
+  const current = JSON.parse(window.localStorage.getItem(EARLY_BIRD_KEY) || '[]') as Array<Record<string, string>>;
+  window.localStorage.setItem(EARLY_BIRD_KEY, JSON.stringify([
+    { tier, email, createdAt: new Date().toISOString(), source: 'dashboard' },
+    ...current,
+  ].slice(0, 200)));
 }
 
 function createWorkspaceFromTemplate(template: IndustryTemplate) {
@@ -168,21 +167,28 @@ function createWorkspaceFromTemplate(template: IndustryTemplate) {
 
 export default function DashboardClient() {
   const router = useRouter();
-  const [subscription, setSubscription] = useState(() => loadSubscription());
   const [usage] = useState(() => loadUsage());
   const [runs, setRuns] = useState(() => loadListingFactoryRuns());
   const [conversions, setConversions] = useState(() => loadConversions());
   const [message, setMessage] = useState('选择一个行业模板，创建工作台后上传 CSV，就能生成第一轮内容实验决策。');
+  const [earlyBirdTier, setEarlyBirdTier] = useState<SubscriptionTier | null>(null);
+  const [earlyBirdEmail, setEarlyBirdEmail] = useState('');
 
   useEffect(() => {
     track('page_view', { page: 'dashboard' });
   }, []);
 
-  const upgrade = async (tier: SubscriptionTier) => {
-    await fetch('/api/billing/mock', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ tier }) }).catch(() => null);
-    const next = { tier, updatedAt: new Date().toISOString() };
-    window.localStorage.setItem(SUBSCRIPTION_KEY, JSON.stringify(next));
-    setSubscription(next);
+  const openEarlyBird = (tier: SubscriptionTier) => {
+    setEarlyBirdTier(tier);
+    setMessage(`${tier} 即将上线，留下邮箱获取早鸟优惠。`);
+  };
+
+  const submitEarlyBird = () => {
+    if (!earlyBirdTier || !earlyBirdEmail.trim()) return;
+    saveEarlyBirdEmail(earlyBirdTier, earlyBirdEmail.trim());
+    setEarlyBirdEmail('');
+    setEarlyBirdTier(null);
+    setMessage('已记录。Starter/Growth 上线后会优先通知你。当前仍为 Free 试用中。');
   };
 
   const startFromTemplate = (template: IndustryTemplate) => {
@@ -240,13 +246,30 @@ export default function DashboardClient() {
           <div>
             <div className="text-[12px] font-black uppercase tracking-wide text-amber-700">Wenai Dashboard</div>
             <h1 className="mt-2 text-3xl font-black text-slate-950">订阅状态与模板市场</h1>
-            <p className="mt-2 text-[13px] text-slate-600">当前档位：{subscription.tier} / 本月 CSV 导入：{usage.csvImports}</p>
+            <p className="mt-2 text-[13px] text-slate-600">当前档位：Free 试用中 / 本月 CSV 导入：{usage.csvImports}</p>
+            <p className="mt-1 text-[12px] text-slate-500">Starter/Growth 即将开放，留下邮箱后优先通知；当前不会展示虚假的已升级状态。</p>
           </div>
           <div className="flex flex-wrap gap-2">
-            <button type="button" onClick={() => upgrade('Starter')} className="rounded-md bg-slate-950 px-4 py-2 text-[12px] font-bold text-white">Starter $29/月</button>
-            <button type="button" onClick={() => upgrade('Growth')} className="rounded-md bg-amber-600 px-4 py-2 text-[12px] font-bold text-white">Growth $99/月</button>
+            <button type="button" onClick={() => openEarlyBird('Starter')} className="rounded-md bg-slate-950 px-4 py-2 text-[12px] font-bold text-white">获取 Starter 上线通知</button>
+            <button type="button" onClick={() => openEarlyBird('Growth')} className="rounded-md bg-amber-600 px-4 py-2 text-[12px] font-bold text-white">获取 Growth 上线通知</button>
           </div>
         </div>
+        {earlyBirdTier && (
+          <div className="mt-4 rounded-md border border-amber-200 bg-amber-50 p-4">
+            <div className="text-[13px] font-black text-slate-950">{earlyBirdTier} 即将上线，留下邮箱获取早鸟优惠</div>
+            <div className="mt-3 flex flex-col gap-2 sm:flex-row">
+              <input
+                type="email"
+                value={earlyBirdEmail}
+                onChange={event => setEarlyBirdEmail(event.target.value)}
+                placeholder="you@company.com"
+                className="min-h-10 flex-1 rounded-md border border-amber-200 px-3 text-[13px] outline-none focus:border-amber-500"
+              />
+              <button type="button" onClick={submitEarlyBird} className="min-h-10 rounded-md bg-slate-950 px-4 text-[12px] font-black text-white">提交邮箱</button>
+              <button type="button" onClick={() => setEarlyBirdTier(null)} className="min-h-10 rounded-md border border-amber-200 px-4 text-[12px] font-bold text-slate-700">继续使用 Free</button>
+            </div>
+          </div>
+        )}
       </section>
 
       <section className="mt-6 grid gap-4 md:grid-cols-3">

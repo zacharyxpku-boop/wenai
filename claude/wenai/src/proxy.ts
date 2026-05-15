@@ -7,10 +7,10 @@ const PUBLIC_EXACT_PATHS = new Set([
   '/api/auth/login',
   '/api/auth/logout',
   '/api/auth/demo',
-  '/demo',
   '/terms',
   '/privacy',
   '/legal',
+  '/legal/dpa',
   '/manifest.webmanifest',
   '/api/sales/inquiry',
   '/api/health',
@@ -20,31 +20,17 @@ const PUBLIC_EXACT_PATHS = new Set([
 
 const PUBLIC_PAGE_PREFIXES = [
   '/',
-  '/pipelines/',
-  '/cases',
-  '/enterprise',
+  '/upgrade',
   '/pricing',
   '/poc',
-  '/inquire',
-  '/roadmap',
-  '/changelog',
-  '/status',
-  '/docs',
-  '/MOAT_MAP',
   '/share',
   '/invite',
-  '/me',
-  '/tools',
-  '/benchmark',
   '/dashboard',
   '/factory',
   '/report',
   '/settings/kuaizi',
   '/unsubscribed',
   '/about',
-  '/product/',
-  '/contact',
-  '/resources',
 ];
 
 export async function proxy(request: NextRequest) {
@@ -62,6 +48,35 @@ export async function proxy(request: NextRequest) {
   const isPublicPage =
     pathname === '/' ||
     PUBLIC_PAGE_PREFIXES.some(p => p !== '/' && pathname.startsWith(p));
+
+  const isLegacyPublicSurface =
+    isPageRoute &&
+    (
+      pathname === '/demo' ||
+      pathname === '/poc' ||
+      pathname === '/pricing/checkout' ||
+      pathname === '/tools' ||
+      pathname === '/cases' ||
+      pathname === '/docs' ||
+      pathname === '/status' ||
+      pathname === '/roadmap' ||
+      pathname === '/enterprise' ||
+      pathname === '/inquire' ||
+      pathname === '/benchmark' ||
+      pathname === '/me' ||
+      pathname.startsWith('/pipelines/') ||
+      pathname.startsWith('/tools/') ||
+      pathname.startsWith('/cases/') ||
+      pathname.startsWith('/product/') ||
+      pathname.startsWith('/benchmark/') ||
+      pathname.startsWith('/me/')
+    );
+
+  if (isLegacyPublicSurface) {
+    const upgradeUrl = new URL('/upgrade', request.url);
+    upgradeUrl.searchParams.set('from', pathname);
+    return NextResponse.redirect(upgradeUrl);
+  }
 
   if (isPageRoute && pathname === '/admin' && process.env.NODE_ENV !== 'development' && process.env.ENABLE_ADMIN !== 'true') {
     return NextResponse.rewrite(new URL('/404', request.url));
