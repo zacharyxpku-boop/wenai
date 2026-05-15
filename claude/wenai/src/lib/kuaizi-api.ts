@@ -1,5 +1,7 @@
 'use client';
 
+import { track } from '@/lib/local-analytics';
+
 export type KuaiziEndpoint = 'production' | 'sandbox';
 export type KuaiziTaskStatus = 'queued' | 'processing' | 'completed' | 'failed';
 
@@ -39,6 +41,12 @@ export interface KuaiziConnectionResult {
   ok: boolean;
   message: string;
   status?: number;
+}
+
+export interface KuaiziApiErrorDetail {
+  status?: number;
+  operation: 'health' | 'create_job' | 'poll_job';
+  message: string;
 }
 
 const CONFIG_KEY = 'wenai_kuaizi_config_v1';
@@ -115,9 +123,22 @@ export function hasKuaiziConfig() {
 }
 
 export function kuaiziErrorMessage(status: number) {
-  if (status === 401 || status === 403) return '筷子科技 API 配置错误，请检查 Key 和权限';
-  if (status === 402 || status === 429) return '筷子科技账户额度不足，请联系商务充值';
-  return '筷子科技任务创建失败，请稍后重试';
+  if (status === 401 || status === 403) return '筷子科技 API Key 无效或权限不足，请检查配置';
+  if (status === 408) return '连接超时，请检查网络或稍后重试';
+  if (status === 402 || status === 429) return '账户额度不足，请联系筷子科技商务充值';
+  if (status >= 500) return '筷子科技服务异常，请稍后重试或导出生产规格手动执行';
+  return '筷子科技任务创建失败，请稍后重试或导出生产规格手动执行';
+}
+
+function recordKuaiziError(detail: KuaiziApiErrorDetail) {
+  track('kuaizi_error', detail as unknown as Record<string, unknown>);
+}
+
+async function readError(response: Response, operation: KuaiziApiErrorDetail['operation']) {
+  const message = kuaiziErrorMessage(response.status);
+  const body = await response.text().catch(() => '');
+  recordKuaiziError({ status: response.status, operation, message: body ? `${message}: ${body.slice(0, 160)}` : message });
+  return new Error(message);
 }
 
 export async function testKuaiziConnection(config = getKuaiziConfig()): Promise<KuaiziConnectionResult> {
@@ -130,11 +151,16 @@ export async function testKuaiziConnection(config = getKuaiziConfig()): Promise<
         Accept: 'application/json',
       },
     });
-    if (!response.ok) return { ok: false, status: response.status, message: kuaiziErrorMessage(response.status) };
+    if (!response.ok) {
+      const message = kuaiziErrorMessage(response.status);
+      recordKuaiziError({ status: response.status, operation: 'health', message });
+      return { ok: false, status: response.status, message };
+    }
     return { ok: true, status: response.status, message: '连接成功' };
   } catch (error) {
-    if (error instanceof DOMException && error.name === 'AbortError') return { ok: false, message: '连接超时，请检查网络或稍后重试' };
-    return { ok: false, message: '连接失败，请检查 Endpoint 或网络状态' };
+    const message = error instanceof DOMException && error.name === 'AbortError' ? '连接超时，请检查网络或稍后重试' : '连接失败，请检查 Endpoint 或网络状态';
+    recordKuaiziError({ operation: 'health', message });
+    return { ok: false, message };
   }
 }
 
@@ -163,16 +189,22 @@ export async function createKuaiziProductionTask(payload: KuaiziBriefPayload, co
         },
       }),
     });
-    if (!response.ok) throw new Error(kuaiziErrorMessage(response.status));
+    if (!response.ok) throw await readError(response, 'create_job');
     const data = await response.json() as { taskId?: string; id?: string; status?: KuaiziTaskStatus; assetUrls?: string[]; assets?: Array<{ url?: string }> };
+    if (!data.taskId && !data.id) throw new Error('筷子科技任务创建失败，请稍后重试或导出生产规格手动执行');
+    const taskId = data.taskId ?? data.id ?? '';
     return {
-      taskId: data.taskId || data.id || `kuaizi-${Date.now()}`,
+      taskId,
       status: data.status || 'queued',
       assetUrls: data.assetUrls || data.assets?.map(asset => asset.url || '').filter(Boolean) || [],
       providerRaw: data,
     };
   } catch (error) {
-    if (error instanceof DOMException && error.name === 'AbortError') throw new Error('连接超时，请检查网络或稍后重试');
+    if (error instanceof DOMException && error.name === 'AbortError') {
+      const message = '连接超时，请检查网络或稍后重试';
+      recordKuaiziError({ operation: 'create_job', message });
+      throw new Error(message);
+    }
     throw error;
   }
 }
@@ -187,7 +219,7 @@ export async function getKuaiziTaskStatus(taskId: string, config = getKuaiziConf
         Accept: 'application/json',
       },
     });
-    if (!response.ok) throw new Error(kuaiziErrorMessage(response.status));
+    if (!response.ok) throw await readError(response, 'poll_job');
     const data = await response.json() as { taskId?: string; id?: string; status?: KuaiziTaskStatus; assetUrls?: string[]; assets?: Array<{ url?: string }> };
     return {
       taskId: data.taskId || data.id || taskId,
@@ -196,7 +228,11 @@ export async function getKuaiziTaskStatus(taskId: string, config = getKuaiziConf
       providerRaw: data,
     };
   } catch (error) {
-    if (error instanceof DOMException && error.name === 'AbortError') throw new Error('连接超时，请检查网络或稍后重试');
+    if (error instanceof DOMException && error.name === 'AbortError') {
+      const message = '连接超时，请检查网络或稍后重试';
+      recordKuaiziError({ operation: 'poll_job', message });
+      throw new Error(message);
+    }
     throw error;
   }
 }

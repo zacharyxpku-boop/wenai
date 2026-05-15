@@ -20,7 +20,7 @@ type DeliverableKind = 'pack' | 'report' | 'brief' | 'followup';
 const DELIVERABLE_LABELS: Record<DeliverableKind, string> = {
   pack: '完整交付包',
   report: '老板验收摘要',
-  brief: '内部执行 Brief',
+  brief: '内部执行说明',
   followup: '客户跟进话术',
 };
 
@@ -399,7 +399,7 @@ export default function StandardPackWorkspace({ compact = false }: { compact?: b
             <div className="mt-4">
               <div className="flex items-center justify-between gap-3 mb-2 flex-wrap">
                 <div className="flex items-center gap-2 flex-wrap">
-                  <div className="text-[10px] font-mono text-text-tertiary uppercase tracking-wider">Ready-to-use Markdown</div>
+            <div className="text-[10px] font-mono text-text-tertiary">可直接复制的交付内容</div>
                   <select
                     value={deliverableKind}
                     onChange={e => setDeliverableKind(e.target.value as DeliverableKind)}

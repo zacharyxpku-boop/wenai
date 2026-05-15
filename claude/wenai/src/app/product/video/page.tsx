@@ -5,9 +5,9 @@ import TopNav from '@/components/marketing/TopNav';
 import MarketingFooter from '@/components/marketing/MarketingFooter';
 
 export const metadata: Metadata = {
-  title: 'Short-form video briefs | wenai',
+  title: '短视频 Brief | wenai',
   description:
-    'Convert ecommerce SKU benefits and benchmarks into TikTok, Reels, and slideshow briefs for reviewable content testing.',
+    '把电商 SKU 卖点和 benchmark 转成 TikTok、Reels 和轮播 brief，方便内容测试和人工复核。',
 };
 
 export default function VideoPage() {
@@ -25,7 +25,7 @@ export default function VideoPage() {
               </h1>
               <p className="mt-6 whitespace-pre-line text-lg leading-relaxed text-text-secondary">{data.hero.h2}</p>
               <div className="mt-8">
-                <PrimaryButton size="lg" href="/demo">Run demo SKU</PrimaryButton>
+                <PrimaryButton size="lg" href="/demo">运行演示 SKU</PrimaryButton>
               </div>
             </div>
           </Container>
@@ -40,7 +40,7 @@ export default function VideoPage() {
               {data.modes.map((mode, index) => (
                 <div key={mode.title} className="flex flex-col rounded-md border border-border-subtle bg-bg-surface p-6">
                   <div className="mb-5 flex aspect-video items-center justify-center rounded-md border border-border-subtle bg-bg-raised">
-                    <span className="font-mono text-sm text-text-tertiary">Brief 0{index + 1}</span>
+                    <span className="font-mono text-sm text-text-tertiary">方案 0{index + 1}</span>
                   </div>
                   <div className="mb-2 text-lg font-bold text-text-primary">{mode.title}</div>
                   <div className="text-sm leading-relaxed text-text-secondary">{mode.desc}</div>
@@ -54,11 +54,11 @@ export default function VideoPage() {
           <Container>
             <div className="text-center">
               <p className="mb-6 text-lg text-text-secondary">
-                Need the whole launch line: image direction, video brief, listing copy, support script, and recap?
+                想要完整上新链路：图片方向、视频 brief、详情页文案、客服话术和复盘报告？
               </p>
               <div className="flex flex-wrap justify-center gap-3">
                 <PrimaryButton size="lg" href="/pricing">View plans</PrimaryButton>
-                <SecondaryButton size="lg" href="/product/pipeline">Open full pipeline</SecondaryButton>
+              <SecondaryButton size="lg" href="/product/pipeline">打开完整流程</SecondaryButton>
               </div>
             </div>
           </Container>

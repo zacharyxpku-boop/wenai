@@ -94,7 +94,7 @@ function ProductImagePipelineInner() {
     setRunning(true);
     setError('');
     setImages([]);
-    setMockNotice('');
+    setPreviewNotice('');
     try {
       const res = await fetch('/api/image-gen', {
         method: 'POST',
@@ -104,7 +104,7 @@ function ProductImagePipelineInner() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'HTTP ' + res.status);
       setImages(data.images || []);
-      if (data.notice) setMockNotice(data.notice);
+      if (data.notice) setPreviewNotice(data.notice);
     } catch (err) {
       setError(err instanceof Error ? err.message : '未知错误');
     } finally {
@@ -117,7 +117,7 @@ function ProductImagePipelineInner() {
   const [running, setRunning] = useState(false);
   const [images, setImages] = useState<GenImage[]>([]);
   const [error, setError] = useState('');
-  const [mockNotice, setMockNotice] = useState('');
+  const [previewNotice, setPreviewNotice] = useState('');
 
   const scenePresets = category ? getScenePresets(category) : [];
 
@@ -184,7 +184,7 @@ function ProductImagePipelineInner() {
     setRunning(true);
     setError('');
     setImages([]);
-    setMockNotice('');
+    setPreviewNotice('');
 
     try {
       const res = await fetch('/api/image-gen', {
@@ -201,7 +201,7 @@ function ProductImagePipelineInner() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'HTTP ' + res.status);
       setImages(data.images || []);
-      if (data.notice) setMockNotice(data.notice);
+      if (data.notice) setPreviewNotice(data.notice);
     } catch (err) {
       setError(err instanceof Error ? err.message : '未知错误');
     } finally {
@@ -465,8 +465,8 @@ ${images.map((img, i) => `### ${i + 1}. ${img.label}
               已接入阿里通义万相 · 真实 AI 生图
             </div>
             <p className="text-[10px] text-text-secondary leading-relaxed">
-              默认使用 wanx2.1-t2i-turbo 模型，单图 ~6 秒，中文 prompt 原生支持。
-              调用失败会自动回退占位图并降级提示。后续可按需切换 Flux Schnell（<code className="bg-bg-raised px-1">FAL_KEY</code>）或 Replicate（<code className="bg-bg-raised px-1">REPLICATE_API_TOKEN</code>）。
+              默认使用 wanx2.1-t2i-turbo 模型，单图约 6 秒，中文 prompt 原生支持。
+              如外部服务暂时不可用，页面会明确提示并保留生产规格，方便团队继续执行。
             </p>
           </div>
         </div>
@@ -595,10 +595,9 @@ ${images.map((img, i) => `### ${i + 1}. ${img.label}
         </div>
       </div>
 
-      {/* Mock notice */}
-      {mockNotice && images.length > 0 && (
+      {previewNotice && images.length > 0 && (
         <div className="mb-4 p-2.5 border border-border-subtle rounded text-[10px] font-mono text-text-tertiary bg-bg-surface/50">
-          ⓘ {mockNotice}
+          ⓘ {previewNotice}
         </div>
       )}
       {error && (
@@ -670,11 +669,11 @@ ${images.map((img, i) => `### ${i + 1}. ${img.label}
                   <span className={`absolute top-2 right-2 px-1.5 py-0.5 text-[9px] font-mono rounded ${
                     img.provider === 'wanx'
                       ? 'bg-success/20 text-success'
-                      : img.provider === 'mock'
-                      ? 'bg-error/20 text-error'
+                      : img.provider === 'local-preview'
+                      ? 'bg-accent/20 text-accent'
                       : 'bg-accent/20 text-accent'
                   }`}>
-                    {img.provider === 'wanx' ? '通义万相' : img.provider === 'mock' ? 'MOCK' : img.provider.toUpperCase()}
+                    {img.provider === 'wanx' ? '通义万相' : img.provider === 'local-preview' ? '本地预览' : img.provider.toUpperCase()}
                   </span>
                 </div>
                 <div className="p-3">

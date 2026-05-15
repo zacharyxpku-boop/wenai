@@ -68,10 +68,10 @@ const CHECKLIST_TEMPLATES: Record<string, string[]> = {
 
 const EXPORT_PLANS: Record<string, { ratio: string; duration: string; notes: string }> = {
   douyin: { ratio: '9:16 (1080x1920)', duration: '15-60s 最佳', notes: '前3秒决定完播率，标题含关键词' },
-  tiktok: { ratio: '9:16 (1080x1920)', duration: '15-60s optimal', notes: 'Hook in first 2s, use trending sounds' },
+  tiktok: { ratio: '9:16 (1080x1920)', duration: '15-60s 最佳', notes: '前 2 秒必须有钩子，可结合热门声音' },
   kuaishou: { ratio: '9:16 (1080x1920)', duration: '15-57s 最佳', notes: '真实感优先，避免过度包装' },
   xiaohongshu: { ratio: '3:4 / 9:16', duration: '30-90s', notes: '封面图决定点击率，文案详细' },
-  'youtube': { ratio: '9:16 (1080x1920)', duration: '15-60s', notes: 'First 3s hook, add end screen' },
+  'youtube': { ratio: '9:16 (1080x1920)', duration: '15-60s', notes: '前 3 秒放钩子，结尾补结束画面' },
 };
 
 const STORAGE_KEY = 'wenai_video_workspace';
@@ -148,12 +148,12 @@ export default function VideoWorkspace() {
       });
       if (!res.ok) {
         const data = await res.json();
-        throw new Error(data.error || 'Request failed');
+        throw new Error(data.error || '请求失败');
       }
       const data = await res.json();
       setter({ content: data.content || '', loading: false, error: '' });
     } catch (err) {
-      setter(prev => ({ ...prev, loading: false, error: err instanceof Error ? err.message : 'unknown error' }));
+      setter(prev => ({ ...prev, loading: false, error: err instanceof Error ? err.message : '未知错误' }));
     }
   };
 
@@ -190,10 +190,10 @@ export default function VideoWorkspace() {
   };
 
   const sections = [
-    { title: 'Script Generator', subtitle: '视频脚本' },
-    { title: 'Trending Analysis', subtitle: '趋势分析' },
-    { title: 'Editing Checklist', subtitle: '剪辑清单' },
-    { title: 'Export Plan', subtitle: '导出方案' },
+    { title: '视频脚本', subtitle: '生成结构' },
+    { title: '趋势分析', subtitle: '平台格式' },
+    { title: '剪辑清单', subtitle: '交付复核' },
+    { title: '导出方案', subtitle: '平台规格' },
   ];
 
   const completedChecks = checklist.filter(c => c.checked).length;
@@ -204,10 +204,10 @@ export default function VideoWorkspace() {
       <div className="flex items-center justify-between mb-5">
         <div>
           <h2 className="text-base font-semibold text-text-primary font-[family-name:var(--font-outfit)]">
-            视频剪辑助手 &middot; Video Assistant
+            视频内容工作台
           </h2>
           <p className="text-[11px] font-mono text-text-tertiary mt-1">
-            Script, trends, checklist, export — all-in-one video workspace
+            脚本、趋势、剪辑清单和导出规格放在同一处，方便内容团队交接。
           </p>
         </div>
       </div>
@@ -237,7 +237,7 @@ export default function VideoWorkspace() {
           <div className="flex flex-col lg:flex-row gap-4 h-full animate-fade-up">
             <div className="flex-1 flex flex-col min-h-0">
               <div className="flex items-center gap-2 mb-2">
-                <span className="text-[10px] font-mono text-text-tertiary uppercase tracking-widest">Product Info</span>
+                <span className="text-[10px] font-mono text-text-tertiary">商品信息</span>
                 <div className="flex-1 h-px bg-border-subtle" />
               </div>
               <textarea
@@ -248,7 +248,7 @@ export default function VideoWorkspace() {
               />
               <div className="flex items-center justify-between mt-3">
                 <span className="text-[10px] font-mono text-text-tertiary">
-                  {productInfo.length > 0 ? `${productInfo.length} chars` : 'Describe your product'}
+                  {productInfo.length > 0 ? `${productInfo.length} 字` : '描述你的商品'}
                 </span>
                 <button
                   onClick={generateScript}
@@ -261,9 +261,9 @@ export default function VideoWorkspace() {
                         <circle cx="8" cy="8" r="6" stroke="currentColor" strokeWidth="2" opacity="0.3"/>
                         <path d="M14 8a6 6 0 00-6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
                       </svg>
-                      Generating...
+                      生成中...
                     </span>
-                  ) : 'Generate Script'}
+                  ) : '生成脚本'}
                 </button>
               </div>
             </div>
@@ -276,7 +276,7 @@ export default function VideoWorkspace() {
 
             <div className="flex-1 flex flex-col min-h-0">
               <div className="flex items-center gap-2 mb-2">
-                <span className="text-[10px] font-mono text-text-tertiary uppercase tracking-widest">Script Output</span>
+                <span className="text-[10px] font-mono text-text-tertiary">脚本输出</span>
                 <div className="flex-1 h-px bg-border-subtle" />
               </div>
               <div className="flex-1 min-h-[200px] bg-bg-surface border border-border-subtle rounded-md p-4 overflow-y-auto">
@@ -289,7 +289,7 @@ export default function VideoWorkspace() {
                   <div className="text-[13px] text-text-secondary whitespace-pre-wrap leading-[1.7]">{scriptResult.content}</div>
                 ) : (
                   <div className="flex items-center justify-center h-full">
-                    <p className="text-text-tertiary text-[12px] font-mono">Script will appear here</p>
+                    <p className="text-text-tertiary text-[12px] font-mono">生成后的脚本会显示在这里</p>
                   </div>
                 )}
               </div>
@@ -302,7 +302,7 @@ export default function VideoWorkspace() {
           <div className="flex flex-col lg:flex-row gap-4 h-full animate-fade-up">
             <div className="lg:w-[280px] flex-shrink-0 flex flex-col gap-3">
               <div className="flex items-center gap-2 mb-1">
-                <span className="text-[10px] font-mono text-text-tertiary uppercase tracking-widest">Platform</span>
+                <span className="text-[10px] font-mono text-text-tertiary">平台</span>
                 <div className="flex-1 h-px bg-border-subtle" />
               </div>
               <div className="space-y-1.5">
@@ -331,9 +331,9 @@ export default function VideoWorkspace() {
                       <circle cx="8" cy="8" r="6" stroke="currentColor" strokeWidth="2" opacity="0.3"/>
                       <path d="M14 8a6 6 0 00-6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
                     </svg>
-                    Analyzing...
+                    分析中...
                   </span>
-                ) : 'Analyze Trends'}
+                ) : '分析趋势'}
               </button>
             </div>
 
@@ -345,7 +345,7 @@ export default function VideoWorkspace() {
 
             <div className="flex-1 flex flex-col min-h-0">
               <div className="flex items-center gap-2 mb-2">
-                <span className="text-[10px] font-mono text-text-tertiary uppercase tracking-widest">Trend Report</span>
+                <span className="text-[10px] font-mono text-text-tertiary">趋势报告</span>
                 <div className="flex-1 h-px bg-border-subtle" />
               </div>
               <div className="flex-1 min-h-[200px] bg-bg-surface border border-border-subtle rounded-md p-4 overflow-y-auto">
@@ -358,7 +358,7 @@ export default function VideoWorkspace() {
                   <div className="text-[13px] text-text-secondary whitespace-pre-wrap leading-[1.7]">{trendResult.content}</div>
                 ) : (
                   <div className="flex items-center justify-center h-full">
-                    <p className="text-text-tertiary text-[12px] font-mono">Select a platform and analyze trends</p>
+                    <p className="text-text-tertiary text-[12px] font-mono">选择平台后生成趋势分析</p>
                   </div>
                 )}
               </div>
@@ -370,7 +370,7 @@ export default function VideoWorkspace() {
         {activeSection === 2 && (
           <div className="animate-fade-up">
             <div className="flex items-center gap-3 mb-4">
-              <label className="text-[11px] font-mono text-text-tertiary">Video Type</label>
+              <label className="text-[11px] font-mono text-text-tertiary">视频类型</label>
               <select
                 value={videoType}
                 onChange={e => setVideoType(e.target.value)}
@@ -382,7 +382,7 @@ export default function VideoWorkspace() {
               </select>
               <div className="flex-1" />
               <span className="text-[10px] font-mono text-text-tertiary">
-                {completedChecks}/{checklist.length} completed
+                已完成 {completedChecks}/{checklist.length}
               </span>
             </div>
 
@@ -431,7 +431,7 @@ export default function VideoWorkspace() {
         {activeSection === 3 && (
           <div className="animate-fade-up">
             <div className="flex items-center gap-2 mb-4">
-              <span className="text-[10px] font-mono text-text-tertiary uppercase tracking-widest">Target Platforms</span>
+              <span className="text-[10px] font-mono text-text-tertiary">目标平台</span>
               <div className="flex-1 h-px bg-border-subtle" />
             </div>
 
@@ -466,15 +466,15 @@ export default function VideoWorkspace() {
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                       <div>
-                        <span className="text-[10px] font-mono text-text-tertiary uppercase tracking-wider block mb-1">Aspect Ratio</span>
+                        <span className="text-[10px] font-mono text-text-tertiary block mb-1">画幅比例</span>
                         <span className="text-[12px] text-text-secondary font-mono">{plan.ratio}</span>
                       </div>
                       <div>
-                        <span className="text-[10px] font-mono text-text-tertiary uppercase tracking-wider block mb-1">Duration</span>
+                        <span className="text-[10px] font-mono text-text-tertiary block mb-1">建议时长</span>
                         <span className="text-[12px] text-text-secondary font-mono">{plan.duration}</span>
                       </div>
                       <div>
-                        <span className="text-[10px] font-mono text-text-tertiary uppercase tracking-wider block mb-1">Notes</span>
+                        <span className="text-[10px] font-mono text-text-tertiary block mb-1">注意事项</span>
                         <span className="text-[12px] text-text-secondary">{plan.notes}</span>
                       </div>
                     </div>
@@ -484,7 +484,7 @@ export default function VideoWorkspace() {
 
               {selectedPlatforms.length === 0 && (
                 <div className="text-center py-12">
-                  <p className="text-text-tertiary text-[12px] font-mono">Select platforms above to see export requirements</p>
+                  <p className="text-text-tertiary text-[12px] font-mono">选择平台后查看导出要求</p>
                 </div>
               )}
             </div>

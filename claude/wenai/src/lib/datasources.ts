@@ -42,7 +42,7 @@ function notConfiguredResult(sourceName: string): DataSourceResult {
   };
 }
 
-function mockResult(sourceName: string, payload: Record<string, unknown>): DataSourceResult {
+function apiResult(sourceName: string, payload: Record<string, unknown>): DataSourceResult {
   return {
     source: sourceName,
     data: payload,
@@ -77,7 +77,6 @@ export class DataSourceManager {
         continue;
       }
 
-      // Real API call placeholder - replace with actual implementation
       try {
         const res = await fetch(`${src.baseUrl}/product/search`, {
           method: 'POST',
@@ -87,8 +86,9 @@ export class DataSourceManager {
           },
           body: JSON.stringify({ keyword }),
         });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const data = await res.json();
-        results.push(mockResult(src.name, data));
+        results.push(apiResult(src.name, data));
       } catch {
         results.push({
           source: src.name,
@@ -117,8 +117,9 @@ export class DataSourceManager {
           },
           body: JSON.stringify({ url }),
         });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const data = await res.json();
-        return mockResult(src.name, data);
+        return apiResult(src.name, data);
       } catch {
         // fall through to next source
       }
@@ -142,8 +143,9 @@ export class DataSourceManager {
         },
         body: JSON.stringify({ category }),
       });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = await res.json();
-      return mockResult(src.name, data);
+      return apiResult(src.name, data);
     } catch {
       return {
         source: src.name,
