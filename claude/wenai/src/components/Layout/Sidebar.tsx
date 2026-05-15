@@ -11,6 +11,12 @@ function IconGrid() {
 function IconSettings() {
   return <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="2.5" stroke="currentColor" strokeWidth="1.5"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3.05 3.05l1.41 1.41M11.54 11.54l1.41 1.41M3.05 12.95l1.41-1.41M11.54 4.46l1.41-1.41" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/></svg>;
 }
+function IconFile() {
+  return <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 1.5h5l3 3V14a.5.5 0 0 1-.5.5h-7A.5.5 0 0 1 4 14z" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round"/><path d="M9 1.5v3h3M6 8h4M6 10.5h4" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/></svg>;
+}
+function IconUpload() {
+  return <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 10V2.5M5 5.5l3-3 3 3M3 11.5V13a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-1.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/></svg>;
+}
 
 const iconMap: Record<string, () => React.ReactNode> = {
   translate: () => <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><path d="M1 3h8M5 1v2M3 3c0 2.5 1 5 4 7M7 3c0 2 .5 3.5 2 5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/><path d="M8 14l2.5-6L13 14M9 12h3" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round"/></svg>,
@@ -44,13 +50,6 @@ interface SidebarProps {
   clientName: string;
   userRole?: string;
 }
-
-const catColors: Record<string, string> = {
-  execute: 'bg-cat-execute',
-  content: 'bg-cat-content',
-  intel: 'bg-cat-intel',
-  service: 'bg-cat-service',
-};
 
 export default function Sidebar({ modules, categories, clientName, userRole }: SidebarProps) {
   const pathname = usePathname();
@@ -104,7 +103,7 @@ export default function Sidebar({ modules, categories, clientName, userRole }: S
               Wenai
             </h1>
             <p className="text-[8px] font-mono text-text-tertiary tracking-[0.14em] uppercase">
-              AI员工系统
+              CONTENT DECISION OS
             </p>
           </div>
         </div>
@@ -122,11 +121,10 @@ export default function Sidebar({ modules, categories, clientName, userRole }: S
         </div>
       </div>
 
-      {/* Dashboard link */}
       <Link
-        href="/"
+        href="/dashboard"
         className={`mx-3.5 mt-4 flex items-center gap-2.5 px-3 py-2.5 rounded-md text-[12px] transition-all duration-200 ${
-          pathname === '/'
+          pathname === '/dashboard'
             ? 'bg-accent text-bg-root border border-accent shadow-[0_2px_8px_rgba(200,151,90,0.3)] font-semibold'
             : 'text-text-secondary hover:text-text-primary hover:bg-bg-hover border border-transparent hover:border-border-subtle'
         }`}
@@ -139,82 +137,29 @@ export default function Sidebar({ modules, categories, clientName, userRole }: S
       <div className="mx-3.5 mt-2 px-3 py-1.5 rounded-md border border-dashed border-border-subtle text-[10px] font-mono text-text-tertiary space-y-1">
         <div className="flex items-center gap-2">
           <kbd className="text-[9px] px-1 py-0.5 border border-border-default rounded bg-bg-surface text-text-secondary font-mono">⌘K</kbd>
-          <span>跨 SKU/模块 跳转</span>
+          <span>打开核心动作</span>
         </div>
         <div className="flex items-center gap-2">
           <kbd className="text-[9px] px-1 py-0.5 border border-border-default rounded bg-bg-surface text-text-secondary font-mono">?</kbd>
-          <span>看全部快捷键</span>
+          <span>查看快捷键</span>
         </div>
       </div>
 
-      {/* 我的 · Dashboard / SKU 库 / 信号 / 省钱 / 设置 */}
-      <div className="mx-3.5 mt-3 space-y-0.5">
-        <a
-          href="/me"
-          className="flex items-center gap-2 px-2.5 py-1.5 rounded text-[12px] font-mono text-accent hover:bg-bg-surface transition-colors"
-        >
-          <span>🏠</span>
-          <span className="font-semibold">总览</span>
-        </a>
-        <a
-          href="/me/skus"
-          className="flex items-center gap-2 px-2.5 py-1.5 rounded text-[12px] font-mono text-text-secondary hover:text-accent hover:bg-bg-surface transition-colors"
-        >
-          <span>📦</span>
-          <span>SKU 库</span>
-        </a>
-        <a
-          href="/me/alerts"
-          className="flex items-center gap-2 px-2.5 py-1.5 rounded text-[12px] font-mono text-text-secondary hover:text-accent hover:bg-bg-surface transition-colors"
-        >
-          <span>🔔</span>
-          <span>信号</span>
-        </a>
-        <a
-          href="/me/savings"
-          className="flex items-center gap-2 px-2.5 py-1.5 rounded text-[12px] font-mono text-text-secondary hover:text-accent hover:bg-bg-surface transition-colors"
-        >
-          <span>💰</span>
-          <span>省钱</span>
-        </a>
-        <a
-          href="/me/settings"
-          className="flex items-center gap-2 px-2.5 py-1.5 rounded text-[12px] font-mono text-text-secondary hover:text-accent hover:bg-bg-surface transition-colors"
-        >
-          <span>⚙️</span>
-          <span>设置</span>
-        </a>
-        <a
-          href="/tools"
-          className="flex items-center gap-2 px-2.5 py-1.5 rounded text-[12px] font-mono text-text-secondary hover:text-accent hover:bg-bg-surface transition-colors"
-        >
-          <span>🧰</span>
-          <span>免费工具</span>
-          <span className="text-[8px] font-mono text-accent border border-accent/40 px-1 rounded">FREE</span>
-        </a>
-      </div>
-
-      {/* Pipeline 导航区 · 首屏焦点 */}
+      {/* 核心闭环入口 */}
       <div className="mx-3.5 mt-2 pb-3 border-b border-border-subtle">
         <div className="flex items-center gap-2 px-2.5 mb-2">
           <div className="w-1.5 h-1.5 rounded-full bg-accent shadow-[0_0_4px_currentColor]" />
-          <p className="label-mono text-[9px] font-semibold text-accent">PIPELINES</p>
+          <p className="label-mono text-[9px] font-semibold text-accent">CORE WORKFLOW</p>
           <div className="flex-1 h-px bg-accent/20" />
-          <span className="text-[7px] font-mono text-accent/60">11</span>
+          <span className="text-[7px] font-mono text-accent/60">5</span>
         </div>
         <div className="space-y-1">
           {[
-            { href: '/pipelines/batch-launch', label: '🏭 多 SKU 批量上架', badge: '★', tone: 'HOT' },
-            { href: '/pipelines/product-discovery', label: 'AI 选品发现', badge: '🎯', tone: 'NEW' },
-            { href: '/pipelines/ai-photoshoot', label: 'AI 影棚 (8 模式)', badge: '★', tone: 'HOT' },
-            { href: '/pipelines/ai-video', label: 'AI 视频 (i2v)', badge: '🎬', tone: 'NEW' },
-            { href: '/pipelines/ab-test', label: '测款 A-B', badge: '⚗️', tone: 'NEW' },
-            { href: '/pipelines/data-insights', label: '数据洞察', badge: '📊', tone: 'NEW' },
-            { href: '/pipelines/video-teardown', label: '爆款视频拆解', badge: '🔬', tone: 'MOAT' },
-            { href: '/pipelines/intent-mining', label: '反向意图扩客', badge: '◆', tone: 'NEW' },
-            { href: '/pipelines/new-listing', label: '新品上新', badge: '01', tone: '旗舰' },
-            { href: '/pipelines/influencer-outbound', label: '达人冷启', badge: '02', tone: 'LIVE' },
-            { href: '/pipelines/product-image', label: 'AI 主图 (wanx)', badge: '03', tone: 'LIVE' },
+            { href: '/dashboard', label: '实验项目', badge: '01', tone: '开始' },
+            { href: '/factory', label: '导入 CSV', badge: '02', tone: '数据' },
+            { href: '/poc/report', label: '报告模板', badge: '03', tone: '分享' },
+            { href: '/pricing', label: '订阅方案', badge: '04', tone: '权益' },
+            { href: '/settings/kuaizi', label: '生产工具设置', badge: '05', tone: '可选' },
           ].map(p => {
             const active = pathname === p.href;
             return (
@@ -229,41 +174,29 @@ export default function Sidebar({ modules, categories, clientName, userRole }: S
               >
                 <span className="text-[9px] font-mono text-accent/70 tabular-nums w-4">{p.badge}</span>
                 <span className="flex-1 font-[family-name:var(--font-outfit)]">{p.label}</span>
-                <span className={`text-[8px] font-mono uppercase tracking-wider ${
-                  p.tone === 'ALPHA' ? 'text-error/80'
-                  : p.tone === 'NEW' ? 'text-success/80'
-                  : p.tone === 'LIVE' ? 'text-success/80'
-                  : 'text-accent/70'
-                }`}>{p.tone}</span>
+                <span className="text-[8px] font-mono uppercase tracking-wider text-accent/70">{p.tone}</span>
               </Link>
             );
           })}
         </div>
       </div>
 
-      {/* Module navigation · Toolbox 单点工具 */}
+      {/* Module navigation · admin-only legacy access */}
       <nav className="flex-1 overflow-y-auto mt-3 px-3.5 pb-4">
-        <div className="flex items-center gap-2 px-2.5 mb-2">
-          <span className="text-[9px]">🧰</span>
-          <p className="label-mono text-[9px] font-semibold text-text-tertiary">TOOLBOX · 单点工具</p>
-          <div className="flex-1 h-px bg-border-subtle/50" />
-          <span className="text-[7px] font-mono text-text-tertiary/60">{modules.length}</span>
+        <div className="rounded-md border border-border-subtle bg-bg-root/40 p-3 text-[11px] leading-5 text-text-secondary">
+          当前版本聚焦项目、导入、决策、报告和模板复用。更多辅助工具由管理员统一配置后开放。
         </div>
-        {categories.map(cat => {
+        {userRole === 'admin' && categories.map(cat => {
           const catModules = modules.filter(m => m.category === cat.id);
           if (catModules.length === 0) return null;
           return (
             <div key={cat.id} className="mt-5 first:mt-3">
-              {/* Category header */}
               <div className="flex items-center gap-2 px-2.5 mb-2">
-                <div className={`w-1.5 h-1.5 rounded-full ${catColors[cat.id] || 'bg-text-tertiary'} shadow-[0_0_4px_currentColor]`} style={{ color: `var(--color-cat-${cat.id})` }} />
-                <p className="label-mono text-[9px] font-semibold">
-                  {cat.label}
-                </p>
+                <div className="w-1.5 h-1.5 rounded-full bg-text-tertiary" />
+                <p className="label-mono text-[9px] font-semibold">{cat.label}</p>
                 <div className="flex-1 h-px bg-border-subtle/50" />
                 <span className="text-[7px] font-mono text-text-tertiary/60 tabular-nums">{catModules.length}</span>
               </div>
-              {/* Module links */}
               <div className="space-y-0.5">
                 {catModules.map(mod => {
                   const isActive = pathname === `/modules/${mod.id}`;
@@ -279,12 +212,9 @@ export default function Sidebar({ modules, categories, clientName, userRole }: S
                       }`}
                     >
                       <span className={`w-4 flex-shrink-0 transition-all ${isActive ? 'opacity-100' : 'opacity-70 group-hover:opacity-100'}`}>
-                        {IconFn ? IconFn() : null}
+                        {IconFn ? IconFn() : <IconFile />}
                       </span>
                       <span className="truncate font-[family-name:var(--font-outfit)] font-medium">{mod.name}</span>
-                      {isActive && (
-                        <div className="ml-auto w-1 h-1 rounded-full bg-accent animate-pulse-dot" />
-                      )}
                     </Link>
                   );
                 })}
@@ -309,7 +239,7 @@ export default function Sidebar({ modules, categories, clientName, userRole }: S
           }`}>
             <div className="flex items-center justify-between mb-1">
               <span className="text-[9px] font-mono text-text-tertiary uppercase tracking-wider">
-                {me.tier === 'team' ? 'POC' : me.tier === 'enterprise' ? 'Ent' : 'Beta'}
+                {me.tier === 'team' ? '试跑' : me.tier === 'enterprise' ? '企业' : '内测'}
               </span>
               <span className={`text-[10px] font-mono tabular-nums font-semibold ${
                 me.daysLeft < 0 ? 'text-error'
@@ -345,9 +275,9 @@ export default function Sidebar({ modules, categories, clientName, userRole }: S
               : 'text-text-tertiary hover:text-accent border border-transparent hover:border-accent/20 hover:bg-accent/5'
           }`}
         >
-          <span className="text-[12px]">💎</span>
-          <span className="font-[family-name:var(--font-outfit)] font-semibold">接入</span>
-          <span className="ml-auto text-[9px] font-mono opacity-60">POC / Enterprise</span>
+          <span className="w-3 h-3 rounded-sm border border-accent/60 bg-accent/15" aria-hidden="true" />
+          <span className="font-[family-name:var(--font-outfit)] font-semibold">定价</span>
+          <span className="ml-auto text-[9px] font-mono opacity-60">Free / Starter</span>
         </Link>
       </div>
 
@@ -371,6 +301,13 @@ export default function Sidebar({ modules, categories, clientName, userRole }: S
             )}
           </Link>
         )}
+        <Link
+          href="/factory"
+          className="mt-2 flex items-center gap-2.5 px-3 py-2.5 rounded-md text-[12px] transition-all duration-200 text-text-secondary hover:text-text-primary hover:bg-bg-hover border border-transparent hover:border-border-subtle"
+        >
+          <span className="w-4 flex-shrink-0 opacity-70"><IconUpload /></span>
+          <span className="font-[family-name:var(--font-outfit)] font-semibold">导入 CSV</span>
+        </Link>
         {/* Role badge */}
         {userRole && (
           <div className="flex items-center gap-2 px-3 mt-2">

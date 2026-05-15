@@ -7,17 +7,17 @@ const STORAGE_KEY = 'wenai_onboarding_v1_dismissed';
 const STEPS = [
   {
     title: '第一次到 wenai?',
-    body: '3 条 Pipeline 吃掉代运营日均重复劳动。新品上新 / 达人冷启 / AI 主图。',
+    body: '先从一条真实 SKU 开始：上新资料、主图、达人触达和验收报告可以连着跑。',
     cta: '下一步',
   },
   {
-    title: '15 秒看 AI 自己跑',
-    body: '点首页 Hero 卡下的 "⚡ 15 秒 demo" 按钮,零输入直接看 3 路并行出。比看视频还快。',
+    title: '15 秒看它自己跑',
+    body: '点首页的“看演示”按钮，零输入看一条收纳盒 SKU 如何生成上新交付包。',
     cta: '下一步',
   },
   {
     title: '跑完试试分享',
-    body: '结果页底部有 🔗 分享按钮, 7 天有效公开链接发老板. 不加好友,不注册,打开直接看.',
+    body: '结果页可以生成老板版链接，7 天有效。不加好友、不注册，打开就能看交付结果。',
     cta: '知道了',
   },
 ];
@@ -60,7 +60,7 @@ export default function OnboardingTour() {
         <div className="flex items-start justify-between mb-2">
           <div className="flex items-center gap-2">
             <span className="text-[9px] font-mono text-accent uppercase tracking-wider">
-              GUIDE · {step + 1} / {STEPS.length}
+              新手引导 · {step + 1} / {STEPS.length}
             </span>
           </div>
           <button

@@ -7,9 +7,9 @@ import { useRouter } from 'next/navigation';
  * 全局命令面板 · ⌘K / Ctrl+K 唤起
  *
  * 三类候选:
- *   1. SKU 名 → 跳 /me/skus/[id]
- *   2. 模块 → 跳 /pipelines/X
- *   3. /me 子页 → 跳 /me/...
+ *   1. 核心工作台入口
+ *   2. 报告与定价入口
+ *   3. 管理员可见的 SKU 入口
  *
  * 实现要点:
  *   - keydown 捕获 cmd/ctrl+k 阻止默认浏览器搜索
@@ -28,32 +28,18 @@ interface SkuLite {
 
 interface Item {
   id: string;
-  type: 'sku' | 'pipeline' | 'me';
+  type: 'sku' | 'core' | 'settings';
   label: string;
   hint?: string;
   href: string;
 }
 
-const PIPELINES: Item[] = [
-  { id: 'p-discovery', type: 'pipeline', label: '🎯 选品发现', hint: 'AI 推 5-8 候选 SKU', href: '/pipelines/product-discovery' },
-  { id: 'p-photoshoot', type: 'pipeline', label: '🎬 AI 影棚', hint: '8 模式生图', href: '/pipelines/ai-photoshoot' },
-  { id: 'p-video', type: 'pipeline', label: '🎞️ AI 视频', hint: '一图变 5s 短片', href: '/pipelines/ai-video' },
-  { id: 'p-teardown', type: 'pipeline', label: '🔬 爆款拆解', hint: 'TikTok 出分镜', href: '/pipelines/video-teardown' },
-  { id: 'p-abtest', type: 'pipeline', label: '⚗️ 测款 A-B', hint: '9 张测点击率', href: '/pipelines/ab-test' },
-  { id: 'p-data', type: 'pipeline', label: '📊 数据洞察', hint: '诊断 + 行动', href: '/pipelines/data-insights' },
-  { id: 'p-customer', type: 'pipeline', label: '🤝 销售转化客服', hint: '三版回复推单', href: '/pipelines/customer-service' },
-  { id: 'p-batch', type: 'pipeline', label: '🏭 批量上架', hint: '50 SKU 一键', href: '/pipelines/batch-launch' },
-  { id: 'p-intent', type: 'pipeline', label: '🔍 反向意图', hint: '挖非显然客群', href: '/pipelines/intent-mining' },
-  { id: 'p-listing', type: 'pipeline', label: '📋 上新流水线', hint: '翻译/文案/合规', href: '/pipelines/new-listing' },
-];
-
-const ME_PAGES: Item[] = [
-  { id: 'me-dash', type: 'me', label: '🏠 总览', hint: '/me dashboard', href: '/me' },
-  { id: 'me-skus', type: 'me', label: '📦 SKU 库', hint: '管理 SKU + 批量', href: '/me/skus' },
-  { id: 'me-alerts', type: 'me', label: '🔔 信号', hint: '盲点 + 复评提醒', href: '/me/alerts' },
-  { id: 'me-savings', type: 'me', label: '💰 省钱', hint: '战利品 + CSV 导出', href: '/me/savings' },
-  { id: 'me-settings', type: 'me', label: '⚙️ 设置', hint: '邮件 push + 行业', href: '/me/settings' },
-  { id: 'me-bench', type: 'me', label: '📊 行业基线', hint: '公开 benchmark', href: '/benchmark' },
+const CORE_ACTIONS: Item[] = [
+  { id: 'dashboard', type: 'core', label: '实验项目', hint: '创建项目或从行业模板开始', href: '/dashboard' },
+  { id: 'factory', type: 'core', label: '导入 CSV', hint: '上传 TikTok、Amazon、Shopify、Meta 或 Google 数据', href: '/factory' },
+  { id: 'report', type: 'core', label: '报告模板', hint: '查看脱敏报告和复制模板链路', href: '/poc/report' },
+  { id: 'pricing', type: 'core', label: '定价', hint: '查看 Free、Starter、Growth 权益', href: '/pricing' },
+  { id: 'kuaizi', type: 'settings', label: '生产工具设置', hint: '配置外部生产工具后推送 Brief', href: '/settings/kuaizi' },
 ];
 
 export function CommandPalette() {
@@ -64,13 +50,23 @@ export function CommandPalette() {
   const [activeIdx, setActiveIdx] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
 
+  const openPalette = () => {
+    setQ('');
+    setActiveIdx(0);
+    setOpen(true);
+  };
+
   // 全局快捷键
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       const isMeta = (e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k';
       if (isMeta) {
         e.preventDefault();
-        setOpen(prev => !prev);
+        if (open) {
+          setOpen(false);
+        } else {
+          openPalette();
+        }
       } else if (e.key === 'Escape' && open) {
         setOpen(false);
       }
@@ -82,8 +78,6 @@ export function CommandPalette() {
   // 打开时拉 SKU + 聚焦
   useEffect(() => {
     if (!open) return;
-    setQ('');
-    setActiveIdx(0);
     setTimeout(() => inputRef.current?.focus(), 30);
     if (skus.length === 0) {
       fetch('/api/user/sku-history?limit=200')
@@ -101,7 +95,7 @@ export function CommandPalette() {
       hint: [s.category, s.status].filter(Boolean).join(' · '),
       href: `/me/skus/${s.id}`,
     }));
-    return [...skuItems, ...PIPELINES, ...ME_PAGES];
+    return [...CORE_ACTIONS, ...skuItems];
   }, [skus]);
 
   const filtered = useMemo(() => {
@@ -150,14 +144,14 @@ export function CommandPalette() {
             value={q}
             onChange={e => { setQ(e.target.value); setActiveIdx(0); }}
             onKeyDown={onKey}
-            placeholder="搜 SKU / 跳模块 / 进 /me 子页 ..."
+            placeholder="搜索核心动作：导入 CSV / 报告 / 定价 / 生产工具设置"
             className="w-full bg-transparent text-[14px] text-text-primary placeholder-text-tertiary outline-none font-mono"
           />
         </div>
         <div className="max-h-[400px] overflow-y-auto">
           {filtered.length === 0 ? (
             <div className="p-8 text-center text-[12px] font-mono text-text-tertiary">
-              没匹配 · 试试 SKU 名 / 模块名 / "省钱" / "信号"
+              没有匹配项 · 试试“导入”“报告”“定价”或“生产工具”
             </div>
           ) : (
             filtered.map((it, i) => (
@@ -183,7 +177,7 @@ export function CommandPalette() {
           )}
         </div>
         <div className="px-4 py-2 border-t border-border-subtle text-[10px] font-mono text-text-tertiary flex items-center justify-between">
-          <span>↑↓ 选 · Enter 跳 · Esc 关</span>
+          <span>↑↓ 选择 · Enter 打开 · Esc 关闭</span>
           <span>{filtered.length} / {items.length} 项</span>
         </div>
       </div>

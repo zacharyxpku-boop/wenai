@@ -10,9 +10,9 @@
 import Link from 'next/link';
 
 const ITEMS = [
-  { href: '/tools/hook-score',       icon: '🎯', label: 'Hook 打分' },
-  { href: '/tools/aigc-compliance',  icon: '🛡️', label: 'AIGC 合规' },
-  { href: '/me/inventory',           icon: '📦', label: '库存监控' },
+  { href: '/dashboard', icon: 'W', label: '项目' },
+  { href: '/factory', icon: 'CSV', label: '导入' },
+  { href: '/pricing', icon: '$', label: '定价' },
 ];
 
 export function MobileToolsBar() {
@@ -29,7 +29,7 @@ export function MobileToolsBar() {
             href={item.href}
             className="flex-1 flex flex-col items-center justify-center py-2 text-text-secondary active:bg-accent/10"
           >
-            <span className="text-[16px] leading-none mb-0.5">{item.icon}</span>
+            <span className="text-[10px] leading-none mb-0.5 font-mono font-semibold text-accent">{item.icon}</span>
             <span className="text-[9px] font-mono">{item.label}</span>
           </Link>
         ))}

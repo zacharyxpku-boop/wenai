@@ -5,11 +5,7 @@ import { useEffect, useState } from 'react';
 /**
  * 全局键盘快捷键帮助 · ? 键唤起
  *
- * 文档当前所有快捷键, 同时训练新用户:
- *   ⌘K / Ctrl+K  全局命令面板
- *   ?            打开本帮助 (再按一次关)
- *   Esc          关闭弹层
- *   j / k        SKU 详情页跳下/上 (vim 风格)
+ * 文档当前商用主路径快捷键。
  *
  * 做帮助而不是 onboarding tour: 商家想看时按 ?, 不打扰主流程
  */
@@ -21,17 +17,12 @@ interface Shortcut {
 }
 
 const SHORTCUTS: Shortcut[] = [
-  { keys: ['⌘', 'K'], desc: '打开命令面板 · 跨 SKU/模块/me 子页跳转', scope: '全局' },
+  { keys: ['⌘', 'K'], desc: '打开命令面板 · 进入导入、报告、定价和生产设置', scope: '全局' },
   { keys: ['Ctrl', 'K'], desc: '同上 (Windows/Linux)', scope: '全局' },
   { keys: ['?'], desc: '打开/关闭本帮助', scope: '全局' },
   { keys: ['Esc'], desc: '关闭命令面板 / 帮助 / 弹层', scope: '全局' },
-  { keys: ['j'], desc: '下一个 SKU (vim 风格)', scope: 'SKU 详情页' },
-  { keys: ['k'], desc: '上一个 SKU', scope: 'SKU 详情页' },
-  { keys: ['/'], desc: '聚焦关键字搜索框', scope: 'SKU 库' },
-  { keys: ['j'], desc: '高亮下一行 (在过滤结果内)', scope: 'SKU 库' },
-  { keys: ['k'], desc: '高亮上一行', scope: 'SKU 库' },
-  { keys: ['Enter'], desc: '进激活行的 SKU 详情', scope: 'SKU 库' },
-  { keys: ['x'], desc: '勾选/取消勾选激活行 (批量操作用)', scope: 'SKU 库' },
+  { keys: ['Enter'], desc: '打开命令面板中当前高亮的核心动作', scope: '命令面板' },
+  { keys: ['↑', '↓'], desc: '切换命令面板候选项', scope: '命令面板' },
 ];
 
 export function KeyboardShortcutsHelp() {
@@ -79,7 +70,7 @@ export function KeyboardShortcutsHelp() {
               KEYBOARD SHORTCUTS
             </div>
             <h3 className="text-[15px] font-bold text-text-primary mt-0.5">
-              ⌨️ 键盘快捷键
+              键盘快捷键
             </h3>
           </div>
           <button
@@ -116,7 +107,7 @@ export function KeyboardShortcutsHelp() {
           ))}
         </div>
         <div className="px-5 py-2.5 border-t border-border-subtle text-[10px] font-mono text-text-tertiary">
-          快捷键持续添加中 · 按 <kbd className="px-1 py-0.5 border border-border-default rounded bg-bg-root">Esc</kbd> 关闭本帮助
+          按 <kbd className="px-1 py-0.5 border border-border-default rounded bg-bg-root">Esc</kbd> 关闭本帮助
         </div>
       </div>
     </div>
