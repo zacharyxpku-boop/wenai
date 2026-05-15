@@ -13,13 +13,13 @@ export function TrustWall() {
     <Section spacing="tight">
       <Container>
         {/* 顶部居中小标题 */}
-        <div className="text-center mb-8">
-          <p className="text-sm text-text-tertiary">{trust.headline}</p>
+        <div className="mb-8 text-center">
+          <p className="mx-auto max-w-2xl text-sm leading-relaxed text-text-tertiary">{trust.headline}</p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4 mb-12">
-          <TrustNote label="定位" value="SKU 上新子站" />
-          <TrustNote label="用途" value="演示工作流 / 承接线索" />
+          <TrustNote label="定位" value="SKU 试跑子站" />
+          <TrustNote label="用途" value="演示流程 / 承接线索" />
           <TrustNote label="收费" value="主站合同和支付" />
         </div>
 

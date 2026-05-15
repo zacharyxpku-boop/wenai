@@ -3,7 +3,7 @@
 import { FormEvent, useState } from 'react';
 import Link from 'next/link';
 
-const INTENT_KEY = 'wenai_pricing_intents_v1';
+const INTENT_KEY = 'wenai_early_bird_emails';
 
 type Plan = {
   name: 'Free' | 'Starter' | 'Growth';
@@ -38,7 +38,7 @@ const plans: Plan[] = [
 function saveIntent(plan: string, email: string) {
   if (typeof window === 'undefined') return;
   const current = JSON.parse(window.localStorage.getItem(INTENT_KEY) || '[]') as Array<Record<string, string>>;
-  current.push({ plan, email, createdAt: new Date().toISOString() });
+  current.push({ tier: plan, email, source: 'pricing', createdAt: new Date().toISOString() });
   window.localStorage.setItem(INTENT_KEY, JSON.stringify(current.slice(-100)));
 }
 

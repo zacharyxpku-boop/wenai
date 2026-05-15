@@ -65,7 +65,7 @@ export function PrimaryButton({
   return (
     <a
       href={href}
-      className={`inline-flex items-center gap-2 ${sz} font-semibold rounded-md bg-accent text-bg-root hover:bg-accent-hover transition-colors ${className}`}
+      className={`inline-flex min-w-0 items-center justify-center gap-2 text-center ${sz} font-semibold rounded-md bg-accent text-bg-root hover:bg-accent-hover transition-colors ${className}`}
     >
       {children}
     </a>
@@ -90,7 +90,7 @@ export function SecondaryButton({
   return (
     <a
       href={href}
-      className={`inline-flex items-center gap-2 ${sz} font-semibold rounded-md border border-border-default text-text-primary hover:border-accent hover:text-accent transition-colors ${className}`}
+      className={`inline-flex min-w-0 items-center justify-center gap-2 text-center ${sz} font-semibold rounded-md border border-border-default text-text-primary hover:border-accent hover:text-accent transition-colors ${className}`}
     >
       {children}
     </a>

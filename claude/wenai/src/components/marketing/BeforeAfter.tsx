@@ -25,10 +25,10 @@ export function BeforeAfter() {
                 </p>
 
                 <ImageBlock
-                  label="wenai direction"
+                  label="wenai 方向"
                   src={`/seed/after-${slug}.jpg`}
-                  alt={`${item.industry} wenai direction`}
-                  fallback={`${item.industry} AI direction`}
+                  alt={`${item.industry} wenai 方向`}
+                  fallback={`${item.industry} 内容方向`}
                   accent
                 />
                 <p className="font-mono text-xs text-text-tertiary tabular-nums">

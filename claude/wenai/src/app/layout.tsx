@@ -20,8 +20,9 @@ export const viewport = {
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://wenai-one.vercel.app'),
-  title: "Wenai · SKU 上新物料包",
-  description: "输入 SKU 信息, 生成上新 SOP、主图方向、详情页文案、合规提醒、客服话术和复评 checklist。",
+  title: 'Wenai · 电商商业交付系统',
+  description:
+    '从 SKU、类目规则、品牌禁区、内容营销、试跑报告到商务推进, 一条线跑完。',
   manifest: '/manifest.webmanifest',
   applicationName: 'Wenai',
   appleWebApp: {
@@ -33,26 +34,26 @@ export const metadata: Metadata = {
     telephone: false,
   },
   openGraph: {
-    title: "Wenai · SKU 上新物料包",
-    description: "演示 SKU 工作流, 承接 POC 和企业接入需求。",
-    url: "https://wenai-one.vercel.app",
-    siteName: "wenai",
+    title: 'Wenai · 电商商业交付系统',
+    description: '把电商上新、内容营销、验收报告和商务推进压成可交付标准包。',
+    url: 'https://wenai-one.vercel.app',
+    siteName: 'wenai',
     images: [
       {
         url: "/api/og",
         width: 1200,
         height: 630,
-        alt: "wenai · SKU 上新物料包",
+        alt: 'wenai · 电商商业交付系统',
       },
     ],
     locale: "zh_CN",
     type: "website",
   },
   twitter: {
-    card: "summary_large_image",
-    title: "Wenai · SKU 上新物料包",
-    description: "演示 SKU 工作流, 承接 POC 和企业接入需求。",
-    images: ["/api/og"],
+    card: 'summary_large_image',
+    title: 'Wenai · 电商商业交付系统',
+    description: '把电商上新、内容营销、验收报告和商务推进压成可交付标准包。',
+    images: ['/api/og'],
   },
 };
 
@@ -91,12 +92,11 @@ export default async function RootLayout({
 }>) {
   const session = await getSessionInfo();
 
-  // 当前路径 · middleware 注入的 x-pathname header
+  // 当前路径由 proxy 注入到 x-pathname header。
   const headersList = await headers();
   const pathname = headersList.get('x-pathname') || '';
 
-  // Marketing 路由: 不挂 dashboard chrome (sidebar / footer / palette / shortcuts / mobile bar)
-  // 各 marketing page.tsx 自己 import TopNav + MarketingFooter 渲染
+  // 公开页面不挂后台导航, 由各自页面负责营销页导航和页脚。
   const isMarketingRoute =
     pathname === '/' ||
     pathname.startsWith('/about') ||
@@ -106,8 +106,7 @@ export default async function RootLayout({
     pathname.startsWith('/resources') ||
     pathname.startsWith('/cases');
 
-  // If no session (not logged in), render without sidebar
-  // Marketing 路由也不挂 chrome (即使已登录访客逛首页, 也走 marketing 版式)
+  // 未登录或访问公开页面时, 不展示后台壳。
   const showChrome = !!session && !isMarketingRoute;
   const tenantConfig = session?.tenant;
   const userRole = session?.role;

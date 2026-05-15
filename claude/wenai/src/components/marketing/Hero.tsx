@@ -46,11 +46,11 @@ export function Hero() {
             </div>
 
             <div className="flex w-full flex-col gap-3 pt-3 sm:w-auto sm:flex-row">
-              <PrimaryButton href="/poc" size="lg" className="w-full sm:w-auto">
-                5 分钟试跑
+              <PrimaryButton href="/dashboard" size="lg" className="w-full sm:w-auto">
+                免费开始第一轮实验
               </PrimaryButton>
-              <SecondaryButton href="/inquire?from=hero" size="lg" className="w-full sm:w-auto">
-                提交 10 SKU
+              <SecondaryButton href="/pricing" size="lg" className="w-full sm:w-auto">
+                查看定价
               </SecondaryButton>
             </div>
           </div>

@@ -1,9 +1,9 @@
 export const PLACEHOLDER = {
-  servedBrands: 'POC 试点团队',
+  servedBrands: '试跑团队',
   totalImages: '10 SKU',
-  totalVideos: '3 套 brief',
+  totalVideos: '3 套内容脚本',
   avgSavings: '人工复核',
-  retention: '可进入 POC',
+  retention: '可进入正式合作',
   cases: [
     {
       slug: 'home-decor',
@@ -11,10 +11,10 @@ export const PLACEHOLDER = {
       brandPlaceholder: '演示 SKU / 收纳架',
       headline: '把混乱 SKU 资料转成上新包：文案、内容方向、风险提示和复盘口径一次生成。',
       metrics: [
-        { label: '输入', from: '零散 SKU 备注', to: '结构化 brief', multiple: '' },
+        { label: '输入', from: '零散 SKU 备注', to: '结构化说明', multiple: '' },
         { label: '输出', from: '空白文档', to: '上新交付包', multiple: '' },
         { label: '验收', from: '凭记忆检查', to: '标准清单', multiple: '' },
-        { label: '推进', from: '演示样例', to: 'POC 决策', multiple: '' },
+        { label: '推进', from: '演示样例', to: '试跑决策', multiple: '' },
       ],
     },
     {
@@ -23,10 +23,10 @@ export const PLACEHOLDER = {
       brandPlaceholder: '演示 SKU / 车载支架',
       headline: '把安装场景、适配风险和客服回复放进同一条 SKU 记录，避免交付割裂。',
       metrics: [
-        { label: '输入', from: '规格表', to: 'SKU brief', multiple: '' },
+        { label: '输入', from: '规格表', to: 'SKU 摘要', multiple: '' },
         { label: '输出', from: '单条文案', to: '上新包', multiple: '' },
         { label: '风险', from: '人工漏查', to: '商标与适配提示', multiple: '' },
-        { label: '推进', from: '演示样例', to: 'POC 决策', multiple: '' },
+        { label: '推进', from: '演示样例', to: '试跑决策', multiple: '' },
       ],
     },
     {
@@ -37,8 +37,8 @@ export const PLACEHOLDER = {
       metrics: [
         { label: '输入', from: '松散卖点', to: '结构化角度', multiple: '' },
         { label: '输出', from: '中文草稿', to: '跨境上新文案', multiple: '' },
-        { label: '测试', from: '拍脑袋', to: '可测 CTR brief', multiple: '' },
-        { label: '推进', from: '演示样例', to: 'POC 决策', multiple: '' },
+        { label: '测试', from: '拍脑袋', to: '可测试内容角度', multiple: '' },
+        { label: '推进', from: '演示样例', to: '试跑决策', multiple: '' },
       ],
     },
   ],
@@ -50,7 +50,7 @@ export const PLACEHOLDER = {
       wenaiCost: '50 元/SKU',
       wenaiDays: '当晚',
       quote: '这个样例展示的是交付形态，不承诺具体业绩。',
-      attribution: 'wenai 内部演示',
+      attribution: 'wenai 样例项目',
     },
     {
       industry: '汽配',
@@ -59,7 +59,7 @@ export const PLACEHOLDER = {
       wenaiCost: '45 元/SKU',
       wenaiDays: '6 小时',
       quote: '价值在于安装语境、适配风险和人工复核边界，而不是只写一段文案。',
-      attribution: 'wenai 内部演示',
+      attribution: 'wenai 样例项目',
     },
     {
       industry: '数码配件',
@@ -68,26 +68,26 @@ export const PLACEHOLDER = {
       wenaiCost: '60 元/SKU',
       wenaiDays: '4 小时',
       quote: '先跑 SKU 上新包，再用真实投放数据进入复盘。',
-      attribution: 'wenai 内部演示',
+      attribution: 'wenai 样例项目',
     },
   ],
   founder: {
     namePlaceholder: '创始人',
     titlePlaceholder: '创始人 / 运营负责人',
     storyPlaceholder:
-      'wenai 面向不需要“又一个 AI 小工具”的电商团队。他们真正需要的是一条可靠的商业交付线：SKU 输入、类目规则、品牌禁区、内容方向、POC 报告和商务跟进。\n\n产品刻意保留人工复核。AI 压缩重复准备工作，运营人员仍然掌控功效宣称、平台风险、品牌语气和最终验收。',
+      'wenai 面向不需要“又一个工具”的电商团队。他们真正需要的是一条可靠的商业交付线：SKU 输入、类目规则、品牌禁区、内容方向、验收报告和商务跟进。\n\n产品刻意保留人工复核。系统压缩重复准备工作，运营人员仍然掌控功效宣称、平台风险、品牌语气和最终验收。',
   },
   team: [
-    { initial: '产', namePlaceholder: '产品负责人', role: 'workflow 与 POC 设计' },
+    { initial: '产', namePlaceholder: '产品负责人', role: '流程与试跑设计' },
     { initial: '工', namePlaceholder: '工程负责人', role: '管线、API 与稳定性' },
-    { initial: '增', namePlaceholder: '增长负责人', role: 'benchmark 与内容营销' },
+    { initial: '增', namePlaceholder: '增长负责人', role: '参考样例与内容营销' },
     { initial: '客', namePlaceholder: '客户成功', role: '交付复盘与使用推进' },
-    { initial: '智', namePlaceholder: 'AI 系统', role: 'SOP、护栏与评分器' },
-    { initial: '运', namePlaceholder: '运营负责人', role: 'CRM、SLA 与交接' },
+    { initial: '智', namePlaceholder: '规则系统', role: '标准流程、护栏与评分器' },
+    { initial: '运', namePlaceholder: '运营负责人', role: '商务推进、响应时限与交接' },
   ],
   testimonials: [
     {
-      quote: '10 SKU POC 让交付边界很清楚，扩更大 workflow 前我们能先看见真实质量。',
+      quote: '10 SKU 试跑让交付边界很清楚，扩更大流程前我们能先看见真实质量。',
       personPlaceholder: '家居品类运营',
       initial: '家',
     },
@@ -107,7 +107,7 @@ export const PLACEHOLDER = {
 export const COPY = {
   brand: {
     name: 'wenai',
-    tagline: '给电商团队的 AI 商业交付系统',
+    tagline: '给电商团队的商业交付系统',
   },
 
   nav: {
@@ -120,24 +120,21 @@ export const COPY = {
     dashboard: '工作台',
     cta: '运行演示',
     productItems: [
-      { label: '5 分钟 POC', desc: '选类目、填 SKU、出标品包、出报告、提交 POC。', href: '/poc' },
-      { label: '批量上新', desc: '把 10 个 SKU 转成可复用的上新交付包。', href: '/pipelines/batch-launch?demo=1' },
-      { label: '内容营销战役', desc: '从 benchmark 到 hook matrix、UGC brief、轮播/Reel brief 和复盘。', href: '/pipelines/marketing-campaign' },
-      { label: '上新 SOP', desc: '翻译、写作、合规检查，并生成标准上新包。', href: '/pipelines/new-listing' },
+      { label: '内容决策工作台', desc: '导入 5 大平台 CSV，生成暂停、放大、继续验证或重做承接建议。', href: '/dashboard' },
+      { label: '生产需求 Brief', desc: '把决策结论转成剪辑师、投手和老板都能执行的文档。', href: '/factory' },
+      { label: '脱敏报告模板', desc: '分享给团队或客户后，对方可复制模板创建自己的工作台。', href: '/poc/report' },
     ],
     resourceItems: [
-      { label: '文档', desc: 'POC 准备、交付规则和运营指南。', href: '/docs' },
-      { label: '视频拆解', desc: '把 TikTok 或 Reels 结构拆成 SKU 可用的内容 brief。', href: '/pipelines/video-teardown' },
-      { label: '合规检查', desc: 'AIGC 披露、商标、人工复核边界。', href: '/tools/aigc-compliance' },
-      { label: '企业版', desc: 'API、ERP、私有工作区和合同交付范围。', href: '/enterprise' },
-      { label: '系统状态', desc: '当前环境和服务健康度。', href: '/status' },
+      { label: '定价', desc: '查看 Free、Starter 和 Growth 的权益边界。', href: '/pricing' },
+      { label: '工作台', desc: '从行业模板开始第一轮内容实验。', href: '/dashboard' },
+      { label: '报告模板', desc: '查看老板和客户能直接读懂的脱敏报告。', href: '/poc/report' },
     ],
   },
 
   trust: {
-    headline: '一个聚焦电商 POC 交付、标品包、老板版报告和商务交接的 AI 子站。',
+    headline: '一个聚焦电商试跑交付、标准包、老板版报告和商务交接的子站。',
     stats: [
-      { label: 'POC 范围', value: PLACEHOLDER.totalImages },
+      { label: '试跑范围', value: PLACEHOLDER.totalImages },
       { label: '交付层数', value: '5' },
       { label: '复盘动作', value: '30 天' },
       { label: '商业状态', value: PLACEHOLDER.retention },
@@ -145,8 +142,8 @@ export const COPY = {
   },
 
   roi: {
-    title: '扩 workflow 前，先估算上新工作差距。',
-    subtitle: '这个计算器对比人工 SKU 准备成本与标准化 AI 辅助交付流程。它是估算，不是营收承诺。',
+    title: '扩正式合作前，先估算上新工作差距。',
+    subtitle: '这个计算器对比人工 SKU 准备成本与标准化辅助交付流程。它是估算，不是营收承诺。',
     inputs: {
       dailySkus: '每日 SKU 数',
       currentCostPerSku: '当前每个 SKU 内容成本（元）',
@@ -157,28 +154,28 @@ export const COPY = {
       monthlySaved: '月度差距估算',
       yearlySaved: '年度差距估算',
     },
-    primaryCta: '提交 POC 询盘',
-    secondaryCta: '运行演示 SKU',
+    primaryCta: '免费开始第一轮实验',
+    secondaryCta: '查看定价',
     wenaiCostPerSku: 50,
   },
 
   pipeline3: {
-    title: '从 SKU 输入到 POC 验收，三步跑通',
+    title: '从 SKU 输入到试跑验收，三步跑通',
     steps: [
       {
         step: '01',
         title: '准备 SKU',
         input: '名称 / 类目 / 卖点 / 平台 / 素材',
-        output: '10 SKU 输入 brief',
+        output: '10 SKU 输入摘要',
         time: '客户准备',
-        link: { label: '打开 POC 清单', href: '/poc' },
+        link: { label: '打开试跑清单', href: '/poc' },
       },
       {
         step: '02',
         title: '生成交付包',
-        input: 'SKU 输入 brief',
+        input: 'SKU 输入摘要',
         output: '图片方向 / 文案 / 合规 / 客服 / 复盘',
-        time: 'POC 交付',
+        time: '试跑交付',
         link: { label: '运行演示流程', href: '/demo' },
       },
       {
@@ -194,8 +191,8 @@ export const COPY = {
   },
 
   beforeAfter: {
-    title: '内部样例包，清楚标注为演示',
-    note: '这些样例展示交付形态和复核边界。真实 POC 获得客户授权后，可替换成正式案例。',
+    title: '样例包展示完整交付形态',
+    note: '这些样例展示输入、决策、报告和下一步动作如何闭环，帮助你判断是否适合自己的团队。',
     moreLink: { label: '查看案例库', href: '/cases' },
   },
 
@@ -206,8 +203,8 @@ export const COPY = {
   },
 
   compliance: {
-    title: 'AI 输出必须有复核边界',
-    subtitle: '平台披露、商标、功效宣称风险、类目限制和人工最终审核会进入 POC 报告。',
+    title: '自动生成内容必须有复核边界',
+    subtitle: '平台披露、商标、功效宣称风险、类目限制和人工最终审核会进入试跑报告。',
     platforms: [
       { name: 'TikTok', color: '#c8975a' },
       { name: 'Instagram', color: '#c8975a' },
@@ -219,24 +216,24 @@ export const COPY = {
     features: [
       { title: '披露提示', desc: '需要考虑 AIGC 标识或平台披露时自动提醒。' },
       { title: '品牌禁区', desc: '发布前始终展示禁用宣称、竞品名称和敏感词。' },
-      { title: '人工复核', desc: '把 AI 建议和最终审批分开，最后一公里由运营人员负责。' },
+      { title: '人工复核', desc: '把系统建议和最终审批分开，最后一公里由运营人员负责。' },
     ],
     cta: '打开合规工具',
     ctaHref: '/tools/aigc-compliance',
   },
 
   pricing: {
-    title: 'POC、团队版和企业落地的商业路径',
-    subtitle: '先用 10 SKU 证明价值，再扩展到 Brand IQ、内容营销、报告和 CRM 推进的可复用交付线。',
+    title: '试跑、团队版和企业落地的商业路径',
+    subtitle: '先用 10 SKU 证明价值，再扩展到品牌规则、内容营销、报告和商务推进的可复用交付线。',
     tiers: [
       {
         id: 'poc',
-        name: 'POC',
+        name: '试跑',
         price: '10 SKU',
         period: '',
         recommended: false,
-        features: ['单类目上新包', 'Brand IQ 与禁区复核', '老板版复盘', '验收评分'],
-        cta: '运行 POC',
+        features: ['单类目上新包', '品牌规则与禁区复核', '老板版复盘', '验收评分'],
+        cta: '运行试跑',
         ctaHref: '/poc',
       },
       {
@@ -245,7 +242,7 @@ export const COPY = {
         price: '标准交付',
         period: '',
         recommended: true,
-        features: ['批量上新 workflow', '内容 benchmark 包', 'CRM 下一动作与 SLA', '可复用标品包'],
+        features: ['批量上新交付流程', '内容参考样例包', '下一动作与响应时限', '可复用标准包'],
         cta: '提交询盘',
         ctaHref: '/inquire',
       },
@@ -267,31 +264,31 @@ export const COPY = {
     items: [
       {
         q: 'wenai 只是文案生成器吗？',
-        a: '不是。它把 SKU 输入、类目规则、品牌禁区、内容营销、POC 报告和 CRM 推进打包成一条商业交付系统。',
+        a: '不是。它把 SKU 输入、类目规则、品牌禁区、内容营销、试跑报告和商务推进打包成一条商业交付系统。',
       },
       {
         q: '客户不培训能跑通吗？',
-        a: 'POC 路径按 5 分钟首跑设计：选类目、填 SKU、生成标品包、查看报告、提交询盘。',
+        a: '试跑路径按 5 分钟首跑设计：选类目、填 SKU、生成标准包、查看报告、提交询盘。',
       },
       {
         q: '付款和正式合同在哪里处理？',
-        a: '这个子站负责产品体验和 POC 推进。正式付款和合同执行可以继续放在主独立站。',
+        a: '这个子站负责产品体验和试跑推进。正式付款和合同执行可以继续放在主独立站。',
       },
       {
         q: '规则能按类目配置吗？',
-        a: '可以。Brand IQ、禁用词、类目验收阈值和复盘备注都设计成可复用的工作区规则。',
+        a: '可以。品牌规则、禁用词、类目验收阈值和复盘备注都设计成可复用的工作区规则。',
       },
     ],
   },
 
   finalCta: {
-    h2: '先跑第一批 10 SKU POC。',
+    h2: '先跑第一批 10 SKU 试跑。',
     subtitle: '给客户一套标准交付包、老板版报告和清晰的下一步商务动作。',
-    primaryCta: '开始 POC',
+    primaryCta: '开始试跑',
     primaryCtaHref: '/poc',
     secondaryCta: '提交询盘',
     secondaryCtaHref: '/inquire',
-    note: '先明确 POC 范围。合同、付款和生产扩容继续进入正式商务流程。',
+    note: '先明确试跑范围。合同、付款和生产扩容继续进入正式商务流程。',
   },
 
   footer: {
@@ -299,28 +296,26 @@ export const COPY = {
       product: {
         title: '产品',
         links: [
-          { label: '5 分钟 POC', href: '/poc' },
-          { label: '批量上新', href: '/pipelines/batch-launch' },
-          { label: '内容营销战役', href: '/pipelines/marketing-campaign' },
-          { label: '标品包', href: '/modules/standard-pack' },
+          { label: '内容决策工作台', href: '/dashboard' },
+          { label: '导入 CSV', href: '/factory' },
+          { label: '报告模板', href: '/poc/report' },
+          { label: '定价', href: '/pricing' },
         ],
       },
       company: {
-        title: '公司',
+        title: '开始使用',
         links: [
-          { label: '关于', href: '/about' },
-          { label: '案例', href: '/cases' },
-          { label: '路线图', href: '/roadmap' },
-          { label: '状态', href: '/status' },
+          { label: '免费开始', href: '/dashboard' },
+          { label: '从行业模板开始', href: '/dashboard' },
+          { label: '查看完整对比', href: '/pricing' },
         ],
       },
       resources: {
         title: '资源',
         links: [
-          { label: '文档', href: '/docs' },
-          { label: '工具', href: '/tools' },
-          { label: 'Benchmark', href: '/benchmark' },
-          { label: '合规', href: '/tools/aigc-compliance' },
+          { label: 'CSV 导入页', href: '/factory' },
+          { label: '公开报告页', href: '/poc/report' },
+          { label: '筷子科技设置', href: '/settings/kuaizi' },
         ],
       },
       legal: {
@@ -329,12 +324,11 @@ export const COPY = {
           { label: '隐私', href: '/privacy' },
           { label: '条款', href: '/terms' },
           { label: '数据处理协议', href: '/legal/dpa' },
-          { label: '企业版', href: '/enterprise' },
         ],
       },
     },
     copyright: 'Copyright 2026 wenai. All rights reserved.',
-    icp: '演示子站 / 合同由主站处理',
+    icp: '内容实验决策工作台',
     socials: [
       { label: '邮箱', initial: '邮' },
       { label: '领英', initial: 'in' },
@@ -351,9 +345,9 @@ export const COPY = {
       careers: '加入建设',
     },
     careers: {
-      desc: '我们正在建设聚焦电商的 AI 操作系统。当前优先级是产品交付、客户 workflow 和商业化就绪。',
+      desc: '我们正在建设聚焦电商的商业交付系统。当前优先级是产品交付、客户流程和商业化就绪。',
       jobs: [
-        { title: '电商 workflow 设计师', location: '远程' },
+        { title: '电商流程设计师', location: '远程' },
         { title: '前端产品工程师', location: '远程' },
         { title: '客户成功运营', location: '远程' },
       ],
@@ -363,7 +357,7 @@ export const COPY = {
 
   productPhotoshoot: {
     hero: {
-      h1: '面向 SKU 上新包的 AI 产品图方向',
+      h1: '面向 SKU 上新包的产品图方向',
       h2: '在扩生产前，先为 SKU 生成场景方向、模特指导和人工复核提示。',
       cta: '运行演示 SKU',
       ctaHref: '/demo',
@@ -380,9 +374,9 @@ export const COPY = {
       { title: '美妆', desc: '质地、流程和宣称安全方向。' },
     ],
     workflow: {
-      title: '产品图方向 workflow',
+      title: '产品图方向流程',
       steps: [
-        { label: 'SKU brief', desc: '从产品名、类目、卖点和限制开始。' },
+        { label: 'SKU 说明', desc: '从产品名、类目、卖点和限制开始。' },
         { label: '场景计划', desc: '生成可执行的视觉方向和 prompt。' },
         { label: '复核', desc: '标出缺素材、风险宣称和最终人工检查项。' },
       ],
@@ -398,19 +392,19 @@ export const COPY = {
       h1: '完整 SKU 上新交付管线',
       h2: '从产品信息到上新文案、内容方向、合规提示、客服话术和复盘。',
     },
-    flow: 'SKU 输入 -> 类目规则 -> Brand IQ -> 上新文案 -> 内容 brief -> 合规检查 -> 老板版报告 -> CRM 下一动作',
+    flow: 'SKU 输入 -> 类目规则 -> 品牌规则 -> 上新文案 -> 内容脚本 -> 合规检查 -> 老板版报告 -> 商务下一动作',
   },
 
   productVideo: {
     hero: {
-      h1: '面向电商 SKU 的短视频 brief',
-      h2: '把 SKU 卖点和 benchmark 样例转成 TikTok、Reels 和轮播 brief，方便运营复核。',
+      h1: '面向电商 SKU 的短视频脚本',
+      h2: '把 SKU 卖点和参考样例转成 TikTok、Reels 和轮播脚本，方便运营复核。',
     },
-    modesTitle: '视频 brief 模式',
+    modesTitle: '视频脚本模式',
     modes: [
-      { title: 'Hook-first Reel', desc: '用痛点、反差或结果开场，再展示产品证据。' },
+      { title: '开场优先短视频', desc: '用痛点、反差或结果开场，再展示产品证据。' },
       { title: '使用场景演示', desc: '用清晰顺序展示产品在真实场景里的使用方式。' },
-      { title: '轮播 brief', desc: '逐帧图片和字幕计划，适合快速内容测试。' },
+      { title: '轮播脚本', desc: '逐帧图片和字幕计划，适合快速内容测试。' },
     ],
   },
 } as const;

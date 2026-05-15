@@ -5,9 +5,9 @@ import { useState } from 'react';
 
 const NAV = [
   { label: '工作台', href: '/dashboard' },
-  { label: '案例', href: '/cases' },
+  { label: '产品', href: '/#flow' },
   { label: '定价', href: '/pricing' },
-  { label: '文档', href: '/docs' },
+  { label: '报告模板', href: '/poc/report' },
 ];
 
 export default function TopNav() {
@@ -38,16 +38,10 @@ export default function TopNav() {
 
           <div className="hidden items-center gap-2 md:flex">
             <Link
-              href="/poc/report"
-              className="px-4 py-2 text-[13px] font-medium text-text-secondary transition-colors hover:text-text-primary"
-            >
-              看报告
-            </Link>
-            <Link
-              href="/inquire?from=top-nav"
+              href="/dashboard"
               className="rounded-md bg-accent px-4 py-2 text-[13px] font-semibold text-bg-root transition-colors hover:bg-accent-hover"
             >
-              免费开始
+              免费开始第一轮实验
             </Link>
           </div>
 
@@ -66,7 +60,7 @@ export default function TopNav() {
       {mobileOpen && (
         <div className="fixed inset-x-0 top-16 z-40 border-b border-border-subtle bg-bg-root md:hidden">
           <div className="space-y-2 px-5 py-5">
-            {[...NAV, { label: '老板版报告', href: '/poc/report' }, { label: '免费开始', href: '/dashboard' }].map(item => (
+            {[...NAV, { label: '免费开始第一轮实验', href: '/dashboard' }].map(item => (
               <Link
                 key={item.href}
                 href={item.href}

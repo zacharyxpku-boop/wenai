@@ -43,7 +43,7 @@ export function CaseCards() {
                 </div>
                 <div>
                   <div className="text-sm font-semibold text-text-primary">{item.industry}</div>
-                  <div className="text-xs text-text-tertiary">匿名试跑样例</div>
+                  <div className="text-xs text-text-tertiary">行业模板样例</div>
                 </div>
               </div>
 
@@ -59,15 +59,15 @@ export function CaseCards() {
                 ))}
               </ul>
 
-              <a href={`/cases/${item.slug}`} className="mt-auto text-sm font-semibold text-accent transition-colors hover:text-accent-hover">
-                查看完整样例
+              <a href="/dashboard" className="mt-auto text-sm font-semibold text-accent transition-colors hover:text-accent-hover">
+                从这个行业开始
               </a>
             </article>
           ))}
         </div>
 
         <div className="mt-12 flex justify-center">
-          <SecondaryButton href="/cases">查看全部交付样例</SecondaryButton>
+          <SecondaryButton href="/dashboard">从行业模板开始</SecondaryButton>
         </div>
       </Container>
     </Section>

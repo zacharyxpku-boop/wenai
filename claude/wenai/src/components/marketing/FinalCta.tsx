@@ -1,18 +1,15 @@
 import { COPY } from '@/i18n/zh';
 import { Container, Section, PrimaryButton, SecondaryButton } from './Container';
 
-/**
- * 末尾 CTA 卡片 · 渐变背景 + 大标题 + 双 CTA
- */
 export function FinalCta() {
   return (
     <Section spacing="loose">
       <Container className="max-w-[900px]">
-        <div className="bg-gradient-to-br from-bg-surface to-bg-raised border border-accent/30 rounded-xl p-10 lg:p-16 text-center">
-          <h2 className="text-4xl md:text-5xl font-bold font-[family-name:var(--font-outfit)] text-text-primary mb-4">
+        <div className="rounded-md border border-accent/30 bg-bg-surface p-8 text-center lg:p-12">
+          <h2 className="mb-4 text-balance text-3xl font-bold font-[family-name:var(--font-outfit)] text-text-primary md:text-5xl">
             {COPY.finalCta.h2}
           </h2>
-          <p className="text-lg text-text-secondary mb-8">
+          <p className="mb-8 text-pretty text-base leading-relaxed text-text-secondary md:text-lg">
             {COPY.finalCta.subtitle}
           </p>
 
