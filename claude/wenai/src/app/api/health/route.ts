@@ -98,7 +98,7 @@ function checkMailer(): Status {
   if (process.env.SENDGRID_API_KEY) {
     return { name: 'Email · SendGrid', status: 'operational', note: 'daily digest 走 SendGrid' };
   }
-  return { name: 'Email · Mailer', status: 'degraded', note: '未配密钥 · 干跑只 console.log' };
+  return { name: 'Email · Mailer', status: 'degraded', note: '未配置邮件服务，通知仅保留在本地流程中' };
 }
 
 function checkCronSecret(): Status {

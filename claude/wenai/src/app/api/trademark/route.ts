@@ -28,7 +28,6 @@ function getTrademarkDB(): Map<string, TrademarkEntry> {
     for (const entry of entries) {
       trademarkDB.set(entry.mark.toUpperCase(), entry);
     }
-    console.log(`[Trademark] Loaded ${trademarkDB.size} entries from expanded database`);
   } catch {
     // Fallback to hardcoded essentials
     const fallback: TrademarkEntry[] = [
@@ -51,7 +50,6 @@ function getTrademarkDB(): Map<string, TrademarkEntry> {
     for (const entry of fallback) {
       trademarkDB.set(entry.mark, entry);
     }
-    console.log(`[Trademark] Using fallback database (${trademarkDB.size} entries)`);
   }
 
   return trademarkDB;

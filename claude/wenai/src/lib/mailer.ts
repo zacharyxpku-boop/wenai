@@ -1,10 +1,10 @@
 /**
- * 极简邮件发送适配 · Resend / SendGrid / 干跑日志 三档自动选
+ * 极简邮件发送适配 · Resend / SendGrid / 本地预检 三档自动选
  *
  * 选择优先级:
  *   1. RESEND_API_KEY 存在 → 走 Resend API (https://resend.com)
  *   2. SENDGRID_API_KEY 存在 → 走 SendGrid API
- *   3. 都没 → console.log (dev 干跑, 不报错)
+ *   3. 都没 → 返回本地预检成功，不发送外部邮件
  *
  * from 默认 'wenai <noreply@wenai-one.vercel.app>',可被 EMAIL_FROM 覆盖
  *
@@ -92,8 +92,6 @@ export async function sendEmail(args: SendArgs): Promise<SendResult> {
     }
   }
 
-  // 3. 干跑 · 仅日志 (避免 dev 环境抛错)
-  console.log('[mailer:dryrun]', { to, subject, htmlLen: html.length });
   return { ok: true, provider: 'log' };
 }
 

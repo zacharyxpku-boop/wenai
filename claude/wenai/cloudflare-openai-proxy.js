@@ -18,7 +18,7 @@
  * 思路来源: clico-clean/cloudflare-gemini-proxy.js · 同款反代模式
  */
 
-export default {
+const openaiProxyWorker = {
   async fetch(request) {
     const url = new URL(request.url);
     // 把 host 换成 OpenAI 上游
@@ -43,3 +43,5 @@ export default {
     });
   },
 };
+
+export default openaiProxyWorker;
