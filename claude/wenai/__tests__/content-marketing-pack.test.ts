@@ -14,8 +14,8 @@ describe('content marketing pack', () => {
 
     expect(pack.platformLabel).toBe('TikTok + Instagram');
     expect(pack.hookMatrix).toHaveLength(4);
-    expect(pack.hookMatrix.map(item => item.angle)).toContain('Problem-first');
-    expect(pack.publishingReport.join(' ')).toContain('ready for teardown');
+    expect(pack.hookMatrix.map(item => item.angle)).toContain('痛点开场');
+    expect(pack.publishingReport.join(' ')).toContain('已提供，可拆解');
     expect(pack.standardPackHref).toContain('/modules/standard-pack?');
     expect(pack.standardPackHref).toContain('workflow=slideshow-batch');
   });
@@ -28,8 +28,8 @@ describe('content marketing pack', () => {
       benchmarkLinks: '',
     });
 
-    expect(pack.publishingReport.join(' ')).toContain('hypothesis only');
+    expect(pack.publishingReport.join(' ')).toContain('只能当作假设');
     expect(pack.redlines).toContain('治疗');
-    expect(pack.markdown).toContain('Benchmark state: missing / hypothesis-only');
+    expect(pack.markdown).toContain('参考状态: 缺失 / 仅可作为假设');
   });
 });
