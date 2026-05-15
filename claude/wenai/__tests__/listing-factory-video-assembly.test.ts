@@ -12,7 +12,7 @@ import {
   evaluateVideoAssemblyQa,
   exportListingFactoryRun,
   importListingFactoryRun,
-  localMockVideoProvider,
+  localProductionSpecProvider,
 } from '@/lib/listing-factory-engine';
 
 const forbiddenWords = ['治疗', '100%', '全网最低', '最后一天', '见效', '爆单', '竞品', '虚假承诺'];
@@ -26,8 +26,8 @@ describe('listing factory video assembly layer', () => {
   it('builds a video assembly job from an edit pack', () => {
     const job = buildVideoAssemblyJob(run, editPack, {
       mode: 'asset_assembly',
-      providerId: 'local-mock-video',
-      fallbackToMock: true,
+      providerId: 'local-production-spec',
+      fallbackToLocalSpec: true,
     });
 
     expect(job.projectId).toBe(project.id);
@@ -56,26 +56,26 @@ describe('listing factory video assembly layer', () => {
     expect(job.missingRequirements.length).toBeGreaterThan(0);
   });
 
-  it('falls back to local mock when external provider is unavailable', () => {
+  it('falls back to local production spec when external provider is unavailable', () => {
     const job = buildVideoAssemblyJob(run, editPack, {
       providerId: 'external-video',
-      fallbackToMock: true,
+      fallbackToLocalSpec: true,
     });
 
-    expect(job.providerId).toBe(localMockVideoProvider.id);
-    expect(job.status).toMatch(/completed_mock|blocked_missing_assets/);
+    expect(job.providerId).toBe(localProductionSpecProvider.id);
+    expect(job.status).toMatch(/spec_exported|blocked_missing_assets/);
     expect(job.providerAudit.usedFallback).toBe(true);
   });
 
   it('builds safe video scene prompts and structured provider payload previews', () => {
     const job = buildVideoAssemblyJob(run, editPack, { mode: 'storyboard_preview' });
     const prompt = buildVideoScenePrompt(project, job.renderPlan.scenes[0], job.platform);
-    const payload = buildProviderPayloadPreview(job, localMockVideoProvider);
+    const payload = buildProviderPayloadPreview(job, localProductionSpecProvider);
 
     expect(prompt).toContain(project.productName);
     expect(prompt).toContain(job.platform);
     expect(forbiddenWords.some(word => prompt.includes(word))).toBe(false);
-    expect(payload.providerId).toBe('local-mock-video');
+    expect(payload.providerId).toBe('local-production-spec');
     expect(payload.renderPlan.scenes.length).toBeGreaterThan(0);
     expect(JSON.stringify(payload)).not.toContain('blob:');
   });
@@ -124,7 +124,7 @@ describe('listing factory video assembly layer', () => {
     expect(deliveryPackage.renderPlanMarkdown).toContain('\u89c6\u9891\u6e32\u67d3\u8ba1\u5212');
     expect(deliveryPackage.providerPayloadJson).toContain('providerId');
     expect(deliveryPackage.videoQaMarkdown).toContain('视频 QA');
-    expect(deliveryPackage.mockVideoOutputPlaceholderMarkdown).toContain('\u4e0d\u751f\u6210\u771f\u5b9e\u89c6\u9891');
+    expect(deliveryPackage.videoProductionSpecMarkdown).toContain('生产规格');
   });
 });
 
