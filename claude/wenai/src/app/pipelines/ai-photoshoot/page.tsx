@@ -5,6 +5,7 @@ import Link from 'next/link';
 import JSZip from 'jszip';
 import { applyImageWatermark } from '@/lib/aigc';
 import { useActiveSkuId } from '@/lib/use-active-sku';
+import { assessClientFile } from '@/lib/client-file-guard';
 import { ActiveSkuBadge } from '@/components/ActiveSkuBadge';
 import { buildPhotoshootStandardPackRoute } from '@/lib/standard-pack-routing';
 import {
@@ -334,8 +335,14 @@ export default function AIPhotoshootPage() {
   const requiredSlots = meta.refSlots.length;
 
   const handleFile = (file: File, slot: number) => {
-    if (file.size > 10 * 1024 * 1024) {
-      setError('图片 > 10MB,先压缩再上传');
+    const guard = assessClientFile(file, {
+      kind: 'image',
+      largeBytes: 5 * 1024 * 1024,
+      hardBytes: 12 * 1024 * 1024,
+      allowedTypes: ['image/jpeg', 'image/png', 'image/webp'],
+    });
+    if (guard.message) setError(guard.message);
+    if (!guard.ok) {
       return;
     }
     const reader = new FileReader();
@@ -346,7 +353,7 @@ export default function AIPhotoshootPage() {
         next[slot] = result;
         return next;
       });
-      setError('');
+      if (!guard.shouldOptimize) setError('');
     };
     reader.readAsDataURL(file);
   };

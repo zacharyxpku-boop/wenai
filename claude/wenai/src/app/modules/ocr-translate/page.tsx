@@ -1,6 +1,8 @@
 'use client';
 
+import Image from 'next/image';
 import { useState, useRef, useCallback } from 'react';
+import { assessClientFile } from '@/lib/client-file-guard';
 
 const TARGET_LANGUAGES = [
   { code: 'en', label: 'English' },
@@ -30,17 +32,18 @@ export default function OCRTranslatePage() {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFile = useCallback((file: File) => {
-    const validTypes = ['image/jpeg', 'image/png', 'image/webp'];
-    if (!validTypes.includes(file.type)) {
-      setError('only jpg, png, webp accepted');
-      return;
-    }
-    if (file.size > 10 * 1024 * 1024) {
-      setError('file too large (max 10MB)');
+    const guard = assessClientFile(file, {
+      kind: 'image',
+      largeBytes: 5 * 1024 * 1024,
+      hardBytes: 12 * 1024 * 1024,
+      allowedTypes: ['image/jpeg', 'image/png', 'image/webp'],
+    });
+    if (guard.message) setError(guard.message);
+    if (!guard.ok) {
       return;
     }
     setImageFile(file);
-    setError('');
+    if (!guard.shouldOptimize) setError('');
     setExtractedText('');
     setTranslatedText('');
     setStep('idle');
@@ -83,7 +86,7 @@ export default function OCRTranslatePage() {
 
       if (!ocrRes.ok) {
         const data = await ocrRes.json();
-        throw new Error(data.error || 'OCR failed');
+        throw new Error(data.error || '图片识别失败');
       }
 
       const ocrData = await ocrRes.json();
@@ -105,14 +108,14 @@ export default function OCRTranslatePage() {
 
       if (!translateRes.ok) {
         const data = await translateRes.json();
-        throw new Error(data.error || 'Translation failed');
+        throw new Error(data.error || '翻译失败');
       }
 
       const translateData = await translateRes.json();
       setTranslatedText(translateData.content || '');
       setStep('done');
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'unknown error');
+      setError(err instanceof Error ? err.message : '未知错误');
       setStep('idle');
     } finally {
       setLoading(false);
@@ -186,9 +189,12 @@ export default function OCRTranslatePage() {
 
             {imagePreview ? (
               <div className="relative group">
-                <img
+                <Image
                   src={imagePreview}
                   alt="Preview"
+                  width={900}
+                  height={300}
+                  unoptimized
                   className="w-full max-h-[300px] object-contain bg-bg-root"
                 />
                 <div className="absolute inset-0 bg-bg-root/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
@@ -288,7 +294,7 @@ export default function OCRTranslatePage() {
                   onClick={() => handleCopy(extractedText, 'ocr')}
                   className="text-[10px] font-mono text-text-tertiary hover:text-text-primary px-2 py-1 border border-border-subtle rounded-md transition-colors"
                 >
-                  {copiedField === 'ocr' ? 'Copied' : 'Copy'}
+                    {copiedField === 'ocr' ? '已复制' : '复制'}
                 </button>
               )}
             </div>
@@ -313,7 +319,7 @@ export default function OCRTranslatePage() {
                   onClick={() => handleCopy(translatedText, 'translate')}
                   className="text-[10px] font-mono text-text-tertiary hover:text-text-primary px-2 py-1 border border-border-subtle rounded-md transition-colors"
                 >
-                  {copiedField === 'translate' ? 'Copied' : 'Copy'}
+                    {copiedField === 'translate' ? '已复制' : '复制'}
                 </button>
               )}
             </div>

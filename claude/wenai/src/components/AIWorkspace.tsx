@@ -6,6 +6,7 @@ import ResultFeedback from './ResultFeedback';
 import BetaFeedback from './BetaFeedback';
 import ExpertReview from './ExpertReview';
 import { IndustryHint } from './IndustryHint';
+import { assessClientFile, readClientTextFile } from '@/lib/client-file-guard';
 
 // 与 /api/ai INDUSTRY_INJECT_MODULES 同步的决策模块白名单
 const INDUSTRY_INJECTABLE = new Set([
@@ -201,23 +202,26 @@ export default function AIWorkspace({
   const handleCSVUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    if (file.size > 10 * 1024 * 1024) {
-      setError('CSV文件不能超过10MB');
-      return;
-    }
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      const text = event.target?.result as string;
-      const rows = text.split('\n').filter(r => r.trim()).map(parseCSVLine);
-      if (rows.length > MAX_CSV_ROWS + 1) {
-        setError(`CSV最多支持${MAX_CSV_ROWS}行数据（当前${rows.length - 1}行）`);
-        return;
-      }
-      setCsvData(rows);
-      setCsvResults([]);
-      setError('');
-    };
-    reader.readAsText(file, 'utf-8');
+    const guard = assessClientFile(file, {
+      kind: 'csv',
+      largeBytes: 5 * 1024 * 1024,
+      hardBytes: 12 * 1024 * 1024,
+      allowedTypes: ['text/csv', 'application/vnd.ms-excel'],
+    });
+    if (guard.message) setError(guard.message);
+    if (!guard.ok) return;
+    readClientTextFile(file)
+      .then(text => {
+        const rows = text.split('\n').filter(r => r.trim()).map(parseCSVLine);
+        if (rows.length > MAX_CSV_ROWS + 1) {
+          setError(`CSV最多支持${MAX_CSV_ROWS}行数据（当前${rows.length - 1}行）`);
+          return;
+        }
+        setCsvData(rows);
+        setCsvResults([]);
+        if (!guard.shouldOptimize) setError('');
+      })
+      .catch(() => setError('处理时间较长，请重试或联系支持。'));
   };
 
   const processCSVBatch = async () => {

@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useActiveSkuId } from '@/lib/use-active-sku';
 import { ActiveSkuBadge } from '@/components/ActiveSkuBadge';
 import { useMySkus } from '@/lib/use-my-skus';
+import { assessClientFile } from '@/lib/client-file-guard';
 import { ShareButton } from '@/components/ShareButton';
 import { buildVideoTeardownStandardPackRoute } from '@/lib/standard-pack-routing';
 
@@ -182,12 +183,14 @@ export default function VideoTeardownPage() {
   };
 
   const handleFile = (file: File) => {
-    if (file.size > 8 * 1024 * 1024) {
-      setError(`视频 ${(file.size / 1024 / 1024).toFixed(1)}MB 太大,先压到 ≤8MB(推荐 30 秒以内)`);
-      return;
-    }
-    if (!file.type.startsWith('video/')) {
-      setError('必须是视频文件');
+    const guard = assessClientFile(file, {
+      kind: 'video',
+      largeBytes: 5 * 1024 * 1024,
+      hardBytes: 8 * 1024 * 1024,
+      allowedTypes: ['video/mp4', 'video/webm', 'video/quicktime'],
+    });
+    if (guard.message) setError(guard.message);
+    if (!guard.ok) {
       return;
     }
     const reader = new FileReader();
@@ -196,7 +199,7 @@ export default function VideoTeardownPage() {
       setVideoBase64(result);
       setVideoPreview(result);
       setVideoSize(file.size);
-      setError('');
+      if (!guard.shouldOptimize) setError('');
     };
     reader.readAsDataURL(file);
   };
