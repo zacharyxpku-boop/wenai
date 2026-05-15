@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { Redis } from '@upstash/redis';
 import { checkRateLimit } from '@/lib/ratelimit';
 import { verifyToken, getCookieName } from '@/lib/auth';
+import { getShare, setMemoryShare, type ShareData } from '@/lib/share-readonly';
 
 /**
  * 结果分享 · 朋友跑完 Pipeline 点分享 → 得到公开 /share/<id>
@@ -29,7 +30,6 @@ if (process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN) 
   });
 }
 
-const memStore = new Map<string, SharePayload & { createdAt: string }>();
 const TTL_SECONDS = 7 * 24 * 60 * 60; // 7 days
 
 function genId(): string {
@@ -71,7 +71,7 @@ export async function POST(request: NextRequest) {
   }
 
   const id = genId();
-  const payload = {
+  const payload: ShareData = {
     moduleId: body.moduleId || 'unknown',
     title: (body.title || '').slice(0, 120),
     content: body.content.slice(0, 30000),
@@ -81,16 +81,14 @@ export async function POST(request: NextRequest) {
 
   if (redis) {
     try {
-      await redis.hset(`wenai:share:${id}`, payload);
+      await redis.hset(`wenai:share:${id}`, { ...payload });
       await redis.expire(`wenai:share:${id}`, TTL_SECONDS);
     } catch (e) {
       console.warn('[share] redis fail, fallback memory', e);
-      memStore.set(id, payload);
-      setTimeout(() => memStore.delete(id), TTL_SECONDS * 1000);
+      setMemoryShare(id, payload, TTL_SECONDS);
     }
   } else {
-    memStore.set(id, payload);
-    setTimeout(() => memStore.delete(id), TTL_SECONDS * 1000);
+    setMemoryShare(id, payload, TTL_SECONDS);
   }
 
   return NextResponse.json({ id, url: `/share/${id}`, ttlDays: 7 });
@@ -112,7 +110,7 @@ export async function GET(request: NextRequest) {
     }
   }
 
-  const mem = memStore.get(id);
+  const mem = await getShare(id);
   if (mem) return NextResponse.json({ ok: true, data: mem });
 
   return NextResponse.json({ error: '分享已过期或不存在' }, { status: 404 });

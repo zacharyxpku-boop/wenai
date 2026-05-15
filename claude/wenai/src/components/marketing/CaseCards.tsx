@@ -1,5 +1,25 @@
-import { COPY, PLACEHOLDER } from '@/i18n/zh';
 import { Container, Section, SecondaryButton } from './Container';
+
+const CASES = [
+  {
+    slug: 'home-decor',
+    industry: '家居收纳',
+    title: '把零散 SKU 资料转成上新交付包',
+    lines: ['输入: 零散 SKU 备注', '输出: 结构化上新包', '验收: 标准清单和复盘动作'],
+  },
+  {
+    slug: 'auto-parts',
+    industry: '汽摩配件',
+    title: '把适配风险和安装场景放进同一份报告',
+    lines: ['输入: 规格表和参考内容', '输出: 商品页和短视频脚本', '验收: 商标与适配边界'],
+  },
+  {
+    slug: 'electronics',
+    industry: '数码配件',
+    title: '把达人外联从散写消息变成受控流程',
+    lines: ['输入: SKU 和达人清单', '输出: 个性化开头和跟进表', '验收: 回复归因和下一批建议'],
+  },
+];
 
 export function CaseCards() {
   return (
@@ -8,12 +28,12 @@ export function CaseCards() {
         <div id="cases" className="scroll-mt-20" />
 
         <h2 className="mb-12 text-center text-3xl font-bold text-text-primary md:text-4xl font-[family-name:var(--font-outfit)]">
-          {COPY.caseSection.title}
+          三个客户能看懂的交付样例
         </h2>
 
         <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-          {PLACEHOLDER.cases.map((item) => (
-            <div
+          {CASES.map(item => (
+            <article
               key={item.slug}
               className="flex flex-col rounded-md border border-border-default bg-bg-surface p-6 transition-colors hover:border-accent/40"
             >
@@ -21,46 +41,33 @@ export function CaseCards() {
                 <div className="flex size-12 items-center justify-center rounded-md border border-border-subtle bg-bg-raised text-base font-medium text-text-secondary font-[family-name:var(--font-outfit)]">
                   {item.industry.charAt(0)}
                 </div>
-                <div className="flex flex-col">
-                  <span className="text-sm font-medium text-text-primary">{item.industry}</span>
-                  <span className="text-xs text-text-tertiary">{item.brandPlaceholder}</span>
+                <div>
+                  <div className="text-sm font-semibold text-text-primary">{item.industry}</div>
+                  <div className="text-xs text-text-tertiary">匿名试跑样例</div>
                 </div>
               </div>
 
-              <p className="mb-5 text-base font-medium leading-relaxed text-text-primary">&quot;{item.headline}&quot;</p>
+              <h3 className="mb-5 text-[17px] font-semibold leading-relaxed text-text-primary">
+                {item.title}
+              </h3>
 
-              <ul className="mb-5 flex flex-col gap-2 text-xs">
-                {item.metrics.map((metric) => (
-                  <li
-                    key={`${metric.label}-${metric.to}`}
-                    className="flex items-center justify-between gap-2 border-b border-border-subtle py-1 last:border-0"
-                  >
-                    <span className="shrink-0 text-text-tertiary">{metric.label}</span>
-                    <span className="font-mono text-text-secondary tabular-nums">
-                      {metric.from} -&gt; {metric.to}
-                    </span>
-                    {metric.multiple ? (
-                      <span className="w-10 shrink-0 text-right font-mono text-accent tabular-nums">
-                        {metric.multiple}
-                      </span>
-                    ) : (
-                      <span className="w-10" />
-                    )}
+              <ul className="mb-6 flex flex-1 flex-col gap-2">
+                {item.lines.map(line => (
+                  <li key={line} className="rounded-md border border-border-subtle bg-bg-root/35 px-3 py-2 text-[12px] text-text-secondary">
+                    {line}
                   </li>
                 ))}
               </ul>
 
-              <a href={`/cases/${item.slug}`} className="mt-auto text-sm text-accent transition-colors hover:text-accent-hover">
-                {COPY.caseSection.fullCaseLink} -&gt;
+              <a href={`/cases/${item.slug}`} className="mt-auto text-sm font-semibold text-accent transition-colors hover:text-accent-hover">
+                查看完整样例
               </a>
-            </div>
+            </article>
           ))}
         </div>
 
         <div className="mt-12 flex justify-center">
-          <SecondaryButton href={COPY.caseSection.moreLink.href}>
-            {COPY.caseSection.moreLink.label}
-          </SecondaryButton>
+          <SecondaryButton href="/cases">查看全部交付样例</SecondaryButton>
         </div>
       </Container>
     </Section>

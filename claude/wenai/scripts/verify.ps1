@@ -17,7 +17,7 @@ function Invoke-Step {
 }
 
 Invoke-Step "Vitest focused suite" {
-  npm.cmd run test -- __tests__/standard-pack-routing.test.ts __tests__/sop-workflows.test.ts __tests__/poc-launch-check.test.ts __tests__/poc-report-evaluator.test.ts __tests__/poc-report-generator.test.ts __tests__/inquiry-activity.test.ts __tests__/ratelimit.test.ts __tests__/case-library.test.ts __tests__/ecommerce-guardrails.test.ts __tests__/content-marketing-pack.test.ts __tests__/brand-iq.test.ts __tests__/crm-pipeline.test.ts __tests__/share-readonly.test.ts
+  npm.cmd run test -- __tests__/standard-pack-routing.test.ts __tests__/sop-workflows.test.ts __tests__/poc-launch-check.test.ts __tests__/poc-report-evaluator.test.ts __tests__/poc-report-generator.test.ts __tests__/inquiry-activity.test.ts __tests__/ratelimit.test.ts __tests__/case-library.test.ts __tests__/ecommerce-guardrails.test.ts __tests__/content-marketing-pack.test.ts __tests__/brand-iq.test.ts __tests__/crm-pipeline.test.ts __tests__/share-readonly.test.ts __tests__/listing-factory-demo.test.ts __tests__/listing-factory-engine.test.ts __tests__/listing-factory-engine-samples.test.ts __tests__/listing-factory-workbench.test.ts __tests__/listing-factory-production-layer.test.ts __tests__/listing-factory-asset-layer.test.ts __tests__/listing-factory-batch-production.test.ts __tests__/listing-factory-production-rc.test.ts __tests__/listing-factory-core-capabilities.test.ts __tests__/listing-factory-real-provider.test.ts __tests__/listing-factory-video-assembly.test.ts __tests__/listing-factory-performance-feedback.test.ts __tests__/listing-factory-experiment-orchestration.test.ts
 }
 
 Invoke-Step "TypeScript noEmit" {
@@ -36,6 +36,11 @@ Invoke-Step "ESLint" {
     src/lib/brand-iq.ts `
     src/lib/crm-pipeline.ts `
     src/lib/share-readonly.ts `
+    src/lib/listing-factory-demo.ts `
+    src/lib/listing-factory-engine.ts `
+    src/lib/listing-factory-providers.ts `
+    src/lib/listing-factory-golden-projects.ts `
+    src/lib/listing-factory-samples.ts `
     src/lib/inquiry-activity.ts `
     src/lib/poc-launch-check.ts `
     src/lib/poc-report-evaluator.ts `
@@ -52,6 +57,19 @@ Invoke-Step "ESLint" {
     __tests__/brand-iq.test.ts `
     __tests__/crm-pipeline.test.ts `
     __tests__/share-readonly.test.ts `
+    __tests__/listing-factory-demo.test.ts `
+    __tests__/listing-factory-engine.test.ts `
+    __tests__/listing-factory-engine-samples.test.ts `
+    __tests__/listing-factory-workbench.test.ts `
+    __tests__/listing-factory-production-layer.test.ts `
+    __tests__/listing-factory-asset-layer.test.ts `
+    __tests__/listing-factory-batch-production.test.ts `
+    __tests__/listing-factory-production-rc.test.ts `
+    __tests__/listing-factory-core-capabilities.test.ts `
+    __tests__/listing-factory-real-provider.test.ts `
+    __tests__/listing-factory-video-assembly.test.ts `
+    __tests__/listing-factory-performance-feedback.test.ts `
+    __tests__/listing-factory-experiment-orchestration.test.ts `
     src/components/CaseLibraryExplorer.tsx `
     src/components/FiveMinutePocOnboarding.tsx `
     src/components/ContentMarketingPackWorkspace.tsx `
@@ -72,6 +90,7 @@ Invoke-Step "ESLint" {
     src/components/marketing/PricingTiers.tsx `
     src/components/marketing/Faq.tsx `
     src/components/marketing/FinalCta.tsx `
+    src/components/marketing/ListingFactorySections.tsx `
     src/app/pipelines/product-image/page.tsx `
     src/app/pipelines/product-discovery/page.tsx `
     src/app/pipelines/batch-launch/page.tsx `
@@ -95,6 +114,9 @@ Invoke-Step "ESLint" {
     src/app/product/pipeline/page.tsx `
     src/app/product/video/page.tsx `
     src/app/inquire/page.tsx `
+    src/app/factory/page.tsx `
+    src/app/briefs/page.tsx `
+    src/app/insights/page.tsx `
     src/app/poc/page.tsx `
     src/app/poc/report/page.tsx `
     src/app/share/[id]/page.tsx `

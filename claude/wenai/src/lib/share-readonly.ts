@@ -8,6 +8,22 @@ export interface ShareData {
   createdAt: string;
 }
 
+type ShareGlobal = typeof globalThis & {
+  __wenaiMemoryShareStore?: Map<string, ShareData>;
+};
+
+function getMemoryShareStore() {
+  const target = globalThis as ShareGlobal;
+  if (!target.__wenaiMemoryShareStore) target.__wenaiMemoryShareStore = new Map<string, ShareData>();
+  return target.__wenaiMemoryShareStore;
+}
+
+export function setMemoryShare(id: string, payload: ShareData, ttlSeconds = 7 * 24 * 60 * 60) {
+  const memoryShareStore = getMemoryShareStore();
+  memoryShareStore.set(id, payload);
+  setTimeout(() => memoryShareStore.delete(id), ttlSeconds * 1000);
+}
+
 export const SHARE_LABELS: Record<string, string> = {
   'pipeline-01': 'New listing pipeline',
   'pipeline-02': 'Influencer outbound pipeline',
@@ -17,6 +33,9 @@ export const SHARE_LABELS: Record<string, string> = {
 };
 
 export async function getShare(id: string): Promise<ShareData | null> {
+  const memoryShare = getMemoryShareStore().get(id);
+  if (memoryShare) return memoryShare;
+
   if (!process.env.UPSTASH_REDIS_REST_URL || !process.env.UPSTASH_REDIS_REST_TOKEN) {
     return null;
   }

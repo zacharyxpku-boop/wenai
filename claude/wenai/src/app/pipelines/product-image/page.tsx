@@ -77,14 +77,14 @@ function ProductImagePipelineInner() {
       if (qCat && ['home', 'auto', 'digital', 'tool', 'living'].includes(qCat)) {
         setCategory(qCat as CategoryId);
       }
-      setHandoffBanner('已从 Pipeline 01 带入 SKU,选一个场景即可直接生图');
+      setHandoffBanner('已从上新流程带入 SKU，选一个场景即可直接生图');
     } else if (isDemo) {
       // Demo: 家居厨房场景 + 只跑 main + scene 省 60% 成本 (2 图 vs 5 图)
       setCategory('home');
       setScene('home-kitchen');
       setSku('可叠加密封收纳盒套装（6件装）\nBPA-Free 食品级 PP，四侧卡扣密封\n3 种规格 (0.5L/1.2L/2.5L)，可叠放节省 40% 空间\nAmazon 4.8★ 2300+ 评论');
       setSelectedOutputs(new Set(['main', 'scene']));
-      setHandoffBanner('Demo · HOMELODY 收纳盒 + 厨房台面场景 · 自动生 2 张图');
+      setHandoffBanner('演示模式 · HOMELODY 收纳盒 + 厨房台面场景 · 自动生 2 张图');
       setTimeout(() => { void runDemoGen('home', 'home-kitchen', '可叠加密封收纳盒套装（6件装）BPA-Free 食品级 PP，四侧卡扣密封'); }, 250);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -445,7 +445,7 @@ ${images.map((img, i) => `### ${i + 1}. ${img.label}
           <span className="text-accent text-[14px]">↳</span>
           <div className="flex-1">
             <div className="text-[11px] font-semibold text-accent">{handoffBanner}</div>
-            <div className="text-[10px] font-mono text-text-tertiary mt-0.5">Pipeline 01 → 03 联动</div>
+            <div className="text-[10px] font-mono text-text-tertiary mt-0.5">从上新资料直接进入主图生成</div>
           </div>
           <button
             onClick={() => { setHandoffBanner(''); setSku(''); setCategory(''); setScene(''); }}

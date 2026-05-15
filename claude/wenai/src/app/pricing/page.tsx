@@ -1,196 +1,116 @@
 import type { Metadata } from 'next';
+import Link from 'next/link';
+import PageViewTracker from '@/components/analytics/PageViewTracker';
 import TopNav from '@/components/marketing/TopNav';
 import MarketingFooter from '@/components/marketing/MarketingFooter';
-import {
-  Container,
-  Section,
-  PrimaryButton,
-  SecondaryButton,
-} from '@/components/marketing/Container';
+import { PricingIntentCards } from '@/components/marketing/PricingIntentCards';
 
 export const metadata: Metadata = {
-  title: 'Plans | wenai ecommerce AI delivery system',
-  description:
-    'POC, team, and enterprise paths for SKU launch packs, Brand IQ, content marketing, reporting, and contract motion.',
+  title: '定价 | Wenai 内容实验决策中枢',
+  description: 'Free、Starter、Growth 三档权益对比：项目数、CSV 导入次数、报告水印、Brief 导出和跨轮学习档案。',
 };
 
-type Plan = {
-  name: string;
-  price: string;
-  subtitle: string;
-  cta: string;
-  href: string;
-  featured?: boolean;
-  points: string[];
-};
-
-const PLANS: Plan[] = [
-  {
-    name: 'POC',
-    price: '10 SKU',
-    subtitle: 'Fast proof for a live category before contract expansion.',
-    cta: 'Run POC intake',
-    href: '/poc',
-    points: [
-      'Single category launch pack',
-      'Brand IQ and redline review',
-      'Executive share page and recap',
-      'Acceptance score and contract recommendation',
-    ],
-  },
-  {
-    name: 'Team',
-    price: 'Standard',
-    subtitle: 'Weekly delivery motion for operators shipping SKUs and creative tests.',
-    cta: 'Open inquiry',
-    href: '/inquire',
-    featured: true,
-    points: [
-      '10 SKU launch pipeline and batch workflow',
-      'TikTok and Instagram benchmark to brief flow',
-      'CRM next action, SLA, and owner tracking',
-      'Reusable standard pack routes for new campaigns',
-    ],
-  },
-  {
-    name: 'Enterprise',
-    price: 'Custom',
-    subtitle: 'Dedicated workspace rules, category thresholds, and operating support.',
-    cta: 'Talk enterprise',
-    href: '/enterprise',
-    points: [
-      'Brand knowledge base and workspace defaults',
-      'Category-specific acceptance thresholds',
-      'Executive reporting and contract motion layer',
-      'Shared operating system for launch, content, and review teams',
-    ],
-  },
+const rows = [
+  ['项目数', '1 个', '3 个', '无限'],
+  ['CSV 导入次数', '每月 3 次', '每月 30 次', '无限'],
+  ['报告水印', 'Wenai Free 水印', '无水印', '无水印'],
+  ['生产 Brief 导出', '不支持', '支持', '支持批量导出'],
+  ['学习档案', '最近 1 轮', '最近 10 轮', '完整保留'],
+  ['跨轮搜索', '不支持', '基础搜索', '完整搜索 + 变量级洞察'],
 ];
 
-const ACCEPTANCE = [
-  'A customer can move from category selection to SKU input, standard pack, report, and POC submission in one session.',
-  'Every delivery package includes category rules, brand guardrails, content direction, and a clear human review line.',
-  'The report can be shared upward as a read-only executive page instead of copied by hand.',
-  'Commercial follow-up is captured with status, owner, SLA due date, quote state, payment state, and next action.',
-];
-
-const FAQ = [
+const faq = [
   {
-    q: 'What is the product buying?',
-    a: 'Not generic copy generation. The buyer gets an ecommerce AI operating line with standard intake, guardrails, delivery artifacts, and contract-ready recap.',
+    q: '数据安全吗？',
+    a: 'Wenai 当前以前端工作台为主，CSV 表现数据优先保存在你的浏览器本地；导出分享前会生成脱敏报告，避免暴露原始账户和素材细节。',
   },
   {
-    q: 'Does pricing include contract payment flow?',
-    a: 'The subsite handles POC and motion design. Formal charging, payment, and master contract can stay on your main station.',
+    q: '支持哪些平台？',
+    a: '当前支持 TikTok、Amazon、Shopify、Meta 和 Google 的 CSV 字段映射、导入 QA、指标归一化和决策摘要。',
   },
   {
-    q: 'Do we need all integrations live first?',
-    a: 'No. This layer is designed to feel commercial-ready even before every upstream API is wired, as long as the core delivery flow is stable.',
-  },
-  {
-    q: 'Who is it for?',
-    a: 'Ecommerce operators, brand owners, and content teams that need a repeatable launch-plus-marketing workflow instead of isolated AI tools.',
+    q: '和内容生产平台是什么关系？',
+    a: 'Wenai 不替代剪辑和素材生产工具。Wenai 负责先判断下一轮该生产什么，再把胜出的 Hook、Angle、Offer、CTA 和规格整理成可执行 Brief。',
   },
 ];
 
 export default function PricingPage() {
   return (
     <>
+      <PageViewTracker page="pricing" />
       <TopNav />
       <main className="bg-bg-root text-text-primary">
-        <Section spacing="tight">
-          <Container>
-            <div className="mx-auto max-w-3xl text-center">
-              <div className="text-[11px] font-mono uppercase tracking-[0.16em] text-accent">Commercial paths</div>
-              <h1 className="mt-4 text-4xl font-bold tracking-tight text-text-primary md:text-5xl font-[family-name:var(--font-outfit)]">
-                Choose the operating depth, not just the model calls.
+        <section className="border-b border-border-subtle">
+          <div className="mx-auto max-w-[1200px] px-5 py-16 sm:px-6 lg:px-8 lg:py-20">
+            <div className="max-w-3xl">
+              <div className="text-[10px] font-mono uppercase tracking-widest text-accent">Pricing</div>
+              <h1 className="mt-4 text-4xl font-semibold leading-tight tracking-tight text-text-primary sm:text-5xl">
+                先免费跑通第一轮，再为更多复盘和执行协同付费。
               </h1>
-              <p className="mt-5 text-lg leading-relaxed text-text-secondary">
-                wenai packages SKU launch, Brand IQ, content marketing, POC reporting, and contract motion into
-                a customer-facing system. Start with a 10 SKU proof, then expand into a repeatable team lane.
+              <p className="mt-5 text-[15px] leading-7 text-text-secondary">
+                付费点只放在高价值动作上：更多 CSV 导入、无水印报告、生产 Brief、跨轮学习档案和团队协作入口。
               </p>
             </div>
-          </Container>
-        </Section>
-
-        <Section spacing="tight">
-          <Container>
-            <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
-              {PLANS.map((plan) => (
-                <div
-                  key={plan.name}
-                  className={`flex flex-col rounded-md border p-6 ${
-                    plan.featured
-                      ? 'border-accent bg-accent/5'
-                      : 'border-border-subtle bg-bg-surface'
-                  }`}
-                >
-                  <div className="mb-5">
-                    <div className="text-[10px] font-mono uppercase tracking-wider text-text-tertiary">
-                      {plan.name}
-                    </div>
-                    <div className="mt-2 text-3xl font-bold text-text-primary font-[family-name:var(--font-outfit)]">
-                      {plan.price}
-                    </div>
-                    <p className="mt-3 text-[13px] leading-relaxed text-text-secondary">{plan.subtitle}</p>
-                  </div>
-
-                  <div className="flex-1 space-y-3 border-y border-border-subtle py-5">
-                    {plan.points.map((point) => (
-                      <div key={point} className="flex gap-3 text-[13px] leading-relaxed text-text-primary">
-                        <span className="mt-[2px] text-accent">+</span>
-                        <span>{point}</span>
-                      </div>
-                    ))}
-                  </div>
-
-                  <div className="mt-5">
-                    {plan.featured ? (
-                      <PrimaryButton href={plan.href} className="w-full justify-center">
-                        {plan.cta}
-                      </PrimaryButton>
-                    ) : (
-                      <SecondaryButton href={plan.href} className="w-full justify-center">
-                        {plan.cta}
-                      </SecondaryButton>
-                    )}
-                  </div>
-                </div>
-              ))}
+            <div className="mt-10">
+              <PricingIntentCards />
             </div>
-          </Container>
-        </Section>
+          </div>
+        </section>
 
-        <Section spacing="normal">
-          <Container>
-            <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1.15fr_0.85fr]">
-              <div className="rounded-md border border-border-subtle bg-bg-surface p-6">
-                <div className="text-[10px] font-mono uppercase tracking-wider text-accent">Acceptance bar</div>
-                <h2 className="mt-2 text-2xl font-semibold text-text-primary">What “commercial-ready” means here</h2>
-                <div className="mt-5 space-y-3">
-                  {ACCEPTANCE.map((item, index) => (
-                    <div key={item} className="flex gap-3 rounded-md border border-border-subtle bg-bg-root/35 p-3">
-                      <div className="font-mono text-[11px] text-accent">{String(index + 1).padStart(2, '0')}</div>
-                      <p className="text-[13px] leading-relaxed text-text-primary">{item}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="rounded-md border border-border-subtle bg-bg-surface p-6">
-                <div className="text-[10px] font-mono uppercase tracking-wider text-accent">Buyer FAQ</div>
-                <div className="mt-5 space-y-4">
-                  {FAQ.map((item) => (
-                    <div key={item.q} className="rounded-md border border-border-subtle bg-bg-root/35 p-4">
-                      <div className="text-[13px] font-semibold text-text-primary">{item.q}</div>
-                      <p className="mt-2 text-[12px] leading-relaxed text-text-secondary">{item.a}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
+        <section className="border-b border-border-subtle py-16">
+          <div className="mx-auto max-w-[1200px] px-5 sm:px-6 lg:px-8">
+            <div className="mb-6">
+              <div className="text-[10px] font-mono uppercase tracking-widest text-accent">Plan Compare</div>
+              <h2 className="mt-3 text-3xl font-semibold text-text-primary">三档权益对比</h2>
             </div>
-          </Container>
-        </Section>
+            <div className="overflow-x-auto rounded-md border border-border-subtle">
+              <table className="w-full min-w-[720px] border-collapse bg-bg-surface text-left text-[13px]">
+                <thead>
+                  <tr className="border-b border-border-subtle">
+                    <th className="px-4 py-3 font-semibold text-text-primary">权益</th>
+                    <th className="px-4 py-3 font-semibold text-text-primary">Free</th>
+                    <th className="px-4 py-3 font-semibold text-text-primary">Starter</th>
+                    <th className="px-4 py-3 font-semibold text-text-primary">Growth</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {rows.map(row => (
+                    <tr key={row[0]} className="border-b border-border-subtle last:border-b-0">
+                      {row.map((cell, index) => (
+                        <td key={cell} className={index === 0 ? 'px-4 py-3 font-semibold text-text-primary' : 'px-4 py-3 text-text-secondary'}>
+                          {cell}
+                        </td>
+                      ))}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <section className="border-b border-border-subtle py-16">
+          <div className="mx-auto grid max-w-[1200px] gap-4 px-5 sm:px-6 lg:grid-cols-3 lg:px-8">
+            {faq.map(item => (
+              <div key={item.q} className="rounded-md border border-border-subtle bg-bg-surface p-5">
+                <h3 className="text-[14px] font-semibold text-text-primary">{item.q}</h3>
+                <p className="mt-3 text-[13px] leading-6 text-text-secondary">{item.a}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section className="py-16">
+          <div className="mx-auto flex max-w-[1200px] flex-col items-start justify-between gap-5 px-5 sm:px-6 md:flex-row md:items-center lg:px-8">
+            <div>
+              <div className="text-[10px] font-mono uppercase tracking-widest text-accent">Start Free</div>
+              <h2 className="mt-2 text-2xl font-semibold text-text-primary">用一份 CSV 跑出第一份决策报告。</h2>
+            </div>
+            <Link href="/dashboard" className="inline-flex min-h-11 items-center justify-center rounded-md bg-accent px-5 text-[13px] font-semibold text-bg-root transition-colors hover:bg-accent-hover">
+              免费开始
+            </Link>
+          </div>
+        </section>
       </main>
       <MarketingFooter />
     </>

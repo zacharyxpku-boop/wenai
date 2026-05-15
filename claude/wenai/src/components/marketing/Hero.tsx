@@ -1,88 +1,94 @@
 import { Container, Section, PrimaryButton, SecondaryButton } from '@/components/marketing/Container';
 
-const STATS = [
-  { value: '10 SKU', label: 'POC 标准交付范围' },
-  { value: '5 层', label: '品牌、类目、内容、报告、CRM' },
-  { value: '1 条线', label: '从输入到合同推进' },
+const DELIVERY_ITEMS = [
+  '选类目, 贴 SKU, 自动整理资料缺口',
+  '生成上新包: 卖点、详情页、合规风险、客服话术',
+  '生成营销包: 开场句、短视频脚本、素材清单',
+  '生成老板版报告: 是否扩 SKU、补资料、推合同',
 ];
 
-const DELIVERY_ITEMS = [
-  'SKU 输入和类目验收规则',
-  'Brand IQ、禁用词和语气护栏',
-  'TikTok / Instagram 内容营销交付包',
-  'POC 报告、老板版分享页和 CRM 下一动作',
+const STATS = [
+  { value: '5 分钟', label: '跑通第一条试跑路径' },
+  { value: '10 SKU', label: '一批试跑的标准范围' },
+  { value: '4 份', label: '标准包、营销包、报告、跟进动作' },
 ];
 
 export function Hero() {
   return (
     <Section spacing="loose" className="relative overflow-hidden">
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 opacity-[0.08]"
-        style={{
-          background:
-            'radial-gradient(ellipse 60% 50% at 50% 0%, rgba(200, 151, 90, 0.5), transparent 70%)',
-        }}
-      />
+      <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-px bg-accent/50" />
 
       <Container className="relative">
         <div className="grid grid-cols-1 items-center gap-10 md:grid-cols-5 md:gap-12">
-          <div className="flex flex-col gap-7 md:col-span-3">
-            <div className="text-[11px] font-mono uppercase tracking-[0.16em] text-accent">
-              给电商团队的 AI 商业交付系统
+          <div className="flex min-w-0 flex-col gap-7 md:col-span-3">
+            <div className="text-[11px] font-mono text-accent">
+              给电商团队的商业交付系统
             </div>
-            <h1 className="text-[2rem] font-bold leading-[1.1] tracking-tight text-text-primary sm:text-5xl md:text-6xl font-[family-name:var(--font-outfit)]">
-              从 SKU 输入，到 POC 报告，再到合同推进。
+            <h1 className="max-w-[16ch] text-balance text-[2rem] font-bold leading-[1.12] text-text-primary sm:max-w-[18ch] sm:text-5xl md:text-6xl font-[family-name:var(--font-outfit)]">
+              不用学工具, 直接把一批 SKU 跑成交付包。
             </h1>
-            <p className="max-w-2xl text-base leading-relaxed text-text-secondary md:text-lg">
-              wenai 把电商上新和营销交付压成一条标准作业线：SKU 输入、类目规则、Brand IQ、内容营销、
-              老板版报告和 CRM 跟进，在一个客户可直接理解的流程里跑完。
+            <p className="max-w-2xl text-pretty text-[15px] leading-relaxed text-text-secondary md:text-lg">
+              Wenai 把 SKU、类目规则、品牌禁区、内容营销、验收报告和商务推进放到同一条线里。
+              客户打开后先跑 10 个 SKU, 看清楚能交付什么、哪里有风险、下一步值不值得合作。
             </p>
 
             <div className="grid grid-cols-1 gap-3 pt-2 sm:grid-cols-3">
-              {STATS.map((stat) => (
+              {STATS.map(stat => (
                 <div key={stat.value} className="border-l border-border-subtle pl-4">
                   <div className="font-mono text-2xl font-bold leading-none text-accent md:text-3xl">
                     {stat.value}
                   </div>
-                  <div className="mt-2 text-[12px] leading-snug text-text-secondary">{stat.label}</div>
+                  <div className="mt-2 text-[12px] leading-snug text-text-secondary">
+                    {stat.label}
+                  </div>
                 </div>
               ))}
             </div>
 
-            <div className="flex flex-col gap-3 pt-3 sm:flex-row">
-              <PrimaryButton href="/poc" size="lg">
-                运行 5 分钟 POC
+            <div className="flex w-full flex-col gap-3 pt-3 sm:w-auto sm:flex-row">
+              <PrimaryButton href="/poc" size="lg" className="w-full sm:w-auto">
+                5 分钟试跑
               </PrimaryButton>
-              <SecondaryButton href="/pricing" size="lg">
-                查看商业路径
+              <SecondaryButton href="/inquire?from=hero" size="lg" className="w-full sm:w-auto">
+                提交 10 SKU
               </SecondaryButton>
             </div>
           </div>
 
-          <div className="md:col-span-2">
-            <div className="rounded-md border border-border-default bg-bg-surface p-5">
+          <div className="min-w-0 md:col-span-2">
+            <div className="w-full rounded-md border border-border-default bg-bg-surface p-4 sm:p-5">
               <div className="mb-4 flex items-center justify-between gap-3 border-b border-border-subtle pb-3">
                 <div>
-                  <div className="text-[10px] font-mono uppercase tracking-wider text-accent">交付包</div>
-                  <div className="mt-1 text-lg font-semibold text-text-primary">10 SKU POC</div>
+                  <div className="text-[10px] font-mono uppercase tracking-wider text-accent">
+                    交付包
+                  </div>
+                  <div className="mt-1 text-lg font-semibold text-text-primary">
+                    客户能拿走什么
+                  </div>
                 </div>
-                <div className="rounded-md border border-accent/40 bg-accent/10 px-3 py-1 text-[11px] font-mono text-accent">
-                  就绪
+                <div className="shrink-0 rounded-md border border-accent/40 bg-accent/10 px-3 py-1 text-[11px] font-mono text-accent">
+                  可演示
                 </div>
               </div>
 
               <div className="space-y-3">
                 {DELIVERY_ITEMS.map((item, index) => (
-                  <div key={item} className="flex gap-3 rounded-md border border-border-subtle bg-bg-root/35 p-3">
-                    <div className="font-mono text-[11px] text-accent">{String(index + 1).padStart(2, '0')}</div>
-                    <div className="text-[13px] leading-relaxed text-text-primary">{item}</div>
+                  <div
+                    key={item}
+                    className="flex min-w-0 gap-3 rounded-md border border-border-subtle bg-bg-root/35 p-3"
+                  >
+                    <div className="shrink-0 font-mono text-[11px] text-accent">
+                      {String(index + 1).padStart(2, '0')}
+                    </div>
+                    <div className="min-w-0 break-words text-[13px] leading-relaxed text-text-primary">
+                      {item}
+                    </div>
                   </div>
                 ))}
               </div>
 
               <div className="mt-4 rounded-md border border-border-subtle bg-bg-root/45 p-3 text-[12px] leading-relaxed text-text-secondary">
-                产出：标准包、验收清单、只读老板版报告，以及下一步商业动作。
+                第一眼只回答一个问题: 这批 SKU 能不能交付、哪里需要人工复核、下一步该不该进入正式合作。
               </div>
             </div>
           </div>
