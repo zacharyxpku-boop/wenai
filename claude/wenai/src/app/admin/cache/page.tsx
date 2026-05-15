@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import AdminHeader from '@/components/AdminHeader';
 
 interface OrgRow {
@@ -62,7 +62,7 @@ export default function AdminCachePage() {
   const [trendDays, setTrendDays] = useState<7 | 14 | 30>(7);
   const [trendLoading, setTrendLoading] = useState(false);
 
-  const loadList = async () => {
+  const loadList = useCallback(async () => {
     setLoading(true);
     try {
       const r = await fetch(`/api/admin/cache?list=1&date=${date}`);
@@ -71,7 +71,7 @@ export default function AdminCachePage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [date]);
 
   const loadOrg = async (orgId: string) => {
     setActiveOrg(orgId);
@@ -80,7 +80,7 @@ export default function AdminCachePage() {
     setSnap(d);
   };
 
-  const loadTrend = async (n: number) => {
+  const loadTrend = useCallback(async (n: number) => {
     setTrendLoading(true);
     try {
       const r = await fetch(`/api/admin/cache?trend=${n}`);
@@ -89,10 +89,10 @@ export default function AdminCachePage() {
     } finally {
       setTrendLoading(false);
     }
-  };
+  }, []);
 
-  useEffect(() => { loadList(); /* eslint-disable-next-line */ }, [date]);
-  useEffect(() => { loadTrend(trendDays); /* eslint-disable-next-line */ }, [trendDays]);
+  useEffect(() => { void loadList(); }, [loadList]);
+  useEffect(() => { void loadTrend(trendDays); }, [loadTrend, trendDays]);
 
   return (
     <div className="min-h-screen bg-bg-root">

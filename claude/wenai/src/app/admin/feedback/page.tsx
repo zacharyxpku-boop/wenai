@@ -22,15 +22,12 @@ export default function AdminFeedbackPage() {
   const [selected, setSelected] = useState<string | null>(null);
   const [entries, setEntries] = useState<FeedbackEntry[]>([]);
   const [loading, setLoading] = useState(true);
-  const [authed, setAuthed] = useState(false);
-  const [key, setKey] = useState('');
-
-  // 简易口令保护：访问时输入 JWT_SECRET 前 8 位或任何 >= 6 位的口令
-  // 这个页面不对外公开，仅作者/coworker 内部看
-  useEffect(() => {
+  const [authed, setAuthed] = useState(() => {
+    if (typeof window === 'undefined') return false;
     const saved = sessionStorage.getItem('wenai_admin_key');
-    if (saved && saved.length >= 6) setAuthed(true);
-  }, []);
+    return Boolean(saved && saved.length >= 6);
+  });
+  const [key, setKey] = useState('');
 
   useEffect(() => {
     if (!authed) return;

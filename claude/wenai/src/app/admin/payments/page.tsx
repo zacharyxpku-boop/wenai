@@ -114,17 +114,17 @@ export default function AdminPaymentsPage() {
   return (
     <div className="max-w-[1000px] mx-auto py-8 px-6">
       <AdminHeader
-        subtitle={`Payment claims. Pending ${pending.length} / processed ${done.length}.`}
+        subtitle={`付款认领。待处理 ${pending.length} / 已处理 ${done.length}。`}
         onLogout={() => { sessionStorage.removeItem('wenai_admin_key'); setAuthed(false); }}
       />
 
       {loading ? (
-        <div className="text-center py-12 text-text-tertiary font-mono text-[12px]">Loading payment claims...</div>
+        <div className="text-center py-12 text-text-tertiary font-mono text-[12px]">正在加载付款认领...</div>
       ) : parsed.length === 0 ? (
         <div className="text-center py-12 border border-border-subtle rounded-md">
-          <p className="text-text-tertiary text-[13px] mb-2">No payment claims yet.</p>
+          <p className="text-text-tertiary text-[13px] mb-2">暂无付款认领。</p>
           <p className="text-text-tertiary text-[11px] font-mono">
-            Claims submitted from /pricing/checkout will appear here.
+            客户从 /pricing/checkout 提交的付款认领会显示在这里。
           </p>
         </div>
       ) : (

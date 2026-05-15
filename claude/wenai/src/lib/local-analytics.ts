@@ -6,7 +6,8 @@ export type LocalAnalyticsEventName =
   | 'template_copied'
   | 'paywall_shown'
   | 'paywall_upgrade_clicked'
-  | 'paywall_dismissed';
+  | 'paywall_dismissed'
+  | 'kuaizi_error';
 
 export interface LocalAnalyticsEvent {
   id: string;
@@ -30,6 +31,7 @@ export interface LocalAnalyticsStats {
     paywallUpgradeClicked: number;
     paywallConversionRate: number;
   };
+  funnel: Array<{ step: string; count: number; conversionRate: number }>;
 }
 
 const EVENTS_KEY = 'wenai_local_analytics_events_v1';
@@ -45,6 +47,7 @@ const EVENT_NAMES: LocalAnalyticsEventName[] = [
   'paywall_shown',
   'paywall_upgrade_clicked',
   'paywall_dismissed',
+  'kuaizi_error',
 ];
 
 function canUseStorage() {
@@ -122,6 +125,15 @@ export function getStats(): LocalAnalyticsStats {
   }, {} as Record<LocalAnalyticsEventName, number>);
   const paywallShown = totals.paywall_shown;
   const paywallUpgradeClicked = totals.paywall_upgrade_clicked;
+  const funnelSteps: Array<{ step: string; eventName: LocalAnalyticsEventName }> = [
+    { step: 'Landing', eventName: 'page_view' },
+    { step: '创建项目', eventName: 'template_copied' },
+    { step: '导入 CSV', eventName: 'csv_import' },
+    { step: '生成决策', eventName: 'decision_generated' },
+    { step: '导出报告', eventName: 'report_exported' },
+    { step: '复制模板', eventName: 'template_copied' },
+  ];
+  const firstStepCount = Math.max(1, totals.page_view);
   return {
     events,
     totals,
@@ -136,11 +148,19 @@ export function getStats(): LocalAnalyticsStats {
       paywallUpgradeClicked,
       paywallConversionRate: paywallShown > 0 ? Math.round((paywallUpgradeClicked / paywallShown) * 1000) / 10 : 0,
     },
+    funnel: funnelSteps.map(item => {
+      const count = totals[item.eventName];
+      return {
+        step: item.step,
+        count,
+        conversionRate: Math.round((count / firstStepCount) * 1000) / 10,
+      };
+    }),
   };
 }
 
 export function exportEventsAsCsv(events = safeReadEvents()) {
-  const header = ['timestamp', 'event_name', 'session_id', 'properties'];
+  const header = ['timestamp', 'event_name', 'session_id', 'properties_json'];
   const rows = events.map(event => [
     event.timestamp,
     event.event_name,
@@ -148,4 +168,20 @@ export function exportEventsAsCsv(events = safeReadEvents()) {
     JSON.stringify(event.properties).replace(/"/g, '""'),
   ]);
   return [header.join(','), ...rows.map(row => row.map(cell => `"${cell}"`).join(','))].join('\n');
+}
+
+export function filterEventsByRange(events: LocalAnalyticsEvent[], range: '7d' | '30d' | 'all' = 'all') {
+  if (range === 'all') return events;
+  const days = range === '7d' ? 7 : 30;
+  const cutoff = Date.now() - days * 24 * 60 * 60 * 1000;
+  return events.filter(event => new Date(event.timestamp).getTime() >= cutoff);
+}
+
+export function exportAnalytics(range: '7d' | '30d' | 'all' = 'all') {
+  const events = filterEventsByRange(safeReadEvents(), range);
+  return {
+    json: JSON.stringify(events, null, 2),
+    csv: exportEventsAsCsv(events),
+    events,
+  };
 }

@@ -61,7 +61,11 @@ export async function proxy(request: NextRequest) {
     pathname === '/' ||
     PUBLIC_PAGE_PREFIXES.some(p => p !== '/' && pathname.startsWith(p));
 
-  if (isPageRoute && isPublicPage && !pathname.startsWith('/admin')) {
+  if (isPageRoute && pathname === '/admin' && process.env.NODE_ENV !== 'development' && process.env.ENABLE_ADMIN !== 'true') {
+    return NextResponse.rewrite(new URL('/404', request.url));
+  }
+
+  if (isPageRoute && (pathname === '/admin' || (isPublicPage && !pathname.startsWith('/admin')))) {
     const publicHeaders = new Headers(request.headers);
     publicHeaders.set('x-pathname', pathname);
     return NextResponse.next({

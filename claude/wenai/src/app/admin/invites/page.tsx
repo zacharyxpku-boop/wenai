@@ -71,7 +71,7 @@ export default function AdminInvitesPage() {
 
   const handleSave = async () => {
     if (!form.code || !form.name || !form.expiresAt) {
-      flash('Code, display name, and expiry date are required.', false);
+      flash('请填写邀请码、显示名称和过期日期。', false);
       return;
     }
     const res = await fetch('/api/admin/invites', {
@@ -81,12 +81,12 @@ export default function AdminInvitesPage() {
     });
     const data = await res.json();
     if (res.ok) {
-      flash(`${form.code} ${editingCode ? 'updated' : 'created'}.`);
+      flash(`${form.code} 已${editingCode ? '更新' : '创建'}。`);
       setForm({ ...DEFAULT_NEW });
       setEditingCode(null);
       fetchInvites();
     } else {
-      flash(data.error || 'Failed to save invite.', false);
+      flash(data.error || '保存邀请码失败。', false);
     }
   };
 
@@ -102,14 +102,14 @@ export default function AdminInvitesPage() {
   };
 
   const handleDelete = async (code: string) => {
-    if (!confirm(`Delete invite code "${code}"? The invite link will stop working.`)) return;
+    if (!confirm(`确认删除邀请码 "${code}"？删除后邀请链接会失效。`)) return;
     const res = await fetch(`/api/admin/invites?code=${encodeURIComponent(code)}`, {
       method: 'DELETE',
       headers: adminHeaders(),
     });
     const data = await res.json();
     if (res.ok) {
-      flash(`${code} deleted.`);
+      flash(`${code} 已删除。`);
       fetchInvites();
     } else {
       flash(data.error || '删除邀请码失败。', false);
@@ -190,13 +190,13 @@ export default function AdminInvitesPage() {
           >
             <option value="free">Free</option>
             <option value="team">Team</option>
-            <option value="enterprise">Enterprise</option>
+            <option value="enterprise">企业版</option>
           </select>
           <button
             onClick={handleSave}
             className="px-3 py-1.5 bg-accent hover:bg-accent-hover text-bg-root text-[12px] font-semibold rounded"
           >
-            {editingCode ? 'Update' : 'Create'}
+            {editingCode ? '更新' : '创建'}
           </button>
         </div>
         {editingCode && (
@@ -215,7 +215,7 @@ export default function AdminInvitesPage() {
       </div>
 
       {loading ? (
-        <div className="text-center py-12 text-text-tertiary font-mono text-[12px]">Loading invite codes...</div>
+        <div className="text-center py-12 text-text-tertiary font-mono text-[12px]">正在加载邀请码...</div>
       ) : sorted.length === 0 ? (
         <div className="text-center py-12 border border-border-subtle rounded-md text-text-tertiary text-[13px]">
           No invite codes yet.
@@ -244,7 +244,7 @@ export default function AdminInvitesPage() {
                   onClick={() => handleCopyLink(code)}
                   className="px-2 py-1 text-[11px] font-mono text-accent border border-accent/30 rounded hover:bg-accent/10"
                 >
-                  Copy link
+                        复制链接
                 </button>
                 <button
                   onClick={() => handleEdit(code, invite)}

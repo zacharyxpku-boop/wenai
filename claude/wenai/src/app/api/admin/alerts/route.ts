@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { Redis } from '@upstash/redis';
 import { listSkus } from '@/lib/sku-history';
 import { getDailyCost } from '@/lib/cost-cap';
@@ -158,7 +158,7 @@ async function summarizeOrg(orgId: string): Promise<OrgAlertSummary> {
   };
 }
 
-export async function GET(_req: NextRequest) {
+export async function GET() {
   if (!redis) {
     return NextResponse.json({ orgs: [], totalOrgs: 0, error: 'Redis 未配置' });
   }

@@ -2,6 +2,7 @@
 
 import { Fragment, useCallback, useEffect, useState } from 'react';
 import AdminHeader from '@/components/AdminHeader';
+import Link from 'next/link';
 import {
   CONTRACT_STAGE_LABELS,
   INQUIRY_STATUS_LABELS,
@@ -12,6 +13,14 @@ import {
 import { buildPipelineSummary } from '@/lib/crm-pipeline';
 import { buildStandardPack } from '@/lib/sop-workflows';
 import { buildInquiryStandardPackPrefill, buildInquiryStandardPackRoute } from '@/lib/standard-pack-routing';
+import {
+  LISTING_FACTORY_ADMIN_INQUIRIES,
+  LISTING_FACTORY_ADMIN_REVIEW_LINKS,
+  LISTING_FACTORY_DEMO_BOUNDARY_COPY,
+  LISTING_FACTORY_FLOW_NAV,
+  LISTING_FACTORY_NAV_GROUPS,
+  LISTING_FACTORY_INQUIRY_STAGE_FLOW,
+} from '@/lib/listing-factory-demo';
 
 interface Inquiry {
   id: string;
@@ -158,6 +167,50 @@ const ACTIVITY_TYPE_LABEL: Record<ActivityEntry['type'], string> = {
   legacy: '补录',
 };
 
+function AdminListingFactoryNav() {
+  const flow = LISTING_FACTORY_FLOW_NAV.find(item => item.page === '/admin/inquiries');
+
+  return (
+    <section className="mb-5 rounded-lg border border-border-subtle bg-bg-surface/35 p-3">
+      <div className="grid gap-3 lg:grid-cols-4">
+        {LISTING_FACTORY_NAV_GROUPS.map(group => (
+          <div key={group.title}>
+            <div className="px-2 text-[10px] font-mono uppercase tracking-wider text-accent">{group.title}</div>
+            <div className="mt-2 flex gap-2 overflow-x-auto pb-1 lg:flex-wrap lg:overflow-visible">
+              {group.items.map(item => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={`shrink-0 rounded border px-2.5 py-1.5 text-[10px] font-mono transition-colors ${
+                    item.href === '/admin/inquiries'
+                      ? 'border-accent bg-accent/10 text-accent'
+                      : 'border-border-subtle text-text-secondary hover:border-accent/40 hover:text-accent'
+                  }`}
+                >
+                  {item.label}
+                </Link>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+      <div className="mt-3 rounded border border-border-subtle bg-bg-root/35 p-3 text-[11px] leading-relaxed text-text-secondary">
+        {LISTING_FACTORY_DEMO_BOUNDARY_COPY}
+      </div>
+      {flow && (
+        <div className="mt-3 grid gap-2 sm:grid-cols-2">
+          <Link href={flow.previousHref} className="rounded border border-border-subtle px-3 py-2 text-[11px] font-mono text-text-secondary hover:border-accent/40">
+            上一站：{flow.previousLabel}
+          </Link>
+          <Link href={flow.nextHref} className="rounded border border-accent bg-accent px-3 py-2 text-[11px] font-mono font-semibold text-bg-root">
+            下一站：{flow.nextLabel}
+          </Link>
+        </div>
+      )}
+    </section>
+  );
+}
+
 function parseActivityLog(raw?: string): ActivityEntry[] {
   if (!raw) return [];
   try {
@@ -182,6 +235,16 @@ export default function AdminInquiriesPage() {
   const [updating, setUpdating] = useState<string | null>(null);
   const [openSourceTop, setOpenSourceTop] = useState<Set<string>>(new Set());
   const [opsDraft, setOpsDraft] = useState<Record<string, Partial<Inquiry>>>({});
+  const [demoInquiryStages, setDemoInquiryStages] = useState<Record<string, number>>(() =>
+    Object.fromEntries(LISTING_FACTORY_ADMIN_INQUIRIES.map((item, index) => [item.company, Math.min(index + 1, LISTING_FACTORY_INQUIRY_STAGE_FLOW.length - 1)])),
+  );
+
+  const advanceDemoInquiryStage = (company: string) => {
+    setDemoInquiryStages(prev => ({
+      ...prev,
+      [company]: Math.min((prev[company] ?? 0) + 1, LISTING_FACTORY_INQUIRY_STAGE_FLOW.length - 1),
+    }));
+  };
 
   const adminHeaders = useCallback((): Record<string, string> => {
     const saved = sessionStorage.getItem('wenai_admin_key') || key;
@@ -315,8 +378,8 @@ export default function AdminInquiriesPage() {
       `1. ${skuLine}：SKU 名称、类目、价格带和核心卖点。`,
       `2. ${platformLine} 的上新目标：独立站、Amazon、TikTok Shop 或其他平台。`,
       '3. 现有素材：产品图、规格表、功效/性能宣称，以及必须避开的品牌词和合规词。',
-      `4. Benchmark：${benchmarkLine}。没有 benchmark 也能启动，但第一版会先产出搜索地图和假设，而不是完整内容研究结论。`,
-      `5. 需要的创意 workflow：${creativeLine}。`,
+      `4. 参考样例：${benchmarkLine}。没有参考样例也能启动，但第一版会先产出搜索地图和假设，而不是完整内容研究结论。`,
+      `5. 需要的内容打法：${creativeLine}。`,
       '6. 验收标准：本轮主要验证主图方向、详情页文案、合规、客服话术、内容脚本，还是 30 天复盘节奏？',
       '',
       '我们不会在 POC 前承诺 GMV 或转化提升。POC 的目标是交付一套可验收的 SKU 增长包，验证返工是否减少、审批是否变顺、内容测试是否能沉淀下一步合同证据。',
@@ -469,6 +532,7 @@ export default function AdminInquiriesPage() {
           setAuthed(false);
         }}
       />
+      <AdminListingFactoryNav />
 
       <section className="mb-5 grid grid-cols-2 md:grid-cols-5 gap-3">
         {[
@@ -483,6 +547,108 @@ export default function AdminInquiriesPage() {
             <div className="mt-1 text-2xl font-bold text-accent font-mono tabular-nums">{value}</div>
           </div>
         ))}
+      </section>
+
+      <section className="mb-5 rounded-lg border border-accent/30 bg-accent/5 p-4">
+        <div className="flex flex-col justify-between gap-2 md:flex-row md:items-end">
+          <div>
+            <div className="text-[10px] font-mono uppercase tracking-wider text-accent">商务推进后台</div>
+            <h2 className="mt-1 text-[18px] font-semibold text-text-primary">Listing Factory 商机详情样例</h2>
+            <p className="mt-1 text-[12px] leading-relaxed text-text-secondary">
+              用 demo data 展示来源路径、关联 SKU、试跑阶段、推荐套餐、月内容量和销售下一步；不伪装成真实保存。
+            </p>
+          </div>
+          <a href="/factory" className="text-[11px] font-mono text-accent hover:underline">查看内容工厂控制台 →</a>
+        </div>
+        <div className="mt-4 grid gap-3 lg:grid-cols-3">
+          {LISTING_FACTORY_ADMIN_INQUIRIES.map(item => (
+            <article key={item.company} className="rounded-md border border-border-subtle bg-bg-root/35 p-3">
+              {(() => {
+                const stageIndex = demoInquiryStages[item.company] ?? 0;
+                const stageLabel = LISTING_FACTORY_INQUIRY_STAGE_FLOW[stageIndex];
+                const reviewLink = LISTING_FACTORY_ADMIN_REVIEW_LINKS.find(link => link.company === item.company);
+                return (
+                  <>
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <div className="text-[13px] font-semibold text-text-primary">{item.company}</div>
+                  <div className="mt-1 text-[10px] font-mono text-accent">{item.sourcePath} · {item.pocStage}</div>
+                </div>
+                <span className="rounded border border-accent/30 px-2 py-1 text-[10px] font-mono text-accent">
+                  {item.recommendedTier}
+                </span>
+              </div>
+              <div className="mt-3 rounded border border-accent/25 bg-accent/5 p-2">
+                <div className="mb-2 flex items-center justify-between gap-2">
+                  <span className="text-[10px] font-mono uppercase tracking-wider text-accent">商机阶段</span>
+                  <button
+                    type="button"
+                    onClick={() => advanceDemoInquiryStage(item.company)}
+                    className="rounded border border-accent/30 px-2 py-1 text-[10px] font-mono text-accent hover:bg-accent/10"
+                  >
+                    推进阶段
+                  </button>
+                </div>
+                <div className="flex flex-wrap gap-1.5">
+                  {LISTING_FACTORY_INQUIRY_STAGE_FLOW.map((stage, index) => (
+                    <span
+                      key={stage}
+                      className={`rounded px-2 py-1 text-[10px] font-mono ${
+                        index <= stageIndex
+                          ? 'border border-accent/35 bg-accent/10 text-accent'
+                          : 'border border-border-subtle text-text-tertiary'
+                      }`}
+                    >
+                      {stage}
+                    </span>
+                  ))}
+                </div>
+                <p className="mt-2 text-[11px] leading-relaxed text-text-secondary">
+                  当前阶段：{stageLabel}。下一步：{item.nextCommercialAction}
+                </p>
+              </div>
+              <div className="mt-3 grid gap-2 text-[11px] text-text-secondary">
+                <div><span className="text-text-tertiary">关联 SKU：</span>{item.relatedSku}</div>
+                <div><span className="text-text-tertiary">类目：</span>{item.category}</div>
+                <div><span className="text-text-tertiary">Brief / 风险：</span>{item.briefCount} 条 · {item.riskLevel}</div>
+                <div><span className="text-text-tertiary">预计月内容量：</span>{item.expectedMonthlyVolume}</div>
+              </div>
+              {reviewLink && (
+                <div className="mt-3 rounded border border-border-subtle bg-bg-surface/50 p-3 text-[11px] leading-relaxed text-text-secondary">
+                  <div className="text-[10px] font-mono uppercase tracking-wider text-accent">关联 POC 复盘结论</div>
+                  <div className="mt-2 grid gap-2 md:grid-cols-2">
+                    <div><span className="text-text-primary">复盘结论：</span>{reviewLink.reviewConclusion}</div>
+                    <div><span className="text-text-primary">Brief 综合评分：</span>{reviewLink.briefOverallScore}/100</div>
+                    <div><span className="text-text-primary">风险等级：</span>{reviewLink.riskLevel}</div>
+                    <div><span className="text-text-primary">推荐月内容量：</span>{reviewLink.expectedMonthlyVolume}</div>
+                    <div><span className="text-text-primary">交付包：</span>{reviewLink.deliveryPackageSent ? '已发送交付包' : '待发送交付包'}</div>
+                    <div><span className="text-text-primary">报价方向：</span>{reviewLink.quoteDirection}</div>
+                  </div>
+                  <p className="mt-2 text-text-primary">下一步商务动作：{reviewLink.nextCommercialAction}</p>
+                </div>
+              )}
+              <details className="mt-3 rounded border border-border-subtle bg-bg-surface/50 p-3">
+                <summary className="cursor-pointer text-[11px] font-mono text-accent">商机详情</summary>
+                <div className="mt-3 space-y-2 text-[11px] leading-relaxed text-text-secondary">
+                  <p><span className="text-text-primary">试跑结论：</span>{item.trialConclusion}</p>
+                  <p><span className="text-text-primary">客户关注点：</span>{item.customerConcerns.join(' / ')}</p>
+                  <p><span className="text-text-primary">建议销售话术：</span>{item.salesTalkTrack}</p>
+                  <p><span className="text-text-primary">推荐报价方向：</span>{item.quoteDirection}</p>
+                  <p><span className="text-text-primary">套餐判断：</span>{item.tierFit}</p>
+                </div>
+              </details>
+              <p className="mt-3 text-[12px] leading-relaxed text-text-secondary">
+                下一步商务动作：{item.nextCommercialAction}
+              </p>
+              <p className="mt-2 text-[11px] leading-relaxed text-text-tertiary">
+                客户摘要：{item.customerSummary}
+              </p>
+                  </>
+                );
+              })()}
+            </article>
+          ))}
+        </div>
       </section>
 
       <section className="mb-5 grid grid-cols-1 gap-3 lg:grid-cols-3">
@@ -769,8 +935,8 @@ export default function AdminInquiriesPage() {
                         <div className="border border-border-subtle rounded p-2"><span className="text-text-tertiary">平台： </span>{item.platforms || '缺失'}</div>
                         <div className="border border-border-subtle rounded p-2"><span className="text-text-tertiary">素材： </span>{ASSETS_LABEL[item.assetsReady || ''] || '缺失'}</div>
                         <div className="border border-border-subtle rounded p-2"><span className="text-text-tertiary">验收目标： </span>{item.expectedDeliverables || '缺失'}</div>
-                        <div className="border border-border-subtle rounded p-2"><span className="text-text-tertiary">创意 workflow： </span>{CREATIVE_LABEL[item.creativeNeeds || ''] || item.creativeNeeds || '缺失'}</div>
-                        <div className="border border-border-subtle rounded p-2 break-words"><span className="text-text-tertiary">Benchmark： </span>{item.benchmarkLinks || '缺失'}</div>
+                        <div className="border border-border-subtle rounded p-2"><span className="text-text-tertiary">内容打法： </span>{CREATIVE_LABEL[item.creativeNeeds || ''] || item.creativeNeeds || '缺失'}</div>
+                        <div className="border border-border-subtle rounded p-2 break-words"><span className="text-text-tertiary">参考样例： </span>{item.benchmarkLinks || '缺失'}</div>
                       </div>
                     </div>
 
@@ -860,7 +1026,7 @@ export default function AdminInquiriesPage() {
 
                     <div className="border-t border-border-subtle pt-3">
                       <div className="flex items-center justify-between gap-3 mb-2">
-                        <div className="text-[10px] font-mono text-text-tertiary uppercase tracking-wider">POC timeline / evidence trail</div>
+                        <div className="text-[10px] font-mono text-text-tertiary uppercase tracking-wider">交付时间线 / 证据链</div>
                         <div className="text-[10px] font-mono text-text-tertiary">{activity.length > 0 ? `${activity.length} 条最近更新` : '等待下一次触达'}</div>
                       </div>
                       {activity.length > 0 ? (
@@ -906,7 +1072,7 @@ export default function AdminInquiriesPage() {
 
                     <div className="flex items-center gap-2 pt-2 border-t border-border-subtle flex-wrap">
                       {item.channel === 'email' && (
-                        <a href={`mailto:${item.contact}?subject=${encodeURIComponent(`Wenai POC reply / ${item.company}`)}`} className="text-[10px] font-mono text-accent border border-accent/30 hover:bg-accent/10 rounded px-2 py-1">
+                        <a href={`mailto:${item.contact}?subject=${encodeURIComponent(`wenai 试跑需求回复 / ${item.company}`)}`} className="text-[10px] font-mono text-accent border border-accent/30 hover:bg-accent/10 rounded px-2 py-1">
                           发邮件
                         </a>
                       )}
