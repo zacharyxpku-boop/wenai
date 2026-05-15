@@ -28,6 +28,7 @@ const PUBLIC_PAGE_PREFIXES = [
   '/dashboard',
   '/factory',
   '/report',
+  '/cases',
   '/settings/kuaizi',
   '/unsubscribed',
   '/about',
@@ -55,7 +56,6 @@ export async function proxy(request: NextRequest) {
       pathname === '/demo' ||
       pathname === '/poc' ||
       pathname === '/tools' ||
-      pathname === '/cases' ||
       pathname === '/docs' ||
       pathname === '/status' ||
       pathname === '/roadmap' ||
@@ -65,7 +65,6 @@ export async function proxy(request: NextRequest) {
       pathname === '/me' ||
       pathname.startsWith('/pipelines/') ||
       pathname.startsWith('/tools/') ||
-      pathname.startsWith('/cases/') ||
       pathname.startsWith('/product/') ||
       pathname.startsWith('/benchmark/') ||
       pathname.startsWith('/me/')

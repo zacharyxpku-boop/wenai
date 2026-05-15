@@ -315,7 +315,7 @@ test.describe.serial('Wenai 完整用户旅程', () => {
   });
 
   test('测试 I：旧公开功能入口统一承接到升级页', async ({ page }) => {
-    const legacyPaths = ['/demo', '/tools', '/cases', '/docs', '/status', '/roadmap', '/enterprise', '/inquire', '/pipelines/product-image', '/product/video', '/me'];
+    const legacyPaths = ['/demo', '/tools', '/docs', '/status', '/roadmap', '/enterprise', '/inquire', '/pipelines/product-image', '/product/video', '/me'];
 
     for (const legacyPath of legacyPaths) {
       await page.goto(legacyPath);
