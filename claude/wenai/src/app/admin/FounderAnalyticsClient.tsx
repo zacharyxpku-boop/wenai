@@ -1,6 +1,7 @@
 'use client';
 
 import { useMemo, useState } from 'react';
+import { exportEarlyBirdLeads, getEarlyBirdStats } from '@/lib/early-bird';
 import { exportAnalytics, getStats, type LocalAnalyticsEventName } from '@/lib/local-analytics';
 
 const FILTERS: Array<'all' | LocalAnalyticsEventName> = ['all', 'page_view', 'csv_import', 'decision_generated', 'report_exported', 'template_copied', 'paywall_shown', 'paywall_upgrade_clicked', 'paywall_dismissed', 'kuaizi_error'];
@@ -33,12 +34,14 @@ export default function FounderAnalyticsClient({ enabled }: { enabled: boolean }
   const [filter, setFilter] = useState<'all' | LocalAnalyticsEventName>('all');
   const [range, setRange] = useState<'7' | '30'>('7');
   const stats = useMemo(() => getStats(), []);
+  const earlyBird = useMemo(() => getEarlyBirdStats(), []);
   const events = stats.events.filter(event => filter === 'all' || event.event_name === filter).slice(0, 50);
   const metricCards = [
     ['总访问', stats.metrics.totalVisits],
     ['CSV 导入次数', stats.metrics.csvImports],
     ['决策生成次数', stats.metrics.decisionsGenerated],
     ['模板复制次数', stats.metrics.templatesCopied],
+    ['早鸟线索', earlyBird.total],
     ['付费墙曝光→点击转化率', `${stats.metrics.paywallConversionRate}%`],
   ];
 
@@ -69,6 +72,9 @@ export default function FounderAnalyticsClient({ enabled }: { enabled: boolean }
             <button type="button" onClick={() => downloadText('wenai-local-analytics.csv', exportAnalytics(range === '7' ? '7d' : '30d').csv, 'text/csv;charset=utf-8')} className="rounded-md bg-accent px-3 py-2 text-[12px] font-semibold text-bg-root hover:bg-accent-hover">
               导出 CSV
             </button>
+            <button type="button" onClick={() => downloadText('wenai-early-bird-leads.csv', exportEarlyBirdLeads(range === '7' ? '7d' : '30d').csv, 'text/csv;charset=utf-8')} className="rounded-md border border-border-subtle px-3 py-2 text-[12px] font-semibold text-text-primary hover:border-accent">
+              导出早鸟线索
+            </button>
           </div>
         </div>
 
@@ -91,6 +97,56 @@ export default function FounderAnalyticsClient({ enabled }: { enabled: boolean }
                 <div className="mt-1 text-[11px] text-text-secondary">{item.conversionRate}%</div>
               </div>
             ))}
+          </div>
+        </section>
+
+        <section className="mt-6 rounded-md border border-border-subtle bg-bg-surface p-5">
+          <div className="flex flex-col justify-between gap-3 md:flex-row md:items-center">
+            <div>
+              <h2 className="text-lg font-semibold text-text-primary">早鸟商业化线索</h2>
+              <p className="mt-1 text-[12px] text-text-secondary">当前为本地数据，仅包含当前浏览器收集到的邮箱意向。</p>
+            </div>
+            <div className="grid grid-cols-3 gap-2 text-center text-[12px]">
+              <div className="rounded-md border border-border-subtle px-3 py-2">
+                <div className="text-text-tertiary">总数</div>
+                <div className="mt-1 text-lg font-semibold text-text-primary">{earlyBird.total}</div>
+              </div>
+              <div className="rounded-md border border-border-subtle px-3 py-2">
+                <div className="text-text-tertiary">Starter</div>
+                <div className="mt-1 text-lg font-semibold text-text-primary">{earlyBird.starter}</div>
+              </div>
+              <div className="rounded-md border border-border-subtle px-3 py-2">
+                <div className="text-text-tertiary">Growth</div>
+                <div className="mt-1 text-lg font-semibold text-text-primary">{earlyBird.growth}</div>
+              </div>
+            </div>
+          </div>
+          <div className="mt-4 overflow-x-auto">
+            <table className="w-full min-w-[680px] text-left text-[12px]">
+              <thead className="border-b border-border-subtle text-text-tertiary">
+                <tr>
+                  <th className="py-2 pr-3">邮箱</th>
+                  <th className="py-2 pr-3">档位</th>
+                  <th className="py-2 pr-3">来源</th>
+                  <th className="py-2 pr-3">更新时间</th>
+                </tr>
+              </thead>
+              <tbody>
+                {earlyBird.leads.slice(0, 20).map(lead => (
+                  <tr key={lead.id} className="border-b border-border-subtle">
+                    <td className="py-2 pr-3 font-semibold text-text-primary">{lead.email}</td>
+                    <td className="py-2 pr-3 text-text-secondary">{lead.tier}</td>
+                    <td className="py-2 pr-3 text-text-secondary">{lead.source}</td>
+                    <td className="py-2 pr-3 text-text-tertiary">{new Date(lead.updatedAt).toLocaleString('zh-CN')}</td>
+                  </tr>
+                ))}
+                {earlyBird.leads.length === 0 && (
+                  <tr>
+                    <td colSpan={4} className="py-6 text-center text-text-tertiary">还没有早鸟线索。定价页、Dashboard 或付费墙提交邮箱后会出现在这里。</td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
           </div>
         </section>
 

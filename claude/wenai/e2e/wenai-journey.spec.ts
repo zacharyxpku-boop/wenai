@@ -326,4 +326,23 @@ test.describe.serial('Wenai 完整用户旅程', () => {
       await expect(upgradePanel.getByRole('link', { name: '导入 CSV' })).toBeVisible();
     }
   });
+
+  test('测试 J：定价页收集早鸟商业化线索', async ({ page }) => {
+    await clearApp(page);
+    await page.goto('/pricing');
+
+    await page.getByRole('button', { name: '获取早鸟优惠' }).click();
+    await expect(page.getByText('Starter 即将上线，留下邮箱获取早鸟优惠')).toBeVisible();
+    await page.getByPlaceholder('you@company.com').fill('seller@example.com');
+    await page.getByRole('button', { name: '提交' }).click();
+    await expect(page.getByText('已记录。Starter/Growth 上线后会优先通知你。当前仍为 Free 试用。')).toBeVisible();
+
+    const leads = await page.evaluate(() => JSON.parse(window.localStorage.getItem('wenai_early_bird_emails') || '[]') as Array<Record<string, string>>);
+    expect(leads).toHaveLength(1);
+    expect(leads[0]).toMatchObject({
+      email: 'seller@example.com',
+      tier: 'Starter',
+      source: 'pricing',
+    });
+  });
 });
