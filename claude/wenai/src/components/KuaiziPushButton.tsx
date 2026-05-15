@@ -108,7 +108,7 @@ export default function KuaiziPushButton({ payload, visible, onCompleted }: Kuai
         title={configured ? '推送生产任务' : '请先前往设置页配置筷子科技 API'}
         className="w-full rounded-md bg-slate-950 px-4 py-3 text-[13px] font-black text-white disabled:opacity-60 sm:w-auto"
       >
-        {isSubmitting ? '正在推送...' : '一键推送到筷子科技生成素材'}
+        {isSubmitting ? '正在推送...' : configured ? '一键推送到筷子科技生成素材' : '配置后推送生产任务'}
       </button>
       {!configured && <p className="mt-2 text-[12px] font-bold text-slate-700">请先前往设置页配置筷子科技 API。</p>}
       {message && <p className="mt-2 text-[12px] font-bold text-slate-700">{message}</p>}
