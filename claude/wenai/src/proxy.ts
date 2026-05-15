@@ -54,7 +54,6 @@ export async function proxy(request: NextRequest) {
     (
       pathname === '/demo' ||
       pathname === '/poc' ||
-      pathname === '/pricing/checkout' ||
       pathname === '/tools' ||
       pathname === '/cases' ||
       pathname === '/docs' ||
