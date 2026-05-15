@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 import KuaiziPushButton from '@/components/KuaiziPushButton';
+import { assessClientFile, readClientTextFile } from '@/lib/client-file-guard';
 import { track } from '@/lib/local-analytics';
 import {
   LISTING_FACTORY_CASES,
@@ -104,6 +105,12 @@ function downloadTextFile(filename: string, content: string, mimeType: string) {
 
 function createLocalActivityId(scope: string) {
   return `activity-${new Date().toISOString().replace(/[^0-9]/g, '')}-${scope}`;
+}
+
+function createShareId() {
+  return typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function'
+    ? crypto.randomUUID()
+    : `share-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
 }
 
 function useLocalListingFactorySnapshot() {
@@ -306,6 +313,7 @@ const TEMPLATE_CONVERSION_KEY = 'wenai_template_conversions_v1';
 const DECISION_HISTORY_KEY = 'wenai_decision_history_v1';
 const PAYWALL_EVENT_KEY = 'wenai_paywall_events_v1';
 const VIDEO_WORKFLOW_KEY = 'wenai_video_workflow_v1';
+const EARLY_BIRD_KEY = 'wenai_early_bird_emails';
 
 const memoryStorage = new Map<string, string>();
 let localStorageBlocked = false;
@@ -552,11 +560,6 @@ function loadSubscription(): SubscriptionState {
   }
 }
 
-function saveSubscription(tier: SubscriptionTier) {
-  if (typeof window === 'undefined') return;
-  storageWrite(SUBSCRIPTION_KEY, JSON.stringify({ tier, updatedAt: new Date().toISOString() }));
-}
-
 function loadUsage(): UsageState {
   const fallback = { month: currentMonthKey(), csvImports: 0 };
   if (typeof window === 'undefined') return fallback;
@@ -573,11 +576,13 @@ function saveUsage(usage: UsageState) {
   storageWrite(USAGE_KEY, JSON.stringify(usage));
 }
 
-async function mockUpgradeSubscription(tier: SubscriptionTier) {
-  try {
-    await fetch('/api/billing/mock', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ tier }) });
-  } catch {}
-  saveSubscription(tier);
+function saveEarlyBirdEmail(tier: SubscriptionTier, email: string, source: string) {
+  if (typeof window === 'undefined') return;
+  const existing = JSON.parse(storageRead(EARLY_BIRD_KEY) || '[]') as Array<Record<string, string>>;
+  storageWrite(EARLY_BIRD_KEY, JSON.stringify([
+    { tier, email, source, createdAt: new Date().toISOString() },
+    ...existing,
+  ].slice(0, 200)));
 }
 
 function decisionHistoryKey(runId: string) {
@@ -675,6 +680,10 @@ function parseCsvRows(csvText: string): Array<Record<string, string>> {
 function csvHeaders(csvText: string) {
   const firstLine = csvText.split(/\r?\n/).find(line => line.trim());
   return firstLine ? parseCsvLine(firstLine) : [];
+}
+
+function normalizeHeaderKey(header: string) {
+  return header.toLowerCase().replace(/（[^）]*）|\([^)]*\)/g, '').replace(/[^\w\u4e00-\u9fa5]+/g, '');
 }
 
 function platformLabel(platform?: string) {
@@ -1072,6 +1081,28 @@ function buildActionableProductionBrief(run: ListingFactoryRun, verdict = buildL
   const hook = source?.hook || brief?.hook;
   const hookOptions = hook && hook.length >= 10 ? [hook] : readableHookFallbacks(run);
   const cta = brief?.cta && brief.cta.length >= 6 ? brief.cta : '现在评论你的使用场景，我们帮你判断是否适合。';
+  const isAmazon = run.project.targetPlatforms.some(platform => /amazon/i.test(platform));
+  const executionSpec = isAmazon
+    ? [
+      '## 执行规格（交给设计师 / 外包）',
+      '- 主图：2000x2000，纯白背景，产品占画面 85%，边缘清晰。',
+      '- A+ 图文：至少 3 张，分别说明使用场景、核心卖点和尺寸/兼容性。',
+      '- 信息图：用 3 个以内卖点，不堆文字，不使用未经验证的功效承诺。',
+      '- 字幕/文字：移动端可读，核心卖点字号不低于画面宽度 6%。',
+      '- 导出格式：JPG/PNG，sRGB，单张文件小于平台限制。',
+      `- 文件命名：${run.project.productName.replace(/\s+/g, '-')}_{variant}_${new Date().toISOString().slice(0, 10)}.jpg`,
+      '- 交付方式：上传至项目云盘或发送原文件。',
+    ]
+    : [
+      '## 执行规格（交给剪辑师/外包）',
+      '- 分辨率：1080x1920（9:16 竖屏）',
+      '- 时长：15-30 秒',
+      '- 字幕：前三秒必须有大字号 hook 字幕',
+      '- 音乐：使用平台热门 BGM，节奏匹配前 3 秒转折',
+      '- 导出格式：MP4, H.264, 码率 ≥ 8Mbps',
+      `- 文件命名：${run.project.productName.replace(/\s+/g, '-')}_{variant}_${new Date().toISOString().slice(0, 10)}.mp4`,
+      '- 交付方式：上传至项目云盘或发送原文件',
+    ];
   return [
     '# Wenai 生产需求 Brief',
     '',
@@ -1101,6 +1132,8 @@ function buildActionableProductionBrief(run: ListingFactoryRun, verdict = buildL
     '- 每条内容必须保留 trackingCode。',
     '- 每条内容必须保留 experimentCellId。',
     '- 回收 impressions、clicks、spend、orders、revenue 后再复盘下一轮动作。',
+    '',
+    ...executionSpec,
   ].join('\n');
 }
 
@@ -1185,21 +1218,42 @@ function createLearningArchive(run: ListingFactoryRun, verdict = buildLocalDecis
 
 function validateCsvUiState(csvText: string, preview?: PlatformCsvMappingPreview, rows: Array<Record<string, string>> = []): CsvUiError | null {
   if (!csvText.trim()) {
-    return { type: 'parse_error', title: 'CSV 文件为空', body: '没有读取到任何内容。请上传 UTF-8 编码的 CSV，或先下载示例模板。', actionLabel: '下载示例模板' };
+    return { type: 'parse_error', title: '文件为空，请上传包含数据的 CSV', body: '没有读取到任何内容。请上传 UTF-8 编码的 CSV，或先下载示例模板。', actionLabel: '下载示例模板' };
+  }
+  if (csvText.includes('\uFFFD')) {
+    return { type: 'parse_error', title: '编码识别失败，请保存为 UTF-8 格式后重试', body: '当前文件包含无法识别的字符。请用表格软件另存为 UTF-8 CSV 后重新上传。', actionLabel: '下载示例模板' };
   }
   const headers = csvHeaders(csvText);
   if (headers.length < 2 || rows.length === 0) {
     return { type: 'parse_error', title: 'CSV 格式无法解析', body: '至少需要一行表头和一行数据。请检查逗号分隔、换行和编码。', actionLabel: '下载示例模板' };
   }
+  if (preview && preview.totalHeaders > 0 && preview.mappedFields.length === 0) {
+    return { type: 'zero_mapping', title: '未识别到标准字段，请下载示例模板对照', body: '没有任何表头能映射到 impressions、clicks、spend、orders、revenue 等字段。', actionLabel: '下载示例模板' };
+  }
   if (preview?.detectedChannel === 'other') {
     return { type: 'unknown_platform', title: '请确认 CSV 平台格式', body: '我们支持 TikTok、Amazon、Shopify、Meta 和 Google 的数据格式，请确认你的 CSV 来自以上平台，或手动选择对应平台后继续。', actionLabel: '确认平台后继续' };
-  }
-  if (preview && preview.totalHeaders > 0 && preview.mappedFields.length === 0) {
-    return { type: 'zero_mapping', title: '字段匹配度 0%，请检查 CSV 格式', body: '没有任何表头能映射到 impressions、clicks、spend、orders、revenue 等字段。', actionLabel: '下载示例模板' };
   }
   const hasMetrics = rows.some(row => Object.keys(row).some(key => /impressions|impr|clicks|spend|cost|revenue|orders|sales/i.test(key)) && Object.values(row).some(Boolean));
   if (!hasMetrics) {
     return { type: 'empty_metrics', title: '未检测到有效表现数据', body: '请检查 CSV 中是否包含 impressions、clicks、spend、orders、revenue，且至少有一行非空数据。', actionLabel: '查看排查项' };
+  }
+  const today = new Date();
+  const dirtyRow = rows.find(row => Object.entries(row).some(([key, value]) => {
+    const normalizedKey = normalizeHeaderKey(key);
+    const raw = String(value || '').trim();
+    if (!raw) return false;
+    if (/click|impression|spend|cost|order|purchase|revenue|sales|conversion/i.test(normalizedKey)) {
+      const numeric = Number(raw.replace(/[$,%\s,]/g, ''));
+      if (!Number.isFinite(numeric) || numeric < 0) return true;
+    }
+    if (/date|day/.test(normalizedKey)) {
+      const parsed = new Date(raw);
+      if (Number.isFinite(parsed.getTime()) && parsed.getTime() > today.getTime() + 24 * 60 * 60 * 1000) return true;
+    }
+    return false;
+  }));
+  if (dirtyRow) {
+    return { type: 'empty_metrics', title: '数据质量不满足决策条件', body: 'QA 报告发现负数、未来日期或无法解析的数值。请修正脏数据后再生成决策。', actionLabel: '查看排查项' };
   }
   return null;
 }
@@ -1444,19 +1498,23 @@ function SubscriptionStatusBar({
     <div className="mb-4 rounded-md border border-slate-200 bg-slate-50 p-4">
       <div className="flex flex-col justify-between gap-3 lg:flex-row lg:items-center">
         <div>
-          <div className="text-[12px] font-black text-slate-900">当前档位：{subscription.tier}</div>
+          <div className="text-[12px] font-black text-slate-900">
+            当前档位：{subscription.tier === 'Free' ? 'Free 试用中' : `${subscription.tier} 本地功能预览`}
+          </div>
           <p className="mt-1 text-[12px] text-slate-600">项目 {projectLimit} / 本月 CSV 导入 {csvLimit} / 学习档案 {entitlements.learningRounds === 'unlimited' ? '完整保留' : `最近 ${entitlements.learningRounds} 轮`}</p>
+          <p className="mt-1 text-[12px] text-slate-500">Starter/Growth 即将上线。当前只收集上线通知邮箱，不会写入虚假的已升级状态。</p>
         </div>
         <div className="flex flex-wrap gap-2">
-          {subscription.tier === 'Free' && <ActionButton onClick={() => onUpgrade('Starter')}>升级 Starter $29/月</ActionButton>}
-          {subscription.tier !== 'Growth' && <ActionButton onClick={() => onUpgrade('Growth')}>升级 Growth $99/月</ActionButton>}
+          {subscription.tier === 'Free' && <ActionButton onClick={() => onUpgrade('Starter')}>获取 Starter 上线通知</ActionButton>}
+          {subscription.tier !== 'Growth' && <ActionButton onClick={() => onUpgrade('Growth')}>获取 Growth 上线通知</ActionButton>}
         </div>
       </div>
     </div>
   );
 }
 
-function PaywallModal({ paywall, onClose, onUpgrade }: { paywall: PaywallState | null; onClose: () => void; onUpgrade: (tier: SubscriptionTier) => void }) {
+function PaywallModal({ paywall, onClose, onUpgrade }: { paywall: PaywallState | null; onClose: () => void; onUpgrade: (tier: SubscriptionTier, email: string) => void }) {
+  const [email, setEmail] = useState('');
   if (!paywall) return null;
   const dismiss = () => {
     recordPaywallEvent({ type: 'paywallDismissed', title: paywall.title, targetTier: paywall.targetTier });
@@ -1464,8 +1522,9 @@ function PaywallModal({ paywall, onClose, onUpgrade }: { paywall: PaywallState |
     onClose();
   };
   const upgrade = () => {
+    if (!email.trim()) return;
     track('paywall_upgrade_clicked', { trigger: paywall.trigger, tier: paywall.targetTier.toLowerCase() });
-    onUpgrade(paywall.targetTier);
+    onUpgrade(paywall.targetTier, email.trim());
   };
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/45 p-4">
@@ -1473,9 +1532,16 @@ function PaywallModal({ paywall, onClose, onUpgrade }: { paywall: PaywallState |
         <button type="button" onClick={dismiss} aria-label="关闭" className="absolute right-3 top-3 rounded-full border border-slate-200 px-2 py-1 text-[12px] font-black text-slate-600 hover:bg-slate-50">×</button>
         <div className="pr-8 text-[18px] font-black text-slate-950">{paywall.title}</div>
         <p className="mt-3 text-[13px] leading-6 text-slate-700">{paywall.body}</p>
+        <input
+          type="email"
+          value={email}
+          onChange={event => setEmail(event.target.value)}
+          placeholder="you@company.com"
+          className="mt-4 w-full rounded-md border border-slate-200 px-3 py-3 text-[13px] outline-none focus:border-amber-400"
+        />
         <div className="mt-5 flex flex-wrap justify-end gap-2">
           <button type="button" onClick={dismiss} className="rounded-md border border-slate-200 px-3 py-2 text-[12px] font-bold text-slate-700">继续使用 Free 档</button>
-          <PrimaryActionButton onClick={upgrade}>升级 {paywall.targetTier}</PrimaryActionButton>
+          <PrimaryActionButton onClick={upgrade}>获取早鸟通知</PrimaryActionButton>
         </div>
       </div>
     </div>
@@ -1663,7 +1729,7 @@ function DecisionCard({
           <span>{evidenceOpen ? '收起' : '展开'}</span>
         </button>
         {evidenceOpen && (
-          <div className="mt-3 grid grid-cols-2 gap-2 md:grid-cols-4">
+          <div data-testid="decision-evidence-grid" className="mt-3 grid grid-cols-2 gap-2 md:grid-cols-4">
             {[
               ['记录数', formatCount(verdict.evidence.recordCount), '本次聚合记录'],
               ['曝光 / 点击', `${formatCount(verdict.evidence.impressions)} / ${formatCount(verdict.evidence.clicks)}`, '样本量'],
@@ -1928,8 +1994,19 @@ function ContentDecisionOsPanel({ run, onChanged }: { run: ListingFactoryRun; on
     saveDecisionHistory(run.id, next);
   }, [decisionHistory, run.id, run.performanceRecords.length, verdict.kind, verdict.title, verdict.evidence.roas, verdict.evidence.ctr, verdict.evidence.cvr, verdict.confidenceScore]);
 
-  const upgrade = async (tier: SubscriptionTier) => {
-    await mockUpgradeSubscription(tier);
+  const upgrade = (tier: SubscriptionTier, email = '') => {
+    if (email.trim()) {
+      saveEarlyBirdEmail(tier, email.trim(), 'content-decision-os');
+      setToast('已记录。Starter/Growth 上线后会优先通知你。当前继续使用 Free 试用。');
+    } else {
+      setPaywall({
+        title: `${tier} 即将上线`,
+        body: `${tier} 档即将上线，留下邮箱获取早鸟优惠。当前不会展示虚假的已升级状态。`,
+        targetTier: tier,
+        trigger: 'brief_export',
+      });
+      return;
+    }
     setSubscription(loadSubscription());
     setPaywall(null);
   };
@@ -1953,7 +2030,7 @@ function ContentDecisionOsPanel({ run, onChanged }: { run: ListingFactoryRun; on
       recordPaywallEvent({ type: 'paywallShown', trigger: 'csv_import_limit', tier: subscription.tier });
       setPaywall({
         title: 'Free 档每月限 3 次导入',
-        body: '你已经用 Wenai 复盘了 3 轮内容实验。升级 Starter 档（$29/月）后，每月可复盘 30 轮实验，减少错误投放决策，并导出无水印报告和生产 Brief。',
+        body: 'Free 档每月限 3 次导入。Starter 档即将上线，留下邮箱获取早鸟优惠。上线后每月可复盘 30 轮实验，减少错误投放决策，并导出无水印报告和生产 Brief。',
         targetTier: 'Starter',
         trigger: 'import_limit',
       });
@@ -1971,6 +2048,18 @@ function ContentDecisionOsPanel({ run, onChanged }: { run: ListingFactoryRun; on
           return;
         }
         const result = importPerformanceCsv(run, csvText, new Date());
+        if (result.errors.length > 0) {
+          const dirtyError: CsvUiError = {
+            type: 'empty_metrics',
+            title: '数据质量不满足决策条件',
+            body: result.errors.slice(0, 3).join('；'),
+            actionLabel: '查看排查项',
+          };
+          clearPerformance(run, dirtyError.body);
+          setCsvError(dirtyError);
+          setToast(dirtyError.title);
+          return;
+        }
         if (result.records.length > 0) {
           const nextVerdict = buildLocalDecisionVerdict({ ...run, performanceRecords: result.records }, decisionHistory);
           track('csv_import', { platform: preview.detectedChannel, rowCount: result.records.length });
@@ -1988,7 +2077,7 @@ function ContentDecisionOsPanel({ run, onChanged }: { run: ListingFactoryRun; on
         }
         const emptyMetricError: CsvUiError = { type: 'empty_metrics', title: '未检测到有效表现数据', body: '请检查 CSV 中是否包含 impressions/clicks/spend，且至少一行有有效数值。', actionLabel: '查看排查项' };
         setCsvError(emptyMetricError);
-        setToast(result.errors[0] || emptyMetricError.title);
+        setToast(emptyMetricError.title);
       }));
     } catch {
       setToast('处理时间较长，请重试或联系支持。');
@@ -1998,8 +2087,16 @@ function ContentDecisionOsPanel({ run, onChanged }: { run: ListingFactoryRun; on
   };
   const importFile = async (file?: File) => {
     if (!file) return;
+    const guard = assessClientFile(file, {
+      kind: 'csv',
+      largeBytes: 5 * 1024 * 1024,
+      hardBytes: 12 * 1024 * 1024,
+      allowedTypes: ['text/csv', 'application/vnd.ms-excel'],
+    });
+    if (guard.message) setToast(guard.message);
+    if (!guard.ok) return;
     try {
-      const text = await withTimeout(file.text());
+      const text = await withTimeout(readClientTextFile(file));
       setCsvText(text);
       const { preview } = buildPreview(text);
       setToast(`${mappingMatchText(preview)}。${preview.unknownFields.length > 0 ? '请先确认未匹配字段。' : '下一步：导入并生成决策。'}`);
@@ -2070,7 +2167,7 @@ function ContentDecisionOsPanel({ run, onChanged }: { run: ListingFactoryRun; on
   const exportProductionBrief = () => {
     if (!entitlements.productionBriefExport) {
       recordPaywallEvent({ type: 'paywallShown', trigger: 'production_brief_export', tier: subscription.tier });
-      setPaywall({ title: 'Brief 导出需 Starter 档', body: '升级 Starter 档（$29/月）后，每月可复盘 30 轮实验，减少错误投放决策，并把胜出变量直接整理成剪辑师可执行的生产 Brief。', targetTier: 'Starter', trigger: 'brief_export' });
+      setPaywall({ title: 'Brief 导出需 Starter 档', body: 'Starter 档即将上线，留下邮箱获取早鸟优惠。上线后每月可复盘 30 轮实验，减少错误投放决策，并把胜出变量直接整理成剪辑师可执行的生产 Brief。', targetTier: 'Starter', trigger: 'brief_export' });
       track('paywall_shown', { trigger: 'brief_export' });
       return;
     }
@@ -2088,25 +2185,24 @@ function ContentDecisionOsPanel({ run, onChanged }: { run: ListingFactoryRun; on
     try {
       downloadTextFile(safeDownloadFilename(`${run.project.productName}-脱敏决策报告`, 'md'), report, 'text/markdown;charset=utf-8');
       track('report_exported', { type: 'decision' });
+      await navigator.clipboard?.writeText(report).catch(() => undefined);
+      const shareId = createShareId();
+      const params = new URLSearchParams({
+        sourceProjectId: run.project.id,
+        channel: 'decision_report',
+        templateSnapshot: encodeURIComponent(JSON.stringify({ productName: run.project.productName, platforms: run.project.targetPlatforms, goal: run.project.contentGoal }).slice(0, 600)),
+      });
+      const url = `${window.location.origin}/report/${shareId}?${params.toString()}`;
       const response = await withTimeout(fetch('/api/share', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ moduleId: 'content-decision-os', source: 'module', title: `${run.project.productName} 脱敏决策报告`, content: report }),
+        body: JSON.stringify({ id: shareId, moduleId: 'content-decision-os', source: 'module', title: `${run.project.productName} 脱敏决策报告`, content: report }),
       }));
-      const data = await response.json() as { id?: string };
-      if (data.id) {
-        const params = new URLSearchParams({
-          sourceProjectId: run.project.id,
-          channel: 'decision_report',
-          templateSnapshot: encodeURIComponent(JSON.stringify({ productName: run.project.productName, platforms: run.project.targetPlatforms, goal: run.project.contentGoal }).slice(0, 600)),
-        });
-        const url = `${window.location.origin}/report/${data.id}?${params.toString()}`;
-        await navigator.clipboard?.writeText(report);
-        setShareUrl(url);
-        setShareMessage('报告已复制到剪贴板 / 已下载。分享链接已生成，可直接发送给团队或客户。');
-      }
+      if (!response.ok) throw new Error('share failed');
+      setShareUrl(url);
+      setShareMessage('报告已复制到剪贴板 / 已下载。分享链接已生成，可直接发送给团队或客户。');
     } catch {
-      setShareMessage('处理时间较长，请重试或联系支持。');
+      setShareMessage('报告已复制到剪贴板 / 已下载。分享链接生成失败，请重试。');
     }
   };
   const attachKuaiziAssets = (assetUrls: string[]) => {
@@ -2349,6 +2445,19 @@ function persistPerformance(run: ListingFactoryRun, records: ContentPerformanceR
   saveListingFactoryRun({ ...updatedRun, deliveryPackage: buildDeliveryPackage(updatedRun) });
 }
 
+function clearPerformance(run: ListingFactoryRun, note: string) {
+  const updatedRun = {
+    ...run,
+    performanceRecords: [],
+    performanceInsights: [],
+    regenerationPlan: buildRegenerationPlan({ ...run, performanceRecords: [] }, []),
+    performanceFeedbackReport: buildPerformanceFeedbackReport({ ...run, performanceRecords: [], performanceInsights: [], regenerationPlan: buildRegenerationPlan({ ...run, performanceRecords: [] }, []) }),
+    activityLog: [{ id: createLocalActivityId('performance-clear'), time: new Date().toISOString(), action: 'Performance import rejected', detail: note }, ...run.activityLog].slice(0, 12),
+    updatedAt: new Date().toISOString(),
+  };
+  saveListingFactoryRun({ ...updatedRun, deliveryPackage: buildDeliveryPackage(updatedRun) });
+}
+
 function persistExperimentPlan(run: ListingFactoryRun, plan: ExperimentPlan) {
   const experimentPlans = [plan, ...run.experimentPlans.filter(item => item.id !== plan.id)].slice(0, 6);
   const updatedRun = {
@@ -2398,7 +2507,7 @@ function PerformanceFeedbackPanel({ run, onChanged }: { run: ListingFactoryRun; 
   return (
     <div className="rounded-lg border border-slate-200 bg-slate-50 p-5">
       <div className="flex flex-col justify-between gap-4 lg:flex-row lg:items-start">
-        <SectionTitle eyebrow="高级数据录入" title="表现复盘明细" body="主流程已在上方决策中枢完成。这里保留手动录入、原始 CSV 导入和 Top/Bottom 明细，用于调试或补录数据。" />
+        <SectionTitle eyebrow="高级数据录入" title="表现复盘明细" body="主流程已在上方决策中枢完成。这里保留手动录入、原始 CSV 导入和 Top/Bottom 明细，用于补充历史数据或核对原始记录。" />
         <div className="flex flex-wrap gap-2">
           <div className="rounded-md bg-slate-950 px-4 py-3 text-right text-white"><div className="text-[12px]">Records</div><div className="text-2xl font-black">{report.summary.totalRecords}</div></div>
           <ActionButton onClick={() => setExpanded(value => !value)}>{expanded ? '收起明细' : '展开明细'}</ActionButton>
@@ -2414,7 +2523,7 @@ function PerformanceFeedbackPanel({ run, onChanged }: { run: ListingFactoryRun; 
         ].map(([label, value]) => <div key={label} className="rounded-md border border-indigo-100 bg-white p-3"><div className="text-[12px] text-slate-500">{label}</div><div className="mt-1 text-[14px] font-bold">{value}</div></div>)}
       </div>
       {!expanded && (
-        <p className="mt-4 rounded-md bg-white p-3 text-[13px] leading-6 text-slate-700">明细已折叠。优先使用上方“粘贴表现 CSV → 导入并刷新决策”的主流程；需要补录或调试原始表现数据时再展开。</p>
+        <p className="mt-4 rounded-md bg-white p-3 text-[13px] leading-6 text-slate-700">明细已折叠。优先使用上方“粘贴表现 CSV → 导入并刷新决策”的主流程；需要补充历史数据或核对原始记录时再展开。</p>
       )}
       {expanded && (
         <>
@@ -2449,7 +2558,7 @@ function DeliveryDownloads({ run }: { run: ListingFactoryRun }) {
   const [expanded, setExpanded] = useState(false);
   return (
     <div className="rounded-lg border border-emerald-200 bg-emerald-50 p-5">
-      <SectionTitle eyebrow="决策资产导出" title="优先导出可传播的决策资产" body="默认只保留老板、客户、投手会真正转发的文件；完整交付包用于内部审计、排查和二次加工。" />
+      <SectionTitle eyebrow="决策资产导出" title="优先导出可传播的决策资产" body="默认只保留老板、客户、投手会真正转发的文件；完整交付包用于团队复盘、记录归档和二次加工。" />
       <div className="mt-4 grid gap-3 lg:grid-cols-5">
         <div className="rounded-md border border-emerald-100 bg-white p-3">
           <div className="text-[12px] font-bold text-slate-900">脱敏决策报告</div>

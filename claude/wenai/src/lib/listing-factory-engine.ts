@@ -415,7 +415,7 @@ export type VideoAssemblyStatus =
   | 'blocked_missing_assets'
   | 'ready_for_provider'
   | 'provider_unavailable'
-  | 'completed_mock'
+  | 'spec_exported'
   | 'failed';
 
 export interface RenderScene {
@@ -445,9 +445,9 @@ export interface RenderPlan {
 export interface VideoOutputArtifact {
   id: string;
   jobId: string;
-  type: 'storyboard_preview' | 'prompt_pack' | 'provider_payload' | 'mock_video_placeholder' | 'qa_report';
+  type: 'storyboard_preview' | 'prompt_pack' | 'provider_payload' | 'production_spec' | 'qa_report';
   name: string;
-  format: 'markdown' | 'json' | 'csv' | 'srt' | 'placeholder';
+  format: 'markdown' | 'json' | 'csv' | 'srt';
   content: string;
   sessionOnlyUrl?: string;
   note: string;
@@ -464,7 +464,7 @@ export interface VideoQaResult {
 
 export interface VideoProviderAuditEntry {
   providerId: string;
-  mode: 'local_mock' | 'external_placeholder';
+  mode: 'local_spec' | 'external_unconfigured';
   usedFallback: boolean;
   operation: 'build_payload' | 'submit_job' | 'status' | 'normalize_result';
   status: 'success' | 'failed';
@@ -495,7 +495,7 @@ export interface VideoAssemblyJob {
 export interface VideoGenerationProvider {
   id: string;
   name: string;
-  mode: 'local_mock' | 'external_placeholder';
+  mode: 'local_spec' | 'external_unconfigured';
   available: () => boolean;
   buildPayload: (job: VideoAssemblyJob, run: Pick<ListingFactoryRun, 'project'> & Partial<ListingFactoryRun>) => VideoProviderPayloadPreview;
   submitJob: (job: VideoAssemblyJob, run: Pick<ListingFactoryRun, 'project'> & Partial<ListingFactoryRun>, config?: unknown) => VideoOutputArtifact[];
@@ -1343,7 +1343,7 @@ export interface TraceabilitySummary {
   summary: string;
 }
 
-export type PlatformDataSourceType = 'manual_csv' | 'manual_entry' | 'future_api_placeholder';
+export type PlatformDataSourceType = 'manual_csv' | 'manual_entry' | 'api_ready';
 
 export type PlatformChannel =
   | 'tiktok'
@@ -1731,7 +1731,7 @@ export interface DeliveryPackage {
   renderPlanMarkdown: string;
   providerPayloadJson: string;
   videoQaMarkdown: string;
-  mockVideoOutputPlaceholderMarkdown: string;
+  videoProductionSpecMarkdown: string;
   performanceFeedbackMarkdown: string;
   performanceRecordsCsv: string;
   regenerationPlanMarkdown: string;
@@ -2577,11 +2577,11 @@ export const localDeterministicProvider: BriefGenerationProvider = {
 
 export const futureLLMProvider: Omit<BriefGenerationProvider, 'generate'> & {
   generate?: BriefGenerationProvider['generate'];
-  status: 'placeholder';
+  status: 'planned';
 } = {
   id: 'future-llm',
-  label: '未来 LLM Provider 占位',
-  status: 'placeholder',
+  label: '可配置 LLM Provider',
+  status: 'planned',
 };
 
 export function generateBriefs(project: ListingProject, options: { count?: number; provider?: BriefGenerationProvider } = {}): GeneratedBrief[] {
@@ -3642,21 +3642,21 @@ export function buildTextToVideoPrompt(project: ListingProject, script: Generate
   ].join('\n'), project.brandGuardrails);
 }
 
-export const localMockVideoProvider: VideoGenerationProvider = {
-  id: 'local-mock-video',
-  name: 'Local mock video assembly provider',
-  mode: 'local_mock',
+export const localProductionSpecProvider: VideoGenerationProvider = {
+  id: 'local-production-spec',
+  name: 'Local production spec exporter',
+  mode: 'local_spec',
   available: () => true,
-  buildPayload: job => buildProviderPayloadPreview(job, localMockVideoProvider),
-  submitJob: job => buildMockVideoArtifacts(job),
-  getJobStatus: () => 'completed_mock',
+  buildPayload: job => buildProviderPayloadPreview(job, localProductionSpecProvider),
+  submitJob: job => buildProductionSpecArtifacts(job),
+  getJobStatus: () => 'spec_exported',
   normalizeResult: result => Array.isArray(result) ? result as VideoOutputArtifact[] : [],
 };
 
 export const externalVideoProvider: VideoGenerationProvider = {
   id: 'external-video',
-  name: 'External video provider placeholder',
-  mode: 'external_placeholder',
+  name: 'External video provider',
+  mode: 'external_unconfigured',
   available: () => false,
   buildPayload: job => buildProviderPayloadPreview(job, externalVideoProvider),
   submitJob: () => {
@@ -3668,10 +3668,10 @@ export const externalVideoProvider: VideoGenerationProvider = {
 
 function getVideoProvider(providerId?: string): VideoGenerationProvider {
   if (providerId === externalVideoProvider.id) return externalVideoProvider;
-  return localMockVideoProvider;
+  return localProductionSpecProvider;
 }
 
-export function buildProviderPayloadPreview(job: VideoAssemblyJob, provider: VideoGenerationProvider = localMockVideoProvider): VideoProviderPayloadPreview {
+export function buildProviderPayloadPreview(job: VideoAssemblyJob, provider: VideoGenerationProvider = localProductionSpecProvider): VideoProviderPayloadPreview {
   return redactVideoPayload({
     providerId: provider.id,
     mode: job.mode,
@@ -3698,12 +3698,12 @@ export function buildProviderPayloadPreview(job: VideoAssemblyJob, provider: Vid
         missing: item.missing,
       })),
     },
-    boundary: 'No real video rendering, no file upload, metadata only.',
+    boundary: 'External production tool is not configured. Export this production spec and hand it to an editor or provider.',
   }) as VideoProviderPayloadPreview;
 }
 
-function buildMockVideoArtifacts(job: VideoAssemblyJob): VideoOutputArtifact[] {
-  const payload = buildProviderPayloadPreview(job, localMockVideoProvider);
+function buildProductionSpecArtifacts(job: VideoAssemblyJob): VideoOutputArtifact[] {
+  const payload = buildProviderPayloadPreview(job, localProductionSpecProvider);
   return [
     {
       id: `artifact-${job.id}-storyboard`,
@@ -3712,7 +3712,7 @@ function buildMockVideoArtifacts(job: VideoAssemblyJob): VideoOutputArtifact[] {
       name: `${job.title}-storyboard-preview.md`,
       format: 'markdown',
       content: buildRenderPlanMarkdown(job),
-      note: 'Storyboard preview only; no real video file generated.',
+      note: 'Production storyboard for editor handoff.',
     },
     {
       id: `artifact-${job.id}-payload`,
@@ -3721,16 +3721,28 @@ function buildMockVideoArtifacts(job: VideoAssemblyJob): VideoOutputArtifact[] {
       name: `${job.title}-provider-payload.json`,
       format: 'json',
       content: JSON.stringify(payload, null, 2),
-      note: 'Provider payload preview for future video APIs.',
+      note: 'Provider payload for configured external video APIs.',
     },
     {
-      id: `artifact-${job.id}-mock-output`,
+      id: `artifact-${job.id}-production-spec`,
       jobId: job.id,
-      type: 'mock_video_placeholder',
-      name: `${job.title}-mock-output.placeholder`,
-      format: 'placeholder',
-      content: `Mock video placeholder for ${job.title}. 不生成真实视频；请使用 Render Plan / Payload 交给剪辑师或视频生成工具。`,
-      note: 'Placeholder only; no video blob or rendered media.',
+      type: 'production_spec',
+      name: `${job.title}-production-spec.md`,
+      format: 'markdown',
+      content: [
+        `# ${job.title} 生产规格`,
+        '',
+        '当前连接外部生产工具需配置 API Key，请先导出生产规格交给团队执行。',
+        '',
+        '## 画面规格',
+        `- 比例：${job.renderPlan.aspectRatio}`,
+        `- 时长：${job.renderPlan.duration} 秒`,
+        '- 导出格式：MP4, H.264, 码率 ≥ 8Mbps',
+        '',
+        '## 镜头清单',
+        ...job.renderPlan.scenes.map(scene => `- ${scene.order}. ${scene.durationSeconds}s / ${scene.visualPrompt} / 字幕：${scene.subtitle}`),
+      ].join('\n'),
+      note: 'Executable production spec; no fake video URL is returned.',
     },
   ];
 }
@@ -3783,7 +3795,7 @@ export function evaluateVideoAssemblyQa(job: VideoAssemblyJob, run: Pick<Listing
     checks,
     recommendedNextStep: blockers.length > 0
       ? `Resolve ${blockers.length} video assembly blocker(s) before provider handoff.`
-      : 'Render plan can be handed to an editor or future video provider; no real video has been generated.',
+      : '生产规格可以交给剪辑师或已配置的外部生产工具执行。',
   };
 }
 
@@ -3798,14 +3810,14 @@ export function buildVideoAssemblyJob(
     includeSubtitles?: boolean;
     includeVoiceover?: boolean;
     includeAssets?: boolean;
-    fallbackToMock?: boolean;
+    fallbackToLocalSpec?: boolean;
   } = {},
 ): VideoAssemblyJob {
   const platform = options.targetPlatform || editPack.platform;
   const provider = getVideoProvider(options.providerId);
   const providerAvailable = provider.available();
-  const usedFallback = !providerAvailable && options.fallbackToMock !== false;
-  const selectedProvider = providerAvailable ? provider : usedFallback ? localMockVideoProvider : provider;
+  const usedFallback = !providerAvailable && options.fallbackToLocalSpec !== false;
+  const selectedProvider = providerAvailable ? provider : usedFallback ? localProductionSpecProvider : provider;
   const mode = options.mode || 'storyboard_preview';
   const jobId = `video-job-${editPack.id}-${slugify(mode)}-${slugify(platform)}`;
   const assetById = new Map((run.assets || []).map(asset => [asset.id, asset]));
@@ -3852,12 +3864,12 @@ export function buildVideoAssemblyJob(
     providerId: selectedProvider.id,
     status: missingRequirements.length > 0
       ? 'blocked_missing_assets'
-      : selectedProvider.id === localMockVideoProvider.id
-        ? 'completed_mock'
+      : selectedProvider.id === localProductionSpecProvider.id
+        ? 'spec_exported'
         : providerAvailable
           ? 'ready_for_provider'
           : 'provider_unavailable',
-    inputSummary: `${editPack.shotList.length} shots / ${renderPlan.duration}s / ${renderPlan.aspectRatio} / no real video rendering`,
+    inputSummary: `${editPack.shotList.length} shots / ${renderPlan.duration}s / ${renderPlan.aspectRatio} / production spec export`,
     renderPlan,
     outputArtifacts: [],
     qaResult: { passed: false, score: 40, blockers: [], warnings: [], checks: [], recommendedNextStep: 'Pending video QA.' },
@@ -3885,7 +3897,7 @@ export function buildVideoAssemblyJob(
   const qaResult = evaluateVideoAssemblyQa(jobWithPayload, run);
   return {
     ...jobWithPayload,
-    outputArtifacts: selectedProvider.id === localMockVideoProvider.id ? buildMockVideoArtifacts(jobWithPayload) : [{
+    outputArtifacts: selectedProvider.id === localProductionSpecProvider.id ? buildProductionSpecArtifacts(jobWithPayload) : [{
       id: `artifact-${jobId}-payload`,
       jobId,
       type: 'provider_payload',
@@ -3899,7 +3911,7 @@ export function buildVideoAssemblyJob(
 }
 
 function buildRenderPlanMarkdown(job?: VideoAssemblyJob) {
-  if (!job) return '# 视频渲染计划\n\n当前还没有视频组装任务。本阶段不生成真实视频。';
+  if (!job) return '# 视频渲染计划\n\n当前还没有视频组装任务。配置外部生产工具前，可先导出生产规格交给团队执行。';
   return [
     `# 视频渲染计划 - ${job.title}`,
     '',
@@ -3917,7 +3929,7 @@ function buildVideoAssemblyMarkdown(jobs: VideoAssemblyJob[] = []) {
   return [
     '# 视频组装任务',
     '',
-    '当前不会生成真实视频；这里只组织视频渲染计划、Provider Payload 预览、视频 QA 和 mock 输出占位。',
+    '当前连接外部生产工具需配置 API Key；这里输出视频渲染计划、Provider Payload、视频 QA 和可执行生产规格。',
     '',
     ...(jobs.length > 0
       ? jobs.map(job => `- ${job.title} | ${job.platform} | ${job.mode} | ${job.status} | QA ${job.qaResult.score}`)
@@ -3942,16 +3954,16 @@ function buildVideoQaMarkdown(qa?: VideoQaResult) {
   ].join('\n');
 }
 
-function buildMockVideoOutputPlaceholderMarkdown(job?: VideoAssemblyJob) {
+function buildVideoProductionSpecMarkdown(job?: VideoAssemblyJob) {
   return [
-    '# Mock 视频输出占位',
+    '# 视频生产规格导出',
     '',
-    '不生成真实视频，不调用 FFmpeg，不上传素材，也不保存视频文件。',
+    '当前连接外部生产工具需配置 API Key。此文档是可执行生产规格，可交给剪辑师、AI 视频工具或已配置的 provider 适配层执行。',
     '',
     job
-      ? `- 占位任务：${job.title}（${job.status}）`
+      ? `- 生产规格任务：${job.title}（${job.status}）`
       : '- 当前还没有视频任务。',
-    '- 请把视频渲染计划 / Provider Payload 预览交给剪辑师、AI 视频工具或未来的 provider 适配层。',
+    '- 请同时附上视频渲染计划、Provider Payload 和视频 QA 结果。',
   ].join('\n');
 }
 
@@ -4190,6 +4202,25 @@ export function importPerformanceCsv(run: ListingFactoryRun, csvText: string, no
   const warnings: string[] = [];
   if (rows.length === 0) errors.push('CSV is empty or missing data rows.');
   rows.forEach((row, index) => {
+    const rowErrors: string[] = [];
+    const clicks = parseMetric(rowValue(row, ['clicks', 'Clicks', '点击']));
+    const impressions = parseMetric(rowValue(row, ['impressions', 'Impressions', '曝光', '展现']));
+    const spend = parseMetric(rowValue(row, ['spend', 'Spend', 'cost', 'Cost', '花费', '消耗']));
+    const revenue = parseMetric(rowValue(row, ['revenue', 'Revenue', 'sales', 'Sales', 'conversion_value', '收入', '销售额']));
+    const dateValue = rowValue(row, ['date', 'Date', '日期', 'day', 'Day']);
+    if (clicks !== undefined && clicks < 0) rowErrors.push(`Row ${index + 2} has negative clicks`);
+    if (impressions !== undefined && impressions < 0) rowErrors.push(`Row ${index + 2} has negative impressions`);
+    if (spend !== undefined && spend < 0) rowErrors.push(`Row ${index + 2} has negative spend`);
+    if (revenue !== undefined && revenue < 0) rowErrors.push(`Row ${index + 2} has negative revenue`);
+    if (dateValue) {
+      const parsedDate = new Date(String(dateValue));
+      if (Number.isFinite(parsedDate.getTime()) && parsedDate.getTime() > now.getTime() + 24 * 60 * 60 * 1000) {
+        rowErrors.push(`Row ${index + 2} has future date`);
+      }
+    }
+    if (rowErrors.length > 0) errors.push(...rowErrors);
+  });
+  rows.forEach((row, index) => {
     const missing = [
       ['platform', ['platform', 'Platform', 'channel', 'utm_source', '平台']],
       ['hook/contentName', ['hook', 'Hook', 'contentName', 'Ad name', 'ad_name', 'Creative name', 'Product title', 'Advertised SKU', 'keyword', 'ad_group_name', 'ad_group', 'adset_name', '内容名称']],
@@ -4202,8 +4233,11 @@ export function importPerformanceCsv(run: ListingFactoryRun, csvText: string, no
     }).map(([field]) => field as string);
     if (missing.length > 0) warnings.push(`Row ${index + 2} missing fields: ${missing.join(', ')}`);
   });
-  const records = rows.map(row => normalizePerformanceRecord({ ...row, source: 'csv_import' }, run));
-  return { records, errors, warnings: unique(warnings), importedAt: now.toISOString() };
+  const invalidRowIndexes = new Set(errors.map(error => Number(error.match(/Row (\d+)/)?.[1] || 0)).filter(Boolean));
+  const validRows = rows.filter((_, index) => !invalidRowIndexes.has(index + 2));
+  const records = validRows.map(row => normalizePerformanceRecord({ ...row, source: 'csv_import' }, run));
+  if (records.length === 0 && errors.length === 0) errors.push('No valid records found after normalization.');
+  return { records, errors: unique(errors), warnings: unique(warnings), importedAt: now.toISOString() };
 }
 
 export function rankPerformanceRecords(records: ContentPerformanceRecord[]) {
@@ -6868,7 +6902,7 @@ export function buildPlatformDataContract(): PlatformDataContract {
   ];
   return {
     version: 'p8-local-platform-data-contract-v1',
-    sourceTypes: ['manual_csv', 'manual_entry', 'future_api_placeholder'],
+    sourceTypes: ['manual_csv', 'manual_entry', 'api_ready'],
     channels: ['tiktok', 'xiaohongshu', 'amazon', 'shopify', 'meta_ads', 'google_ads', 'other'],
     requiredFields,
     optionalFields,
@@ -8757,8 +8791,8 @@ export function buildFactoryOperatingReview(run: Pick<ListingFactoryRun, 'projec
       id: 'video-assembly',
       label: '视频组装适配层',
       status: hasVideoLayer ? 'partial' : 'missing',
-      evidence: [`${run.videoAssemblyJobs?.length || 0} 个本地 mock 任务`, run.videoQaSummary ? `QA ${run.videoQaSummary.score}` : '当前没有视频 QA'],
-      nextStep: '在明确选定真实渲染提供方之前，继续把 provider 边界保持为 mock。',
+      evidence: [`${run.videoAssemblyJobs?.length || 0} 个生产规格任务`, run.videoQaSummary ? `QA ${run.videoQaSummary.score}` : '当前没有视频 QA'],
+      nextStep: '配置外部生产工具 API 前，先导出生产规格交给团队执行。',
     },
     {
       id: 'performance-feedback',
@@ -8796,7 +8830,7 @@ export function buildFactoryOperatingReview(run: Pick<ListingFactoryRun, 'projec
   }, 0) + (run.qualityGate?.score || 70) * 0.08));
   const currentStrengths = [
     '这个产品已经更像一台本地优先的电商内容生产工厂，而不是单次提示词工具。',
-    '当前交付链路已经覆盖 Brief、脚本、分镜、素材需求、批量生产、编辑包、视频组装 mock 和反馈规划。',
+    '当前交付链路已经覆盖 Brief、脚本、分镜、素材需求、批量生产、编辑包、视频生产规格和反馈规划。',
     '引擎具备确定性的本地 fallback，核心 demo 不会被模型 key 卡死。',
     '表现反馈和实验编排已经能基于手动录入或 CSV 数据，形成下一轮运行闭环。',
   ];
@@ -9524,7 +9558,7 @@ function scrubDeliveryPackage(deliveryPackage: DeliveryPackage): DeliveryPackage
     renderPlanMarkdown: scrub(deliveryPackage.renderPlanMarkdown),
     providerPayloadJson: scrub(deliveryPackage.providerPayloadJson),
     videoQaMarkdown: scrub(deliveryPackage.videoQaMarkdown),
-    mockVideoOutputPlaceholderMarkdown: scrub(deliveryPackage.mockVideoOutputPlaceholderMarkdown),
+    videoProductionSpecMarkdown: scrub(deliveryPackage.videoProductionSpecMarkdown),
     performanceFeedbackMarkdown: scrub(deliveryPackage.performanceFeedbackMarkdown),
     performanceRecordsCsv: scrub(deliveryPackage.performanceRecordsCsv),
     regenerationPlanMarkdown: scrub(deliveryPackage.regenerationPlanMarkdown),
@@ -9972,7 +10006,7 @@ export function buildDeliveryPackage(run: Omit<ListingFactoryRun, 'deliveryPacka
   const videoAssemblyJobs = Array.isArray(run.videoAssemblyJobs) && run.videoAssemblyJobs.length > 0
     ? run.videoAssemblyJobs
     : primaryEditPack
-      ? [buildVideoAssemblyJob({ ...run, ...productionAssets, ...batchLayer }, primaryEditPack, { providerId: 'local-mock-video', fallbackToMock: true })]
+      ? [buildVideoAssemblyJob({ ...run, ...productionAssets, ...batchLayer }, primaryEditPack, { providerId: 'local-production-spec', fallbackToLocalSpec: true })]
       : [];
   const videoQaSummary = run.videoQaSummary || videoAssemblyJobs[0]?.qaResult || {
     passed: false,
@@ -10387,9 +10421,9 @@ export function buildDeliveryPackage(run: Omit<ListingFactoryRun, 'deliveryPacka
     batchQaSummaryMarkdown: buildBatchQaSummaryMarkdown(batchLayer.batchQaSummary),
     videoAssemblyMarkdown: buildVideoAssemblyMarkdown(videoAssemblyJobs),
     renderPlanMarkdown: buildRenderPlanMarkdown(videoAssemblyJobs[0]),
-    providerPayloadJson: JSON.stringify(redactVideoPayload(videoAssemblyJobs[0]?.renderPlan.providerPayloadPreview || { providerId: 'local-mock-video', jobs: [] }), null, 2),
+    providerPayloadJson: JSON.stringify(redactVideoPayload(videoAssemblyJobs[0]?.renderPlan.providerPayloadPreview || { providerId: 'local-production-spec', jobs: [] }), null, 2),
     videoQaMarkdown: buildVideoQaMarkdown(videoQaSummary),
-    mockVideoOutputPlaceholderMarkdown: buildMockVideoOutputPlaceholderMarkdown(videoAssemblyJobs[0]),
+    videoProductionSpecMarkdown: buildVideoProductionSpecMarkdown(videoAssemblyJobs[0]),
     performanceFeedbackMarkdown: performanceFeedbackReport.markdown,
     performanceRecordsCsv: performanceFeedbackReport.csv,
     regenerationPlanMarkdown: buildRegenerationPlanMarkdown(regenerationPlan),
@@ -10541,7 +10575,7 @@ export function createRunFromProject(project: ListingProject, now = new Date()):
   };
   const qualityGate = evaluateRunQualityGate(baseRun);
   const batchLayer = buildBatchLayer({ ...baseRun, qualityGate });
-  const videoAssemblyJobs = batchLayer.editPacks.slice(0, 3).map(editPack => buildVideoAssemblyJob({ ...baseRun, ...batchLayer }, editPack, { providerId: 'local-mock-video', fallbackToMock: true }));
+  const videoAssemblyJobs = batchLayer.editPacks.slice(0, 3).map(editPack => buildVideoAssemblyJob({ ...baseRun, ...batchLayer }, editPack, { providerId: 'local-production-spec', fallbackToLocalSpec: true }));
   const videoQaSummary = videoAssemblyJobs[0]?.qaResult || {
     passed: false,
     score: 40,
@@ -10659,7 +10693,7 @@ export function buildGoldenListingFactoryRun(goldenProject: GoldenListingFactory
   };
   const qualityGate = evaluateRunQualityGate(baseRun);
   const batchLayer = buildBatchLayer({ ...baseRun, qualityGate });
-  const videoAssemblyJobs = batchLayer.editPacks.slice(0, 3).map(editPack => buildVideoAssemblyJob({ ...baseRun, ...batchLayer }, editPack, { providerId: 'local-mock-video', fallbackToMock: true }));
+  const videoAssemblyJobs = batchLayer.editPacks.slice(0, 3).map(editPack => buildVideoAssemblyJob({ ...baseRun, ...batchLayer }, editPack, { providerId: 'local-production-spec', fallbackToLocalSpec: true }));
   const videoQaSummary = videoAssemblyJobs[0]?.qaResult || {
     passed: false,
     score: 40,
@@ -10803,7 +10837,7 @@ function defaultVideoQaSummary(): VideoQaResult {
 function hydrateVideoLayer(run: Partial<ListingFactoryRun> & Pick<ListingFactoryRun, 'project' | 'assets'> & { editPacks: EditPack[] }) {
   const videoAssemblyJobs = Array.isArray(run.videoAssemblyJobs) && run.videoAssemblyJobs.length > 0
     ? run.videoAssemblyJobs
-    : run.editPacks.slice(0, 3).map(editPack => buildVideoAssemblyJob(run, editPack, { providerId: 'local-mock-video', fallbackToMock: true }));
+    : run.editPacks.slice(0, 3).map(editPack => buildVideoAssemblyJob(run, editPack, { providerId: 'local-production-spec', fallbackToLocalSpec: true }));
   const videoQaSummary = run.videoQaSummary || videoAssemblyJobs[0]?.qaResult || defaultVideoQaSummary();
   const videoProviderAudit = Array.isArray(run.videoProviderAudit) && run.videoProviderAudit.length > 0
     ? run.videoProviderAudit
@@ -11073,7 +11107,7 @@ export function hydrateRunFromStorage(storage?: StorageLike): ListingFactoryRun 
   };
   const qualityGate = evaluateRunQualityGate(baseRun);
   const batchLayer = buildBatchLayer({ ...baseRun, qualityGate });
-  const videoAssemblyJobs = batchLayer.editPacks.slice(0, 3).map(editPack => buildVideoAssemblyJob({ ...baseRun, ...batchLayer }, editPack, { providerId: 'local-mock-video', fallbackToMock: true }));
+  const videoAssemblyJobs = batchLayer.editPacks.slice(0, 3).map(editPack => buildVideoAssemblyJob({ ...baseRun, ...batchLayer }, editPack, { providerId: 'local-production-spec', fallbackToLocalSpec: true }));
   const videoQaSummary = videoAssemblyJobs[0]?.qaResult || defaultVideoQaSummary();
   const videoProviderAudit = videoAssemblyJobs.map(job => job.providerAudit);
   const videoLayer = { videoAssemblyJobs, videoQaSummary, videoProviderAudit };

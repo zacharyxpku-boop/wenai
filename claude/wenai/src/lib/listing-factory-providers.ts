@@ -550,7 +550,7 @@ export const localDeterministicProvider: ListingFactoryProvider = {
 
 export const remoteLLMProvider: ListingFactoryProvider = {
   id: 'remote-llm',
-  name: 'Remote LLM provider placeholder',
+  name: 'Remote LLM provider',
   mode: 'remote',
   available: () => false,
   generateBriefs: async () => {

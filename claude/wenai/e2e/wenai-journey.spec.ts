@@ -61,6 +61,12 @@ async function startFrom3cTemplate(page: Page) {
   await expect(page.getByRole('heading', { name: /第一步：上传你的 .* 表现数据 CSV/ })).toBeVisible();
 }
 
+async function enableStarterTier(page: Page) {
+  await page.evaluate(() => window.localStorage.setItem('wenai_subscription_state_v1', JSON.stringify({ tier: 'Starter', updatedAt: new Date().toISOString() })));
+  await page.goto('/factory', { waitUntil: 'domcontentloaded' });
+  await expect(page.getByRole('button', { name: '导入 CSV' })).toBeVisible();
+}
+
 async function importCsvAndGenerateDecision(page: Page, csv = tiktokCsv, expectedPlatform = 'TikTok', expectedMarker = 'rec-001') {
   const csvEditor = page.locator('textarea').first();
   const uploadFile = {
@@ -121,8 +127,7 @@ test.describe.serial('Wenai 完整用户旅程', () => {
   for (const platformCase of platformCsvCases) {
     test(`测试 B-${platformCase.platform}：${platformCase.platform} 导入到导出闭环`, async ({ page }) => {
       await startFrom3cTemplate(page);
-      await page.evaluate(() => window.localStorage.setItem('wenai_subscription_state_v1', JSON.stringify({ tier: 'Starter', updatedAt: new Date().toISOString() })));
-      await page.reload();
+      await enableStarterTier(page);
       await importCsvAndGenerateDecision(page, platformCase.csv, platformCase.expected, 'rec-001');
 
       await expect(page.locator('#decision-summary h3')).toContainText(/建议暂停投放|建议小范围放大|建议继续测试|建议重做承接|建议观察 3 天/);
@@ -145,8 +150,7 @@ test.describe.serial('Wenai 完整用户旅程', () => {
 
   test('测试 C：决策到导出到分享', async ({ page }) => {
     await startFrom3cTemplate(page);
-    await page.evaluate(() => window.localStorage.setItem('wenai_subscription_state_v1', JSON.stringify({ tier: 'Starter', updatedAt: new Date().toISOString() })));
-    await page.reload();
+    await enableStarterTier(page);
     await importCsvAndGenerateDecision(page);
 
     const reportDownload = page.waitForEvent('download');

@@ -67,7 +67,7 @@ describe('listing factory engine', () => {
     expect(briefs.every(brief => brief.status === 'draft' || brief.status === 'pending_review')).toBe(true);
     expect(briefs.every(brief => brief.qualityScore.overall >= 60)).toBe(true);
     expect(localDeterministicProvider.id).toBe('local-deterministic');
-    expect(futureLLMProvider.status).toBe('placeholder');
+    expect(futureLLMProvider.status).toBe('planned');
   });
 
   it('lets brand guardrails affect risk notes and brand safety scores', () => {

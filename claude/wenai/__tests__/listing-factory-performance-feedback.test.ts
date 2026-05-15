@@ -11,6 +11,7 @@ import {
   exportListingFactoryRun,
   importListingFactoryRun,
   importPerformanceCsv,
+  inferPlatformCsvFieldMapping,
   normalizePerformanceRecord,
   parsePerformanceCsv,
   summarizePerformance,
@@ -46,6 +47,17 @@ describe('listing factory performance feedback layer', () => {
     expect(result.records).toHaveLength(1);
     expect(result.warnings.length).toBeGreaterThan(0);
     expect(empty.errors.length).toBeGreaterThan(0);
+  });
+
+  it('maps common commerce performance headers without case or suffix brittleness', () => {
+    const candidates = inferPlatformCsvFieldMapping(['Impressions', 'clicks', 'Ad Spend', 'Orders', 'Sales']);
+    const mapped = Object.fromEntries(candidates.map(candidate => [candidate.originalHeader, candidate.normalizedField]));
+
+    expect(mapped.Impressions).toBe('impressions');
+    expect(mapped.clicks).toBe('clicks');
+    expect(mapped['Ad Spend']).toBe('spend');
+    expect(mapped.Orders).toBe('orders');
+    expect(mapped.Sales).toBe('revenue');
   });
 
   it('calculates CTR, engagement rate and ROAS safely', () => {
