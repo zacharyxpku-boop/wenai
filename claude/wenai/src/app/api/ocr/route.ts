@@ -1,28 +1,36 @@
 import { NextRequest, NextResponse } from 'next/server';
 
+const MAX_IMAGE_BYTES = 5 * 1024 * 1024;
+
 export async function POST(request: NextRequest) {
   try {
     const formData = await request.formData();
     const image = formData.get('image') as File | null;
 
     if (!image) {
-      return NextResponse.json({ error: 'No image provided' }, { status: 400 });
+      return NextResponse.json({ error: '请上传需要识别的图片。' }, { status: 400 });
     }
 
     const validTypes = ['image/jpeg', 'image/png', 'image/webp'];
     if (!validTypes.includes(image.type)) {
-      return NextResponse.json({ error: 'Invalid file type. Accepted: jpg, png, webp' }, { status: 400 });
+      return NextResponse.json({ error: '仅支持 JPG、PNG 或 WebP 图片。' }, { status: 400 });
+    }
+
+    if (image.size > MAX_IMAGE_BYTES) {
+      return NextResponse.json(
+        { error: '文件较大，建议压缩到 5MB 以内后重新上传，保证识别速度。', code: 'IMAGE_TOO_LARGE' },
+        { status: 413 },
+      );
     }
 
     const ocrKey = process.env.ALIBABA_OCR_KEY;
     const ocrEndpoint = process.env.ALIBABA_OCR_ENDPOINT;
 
     if (!ocrKey || !ocrEndpoint) {
-      // Demo mode: return placeholder message
-      return NextResponse.json({
-        text: '[OCR API未配置] 请在.env.local中配置 ALIBABA_OCR_KEY 和 ALIBABA_OCR_ENDPOINT\n\n示例识别结果:\n商品名称: 无线蓝牙耳机 Pro Max\n品牌: TechSound\n型号: TS-BT500\n特点: 主动降噪 / 40小时续航 / 蓝牙5.3\n价格: ¥299\n产地: 中国深圳',
-        demo: true,
-      });
+      return NextResponse.json(
+        { error: '图片识别服务尚未连接。当前请上传 CSV 或手动粘贴文本继续使用核心工作流。', code: 'OCR_PROVIDER_NOT_CONFIGURED' },
+        { status: 503 },
+      );
     }
 
     // --- Real OCR integration (Alibaba Cloud OCR) ---
@@ -63,10 +71,13 @@ export async function POST(request: NextRequest) {
     // return NextResponse.json({ text: data.text || '' });
     // --- End real OCR integration ---
 
-    return NextResponse.json({ text: '', error: 'OCR not configured' }, { status: 500 });
+    return NextResponse.json(
+      { error: '图片识别服务尚未完成连接，请上传 CSV 或手动粘贴文本继续。', code: 'OCR_PROVIDER_NOT_CONNECTED' },
+      { status: 503 },
+    );
   } catch (error) {
     return NextResponse.json(
-      { error: `OCR request failed: ${error instanceof Error ? error.message : 'unknown error'}` },
+      { error: `图片识别请求失败：${error instanceof Error ? error.message : '未知错误'}` },
       { status: 500 }
     );
   }

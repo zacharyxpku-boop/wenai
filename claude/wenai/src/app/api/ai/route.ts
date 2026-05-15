@@ -131,17 +131,19 @@ export async function POST(request: NextRequest) {
 
   // 仅 demo 路径显式启用缓存回退，真实内测用户看到的永远是真 AI 结果或真实错误
   const url = new URL(request.url);
-  const isDemoMode = url.searchParams.get('demo') === '1'
+  const isDemoMode = process.env.NODE_ENV === 'development' && (
+    url.searchParams.get('demo') === '1'
     || request.cookies.get('wenai_session')?.value?.includes('demo')
-    || request.headers.get('x-demo-mode') === '1';
+    || request.headers.get('x-demo-mode') === '1'
+  );
 
   const apiKey = process.env.AI_API_KEY;
   const model = process.env.AI_MODEL || 'qwen-plus';
   const endpoint = process.env.AI_ENDPOINT || 'https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions';
 
   if (!apiKey) {
-    // 仅 ?demo=1 或 demo session 才允许返回 demo 内容
-    // 正常 beta 用户必须看到明确错误,让管理员有信号去配 key
+    // Demo responses are only reachable in local development. Trial and production users
+    // must see an explicit configuration error instead of cached sample output.
     if (isDemoMode) {
       return NextResponse.json({
         content: generateDemoResponse(input),
@@ -432,7 +434,8 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // All retries exhausted — 只在 demo 模式回退缓存，真实用户看到真实错误
+    // All retries exhausted. Cached responses are development-only so trial users never
+    // mistake sample output for a real AI result.
     if (isDemoMode) {
       const cached = moduleId ? getCachedResponse(moduleId) : null;
       if (cached) {
