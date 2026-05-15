@@ -2,8 +2,7 @@
 
 import { FormEvent, useState } from 'react';
 import Link from 'next/link';
-
-const INTENT_KEY = 'wenai_early_bird_emails';
+import { saveEarlyBirdLead } from '@/lib/early-bird';
 
 type Plan = {
   name: 'Free' | 'Starter' | 'Growth';
@@ -35,13 +34,6 @@ const plans: Plan[] = [
   },
 ];
 
-function saveIntent(plan: string, email: string) {
-  if (typeof window === 'undefined') return;
-  const current = JSON.parse(window.localStorage.getItem(INTENT_KEY) || '[]') as Array<Record<string, string>>;
-  current.push({ tier: plan, email, source: 'pricing', createdAt: new Date().toISOString() });
-  window.localStorage.setItem(INTENT_KEY, JSON.stringify(current.slice(-100)));
-}
-
 export function PricingIntentCards({ compact = false }: { compact?: boolean }) {
   const [selectedPlan, setSelectedPlan] = useState<Plan | null>(null);
   const [email, setEmail] = useState('');
@@ -50,8 +42,13 @@ export function PricingIntentCards({ compact = false }: { compact?: boolean }) {
   const submit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (!selectedPlan || !email.trim()) return;
-    saveIntent(selectedPlan.name, email.trim());
-    setMessage('已记录。早鸟开放时会优先通知你。');
+    if (selectedPlan.name === 'Free') return;
+    const result = saveEarlyBirdLead({ tier: selectedPlan.name, email, source: 'pricing' });
+    if (!result.ok) {
+      setMessage(result.error);
+      return;
+    }
+    setMessage('已记录。Starter/Growth 上线后会优先通知你。当前仍为 Free 试用。');
     setEmail('');
   };
 

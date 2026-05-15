@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 import KuaiziPushButton from '@/components/KuaiziPushButton';
 import { assessClientFile, readClientTextFile } from '@/lib/client-file-guard';
+import { saveEarlyBirdLead } from '@/lib/early-bird';
 import { track } from '@/lib/local-analytics';
 import {
   LISTING_FACTORY_CASES,
@@ -313,7 +314,6 @@ const TEMPLATE_CONVERSION_KEY = 'wenai_template_conversions_v1';
 const DECISION_HISTORY_KEY = 'wenai_decision_history_v1';
 const PAYWALL_EVENT_KEY = 'wenai_paywall_events_v1';
 const VIDEO_WORKFLOW_KEY = 'wenai_video_workflow_v1';
-const EARLY_BIRD_KEY = 'wenai_early_bird_emails';
 
 const memoryStorage = new Map<string, string>();
 let localStorageBlocked = false;
@@ -574,15 +574,6 @@ function loadUsage(): UsageState {
 function saveUsage(usage: UsageState) {
   if (typeof window === 'undefined') return;
   storageWrite(USAGE_KEY, JSON.stringify(usage));
-}
-
-function saveEarlyBirdEmail(tier: SubscriptionTier, email: string, source: string) {
-  if (typeof window === 'undefined') return;
-  const existing = JSON.parse(storageRead(EARLY_BIRD_KEY) || '[]') as Array<Record<string, string>>;
-  storageWrite(EARLY_BIRD_KEY, JSON.stringify([
-    { tier, email, source, createdAt: new Date().toISOString() },
-    ...existing,
-  ].slice(0, 200)));
 }
 
 function decisionHistoryKey(runId: string) {
@@ -1996,7 +1987,12 @@ function ContentDecisionOsPanel({ run, onChanged }: { run: ListingFactoryRun; on
 
   const upgrade = (tier: SubscriptionTier, email = '') => {
     if (email.trim()) {
-      saveEarlyBirdEmail(tier, email.trim(), 'content-decision-os');
+      const targetTier = tier === 'Growth' ? 'Growth' : 'Starter';
+      const result = saveEarlyBirdLead({ tier: targetTier, email, source: 'content-decision-os' });
+      if (!result.ok) {
+        setToast(result.error);
+        return;
+      }
       setToast('已记录。Starter/Growth 上线后会优先通知你。当前继续使用 Free 试用。');
     } else {
       setPaywall({

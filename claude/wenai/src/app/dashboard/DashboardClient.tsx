@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import OnboardingChecklist from '@/components/OnboardingChecklist';
+import { saveEarlyBirdLead } from '@/lib/early-bird';
 import { track } from '@/lib/local-analytics';
 import {
   buildDeliveryPackage,
@@ -13,10 +14,10 @@ import {
 } from '@/lib/listing-factory-engine';
 
 type SubscriptionTier = 'Free' | 'Starter' | 'Growth';
+type EarlyBirdTier = Exclude<SubscriptionTier, 'Free'>;
 
 const USAGE_KEY = 'wenai_usage_state_v1';
 const TEMPLATE_CONVERSION_KEY = 'wenai_template_conversions_v1';
-const EARLY_BIRD_KEY = 'wenai_early_bird_emails';
 
 type IndustryTemplate = {
   id: string;
@@ -126,14 +127,6 @@ function saveConversion(event: Record<string, unknown>) {
   window.localStorage.setItem(TEMPLATE_CONVERSION_KEY, JSON.stringify([event, ...existing].slice(0, 100)));
 }
 
-function saveEarlyBirdEmail(tier: SubscriptionTier, email: string) {
-  const current = JSON.parse(window.localStorage.getItem(EARLY_BIRD_KEY) || '[]') as Array<Record<string, string>>;
-  window.localStorage.setItem(EARLY_BIRD_KEY, JSON.stringify([
-    { tier, email, createdAt: new Date().toISOString(), source: 'dashboard' },
-    ...current,
-  ].slice(0, 200)));
-}
-
 function createWorkspaceFromTemplate(template: IndustryTemplate) {
   const now = new Date();
   const project = createListingProject({
@@ -171,21 +164,25 @@ export default function DashboardClient() {
   const [runs, setRuns] = useState(() => loadListingFactoryRuns());
   const [conversions, setConversions] = useState(() => loadConversions());
   const [message, setMessage] = useState('选择一个行业模板，创建工作台后上传 CSV，就能生成第一轮内容实验决策。');
-  const [earlyBirdTier, setEarlyBirdTier] = useState<SubscriptionTier | null>(null);
+  const [earlyBirdTier, setEarlyBirdTier] = useState<EarlyBirdTier | null>(null);
   const [earlyBirdEmail, setEarlyBirdEmail] = useState('');
 
   useEffect(() => {
     track('page_view', { page: 'dashboard' });
   }, []);
 
-  const openEarlyBird = (tier: SubscriptionTier) => {
+  const openEarlyBird = (tier: EarlyBirdTier) => {
     setEarlyBirdTier(tier);
     setMessage(`${tier} 即将上线，留下邮箱获取早鸟优惠。`);
   };
 
   const submitEarlyBird = () => {
     if (!earlyBirdTier || !earlyBirdEmail.trim()) return;
-    saveEarlyBirdEmail(earlyBirdTier, earlyBirdEmail.trim());
+    const result = saveEarlyBirdLead({ tier: earlyBirdTier, email: earlyBirdEmail, source: 'dashboard' });
+    if (!result.ok) {
+      setMessage(result.error);
+      return;
+    }
     setEarlyBirdEmail('');
     setEarlyBirdTier(null);
     setMessage('已记录。Starter/Growth 上线后会优先通知你。当前仍为 Free 试用中。');
