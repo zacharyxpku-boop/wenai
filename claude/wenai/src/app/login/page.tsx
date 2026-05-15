@@ -25,14 +25,14 @@ export default function LoginPage() {
       const data = await res.json();
 
       if (!res.ok) {
-        setError(data.error || 'Login failed');
+        setError(data.error || '登录失败');
         return;
       }
 
       router.push('/');
       router.refresh();
     } catch {
-      setError('Network error');
+      setError('网络错误，请稍后重试');
     } finally {
       setLoading(false);
     }
@@ -40,14 +40,7 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-dvh bg-bg-root flex items-center justify-center p-4 relative overflow-hidden">
-      {/* Background elements */}
-      <div className="absolute inset-0 opacity-5">
-        <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-accent/20 rounded-full blur-3xl" />
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-accent/10 rounded-full blur-3xl" />
-      </div>
-
-      <div className="w-full max-w-[380px] relative z-10 animate-fade-up">
-        {/* Brand */}
+      <div className="w-full max-w-[380px] relative z-10">
         <div className="text-center mb-10">
           <div className="inline-flex items-center justify-center w-14 h-14 rounded-md bg-accent/15 border border-accent/40 mb-4 shadow-[0_0_20px_rgba(200,151,90,0.15)]">
             <span className="text-accent font-[family-name:var(--font-outfit)] font-bold text-xl">
@@ -55,20 +48,19 @@ export default function LoginPage() {
             </span>
           </div>
           <h1 className="text-text-primary font-[family-name:var(--font-outfit)] font-bold text-2xl tracking-tight mb-1.5">
-            Wenai
+            wenai
           </h1>
           <p className="text-text-tertiary text-[10px] font-mono uppercase tracking-[0.14em]">
-            AI员工系统
+            电商 AI 商业交付系统
           </p>
           <div className="flex items-center justify-center gap-1.5 mt-3">
             <div className="w-1 h-1 rounded-full bg-success animate-pulse-dot" />
-            <span className="text-[9px] font-mono text-success/80 uppercase tracking-wide">system online</span>
+            <span className="text-[9px] font-mono text-success/80">系统正常</span>
           </div>
         </div>
 
-        {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="bg-bg-surface border border-border-default rounded-md p-6 shadow-[0_4px_24px_rgba(0,0,0,0.4)] space-y-4">
+          <div className="bg-bg-surface border border-border-default rounded-md p-6 space-y-4">
             <div>
               <label
                 htmlFor="username"
@@ -84,7 +76,7 @@ export default function LoginPage() {
                 autoComplete="username"
                 autoFocus
                 required
-                className="w-full bg-bg-raised border border-border-subtle rounded-md px-4 py-3 text-text-primary text-[13px] placeholder:text-text-tertiary/60 transition-all focus:border-accent focus:bg-bg-surface focus:shadow-[0_0_0_2px_rgba(200,151,90,0.15)]"
+                className="w-full bg-bg-raised border border-border-subtle rounded-md px-4 py-3 text-text-primary text-[13px] placeholder:text-text-tertiary/60 transition-colors focus:border-accent focus:bg-bg-surface"
                 placeholder="请输入用户名"
               />
             </div>
@@ -102,13 +94,13 @@ export default function LoginPage() {
                 onChange={e => set密码(e.target.value)}
                 autoComplete="current-password"
                 required
-                className="w-full bg-bg-raised border border-border-subtle rounded-md px-4 py-3 text-text-primary text-[13px] placeholder:text-text-tertiary/60 transition-all focus:border-accent focus:bg-bg-surface focus:shadow-[0_0_0_2px_rgba(200,151,90,0.15)]"
+                className="w-full bg-bg-raised border border-border-subtle rounded-md px-4 py-3 text-text-primary text-[13px] placeholder:text-text-tertiary/60 transition-colors focus:border-accent focus:bg-bg-surface"
                 placeholder="请输入密码"
               />
             </div>
 
             {error && (
-              <div className="text-[11px] font-mono text-error p-3.5 bg-error/5 border border-error/25 rounded-md animate-fade-up">
+              <div className="text-[11px] font-mono text-error p-3.5 bg-error/5 border border-error/25 rounded-md">
                 <div className="flex items-center gap-2">
                   <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
                     <circle cx="6" cy="6" r="5" stroke="currentColor" strokeWidth="1.5"/>
@@ -122,7 +114,7 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-accent hover:bg-accent-hover text-bg-root font-semibold text-[13px] py-3 rounded-md transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed font-[family-name:var(--font-outfit)] shadow-[0_2px_8px_rgba(200,151,90,0.3)] hover:shadow-[0_4px_12px_rgba(200,151,90,0.4)] active:scale-98"
+              className="w-full bg-accent hover:bg-accent-hover text-bg-root font-semibold text-[13px] py-3 rounded-md transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed font-[family-name:var(--font-outfit)]"
             >
               {loading ? (
                 <span className="inline-flex items-center gap-2">
@@ -141,12 +133,11 @@ export default function LoginPage() {
             href="/demo"
             className="inline-block text-[11px] font-mono text-accent/80 hover:text-accent transition-colors"
           >
-            免登录体验 Demo →
+            免登录体验演示 →
           </a>
 
-          {/* Demo accounts */}
           <div className="bg-bg-surface/50 border border-border-subtle rounded-md px-4 py-3 text-left">
-            <p className="text-[9px] font-mono text-text-tertiary mb-2 uppercase tracking-wider">Demo 账号</p>
+            <p className="text-[9px] font-mono text-text-tertiary mb-2">演示账号</p>
             <div className="space-y-1.5 text-[10px] font-mono text-text-secondary">
               <div className="flex justify-between"><span>admin / admin123</span><span className="text-accent">管理员</span></div>
               <div className="flex justify-between"><span>editor / editor123</span><span className="text-success">编辑</span></div>

@@ -71,11 +71,11 @@ function InviteInner() {
         {status === 'valid' && (
           <div className="p-8 border border-accent/40 rounded-md bg-bg-surface">
             <div className="mb-5 pb-4 border-b border-border-subtle">
-              <div className="text-[10px] font-mono text-accent uppercase tracking-wider mb-2">
+              <div className="text-[10px] font-mono text-accent mb-2">
                 邀请已就绪
               </div>
               <p className="text-[16px] text-text-primary font-semibold mb-1">
-                Hi {info.name}
+                你好，{info.name}
               </p>
               <p className="text-[12px] text-text-secondary">
                 你的 7 天内测已激活 · 有效期至 <span className="font-mono">{info.expiresAt}</span>
@@ -85,7 +85,7 @@ function InviteInner() {
             <div className="space-y-2 text-[12px] text-text-secondary mb-6">
               <div className="flex items-start gap-2">
                 <span className="text-accent flex-shrink-0">·</span>
-                <span><strong className="text-text-primary">Pipeline 01 · 新品上新流水线</strong>：翻译+文案+合规 一次跑完</span>
+                <span><strong className="text-text-primary">新品上新流水线</strong>：翻译、文案、合规一次跑完</span>
               </div>
               <div className="flex items-start gap-2">
                 <span className="text-accent flex-shrink-0">·</span>
@@ -118,7 +118,7 @@ function InviteInner() {
 
         {status === 'invalid' && (
           <div className="p-8 border border-border-subtle rounded-md bg-bg-surface">
-            <div className="text-[10px] font-mono text-text-tertiary uppercase tracking-wider mb-3">
+            <div className="text-[10px] font-mono text-text-tertiary mb-3">
               邀请未激活
             </div>
             <p className="text-[14px] text-text-primary mb-4">
@@ -134,7 +134,7 @@ function InviteInner() {
               href="/demo"
               className="block w-full py-2.5 border border-border-default hover:border-accent/40 text-center text-[12px] font-mono text-text-secondary hover:text-accent rounded-md transition-colors"
             >
-              或先看 2 小时 Demo →
+              或先看 2 小时演示 →
             </a>
           </div>
         )}

@@ -58,13 +58,11 @@ export default function NotFound() {
 
         {/* 辅助链接 */}
         <div className="flex items-center justify-center gap-4 text-[10px] font-mono text-text-tertiary">
-          <Link href="/cases" className="hover:text-accent">案例</Link>
-          <span className="opacity-40">·</span>
           <Link href="/pricing" className="hover:text-accent">定价</Link>
           <span className="opacity-40">·</span>
-          <Link href="/status" className="hover:text-accent">状态</Link>
+          <Link href="/poc/report" className="hover:text-accent">报告模板</Link>
           <span className="opacity-40">·</span>
-          <a href="mailto:zachary.x.pku@gmail.com" className="hover:text-accent">联系</a>
+          <Link href="/settings/kuaizi" className="hover:text-accent">生产工具设置</Link>
         </div>
       </div>
     </div>

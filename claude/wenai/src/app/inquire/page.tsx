@@ -3,6 +3,7 @@
 import { Suspense, useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
+import { ListingFactoryInquiryHandoff } from '@/components/marketing/ListingFactorySections';
 import { buildStandardPack } from '@/lib/sop-workflows';
 import { buildInquiryStandardPackPrefill, buildInquiryStandardPackRoute } from '@/lib/standard-pack-routing';
 
@@ -83,6 +84,12 @@ function InquireInner() {
     links: prefill.links || '',
     workflowId: prefill.workflow,
   }).readiness;
+  const publicReadiness = {
+    label: toCustomerCopy(readiness.label),
+    stageLabel: toCustomerCopy(readiness.stageLabel),
+    nextStepLabel: toCustomerCopy(readiness.nextStepLabel),
+    contractBlockers: readiness.contractBlockers.map(toCustomerCopy),
+  };
 
   useEffect(() => {
     if (!skuCountFromUrl && !platformFromUrl) return;
@@ -123,19 +130,19 @@ function InquireInner() {
           已收到询盘
         </h1>
         <p className="text-[13px] text-text-secondary leading-relaxed mb-6">
-          作者本人会在 <span className="text-accent font-semibold">24 小时内</span>主动联系
+          我会在 <span className="text-accent font-semibold">24 小时内</span>主动联系
           {form.channel === 'wechat' ? '加你微信' : form.channel === 'phone' ? '电话' : '邮件回复'}。
-          不走销售,不打骚扰电话,只问跟你业务直接相关的几个问题。
+          不走话术,不打骚扰电话,只确认类目、SKU、交付边界和下一步试跑节奏。
         </p>
         <div className="space-y-2 mb-6">
           <Link href={submittedStandardPackHref} className="block px-4 py-2.5 border border-accent/40 bg-accent/10 rounded-md text-[12px] font-mono text-accent hover:bg-accent/15">
-            先生成 POC 标品包 →
+            先生成试跑标准包
           </Link>
           <Link href="/poc" className="block px-4 py-2.5 border border-border-default rounded-md text-[12px] font-mono text-text-primary hover:border-accent/40">
-            查看 10 SKU POC 验收标准 →
+            查看 10 SKU 验收标准
           </Link>
           <Link href="/demo" className="block px-4 py-2.5 text-[11px] font-mono text-text-tertiary hover:text-accent">
-            再跑一次演示流程
+            再看一次演示流程
           </Link>
         </div>
         <p className="text-[10px] font-mono text-text-tertiary">
@@ -147,20 +154,21 @@ function InquireInner() {
 
   return (
     <div className="max-w-[720px] mx-auto py-10 px-6">
+      <ListingFactoryInquiryHandoff />
       <div className="mb-8">
         <div className="text-[10px] font-mono text-accent uppercase tracking-[0.2em] mb-3">
-          10 SKU POC INQUIRY
+          10 SKU 试跑申请
         </div>
         <h1 className="text-2xl lg:text-3xl font-bold text-text-primary mb-3 font-[family-name:var(--font-outfit)]">
-          提交 10 SKU POC 需求
+          提交 10 个 SKU 试跑需求
         </h1>
         <p className="text-[13px] text-text-secondary leading-relaxed">
-          填完作者本人 24 小时内主动联系。目标不是卖工具, 是先判断你的 SKU 上新流程值不值得跑一次 POC。
+          你只要写清楚类目、平台和最卡的地方。系统会先生成一份标准包预览, 我再判断是否值得进入正式试跑。
         </p>
         <div className="mt-5 grid grid-cols-1 md:grid-cols-3 gap-2">
           {[
             ['准备', '选 10 个真实 SKU, 最好覆盖 2-3 个子类目'],
-            ['交付', '上新 SOP、主图方向、详情页文案、合规提醒、客服话术'],
+            ['交付', '上新标准流程、主图方向、详情页文案、合规提醒、客服话术'],
             ['验收', '看返工减少、人工终审通过率、内容测试和 30 天复评节奏'],
           ].map(([title, body]) => (
             <div key={title} className="border border-border-subtle rounded-md bg-bg-surface/40 p-3">
@@ -173,10 +181,10 @@ function InquireInner() {
           <div className="flex items-start justify-between gap-3 flex-wrap">
             <div>
               <div className="text-[10px] font-mono text-accent uppercase tracking-wider mb-1">
-                POC fit preview
+                试跑匹配度预览
               </div>
-              <div className="text-[14px] font-semibold text-text-primary">{readiness.label}</div>
-              <p className="mt-1 text-[12px] text-text-secondary leading-relaxed">{readiness.stageLabel}</p>
+              <div className="text-[14px] font-semibold text-text-primary">{publicReadiness.label}</div>
+              <p className="mt-1 text-[12px] text-text-secondary leading-relaxed">{publicReadiness.stageLabel}</p>
             </div>
             <div className="grid grid-cols-3 gap-2 min-w-[260px]">
               <MiniScore label="线索" value={readiness.leadScore} />
@@ -184,12 +192,12 @@ function InquireInner() {
               <MiniScore label="合同" value={readiness.contractReadiness} />
             </div>
           </div>
-          <div className="mt-3 text-[12px] text-text-primary leading-relaxed">
-            {readiness.nextStepLabel}
+          <div className="mt-3 break-words text-[12px] leading-relaxed text-text-primary [overflow-wrap:anywhere]">
+            {publicReadiness.nextStepLabel}
           </div>
-          {readiness.contractBlockers.length > 0 && (
-            <div className="mt-2 text-[11px] text-text-secondary leading-relaxed">
-              当前阻塞: {readiness.contractBlockers.slice(0, 2).join(' / ')}
+          {publicReadiness.contractBlockers.length > 0 && (
+            <div className="mt-2 break-words text-[11px] leading-relaxed text-text-secondary [overflow-wrap:anywhere]">
+              当前阻塞: {publicReadiness.contractBlockers.slice(0, 2).join(' / ')}
             </div>
           )}
         </div>
@@ -247,10 +255,10 @@ function InquireInner() {
           </div>
         </fieldset>
 
-        {/* Step 2 · POC 输入资料 */}
+        {/* Step 2 · 试跑输入资料 */}
         <fieldset className="border border-border-subtle rounded-md p-4">
           <legend className="text-[10px] font-mono text-text-tertiary uppercase tracking-wider px-2">
-            ② POC 输入资料
+            ② 试跑输入资料
           </legend>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-2">
             <div>
@@ -292,7 +300,7 @@ function InquireInner() {
                 type="text"
                 value={form.expectedDeliverables}
                 onChange={e => setForm({ ...form, expectedDeliverables: e.target.value })}
-                placeholder="例: 主图方向 / 详情页 / 合规 / 客服话术 / benchmark / 脚本 / street interview / slideshow"
+                placeholder="例: 主图方向 / 详情页 / 合规 / 客服话术 / 内容参考拆解 / 短视频脚本 / 轮播图测试"
                 className="w-full px-3 py-2 bg-bg-surface border border-border-default rounded text-[12px]"
               />
             </div>
@@ -304,12 +312,12 @@ function InquireInner() {
                 className="w-full px-3 py-2 bg-bg-surface border border-border-default rounded text-[12px]"
               >
                 <option value="">先不做</option>
-                <option value="benchmark-only">只做内容拆解 / benchmark</option>
-                <option value="podcast-ugc">Podcast UGC</option>
-                <option value="street-interview">街采 UGC</option>
-                <option value="slideshow-batch">Slideshow / Reels 批量测试</option>
-                <option value="batch-ugc">批量 UGC 短视频</option>
-                <option value="animated-ads">Animated Ads</option>
+                <option value="benchmark-only">只做内容参考拆解</option>
+                <option value="podcast-ugc">访谈感种草内容</option>
+                <option value="street-interview">街采感短视频</option>
+                <option value="slideshow-batch">轮播图 / 短视频批量测试</option>
+                <option value="batch-ugc">批量真人感短视频</option>
+                <option value="animated-ads">动画广告素材</option>
                 <option value="editing-only">只做粗剪 / 精剪优化</option>
               </select>
             </div>
@@ -319,7 +327,7 @@ function InquireInner() {
                 type="text"
                 value={form.benchmarkLinks}
                 onChange={e => setForm({ ...form, benchmarkLinks: e.target.value })}
-                placeholder="例: TikTok 链接 / Instagram 账号 / Amazon listing"
+                placeholder="例: TikTok 链接 / Instagram 账号 / Amazon 商品页"
                 className="w-full px-3 py-2 bg-bg-surface border border-border-default rounded text-[12px]"
               />
             </div>
@@ -339,7 +347,7 @@ function InquireInner() {
             className="w-full px-3 py-2 bg-bg-surface border border-border-default rounded text-[12px] resize-none mt-2"
           />
           <div className="text-[9px] font-mono text-text-tertiary mt-1">
-            {form.painPoint.length}/2000 · 越具体越好,数字+场景比&quot;想用 AI 提效&quot;有用 100 倍
+            {form.painPoint.length}/2000 · 越具体越好, 数字+场景比“想提效”更容易判断能否交付
           </div>
         </fieldset>
 
@@ -355,7 +363,7 @@ function InquireInner() {
                 type="text"
                 value={form.budget}
                 onChange={e => setForm({ ...form, budget: e.target.value })}
-                placeholder="例: POC 可先小额验证 / 企业接入走合同"
+                placeholder="例: 可先小额试跑 / 企业接入走合同"
                 className="w-full px-3 py-2 bg-bg-surface border border-border-default rounded text-[12px]"
               />
             </div>
@@ -365,7 +373,7 @@ function InquireInner() {
                 type="text"
                 value={form.timeline}
                 onChange={e => setForm({ ...form, timeline: e.target.value })}
-                placeholder="例: 2 周内跑 POC / Q3 内接入"
+                placeholder="例: 2 周内完成试跑 / Q3 内接入"
                 className="w-full px-3 py-2 bg-bg-surface border border-border-default rounded text-[12px]"
               />
             </div>
@@ -416,37 +424,37 @@ function InquireInner() {
           disabled={!ready || submitting}
           className="w-full py-3 bg-accent text-bg-root rounded-md text-[13px] font-semibold hover:bg-accent-hover disabled:opacity-40 disabled:cursor-not-allowed"
         >
-          {submitting ? '提交中...' : '提交 POC 需求 · 24h 内联系'}
+          {submitting ? '提交中...' : '提交试跑需求 · 24h 内联系'}
         </button>
 
         <p className="text-[10px] font-mono text-text-tertiary text-center">
-          填完不强卖 · 询盘信息只作者本人看 · 详见 <Link href="/privacy" className="text-accent underline">隐私政策</Link>
+          填完不强卖 · 只用于判断试跑边界 · 详见 <Link href="/privacy" className="text-accent underline">隐私政策</Link>
         </p>
       </div>
 
       {/* 替代路径 */}
       <div className="mt-10 pt-6 border-t border-border-subtle">
         <div className="text-[10px] font-mono text-text-tertiary uppercase tracking-wider mb-3 text-center">
-          不想填表?
+          暂时不想填表?
         </div>
         <div className="flex flex-wrap gap-2 justify-center">
           <a
             href="mailto:zachary.x.pku@gmail.com?subject=Wenai%20Enterprise%20%E8%AF%A2%E7%9B%98"
             className="px-4 py-2 border border-border-default rounded text-[11px] font-mono text-text-primary hover:border-accent/40"
           >
-            📧 直接邮件
+            直接邮件
           </a>
           <Link
             href="/demo"
             className="px-4 py-2 border border-border-default rounded text-[11px] font-mono text-text-primary hover:border-accent/40"
           >
-            🎫 先看演示流程
+            先看演示流程
           </Link>
           <Link
             href="/cases"
             className="px-4 py-2 border border-border-default rounded text-[11px] font-mono text-text-primary hover:border-accent/40"
           >
-            📊 看内测样例
+            看交付样例
           </Link>
         </div>
       </div>
@@ -461,6 +469,24 @@ function MiniScore({ label, value }: { label: string; value: number }) {
       <div className="mt-1 text-[16px] font-bold text-accent font-mono tabular-nums">{value}</div>
     </div>
   );
+}
+
+function toCustomerCopy(value: string) {
+  return value
+    .replace(/缺少 benchmark 证据, 复盘时无法解释内容假设来源/gi, '缺少内容参考证据, 复盘解释不够稳')
+    .replace(/缺少 10 SKU\/批量范围, 更像一次性工具试用而不是标准 POC/gi, '缺少批量范围, 暂时不像标准试跑')
+    .replace(/先补 benchmark, 再决定是否进入 POC/gi, '先补内容参考, 再决定是否进入试跑')
+    .replace(/先跑 10 SKU POC, 同时补齐复盘与审核机制/gi, '先跑 10 SKU, 同时补齐复盘和审核机制')
+    .replace(/benchmark/gi, '内容参考')
+    .replace(/benchmark-to-campaign/gi, '内容参考到营销包')
+    .replace(/POC/g, '试跑')
+    .replace(/AI/g, '系统')
+    .replace(/SOP/g, '标准流程')
+    .replace(/Hook/gi, '开场句')
+    .replace(/Brief/gi, '执行说明')
+    .replace(/GMV/gi, '销售额')
+    .replace(/ROI/gi, '投入产出')
+    .replace(/10 SKU\/批量/g, '10 SKU 或批量');
 }
 
 export default function InquirePage() {

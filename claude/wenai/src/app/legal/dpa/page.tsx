@@ -1,12 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-
 export default function DPAPage() {
-  const [today, setToday] = useState('');
-  useEffect(() => {
-    setToday(new Date().toISOString().slice(0, 10));
-  }, []);
+  const today = new Date().toISOString().slice(0, 10);
 
   return (
     <div className="max-w-3xl mx-auto py-12 px-6">
