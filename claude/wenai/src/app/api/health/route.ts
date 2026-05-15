@@ -22,7 +22,7 @@ interface Status {
 
 async function checkRedis(): Promise<Status> {
   if (!process.env.UPSTASH_REDIS_REST_URL || !process.env.UPSTASH_REDIS_REST_TOKEN) {
-    return { name: 'Redis (Upstash)', status: 'degraded', note: '未配置,fallback 本地文件+内存' };
+    return { name: 'Redis (Upstash)', status: 'degraded', note: '未配置，当前使用本地文件和内存保留运行状态' };
   }
   const start = Date.now();
   try {
@@ -57,7 +57,7 @@ function checkWanx(): Status {
   const key = process.env.AI_API_KEY;
   const disabled = process.env.WANX_DISABLED === '1';
   if (disabled) {
-    return { name: 'AI · 通义万相 生图', status: 'degraded', note: 'WANX_DISABLED=1,走 mock 模式' };
+    return { name: 'AI · 通义万相 生图', status: 'degraded', note: '图像生成已关闭，当前仅导出生产规格' };
   }
   if (!key) {
     return { name: 'AI · 通义万相 生图', status: 'down', note: '复用 AI_API_KEY · 未配置' };
@@ -74,7 +74,7 @@ function checkAuth(): Status {
 
 function checkHappyhorse(): Status {
   if (!process.env.HAPPYHORSE_API_KEY) {
-    return { name: 'AI · HappyHorse 影棚/视频', status: 'degraded', note: '未配置 · /pipelines/ai-photoshoot 退化到 mock' };
+    return { name: 'AI · HappyHorse 影棚/视频', status: 'degraded', note: '未配置，当前仅导出生产规格' };
   }
   return { name: 'AI · HappyHorse 影棚/视频', status: 'operational', note: 'GPT Image 2 + i2v 国内中转' };
 }

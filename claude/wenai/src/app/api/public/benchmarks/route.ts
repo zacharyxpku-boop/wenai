@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { listBenchCategories, getBenchSnapshot, type BenchMetric } from '@/lib/cross-org-benchmark';
+import { listBenchCategories, getBenchSnapshot } from '@/lib/cross-org-benchmark';
 
 /**
  * 公开 benchmark 索引 · 不需要登录 · SEO 流量入口

@@ -59,17 +59,6 @@ const SCENARIO_ALLOWED = new Set([
 const SIZE_ALLOWED = new Set(['1024x1024', '1024x1536', '1536x1024', 'auto']);
 const QUALITY_ALLOWED = new Set(['low', 'medium', 'high', 'auto']);
 
-interface OpenAIImageResult {
-  url?: string;
-  b64_json?: string;
-  revised_prompt?: string;
-}
-
-interface OpenAIResponse {
-  created: number;
-  data: OpenAIImageResult[];
-}
-
 function dataUrlToBuffer(dataUrl: string): { buf: Buffer; mime: string } | null {
   const m = dataUrl.match(/^data:(image\/[a-zA-Z+]+);base64,(.+)$/);
   if (!m) return null;
@@ -379,11 +368,4 @@ export async function POST(request: NextRequest) {
       { status: 500 }
     );
   }
-}
-
-// (保留以备后续可能的对外费用展示, 当前 HappyHorse 路径 cost 在响应中给固定值)
-function estimateCost(quality: string, n: number): { perImageUsd: number; totalUsd: number } {
-  const map: Record<string, number> = { low: 0.011, medium: 0.042, high: 0.167, auto: 0.042 };
-  const per = map[quality] || 0.042;
-  return { perImageUsd: per, totalUsd: +(per * n).toFixed(3) };
 }

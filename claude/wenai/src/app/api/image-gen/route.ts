@@ -8,9 +8,7 @@ import { inferPlanFromUser } from '@/lib/entitlements';
  *
  * 生图提供商优先级：
  *   1. 阿里通义万相 wanx (默认, 复用 AI_API_KEY · 无需额外配置) ← 当前激活
- *   2. FAL_KEY                  → 走 fal.ai Flux Schnell (预留)
- *   3. REPLICATE_API_TOKEN      → 走 Replicate (预留)
- *   4. Mock (Picsum 占位, 最后回退)
+ *   2. 未配置时返回 503, 前端应导出生产规格交给团队执行
  *
  * 差异化对标 HotClaw：
  * - 品类专属场景预设（5 类 × 3 预设）
@@ -277,16 +275,32 @@ export async function POST(request: NextRequest) {
           categoryUsed: body.category,
         });
       }
+      if (process.env.NODE_ENV !== 'development') {
+        return NextResponse.json(
+          { error: '图片生成服务暂不可用，请先导出生产规格交给团队执行。', code: 'IMAGE_PROVIDER_UNAVAILABLE' },
+          { status: 502 }
+        );
+      }
     } catch (err) {
-      console.warn('[image-gen] wanx failed, falling back to mock:', err);
-      // 继续走 mock 分支
+      console.warn('[image-gen] wanx failed:', err);
+      if (process.env.NODE_ENV !== 'development') {
+        return NextResponse.json(
+          { error: '图片生成服务暂不可用，请先导出生产规格交给团队执行。', code: 'IMAGE_PROVIDER_UNAVAILABLE' },
+          { status: 502 }
+        );
+      }
     }
   }
 
-  // ========================================
-  // 分支 2：Mock 模式（fallback）
-  // ========================================
-  const mockImages = outputs.map(type => {
+  if (process.env.NODE_ENV !== 'development') {
+    return NextResponse.json(
+      { error: '图片生成服务未配置，请先导出生产规格交给团队执行。', code: 'IMAGE_PROVIDER_NOT_CONFIGURED' },
+      { status: 503 }
+    );
+  }
+
+  // 开发环境调试图，仅用于本机 UI 校验，生产环境不可达。
+  const localPreviewImages = outputs.map(type => {
     const meta = OUTPUT_DESCRIPTIONS[type];
     const fullPrompt = `${meta.prompt}${scenePrompt ? ', ' + scenePrompt : ''}. Product: ${cleanSku.slice(0, 200)}`;
     const seed = Math.floor(Math.random() * 9999);
@@ -294,18 +308,17 @@ export async function POST(request: NextRequest) {
       type,
       label: meta.label,
       prompt: fullPrompt,
-      // Unsplash picsum 占位，实际部署时换 fal/replicate 输出
       url: `https://picsum.photos/seed/wenai-${type}-${seed}/800/800`,
       width: 800,
       height: 800,
-      provider: 'mock',
+      provider: 'local-preview',
     };
   });
 
   return NextResponse.json({
-    mock: true,
-    notice: 'AI 生图模块为展示占位。配置 FAL_KEY 或 REPLICATE_API_TOKEN 后切换为真生成。',
-    images: mockImages,
+    localPreview: true,
+    notice: '当前为本机预览结果。正式生成需配置图片生产服务；未配置时请导出生产规格交给团队执行。',
+    images: localPreviewImages,
     scenePromptUsed: scenePrompt,
     categoryUsed: body.category,
   });
