@@ -352,8 +352,8 @@ test.describe.serial('Wenai 完整用户旅程', () => {
 
     await expect(page).toHaveURL(/\/pricing\/checkout\?plan=starter/);
     await expect(page.getByRole('heading', { name: 'Starter 付费通道即将开放' })).toBeVisible();
-    await expect(page.getByText('当前不会进行扣款，也不会把账户写成已升级状态。')).toBeVisible();
-    await expect(page.getByText(/支付成功|已升级/)).toHaveCount(0);
+    await expect(page.getByText('当前不会进行扣款，也不会改变你的 Free 试用档位。')).toBeVisible();
+    await expect(page.getByText(/支付成功/)).toHaveCount(0);
 
     await page.getByRole('button', { name: '获取早鸟优惠' }).click();
     await page.getByPlaceholder('you@company.com').fill('checkout-lead@example.com');

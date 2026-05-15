@@ -26,7 +26,7 @@ export default function PricingCheckoutPage({
             {requestedPlan} 付费通道即将开放
           </h1>
           <p className="mt-4 max-w-2xl text-[14px] leading-7 text-text-secondary">
-            当前不会进行扣款，也不会把账户写成已升级状态。留下邮箱后，Starter/Growth 开放时会优先通知你，并保留早鸟优惠资格。
+            当前不会进行扣款，也不会改变你的 Free 试用档位。留下邮箱后，Starter/Growth 开放时会优先通知你，并保留早鸟优惠资格。
           </p>
         </section>
         <section className="mt-6">

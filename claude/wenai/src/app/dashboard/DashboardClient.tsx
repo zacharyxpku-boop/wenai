@@ -244,7 +244,7 @@ export default function DashboardClient() {
             <div className="text-[12px] font-black uppercase tracking-wide text-amber-700">Wenai Dashboard</div>
             <h1 className="mt-2 text-3xl font-black text-slate-950">订阅状态与模板市场</h1>
             <p className="mt-2 text-[13px] text-slate-600">当前档位：Free 试用中 / 本月 CSV 导入：{usage.csvImports}</p>
-            <p className="mt-1 text-[12px] text-slate-500">Starter/Growth 即将开放，留下邮箱后优先通知；当前不会展示虚假的已升级状态。</p>
+            <p className="mt-1 text-[12px] text-slate-500">Starter/Growth 即将开放，留下邮箱后优先通知；当前不会改变 Free 试用档位。</p>
           </div>
           <div className="flex flex-wrap gap-2">
             <button type="button" onClick={() => openEarlyBird('Starter')} className="rounded-md bg-slate-950 px-4 py-2 text-[12px] font-bold text-white">获取 Starter 上线通知</button>

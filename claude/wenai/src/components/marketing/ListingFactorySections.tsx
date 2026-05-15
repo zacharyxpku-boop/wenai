@@ -1493,7 +1493,7 @@ function SubscriptionStatusBar({
             当前档位：{subscription.tier === 'Free' ? 'Free 试用中' : `${subscription.tier} 本地功能预览`}
           </div>
           <p className="mt-1 text-[12px] text-slate-600">项目 {projectLimit} / 本月 CSV 导入 {csvLimit} / 学习档案 {entitlements.learningRounds === 'unlimited' ? '完整保留' : `最近 ${entitlements.learningRounds} 轮`}</p>
-          <p className="mt-1 text-[12px] text-slate-500">Starter/Growth 即将上线。当前只收集上线通知邮箱，不会写入虚假的已升级状态。</p>
+          <p className="mt-1 text-[12px] text-slate-500">Starter/Growth 即将上线。当前只收集上线通知邮箱，不会改变 Free 试用档位。</p>
         </div>
         <div className="flex flex-wrap gap-2">
           {subscription.tier === 'Free' && <ActionButton onClick={() => onUpgrade('Starter')}>获取 Starter 上线通知</ActionButton>}
@@ -1997,7 +1997,7 @@ function ContentDecisionOsPanel({ run, onChanged }: { run: ListingFactoryRun; on
     } else {
       setPaywall({
         title: `${tier} 即将上线`,
-        body: `${tier} 档即将上线，留下邮箱获取早鸟优惠。当前不会展示虚假的已升级状态。`,
+        body: `${tier} 档即将上线，留下邮箱获取早鸟优惠。当前不会改变 Free 试用档位。`,
         targetTier: tier,
         trigger: 'brief_export',
       });
