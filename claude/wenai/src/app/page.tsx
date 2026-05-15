@@ -6,6 +6,7 @@ import LandingDecisionDemo from '@/components/marketing/LandingDecisionDemo';
 import TopNav from '@/components/marketing/TopNav';
 import MarketingFooter from '@/components/marketing/MarketingFooter';
 import { PricingIntentCards } from '@/components/marketing/PricingIntentCards';
+import { VisitorRouter } from '@/components/marketing/VisitorRouter';
 
 export const metadata: Metadata = {
   title: 'Wenai | 电商内容实验决策中枢',
@@ -53,6 +54,8 @@ export default function HomePage() {
             <LandingDecisionDemo />
           </div>
         </section>
+
+        <VisitorRouter />
 
         <section className="border-b border-border-subtle py-12">
           <div className="mx-auto grid max-w-[1200px] gap-4 px-5 sm:px-6 md:grid-cols-3 lg:px-8">
