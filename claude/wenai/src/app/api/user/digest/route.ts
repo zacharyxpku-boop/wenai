@@ -23,7 +23,7 @@ export async function GET(req: NextRequest) {
   const limit = Math.min(parseInt(new URL(req.url).searchParams.get('limit') || '7', 10), 30);
 
   if (!redis) {
-    return NextResponse.json({ digests: [], error: 'Redis 未配置' });
+    return NextResponse.json({ digests: [], error: '当前为本地试用模式，摘要历史不会跨环境持久化。' });
   }
   try {
     const dates = (await redis.lrange(`wenai:digest:list:${orgId}`, 0, limit - 1)) as string[];

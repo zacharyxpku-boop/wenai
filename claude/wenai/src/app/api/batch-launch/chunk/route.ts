@@ -85,7 +85,7 @@ export async function POST(req: NextRequest) {
 
   if (!apiKey) {
     return NextResponse.json(
-      { error: 'AI 服务未配置 (AI_API_KEY 缺失)', code: 'AI_API_KEY_MISSING' },
+      { error: '批量上新 AI 服务暂未启用。请先导出上新规格，或使用 CSV 决策工作台完成本地复盘。', code: 'AI_SERVICE_DISABLED' },
       { status: 503 }
     );
   }

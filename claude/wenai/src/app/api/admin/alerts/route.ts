@@ -160,7 +160,7 @@ async function summarizeOrg(orgId: string): Promise<OrgAlertSummary> {
 
 export async function GET() {
   if (!redis) {
-    return NextResponse.json({ orgs: [], totalOrgs: 0, error: 'Redis 未配置' });
+    return NextResponse.json({ orgs: [], totalOrgs: 0, error: '当前为本地试用模式，告警统计仅显示本地数据。' });
   }
   const orgs = await discoverOrgs();
   const summaries: OrgAlertSummary[] = [];

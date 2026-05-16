@@ -181,9 +181,9 @@ export async function POST(request: NextRequest) {
   if (!apiKey) {
     return NextResponse.json(
       {
-        error: 'GEMINI_API_KEY 未配置',
-        notice: '在 .env.local 加 GEMINI_API_KEY=xxx (国内可选 GEMINI_BASE_URL=https://your-cf-worker.workers.dev)',
-        code: 'NO_KEY',
+        error: '视频拆解服务暂未启用。请先导出生产规格，或使用 CSV 决策工作台完成本地复盘。',
+        notice: '当前不会返回伪拆解结果。',
+        code: 'VIDEO_TEARDOWN_DISABLED',
       },
       { status: 503 }
     );

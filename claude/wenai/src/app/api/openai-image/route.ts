@@ -273,9 +273,9 @@ export async function POST(request: NextRequest) {
   if (!happyhorseKey) {
     return NextResponse.json(
       {
-        error: 'HAPPYHORSE_API_KEY 未配置',
-        notice: '配 HAPPYHORSE_API_KEY=fc_xxx 启用 GPT Image 2 (国内中转 + OpenAI 同款模型)',
-        code: 'NO_KEY',
+        error: '影棚生图服务暂未启用。请先导出生产规格交给团队执行。',
+        notice: '当前不会返回伪图片结果。',
+        code: 'IMAGE_STUDIO_NOT_CONFIGURED',
       },
       { status: 503 }
     );

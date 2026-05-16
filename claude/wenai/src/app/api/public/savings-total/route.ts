@@ -72,7 +72,7 @@ export async function GET() {
       grandTotalCny: 0,
       activeOrgCount: 0,
       windowDays: 7,
-      note: 'Redis 未配置, 实时数据不可用',
+      note: '当前为本地试用模式，实时节省金额不可跨环境汇总。',
     });
   }
 

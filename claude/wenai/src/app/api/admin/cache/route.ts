@@ -43,7 +43,7 @@ export async function GET(request: NextRequest) {
   if (trendDaysRaw) {
     const trendDays = Math.min(Math.max(parseInt(trendDaysRaw, 10) || 7, 1), 30);
     if (!redis) {
-      return NextResponse.json({ trend: [], totalSavedCny: 0, error: 'Redis 未配置' });
+      return NextResponse.json({ trend: [], totalSavedCny: 0, error: '当前为本地试用模式，缓存趋势仅显示本地数据。' });
     }
     const points: Array<{ date: string; hits: number; misses: number; savedCny: number; hitRate: number }> = [];
     for (let i = trendDays - 1; i >= 0; i--) {

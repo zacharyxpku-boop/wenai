@@ -47,7 +47,7 @@ export async function setInventory(
   qty: number,
   threshold?: number,
 ): Promise<{ ok: boolean; record?: InventoryRecord; error?: string }> {
-  if (!redis) return { ok: false, error: 'Redis 未配置' };
+  if (!redis) return { ok: false, error: '当前为本地试用模式，库存数据不会跨环境持久化。' };
   if (!skuId || skuId.length > 100) return { ok: false, error: 'skuId 必填且 ≤100 字' };
   if (typeof qty !== 'number' || qty < 0 || qty > 1e9 || !Number.isFinite(qty)) {
     return { ok: false, error: 'qty 必须是 ≥0 的有限数' };

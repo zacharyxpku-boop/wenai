@@ -36,7 +36,7 @@ const DATA_SOURCES: Record<string, DataSourceConfig> = {
 function notConfiguredResult(sourceName: string): DataSourceResult {
   return {
     source: sourceName,
-    data: `[API未配置] ${sourceName} API key 未设置，请在 .env.local 中配置对应的环境变量`,
+    data: `${sourceName} 外部数据源暂未启用。当前可继续使用本地 CSV 决策工作台完成复盘。`,
     timestamp: Date.now(),
     cached: false,
   };

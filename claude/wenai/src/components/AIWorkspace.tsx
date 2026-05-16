@@ -6,6 +6,7 @@ import ResultFeedback from './ResultFeedback';
 import BetaFeedback from './BetaFeedback';
 import ExpertReview from './ExpertReview';
 import { IndustryHint } from './IndustryHint';
+import { readJsonStorage, removeBrowserStorage, writeJsonStorage } from '@/lib/browser-storage';
 import { assessClientFile, readClientTextFile } from '@/lib/client-file-guard';
 
 // 与 /api/ai INDUSTRY_INJECT_MODULES 同步的决策模块白名单
@@ -67,6 +68,7 @@ export default function AIWorkspace({
   const [csvProcessing, setCsvProcessing] = useState(false);
   const [csvProgress, setCsvProgress] = useState({ current: 0, total: 0 });
   const [copied, setCopied] = useState(false);
+  const [copyError, setCopyError] = useState('');
   const [trademarkQuery, setTrademarkQuery] = useState<{
     results: Array<{ keyword: string; found: boolean; data?: { owner: string; regNo: string } }>;
     foundCount: number;
@@ -76,10 +78,7 @@ export default function AIWorkspace({
   const [lastSubmitArgs, setLastSubmitArgs] = useState<{ prompt: string; input: string; params: Record<string, string> } | null>(null);
 
   useEffect(() => {
-    const stored = localStorage.getItem(`wenai_history_${moduleId}`);
-    if (stored) {
-      try { setHistory(JSON.parse(stored)); } catch { /* ignore */ }
-    }
+    setHistory(readJsonStorage<HistoryItem[]>(`wenai_history_${moduleId}`, []));
   }, [moduleId]);
 
   const saveToHistory = (inp: string, res: string, p: Record<string, string>) => {
@@ -92,7 +91,7 @@ export default function AIWorkspace({
     };
     const updated = [item, ...history].slice(0, 50);
     setHistory(updated);
-    localStorage.setItem(`wenai_history_${moduleId}`, JSON.stringify(updated));
+    writeJsonStorage(`wenai_history_${moduleId}`, updated);
   };
 
   const handleCancel = useCallback(() => {
@@ -307,9 +306,17 @@ export default function AIWorkspace({
   };
 
   const handleCopy = () => {
-    navigator.clipboard.writeText(result);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 1500);
+    navigator.clipboard?.writeText(result)
+      .then(() => {
+        setCopyError('');
+        setCopied(true);
+        setTimeout(() => setCopied(false), 1500);
+      })
+      .catch(() => {
+        setCopied(false);
+        setCopyError('复制失败，请手动选中结果文本复制。');
+        setTimeout(() => setCopyError(''), 3000);
+      });
   };
 
   const handleShare = async () => {
@@ -342,9 +349,16 @@ export default function AIWorkspace({
       }
     }
     // 桌面端：文本 + 分享图 URL 一起复制
-    await navigator.clipboard.writeText(`${shareText}\n\n分享图：${shareImageUrl}`);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    try {
+      await navigator.clipboard?.writeText(`${shareText}\n\n分享图：${shareImageUrl}`);
+      setCopyError('');
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      setCopied(false);
+      setCopyError('分享文本复制失败，请手动复制当前结果或使用浏览器分享。');
+      setTimeout(() => setCopyError(''), 3000);
+    }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -477,7 +491,7 @@ export default function AIWorkspace({
               )}
               <div className="pt-2 mt-1 border-t border-border-subtle">
                 <button
-                  onClick={() => { setHistory([]); localStorage.removeItem(`wenai_history_${moduleId}`); }}
+                  onClick={() => { setHistory([]); removeBrowserStorage(`wenai_history_${moduleId}`); }}
                   className="text-[9px] font-mono text-error hover:text-error/80 px-2.5 py-1 transition-colors"
                 >
                   清空全部
@@ -663,6 +677,11 @@ export default function AIWorkspace({
               </div>
             )}
           </div>
+          {copyError && (
+            <div role="status" className="mb-3 rounded-md border border-amber-300 bg-amber-50 px-3 py-2 text-[12px] font-bold text-amber-800">
+              {copyError}
+            </div>
+          )}
 
           <div className="flex-1 min-h-[180px] bg-bg-surface border border-border-subtle rounded-md p-4 overflow-y-auto relative">
             {error && (

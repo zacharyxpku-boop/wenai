@@ -91,7 +91,7 @@ export async function getInviteByUsername(username: string): Promise<Invite | nu
  * 写入邀请 (Redis 必需) · /admin/invites 使用
  */
 export async function setInvite(code: string, invite: Invite): Promise<{ ok: boolean; error?: string }> {
-  if (!redis) return { ok: false, error: 'Redis 未配置,无法写入动态邀请' };
+  if (!redis) return { ok: false, error: '当前为本地试用模式，动态邀请不会跨环境持久化。' };
   if (!/^[a-z0-9_-]{2,32}$/i.test(code)) return { ok: false, error: '邀请码格式: 2-32 位字母数字/-_' };
   try {
     await redis.hset(REDIS_KEY, { [code.toLowerCase()]: JSON.stringify(invite) });
@@ -102,7 +102,7 @@ export async function setInvite(code: string, invite: Invite): Promise<{ ok: boo
 }
 
 export async function deleteInvite(code: string): Promise<{ ok: boolean; error?: string }> {
-  if (!redis) return { ok: false, error: 'Redis 未配置' };
+  if (!redis) return { ok: false, error: '邀请名册暂未启用云端存储。' };
   if (DEFAULT_INVITES[code.toLowerCase()]) {
     return { ok: false, error: '内置邀请码不可删除,去 env INVITE_ROSTER 覆盖' };
   }

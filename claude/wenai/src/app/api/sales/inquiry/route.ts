@@ -493,7 +493,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: '未授权' }, { status: 401 });
   }
   if (!redis) {
-    return NextResponse.json({ inquiries: [], notice: 'Redis 未配置，询盘不会持久化' });
+    return NextResponse.json({ inquiries: [], notice: '当前为本地试用模式，询盘不会跨环境持久化。' });
   }
   try {
     const ids = await redis.lrange('wenai:inquiries:list', 0, 99);
@@ -530,7 +530,7 @@ export async function GET(req: NextRequest) {
 
 export async function PATCH(req: NextRequest) {
   if (!authed(req)) return NextResponse.json({ error: '未授权' }, { status: 401 });
-  if (!redis) return NextResponse.json({ error: 'Redis 未配置' }, { status: 503 });
+  if (!redis) return NextResponse.json({ error: '询盘工作台暂未启用云端存储。' }, { status: 503 });
 
   const body = await req.json().catch(() => ({}));
   const id = str(body.id);
@@ -626,7 +626,7 @@ export async function PATCH(req: NextRequest) {
 
 export async function PUT(req: NextRequest) {
   if (!authed(req)) return NextResponse.json({ error: '未授权' }, { status: 401 });
-  if (!redis) return NextResponse.json({ error: 'Redis 未配置' }, { status: 503 });
+  if (!redis) return NextResponse.json({ error: '询盘工作台暂未启用云端存储。' }, { status: 503 });
 
   const body = await req.json().catch(() => ({}));
   const id = str(body.id);

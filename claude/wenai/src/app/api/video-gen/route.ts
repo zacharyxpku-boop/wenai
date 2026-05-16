@@ -395,13 +395,13 @@ export async function POST(request: NextRequest) {
   // DashScope 直连 fallback (要求公网 imageUrl)
   if (!dashscopeKey) {
     return NextResponse.json(
-      { error: 'HAPPYHORSE_API_KEY 或 AI_API_KEY 至少配一个', code: 'NO_KEY' },
+      { error: '视频生成服务暂未启用。请先导出生产规格交给团队执行。', code: 'VIDEO_PROVIDER_NOT_CONFIGURED' },
       { status: 503 }
     );
   }
   if (!body.imageUrl) {
     return NextResponse.json(
-      { error: 'wanx 直连模式必须提供公网 imageUrl (国内推荐配 HAPPYHORSE_API_KEY 走 base64)', code: 'NO_IMAGE_URL' },
+      { error: '当前视频生成通道需要可访问的参考图链接。请改为导出生产规格手动执行，或补充可访问图片链接后重试。', code: 'VIDEO_REFERENCE_IMAGE_REQUIRED' },
       { status: 400 }
     );
   }

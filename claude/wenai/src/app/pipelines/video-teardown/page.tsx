@@ -531,7 +531,7 @@ export default function VideoTeardownPage() {
 
           {/* Need Gemini key notice */}
           <div className="text-[10px] font-mono text-text-tertiary leading-relaxed border-t border-border-subtle pt-3">
-            需要 GEMINI_API_KEY · 国内服务器走 GEMINI_BASE_URL Cloudflare 反代 (见 cloudflare-openai-proxy.js 同款方案,把 upstream 换成 generativelanguage.googleapis.com)
+            视频拆解服务启用后可自动输出脚本蓝图；未启用时请导出生产规格交给团队执行。
           </div>
         </aside>
 

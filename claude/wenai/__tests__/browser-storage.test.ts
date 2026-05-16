@@ -1,5 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { readBrowserStorage, readJsonStorage, writeBrowserStorage, writeJsonStorage } from '@/lib/browser-storage';
+import { DataSourceManager } from '@/lib/datasources';
 
 describe('browser storage adapter', () => {
   afterEach(() => {
@@ -37,5 +38,25 @@ describe('browser storage adapter', () => {
 
     writeBrowserStorage('wenai_bad_json', '{bad');
     expect(readJsonStorage('wenai_bad_json', { ok: true })).toEqual({ ok: true });
+  });
+});
+
+describe('data source disabled messaging', () => {
+  it('does not expose env setup details when external sources are disabled', async () => {
+    const manager = new DataSourceManager({
+      sourceWithoutKey: {
+        name: 'Test Source',
+        baseUrl: 'https://example.com',
+        apiKey: '',
+        enabled: false,
+      },
+    });
+
+    const results = await manager.fetchProductData('wireless earbuds');
+    const disabled = results.find((result) => result.source === 'Test Source');
+
+    expect(disabled?.data).toContain('CSV');
+    expect(String(disabled?.data)).not.toContain('API key');
+    expect(String(disabled?.data)).not.toContain('.env.local');
   });
 });

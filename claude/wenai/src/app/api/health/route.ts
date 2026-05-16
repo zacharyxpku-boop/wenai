@@ -2,15 +2,8 @@ import { NextResponse } from 'next/server';
 import { Redis } from '@upstash/redis';
 
 /**
- * 健康检查 · 对外状态验证入口
- * GET /api/health
- *
- * 返回 3 个核心依赖的状态:
- *   ai      · AI_API_KEY 可用性 (不实际打 API, 仅检查 key 存在)
- *   redis   · Upstash 连通性 (实际 PING)
- *   wanx    · 图片生成配置状态 (基于 AI_API_KEY 和 WANX_DISABLED)
- *
- * /status 页消费此接口。正式 SLA 以主站订单或合同为准。
+ * Public status endpoint.
+ * User-facing notes stay product-level and do not expose internal env key names.
  */
 
 interface Status {
@@ -20,109 +13,154 @@ interface Status {
   note?: string;
 }
 
+function hasValue(value: string | undefined) {
+  return Boolean(value && value.trim().length > 0);
+}
+
+function hasRedisConfig() {
+  return hasValue(process.env.UPSTASH_REDIS_REST_URL) && hasValue(process.env.UPSTASH_REDIS_REST_TOKEN);
+}
+
 async function checkRedis(): Promise<Status> {
-  if (!process.env.UPSTASH_REDIS_REST_URL || !process.env.UPSTASH_REDIS_REST_TOKEN) {
-    return { name: 'Redis (Upstash)', status: 'degraded', note: '未配置，当前使用本地文件和内存保留运行状态' };
+  if (!hasRedisConfig()) {
+    return {
+      name: 'Storage retention',
+      status: 'degraded',
+      note: '当前为本地试用模式，运行状态仅保留在当前环境。',
+    };
   }
+
   const start = Date.now();
   try {
     const redis = new Redis({
-      url: process.env.UPSTASH_REDIS_REST_URL,
-      token: process.env.UPSTASH_REDIS_REST_TOKEN,
+      url: process.env.UPSTASH_REDIS_REST_URL!,
+      token: process.env.UPSTASH_REDIS_REST_TOKEN!,
     });
     await redis.ping();
-    return { name: 'Redis (Upstash)', status: 'operational', latencyMs: Date.now() - start };
+    return { name: 'Storage retention', status: 'operational', latencyMs: Date.now() - start };
   } catch (err) {
     return {
-      name: 'Redis (Upstash)',
+      name: 'Storage retention',
       status: 'down',
       latencyMs: Date.now() - start,
-      note: err instanceof Error ? err.message.slice(0, 120) : 'ping failed',
+      note: err instanceof Error ? err.message.slice(0, 120) : 'storage ping failed',
     };
   }
 }
 
 function checkAI(): Status {
   const key = process.env.AI_API_KEY;
-  if (!key) {
-    return { name: 'AI · 通义千问 chat', status: 'down', note: 'AI_API_KEY 未配置' };
+  if (!hasValue(key)) {
+    return {
+      name: 'AI decision service',
+      status: 'down',
+      note: 'AI 服务暂未启用，当前可使用本地 CSV 决策链路。',
+    };
   }
-  if (key.length < 10) {
-    return { name: 'AI · 通义千问 chat', status: 'degraded', note: 'AI_API_KEY 看起来不完整' };
+  if (key!.trim().length < 10) {
+    return {
+      name: 'AI decision service',
+      status: 'degraded',
+      note: 'AI 服务配置需要校验，当前可使用本地 CSV 决策链路。',
+    };
   }
-  return { name: 'AI · 通义千问 chat', status: 'operational', note: '密钥已配置' };
+  return { name: 'AI decision service', status: 'operational', note: 'AI 服务已启用。' };
 }
 
-function checkWanx(): Status {
-  const key = process.env.AI_API_KEY;
+function checkImageProduction(): Status {
   const disabled = process.env.WANX_DISABLED === '1';
   if (disabled) {
-    return { name: 'AI · 通义万相 生图', status: 'degraded', note: '图像生成已关闭，当前仅导出生产规格' };
+    return {
+      name: 'Image production service',
+      status: 'degraded',
+      note: '图像生成已关闭，当前仅导出生产规格。',
+    };
   }
-  if (!key) {
-    return { name: 'AI · 通义万相 生图', status: 'down', note: '复用 AI_API_KEY · 未配置' };
+  if (!hasValue(process.env.AI_API_KEY)) {
+    return {
+      name: 'Image production service',
+      status: 'down',
+      note: '图片生成暂未启用，当前仅导出生产规格。',
+    };
   }
-  return { name: 'AI · 通义万相 生图', status: 'operational', note: '复用 AI_API_KEY · wanx2.1-t2i-turbo' };
+  return { name: 'Image production service', status: 'operational', note: '图片生成服务已启用。' };
 }
 
 function checkAuth(): Status {
-  if (!process.env.JWT_SECRET) {
-    return { name: 'Auth · JWT', status: 'down', note: 'JWT_SECRET 未配置 · 生产环境必需' };
+  if (!hasValue(process.env.JWT_SECRET)) {
+    return {
+      name: 'Account system',
+      status: 'down',
+      note: '账号体系暂未启用，当前为本地试用模式。',
+    };
   }
-  return { name: 'Auth · JWT', status: 'operational' };
+  return { name: 'Account system', status: 'operational' };
 }
 
-function checkHappyhorse(): Status {
-  if (!process.env.HAPPYHORSE_API_KEY) {
-    return { name: 'AI · HappyHorse 影棚/视频', status: 'degraded', note: '未配置，当前仅导出生产规格' };
+function checkExternalProduction(): Status {
+  if (!hasValue(process.env.HAPPYHORSE_API_KEY)) {
+    return {
+      name: 'External production connector',
+      status: 'degraded',
+      note: '外部生产连接暂未启用，当前仅导出生产规格。',
+    };
   }
-  return { name: 'AI · HappyHorse 影棚/视频', status: 'operational', note: 'GPT Image 2 + i2v 国内中转' };
+  return { name: 'External production connector', status: 'operational', note: '外部生产连接已启用。' };
 }
 
-function checkGemini(): Status {
-  if (!process.env.GEMINI_API_KEY) {
-    return { name: 'AI · Gemini Vision (拆解)', status: 'degraded', note: 'video-teardown 不可用' };
+function checkVideoTeardown(): Status {
+  if (!hasValue(process.env.GEMINI_API_KEY)) {
+    return {
+      name: 'Video teardown service',
+      status: 'degraded',
+      note: '视频拆解暂未启用，当前仅导出生产规格。',
+    };
   }
-  const baseUrl = process.env.GEMINI_BASE_URL;
-  return {
-    name: 'AI · Gemini Vision (拆解)',
-    status: 'operational',
-    note: baseUrl ? `经 ${new URL(baseUrl).host} 中转` : '直连 generativelanguage',
-  };
+  return { name: 'Video teardown service', status: 'operational', note: '视频拆解服务已启用。' };
 }
 
 function checkMailer(): Status {
-  if (process.env.RESEND_API_KEY) {
-    return { name: 'Email · Resend', status: 'operational', note: 'daily digest 走 Resend' };
+  if (hasValue(process.env.RESEND_API_KEY) || hasValue(process.env.SENDGRID_API_KEY)) {
+    return { name: 'Email notification', status: 'operational', note: '通知服务已启用。' };
   }
-  if (process.env.SENDGRID_API_KEY) {
-    return { name: 'Email · SendGrid', status: 'operational', note: 'daily digest 走 SendGrid' };
-  }
-  return { name: 'Email · Mailer', status: 'degraded', note: '未配置邮件服务，通知仅保留在本地流程中' };
+  return {
+    name: 'Email notification',
+    status: 'degraded',
+    note: '邮件服务暂未启用，通知仅保留在本地流程中。',
+  };
 }
 
-function checkCronSecret(): Status {
-  if (!process.env.CRON_SECRET) {
-    return { name: 'Cron · 鉴权', status: 'degraded', note: 'CRON_SECRET 未配 · 生产建议配防外部触发' };
+function checkCronGuard(): Status {
+  if (!hasValue(process.env.CRON_SECRET)) {
+    return {
+      name: 'Scheduled task guard',
+      status: 'degraded',
+      note: '定时任务保护暂未启用，生产发布前需要开启。',
+    };
   }
-  return { name: 'Cron · 鉴权', status: 'operational' };
+  return { name: 'Scheduled task guard', status: 'operational' };
 }
 
 async function checkLastDigest(): Promise<Status> {
-  if (!process.env.UPSTASH_REDIS_REST_URL || !process.env.UPSTASH_REDIS_REST_TOKEN) {
-    return { name: 'Cron · digest 最近触发', status: 'degraded', note: '需 Redis 才能跟踪' };
+  if (!hasRedisConfig()) {
+    return {
+      name: 'Digest schedule snapshot',
+      status: 'degraded',
+      note: '当前为本地试用模式，暂不跨环境追踪定时任务快照。',
+    };
   }
+
   try {
     const redis = new Redis({
-      url: process.env.UPSTASH_REDIS_REST_URL,
-      token: process.env.UPSTASH_REDIS_REST_TOKEN,
+      url: process.env.UPSTASH_REDIS_REST_URL!,
+      token: process.env.UPSTASH_REDIS_REST_TOKEN!,
     });
-    // 拼今日 + 昨日 dateStr, 任一日有 digest 就视为 cron 跑过
     const today = new Date().toISOString().slice(0, 10);
-    const y = new Date(Date.now() - 86400000).toISOString().slice(0, 10);
+    const yesterday = new Date(Date.now() - 86400000).toISOString().slice(0, 10);
     let cursor: string | number = 0;
     let found = false;
-    let iter = 0;
+    let iterations = 0;
+
     do {
       const res: [string | number, string[]] = await redis.scan(cursor, {
         match: `wenai:digest:*:${today}`,
@@ -133,50 +171,52 @@ async function checkLastDigest(): Promise<Status> {
         found = true;
         break;
       }
-      iter++;
-      if (iter > 5) break;
+      iterations += 1;
+      if (iterations > 5) break;
     } while (cursor !== '0' && cursor !== 0);
+
     if (!found) {
-      // try yesterday
-      const r2: [string | number, string[]] = await redis.scan(0, {
-        match: `wenai:digest:*:${y}`,
+      const res: [string | number, string[]] = await redis.scan(0, {
+        match: `wenai:digest:*:${yesterday}`,
         count: 50,
       });
-      if (r2[1].length > 0) found = true;
+      found = res[1].length > 0;
     }
+
     if (found) {
-      return { name: 'Cron · digest 最近触发', status: 'operational', note: '今日或昨日已写入快照' };
+      return { name: 'Digest schedule snapshot', status: 'operational', note: '今日或昨日已写入快照。' };
     }
-    return { name: 'Cron · digest 最近触发', status: 'degraded', note: '近 48h 未发现快照 (可能首次部署 / 还没用户 / cron 未跑)' };
-  } catch (e) {
     return {
-      name: 'Cron · digest 最近触发',
+      name: 'Digest schedule snapshot',
+      status: 'degraded',
+      note: '近 48 小时未发现快照，可能还没有使用数据或定时任务尚未触发。',
+    };
+  } catch (err) {
+    return {
+      name: 'Digest schedule snapshot',
       status: 'down',
-      note: e instanceof Error ? e.message.slice(0, 100) : 'scan failed',
+      note: err instanceof Error ? err.message.slice(0, 100) : 'digest scan failed',
     };
   }
 }
 
 export async function GET() {
-  const [aiStatus, wanxStatus, hhStatus, geminiStatus, redisStatus, authStatus, mailerStatus, cronSecretStatus, digestStatus] = await Promise.all([
+  const services = await Promise.all([
     Promise.resolve(checkAI()),
-    Promise.resolve(checkWanx()),
-    Promise.resolve(checkHappyhorse()),
-    Promise.resolve(checkGemini()),
+    Promise.resolve(checkImageProduction()),
+    Promise.resolve(checkExternalProduction()),
+    Promise.resolve(checkVideoTeardown()),
     checkRedis(),
     Promise.resolve(checkAuth()),
     Promise.resolve(checkMailer()),
-    Promise.resolve(checkCronSecret()),
+    Promise.resolve(checkCronGuard()),
     checkLastDigest(),
   ]);
 
-  const services = [aiStatus, wanxStatus, hhStatus, geminiStatus, redisStatus, authStatus, mailerStatus, cronSecretStatus, digestStatus];
-
-  const allDown = services.every(s => s.status === 'down');
-  const anyDown = services.some(s => s.status === 'down');
-  const anyDegraded = services.some(s => s.status === 'degraded');
-
-  const overall = allDown ? 'down' : anyDown ? 'degraded' : anyDegraded ? 'degraded' : 'operational';
+  const allDown = services.every(service => service.status === 'down');
+  const anyDown = services.some(service => service.status === 'down');
+  const anyDegraded = services.some(service => service.status === 'degraded');
+  const overall = allDown ? 'down' : anyDown || anyDegraded ? 'degraded' : 'operational';
 
   return NextResponse.json({
     overall,

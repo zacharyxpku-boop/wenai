@@ -5,7 +5,6 @@ import { NextRequest, NextResponse } from 'next/server';
 export async function POST(request: NextRequest) {
   const { keywords, region, timeframe } = await request.json();
 
-  // If SerpAPI key is configured, use it
   const serpApiKey = process.env.SERPAPI_KEY;
 
   if (serpApiKey) {
@@ -40,7 +39,7 @@ export async function POST(request: NextRequest) {
   return NextResponse.json({
     source: 'built_in',
     keywords,
-    note: '未配置 SERPAPI_KEY，返回内置趋势参考数据。配置后可获取实时Google Trends数据。',
+    note: '当前使用内置趋势参考数据，启用实时趋势服务后会自动切换。',
     built_in_trends: getBuiltInTrends(Array.isArray(keywords) ? keywords[0] : keywords),
   });
 }
@@ -76,7 +75,7 @@ function getBuiltInTrends(keyword: string): object {
     },
     'default': {
       trend: 'unknown',
-      note: '该品类暂无内置数据，配置SERPAPI_KEY后可获取实时趋势',
+      note: '该品类暂无内置数据，启用实时趋势服务后可获取实时趋势。',
       general_advice: '建议关注：1)品类搜索量趋势 2)竞品数量变化 3)平均售价走势 4)评论增速',
     },
   };

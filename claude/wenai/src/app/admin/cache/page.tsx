@@ -181,7 +181,7 @@ export default function AdminCachePage() {
             <div className="text-[12px] font-mono text-text-tertiary py-8 text-center">加载中...</div>
           ) : !list || list.orgs.length === 0 ? (
             <div className="text-[12px] font-mono text-text-tertiary py-8 text-center">
-              该日无缓存活动 (或 Redis 未配置)
+              该日无缓存活动；本地试用模式下仅显示当前环境数据
             </div>
           ) : (
             <table className="w-full text-[12px]">

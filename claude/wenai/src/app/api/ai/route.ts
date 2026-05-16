@@ -153,9 +153,8 @@ export async function POST(request: NextRequest) {
     }
     return NextResponse.json(
       {
-        error: 'AI 服务未配置 (AI_API_KEY 缺失)。请联系管理员或查看 /status',
-        code: 'AI_API_KEY_MISSING',
-        hint: 'env var: AI_API_KEY',
+        error: 'AI 服务暂未启用。请先使用 CSV 决策工作台完成本地复盘，或联系团队开启生产服务。',
+        code: 'AI_SERVICE_DISABLED',
       },
       { status: 503 }
     );
@@ -471,7 +470,7 @@ export async function POST(request: NextRequest) {
 function generateDemoResponse(input: string): string {
   return `## Demo模式
 
-> 未配置 AI_API_KEY，请在 .env.local 中设置。
+> AI 服务暂未启用。当前仅展示本地预览，请使用 CSV 决策工作台完成可验证复盘。
 
 **输入预览：**
 ${input.substring(0, 200)}${input.length > 200 ? '...' : ''}`;

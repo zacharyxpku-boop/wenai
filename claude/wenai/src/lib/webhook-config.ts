@@ -64,7 +64,7 @@ export async function listWebhooks(orgId: string): Promise<WebhookEntry[]> {
 }
 
 export async function addWebhook(orgId: string, url: string, label?: string): Promise<{ ok: boolean; entry?: WebhookEntry; error?: string }> {
-  if (!redis) return { ok: false, error: 'Redis 未配置' };
+  if (!redis) return { ok: false, error: '当前为本地试用模式，Webhook 配置不会跨环境持久化。' };
   if (!/^https:\/\//.test(url)) return { ok: false, error: 'webhook URL 必须 https://' };
   if (url.length > 500) return { ok: false, error: 'URL 过长' };
 

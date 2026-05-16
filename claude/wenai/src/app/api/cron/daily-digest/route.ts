@@ -190,7 +190,7 @@ export async function GET(req: NextRequest) {
   }
 
   if (!redis) {
-    return NextResponse.json({ ok: false, error: 'Redis 未配置' });
+    return NextResponse.json({ ok: false, error: '当前为本地试用模式，定时摘要不会跨环境持久化。' });
   }
 
   const dateStr = new Date().toISOString().slice(0, 10);
