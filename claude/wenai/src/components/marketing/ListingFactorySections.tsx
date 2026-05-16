@@ -90,6 +90,7 @@ import {
   type PlatformCsvMappingPreview,
 } from '@/lib/listing-factory-engine';
 import { LISTING_FACTORY_QA_SAMPLES } from '@/lib/listing-factory-samples';
+import { buildProductionHandoffPack } from '@/lib/production-handoff-pack';
 
 function downloadTextFile(filename: string, content: string, mimeType: string) {
   if (typeof window === 'undefined') return;
@@ -1094,6 +1095,7 @@ function buildActionableProductionBrief(run: ListingFactoryRun, verdict = buildL
       `- 文件命名：${run.project.productName.replace(/\s+/g, '-')}_{variant}_${new Date().toISOString().slice(0, 10)}.mp4`,
       '- 交付方式：上传至项目云盘或发送原文件',
     ];
+  const handoffPack = buildProductionHandoffPack(run);
   return [
     '# Wenai 生产需求 Brief',
     '',
@@ -1125,6 +1127,8 @@ function buildActionableProductionBrief(run: ListingFactoryRun, verdict = buildL
     '- 回收 impressions、clicks、spend、orders、revenue 后再复盘下一轮动作。',
     '',
     ...executionSpec,
+    '',
+    handoffPack.markdown,
   ].join('\n');
 }
 
@@ -2170,7 +2174,7 @@ function ContentDecisionOsPanel({ run, onChanged }: { run: ListingFactoryRun; on
     try {
       downloadTextFile(safeDownloadFilename(`${run.project.productName}-生产需求Brief`, 'md'), buildActionableProductionBrief(run, verdict), 'text/markdown;charset=utf-8');
       track('report_exported', { type: 'brief' });
-      setToast('生产 Brief 已下载，可直接发给剪辑师执行。');
+      setToast('生产 Brief 与交接包已下载，可直接发给剪辑师或设计师执行。');
     } catch {
       setToast('处理时间较长，请重试或联系支持。');
     }
@@ -2264,7 +2268,7 @@ function ContentDecisionOsPanel({ run, onChanged }: { run: ListingFactoryRun; on
         <SectionTitle eyebrow="Wenai Content Decision OS" title="先决定下一轮该生产什么" body="把 CSV 表现数据、内容变量、实验规则和跨轮学习连起来，输出测什么、暂停什么、放大什么，以及哪些结论需要继续验证。" />
         <div className="flex flex-wrap gap-2">
           {!showEmptyState && <PrimaryActionButton onClick={primaryAction.onClick} pulse={primaryPulse}>{primaryAction.label}</PrimaryActionButton>}
-          {!isEmpty && <ActionButton onClick={exportProductionBrief}>导出生产需求 Brief</ActionButton>}
+          {!isEmpty && <ActionButton onClick={exportProductionBrief}>导出生产 Brief + 交接包</ActionButton>}
         </div>
       </div>
       <input
@@ -2564,7 +2568,7 @@ function DeliveryDownloads({ run }: { run: ListingFactoryRun }) {
         <div className="rounded-md border border-emerald-100 bg-white p-3">
           <div className="text-[12px] font-bold text-slate-900">生产需求 Brief</div>
           <p className="mt-1 min-h-10 text-[12px] leading-5 text-slate-600">把决策转成外部制作工具可读的生产任务，不调用真实 API。</p>
-          <div className="mt-3"><ActionButton onClick={() => downloadTextFile(safeDownloadFilename(`${run.project.productName}-生产需求Brief`, 'md'), buildProductionDemandBrief(run), 'text/markdown;charset=utf-8')}>导出</ActionButton></div>
+          <div className="mt-3"><ActionButton onClick={() => downloadTextFile(safeDownloadFilename(`${run.project.productName}-生产Brief-交接包`, 'md'), buildProductionDemandBrief(run), 'text/markdown;charset=utf-8')}>导出 Brief + 交接包</ActionButton></div>
         </div>
         <div className="rounded-md border border-emerald-100 bg-white p-3">
           <div className="text-[12px] font-bold text-slate-900">CSV 映射模板</div>
